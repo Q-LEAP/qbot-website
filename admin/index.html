@@ -1,0 +1,1555 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Q-BOT Blog</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #00CBBE; --teal-d: #00A79C; --teal-glow: rgba(8,184,178,.12);
+      --bg: #0a0b0d; --s1: #111318; --s2: #1a1d24; --s3: #23272f;
+      --border: rgba(255,255,255,.07); --border-h: rgba(255,255,255,.13);
+      --g1: rgba(255,255,255,.88); --g2: rgba(255,255,255,.55); --g3: rgba(255,255,255,.3);
+      --red: #ef4444; --green: #10b981; --amber: #f59e0b;
+      --r: 10px; --font: 'Inter', system-ui, sans-serif;
+    }
+    html { font-size: 16px; }
+    body { font-family: var(--font); background: var(--bg); color: #fff; height: 100vh; overflow: hidden; }
+    .hidden { display: none !important; }
+    button { cursor: pointer; font-family: var(--font); border: none; }
+    input, textarea, select { font-family: var(--font); }
+    a { color: inherit; text-decoration: none; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.18); }
+
+    /* ── LOGIN ── */
+    #view-login {
+      height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(8,184,178,.18) 0%, transparent 60%), var(--bg);
+    }
+    .login-card {
+      background: var(--s1); border: 1px solid var(--border-h);
+      border-radius: 18px; padding: 44px 48px; width: 100%; max-width: 400px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .login-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
+    .login-icon {
+      width: 42px; height: 42px; background: linear-gradient(135deg, var(--teal), var(--teal-d));
+      border-radius: 11px; display: grid; place-items: center; font-weight: 800; font-size: 1.1rem;
+      box-shadow: 0 4px 16px rgba(8,184,178,.3);
+    }
+    .login-brand-name { font-size: 1.25rem; font-weight: 800; letter-spacing: -.01em; }
+    .login-brand-sub { font-size: .75rem; color: var(--g3); }
+    .login-card h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+    .login-card > p { color: var(--g2); font-size: .875rem; margin-bottom: 28px; line-height: 1.5; }
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: .8rem; font-weight: 500; color: var(--g2); margin-bottom: 7px; letter-spacing: .01em; }
+    .field input {
+      width: 100%; padding: 11px 15px;
+      background: var(--s2); border: 1px solid var(--border);
+      border-radius: 9px; color: var(--g1); font-size: .9375rem; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(8,184,178,.1); }
+    .login-error {
+      display: none; font-size: .8125rem; color: var(--red);
+      background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2);
+      padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
+    }
+    .btn-login {
+      width: 100%; padding: 13px; font-size: .9375rem; font-weight: 600;
+      background: linear-gradient(135deg, var(--teal), var(--teal-d));
+      color: #fff; border-radius: 9px; transition: opacity .2s, transform .1s;
+      box-shadow: 0 4px 20px rgba(8,184,178,.3);
+    }
+    .btn-login:hover { opacity: .9; }
+    .btn-login:active { transform: scale(.99); }
+
+    /* ── APP SHELL ── */
+    #view-app { display: flex; height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 60px; background: var(--s1); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 14px 0; flex-shrink: 0; gap: 4px;
+    }
+    .sb-logo {
+      width: 36px; height: 36px; background: linear-gradient(135deg, var(--teal), var(--teal-d));
+      border-radius: 9px; display: grid; place-items: center;
+      font-weight: 800; font-size: .95rem; color: #fff; margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(8,184,178,.25);
+    }
+    .sb-sep { width: 28px; height: 1px; background: var(--border); margin: 6px 0; }
+    .sb-btn {
+      width: 40px; height: 40px; border-radius: 9px;
+      background: transparent; color: var(--g3);
+      display: grid; place-items: center; transition: all .15s;
+    }
+    .sb-btn:hover { background: var(--s3); color: var(--g1); }
+    .sb-btn.active { background: var(--teal-glow); color: var(--teal); }
+    .sb-btn svg { width: 17px; height: 17px; }
+    .sb-btn { position: relative; }
+    .fs-dot { position:absolute; bottom:4px; right:4px; width:7px; height:7px; border-radius:50%; border:1.5px solid var(--s1); background:var(--g3); }
+    .fs-dot.ok { background: var(--green); }
+    .sb-spacer { flex: 1; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 54px; background: var(--s1); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 20px; gap: 10px; flex-shrink: 0;
+    }
+    .topbar-title { font-size: .9375rem; font-weight: 600; flex: 1; }
+    .badge {
+      font-size: .65rem; font-weight: 700; letter-spacing: .06em;
+      padding: 3px 9px; border-radius: 99px; text-transform: uppercase;
+    }
+    .badge-draft { background: rgba(245,158,11,.12); color: var(--amber); }
+    .badge-pub { background: rgba(16,185,129,.12); color: var(--green); }
+
+    /* Buttons */
+    .btn-primary {
+      padding: 8px 16px; background: var(--teal); color: #fff;
+      border-radius: 8px; font-size: .8125rem; font-weight: 600;
+      display: flex; align-items: center; gap: 6px; transition: background .15s;
+    }
+    .btn-primary:hover { background: var(--teal-d); }
+    .btn-ghost {
+      padding: 8px 13px; background: transparent; color: var(--g2);
+      border: 1px solid var(--border); border-radius: 8px; font-size: .8125rem;
+      display: flex; align-items: center; gap: 6px; transition: all .15s;
+    }
+    .btn-ghost:hover { border-color: var(--border-h); color: var(--g1); background: var(--s3); }
+    .btn-danger {
+      padding: 7px 11px; background: rgba(239,68,68,.08); color: var(--red);
+      border: 1px solid rgba(239,68,68,.18); border-radius: 7px;
+      font-size: .8rem; font-weight: 500; transition: all .15s;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,.18); }
+    .btn-edit {
+      padding: 7px 11px; background: var(--teal-glow); color: var(--teal);
+      border: 1px solid rgba(8,184,178,.22); border-radius: 7px;
+      font-size: .8rem; font-weight: 500; transition: all .15s;
+    }
+    .btn-edit:hover { background: rgba(8,184,178,.2); }
+    .btn-dl {
+      padding: 7px 11px; background: var(--s3); color: var(--g2);
+      border: 1px solid var(--border); border-radius: 7px;
+      font-size: .8rem; font-weight: 500; transition: all .15s;
+    }
+    .btn-dl:hover { background: rgba(255,255,255,.06); color: var(--g1); }
+    .btn-save {
+      padding: 9px 18px; background: var(--teal); color: #fff;
+      border-radius: 8px; font-size: .875rem; font-weight: 600;
+      display: flex; align-items: center; gap: 6px; transition: background .15s;
+    }
+    .btn-save:hover { background: var(--teal-d); }
+
+    /* ── DASHBOARD ── */
+    #panel-dashboard { flex: 1; overflow-y: auto; padding: 22px; }
+    .dash-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+    .dash-hd h2 { font-size: 1.125rem; font-weight: 700; flex: 1; }
+    .search-box {
+      padding: 8px 14px; background: var(--s2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--g1); font-size: .8125rem; outline: none;
+      width: 200px; transition: border-color .2s;
+    }
+    .search-box:focus { border-color: var(--teal); }
+    .articles-empty {
+      text-align: center; padding: 80px 24px; color: var(--g3);
+    }
+    .articles-empty svg { display: block; margin: 0 auto 18px; opacity: .25; }
+    .articles-empty p { font-size: .9375rem; line-height: 1.6; }
+    .articles-empty strong { color: var(--g2); }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+    .a-card {
+      background: var(--s2); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden; transition: border-color .2s;
+    }
+    .a-card:hover { border-color: var(--border-h); }
+    .a-card-stripe { height: 5px; background: linear-gradient(90deg, var(--teal), var(--teal-d)); }
+    .a-card-stripe.draft { background: var(--amber); opacity: .5; }
+    .a-card-body { padding: 16px; }
+    .a-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+    .lang-pill {
+      font-size: .65rem; font-weight: 700; letter-spacing: .07em;
+      padding: 2px 7px; border-radius: 4px; background: var(--s3); color: var(--g2);
+    }
+    .cat-pill { font-size: .65rem; font-weight: 600; letter-spacing: .04em; color: var(--teal); text-transform: uppercase; }
+    .a-card-title {
+      font-size: .9rem; font-weight: 600; line-height: 1.4; margin-bottom: 7px; color: var(--g1);
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .a-card-date { font-size: .75rem; color: var(--g3); margin-bottom: 14px; }
+    .a-card-actions { display: flex; gap: 7px; flex-wrap: wrap; }
+
+    /* ── EDITOR SHELL ── */
+    #panel-editor { flex: 1; overflow: hidden; display: flex; }
+    .ep-left {
+      width: 50%; display: flex; flex-direction: column;
+      border-right: 1px solid var(--border); overflow: hidden;
+    }
+    .ep-meta { flex: 0 0 auto; overflow-y: auto; max-height: 42%; padding: 18px; background: var(--s1); border-bottom: 1px solid var(--border); }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .fc { grid-column: 1 / -1; }
+    .f { }
+    .f label { display: block; font-size: .75rem; font-weight: 500; color: var(--g2); margin-bottom: 6px; letter-spacing: .01em; }
+    .f input, .f textarea, .f select {
+      width: 100%; padding: 9px 12px; background: var(--s2);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--g1); font-size: .8125rem; outline: none; transition: border-color .2s;
+    }
+    .f input:focus, .f textarea:focus, .f select:focus { border-color: var(--teal); }
+    .f textarea { resize: none; min-height: 60px; line-height: 1.55; }
+    .f select { appearance: none; }
+    .f-hint { font-size: .7rem; color: var(--g3); margin-top: 4px; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 12px;
+      background: var(--s2); border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .tb {
+      min-width: 28px; height: 28px; padding: 0 7px;
+      border-radius: 6px; background: transparent; color: var(--g2);
+      font-size: .78rem; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 3px;
+      transition: background .12s, color .12s;
+    }
+    .tb:hover { background: var(--s3); color: var(--g1); }
+    .tb svg { width: 13px; height: 13px; }
+    .tb-sep { width: 1px; background: var(--border); margin: 3px 3px; align-self: stretch; }
+
+    /* Content editor */
+    .ced {
+      flex: 1; overflow-y: auto; padding: 20px 22px;
+      background: var(--bg); outline: none;
+      font-size: .9375rem; line-height: 1.8; color: var(--g1);
+    }
+    .ced:empty::before { content: attr(data-placeholder); color: var(--g3); pointer-events: none; }
+    .ced h2 { font-size: 1.3rem; font-weight: 700; color: #fff; margin: 30px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .ced h3 { font-size: 1.05rem; font-weight: 600; color: #fff; margin: 20px 0 8px; }
+    .ced p { margin-bottom: 14px; }
+    .ced ul, .ced ol { margin: 0 0 14px 22px; }
+    .ced li { margin-bottom: 5px; }
+    .ced blockquote { border-left: 3px solid var(--teal); padding-left: 14px; margin: 18px 0; color: var(--g2); font-style: italic; }
+    .ced code { background: var(--s3); padding: 2px 6px; border-radius: 4px; font-size: .85em; color: var(--teal); font-family: 'Fira Code', monospace; }
+    .ced pre { background: var(--s2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin: 16px 0; overflow-x: auto; }
+    .ced pre code { background: none; padding: 0; color: var(--g1); font-size: .83rem; }
+    .ced a { color: var(--teal); text-decoration: underline; }
+    .ced hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .ced strong { color: #fff; font-weight: 600; }
+
+    /* Editor footer bar */
+    .ef {
+      padding: 12px 18px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      background: var(--s1); flex-shrink: 0;
+    }
+    .wc { font-size: .75rem; color: var(--g3); flex: 1; }
+
+    /* ── PREVIEW ── */
+    .ep-right {
+      flex: 1; display: flex; flex-direction: column;
+      background: #0e1016; overflow: hidden;
+    }
+    .pv-topbar {
+      padding: 10px 18px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      background: var(--s1); flex-shrink: 0;
+    }
+    .pv-label { font-size: .8rem; color: var(--g2); flex: 1; font-weight: 500; }
+    .pv-tabs { display: flex; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; }
+    .pv-tab { padding: 5px 12px; background: transparent; color: var(--g3); font-size: .78rem; font-weight: 500; cursor: pointer; transition: all .12s; }
+    .pv-tab.active { background: var(--s3); color: var(--g1); }
+    .pv-scroll { flex: 1; overflow-y: auto; padding: 30px 22px; }
+    .pv-inner { max-width: 660px; margin: 0 auto; transition: max-width .3s; }
+    .pv-tag { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+    .pv-title { font-size: 1.7rem; font-weight: 800; line-height: 1.2; color: #fff; margin-bottom: 16px; }
+    .pv-meta { display: flex; flex-wrap: wrap; gap: 14px; color: var(--g3); font-size: .8rem; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .pv-body h2 { font-size: 1.25rem; font-weight: 700; color: #fff; margin: 28px 0 10px; }
+    .pv-body h3 { font-size: 1.0rem; font-weight: 600; color: #fff; margin: 20px 0 8px; }
+    .pv-body p { margin-bottom: 14px; color: rgba(255,255,255,.8); line-height: 1.8; font-size: .9375rem; }
+    .pv-body ul, .pv-body ol { margin: 0 0 14px 20px; }
+    .pv-body li { margin-bottom: 5px; color: rgba(255,255,255,.8); font-size: .9375rem; line-height: 1.7; }
+    .pv-body blockquote { border-left: 3px solid var(--teal); padding-left: 14px; margin: 18px 0; color: var(--g2); font-style: italic; }
+    .pv-body code { background: var(--s3); padding: 2px 6px; border-radius: 4px; font-size: .85em; color: var(--teal); }
+    .pv-body pre { background: var(--s2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 16px 0; overflow-x: auto; }
+    .pv-body pre code { background: none; color: var(--g1); font-size: .83rem; }
+    .pv-body a { color: var(--teal); }
+    .pv-body hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .pv-body strong { color: #fff; font-weight: 600; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 22px; right: 22px;
+      background: var(--s2); border: 1px solid var(--border-h);
+      border-radius: 10px; padding: 12px 18px;
+      font-size: .8125rem; color: var(--g1);
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      transform: translateY(60px); opacity: 0;
+      transition: all .3s cubic-bezier(.34,1.56,.64,1);
+      display: flex; align-items: center; gap: 10px;
+      z-index: 9999; pointer-events: none;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    .t-dot { width: 7px; height: 7px; border-radius: 50%; }
+    #toast.ok .t-dot { background: var(--green); }
+    #toast.err .t-dot { background: var(--red); }
+    #toast.info .t-dot { background: var(--teal); }
+
+    /* ── MODAL ── */
+    #modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,.72);
+      display: grid; place-items: center; z-index: 9998;
+    }
+    .modal {
+      background: var(--s1); border: 1px solid var(--border-h);
+      border-radius: 14px; padding: 30px; max-width: 380px; width: 90%;
+      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    }
+    .modal h3 { font-size: 1.0625rem; font-weight: 700; margin-bottom: 8px; }
+    .modal p { color: var(--g2); font-size: .875rem; line-height: 1.6; margin-bottom: 22px; }
+    .modal-actions { display: flex; gap: 9px; justify-content: flex-end; }
+
+    /* ── Thumbnail ── */
+    .thumb-row { display:flex; gap:8px; align-items:center; }
+    .thumb-row input[type="text"], .thumb-row input[type="url"] { flex:1; }
+    .thumb-prev-sm { width:36px; height:36px; border-radius:7px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:1.3rem; background:linear-gradient(135deg,#00CBBE,#00A79C); flex-shrink:0; border:1px solid var(--border); }
+    .thumb-prev-sm img { width:100%; height:100%; object-fit:cover; }
+    .a-card-thumb { height:72px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:2rem; }
+    .a-card-thumb img { width:100%; height:100%; object-fit:cover; }
+
+    /* ── Media Dialogs ── */
+    .md-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); display:flex; align-items:center; justify-content:center; z-index:9999; }
+    .md-box { background:var(--s1); border:1px solid var(--border-h); border-radius:14px; padding:28px; width:90%; max-width:460px; box-shadow:0 24px 80px rgba(0,0,0,.5); }
+    .md-box h4 { font-size:1rem; font-weight:700; margin-bottom:16px; }
+    .md-field { margin-bottom:13px; }
+    .md-field label { display:block; font-size:.75rem; font-weight:500; color:var(--g2); margin-bottom:5px; }
+    .md-field input, .md-field textarea { width:100%; padding:9px 12px; background:var(--s2); border:1px solid var(--border); border-radius:8px; color:var(--g1); font-size:.8125rem; outline:none; transition:border-color .2s; }
+    .md-field input:focus, .md-field textarea:focus { border-color:var(--teal); }
+    .md-field textarea { resize:vertical; min-height:70px; line-height:1.55; }
+    .md-or { text-align:center; color:var(--g3); font-size:.8rem; margin:4px 0; }
+    .md-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:18px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ LOGIN ═══════════════════════════════ -->
+<div id="view-login">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">Q</div>
+      <div>
+        <div class="login-brand-name">Q-BOT Admin</div>
+        <div class="login-brand-sub">Gestionnaire de blog</div>
+      </div>
+    </div>
+    <h1>Connexion</h1>
+    <p>Accédez à l'espace de création et de gestion des articles du blog.</p>
+    <div class="login-error" id="login-error">Identifiants incorrects. Vérifiez votre nom d'utilisateur et mot de passe.</div>
+    <div class="field">
+      <label for="f-user">Nom d'utilisateur</label>
+      <input type="text" id="f-user" autocomplete="username" placeholder="admin">
+    </div>
+    <div class="field">
+      <label for="f-pass">Mot de passe</label>
+      <input type="password" id="f-pass" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" id="login-btn">Se connecter →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ APP ═══════════════════════════════ -->
+<div id="view-app" class="hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">Q</div>
+    <div class="sb-sep"></div>
+    <button class="sb-btn active" id="sb-posts" title="Articles">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+    </button>
+    <div class="sb-spacer"></div>
+    <button class="sb-btn" id="sb-folder" title="Configurer le dossier de sauvegarde automatique">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <span class="fs-dot" id="fs-dot"></span>
+    </button>
+    <button class="sb-btn" id="sb-site" title="Voir le site">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </button>
+    <button class="sb-btn" id="sb-logout" title="Déconnexion">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <span class="topbar-title" id="topbar-title">Articles</span>
+      <button class="btn-ghost hidden" id="btn-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Retour
+      </button>
+      <span id="status-badge" class="badge hidden"></span>
+      <button class="btn-ghost hidden" id="btn-pv-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Aperçu
+      </button>
+      <button class="btn-ghost hidden" id="btn-export">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exporter HTML
+      </button>
+    </div>
+
+    <!-- ── DASHBOARD ── -->
+    <div id="panel-dashboard">
+      <div class="dash-hd">
+        <h2>Articles du blog</h2>
+        <input type="search" class="search-box" id="search-box" placeholder="🔍  Rechercher…">
+        <button class="btn-primary" id="btn-new">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouvel article
+        </button>
+      </div>
+      <div id="cards-container"></div>
+    </div>
+
+    <!-- ── EDITOR ── -->
+    <div id="panel-editor" class="hidden">
+
+      <!-- LEFT: FORM + WYSIWYG -->
+      <div class="ep-left">
+
+        <!-- METADATA FORM -->
+        <div class="ep-meta">
+          <div class="meta-grid">
+            <div class="f fc">
+              <label>Titre *</label>
+              <input type="text" id="f-title" placeholder="Ex : L'automatisation 2FA, le défi caché des équipes QA">
+            </div>
+            <div class="f fc">
+              <label>Slug (URL du fichier)</label>
+              <input type="text" id="f-slug" placeholder="automatiser-2fa-tests">
+              <div class="f-hint">Généré depuis le titre · modifiable</div>
+            </div>
+            <div class="f">
+              <label>Langue</label>
+              <select id="f-lang">
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
+              </select>
+            </div>
+            <div class="f">
+              <label>Statut</label>
+              <select id="f-status">
+                <option value="draft">Brouillon</option>
+                <option value="published">Publié</option>
+              </select>
+            </div>
+            <div class="f">
+              <label>Catégorie / Tag</label>
+              <input type="text" id="f-cat" placeholder="Ex : Automatisation">
+            </div>
+            <div class="f">
+              <label>Auteur</label>
+              <input type="text" id="f-author" placeholder="Équipe Q-Leap">
+            </div>
+            <div class="f">
+              <label>Date de publication</label>
+              <input type="date" id="f-date">
+            </div>
+            <div class="f">
+              <label>Temps de lecture</label>
+              <input type="text" id="f-rt" placeholder="7 min de lecture">
+            </div>
+            <div class="f fc">
+              <label>Extrait · résumé (affiché dans les cartes blog)</label>
+              <textarea id="f-excerpt" rows="2" placeholder="Brève description qui apparaîtra dans la liste du blog et en méta SEO…"></textarea>
+            </div>
+            <div class="f fc">
+              <label>Vignette — image ou emoji affiché dans les cartes blog</label>
+              <div class="thumb-row">
+                <div class="thumb-prev-sm" id="thumb-prev-sm">📝</div>
+                <input type="text" id="f-thumb" placeholder="URL d'image, base64, ou emoji ex: 🔐" oninput="updateThumbPreview()">
+                <button type="button" class="btn-ghost" style="padding:8px 10px;font-size:.78rem;white-space:nowrap;" onclick="document.getElementById('f-thumb-file-inp').click()" title="Choisir un fichier image">📁</button>
+                <input type="file" id="f-thumb-file-inp" accept="image/*" style="display:none" onchange="handleThumbFile(this)">
+              </div>
+              <div class="f-hint">URL d'image, emoji (ex : 🔐 🧪 ⚠️), ou choisir un fichier — prévisualisé à gauche</div>
+            </div>
+            <div class="f fc">
+              <label>Couleur de fond vignette (CSS)</label>
+              <input type="text" id="f-thumb-color" placeholder="linear-gradient(135deg,#00CBBE 0%,#00A79C 100%)" oninput="updateThumbPreview()">
+            </div>
+          </div>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="toolbar">
+          <button class="tb" data-cmd="bold" title="Gras (Ctrl+B)"><b>B</b></button>
+          <button class="tb" data-cmd="italic" title="Italique (Ctrl+I)"><i>I</i></button>
+          <button class="tb" data-cmd="underline" title="Souligné"><u>U</u></button>
+          <div class="tb-sep"></div>
+          <button class="tb" data-cmd="h2" title="Titre de section">H2</button>
+          <button class="tb" data-cmd="h3" title="Sous-titre">H3</button>
+          <button class="tb" data-cmd="p" title="Paragraphe normal">¶</button>
+          <div class="tb-sep"></div>
+          <button class="tb" data-cmd="ul" title="Liste à puces">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg>
+          </button>
+          <button class="tb" data-cmd="ol" title="Liste numérotée">1.</button>
+          <div class="tb-sep"></div>
+          <button class="tb" data-cmd="bq" title="Citation / blockquote">"</button>
+          <button class="tb" data-cmd="code" title="Code inline">&lt;/&gt;</button>
+          <button class="tb" data-cmd="pre" title="Bloc de code">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
+          </button>
+          <div class="tb-sep"></div>
+          <button class="tb" data-cmd="link" title="Insérer un lien">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </button>
+          <button class="tb" data-cmd="hr" title="Séparateur horizontal">—</button>
+          <div class="tb-sep"></div>
+          <button class="tb" data-cmd="undo" title="Annuler (Ctrl+Z)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+          </button>
+          <button class="tb" data-cmd="redo" title="Rétablir (Ctrl+Y)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+          </button>
+          <div class="tb-sep"></div>
+          <button class="tb" data-cmd="img" title="Insérer une image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><polyline points="21,15 16,10 5,21"/></svg>
+          </button>
+          <button class="tb" data-cmd="video" title="Intégrer une vidéo YouTube/Vimeo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          </button>
+          <button class="tb" data-cmd="carousel" title="Créer un carousel d'images">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M7 6v12M17 6v12"/><path d="M0 12h2M22 12h2"/></svg>
+          </button>
+        </div>
+
+        <!-- WYSIWYG EDITOR -->
+        <div class="ced" id="ced" contenteditable="true" spellcheck="false"
+             data-placeholder="Commencez à rédiger votre article ici… Utilisez la barre d'outils pour formater le contenu."></div>
+
+        <!-- BOTTOM BAR -->
+        <div class="ef">
+          <span class="wc" id="wc-display">0 mot</span>
+          <button class="btn-ghost" id="btn-draft">Enregistrer brouillon</button>
+          <button class="btn-save" id="btn-publish">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+            Publier l'article
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT: PREVIEW -->
+      <div class="ep-right" id="ep-right">
+        <div class="pv-topbar">
+          <span class="pv-label">Aperçu en direct</span>
+          <div class="pv-tabs">
+            <button class="pv-tab active" id="pv-desk">Bureau</button>
+            <button class="pv-tab" id="pv-mob">Mobile</button>
+          </div>
+        </div>
+        <div class="pv-scroll">
+          <div class="pv-inner" id="pv-inner">
+            <div class="pv-tag" id="pv-tag">Catégorie</div>
+            <div class="pv-title" id="pv-title">Titre de l'article</div>
+            <div class="pv-meta" id="pv-meta">
+              <span>📅 Date</span><span>⏱ Durée</span><span>✍️ Auteur</span>
+            </div>
+            <div class="pv-body" id="pv-body"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-editor -->
+  </div><!-- /main -->
+</div><!-- /view-app -->
+
+<!-- ── IMAGE DIALOG ── -->
+<div id="md-img" class="md-overlay hidden">
+  <div class="md-box">
+    <h4>🖼 Insérer une image</h4>
+    <div class="md-field"><label>URL de l'image</label><input type="url" id="md-img-url" placeholder="https://example.com/image.jpg"></div>
+    <div class="md-or">— ou choisir un fichier —</div>
+    <div class="md-field"><label>Fichier image</label><input type="file" id="md-img-file" accept="image/*"></div>
+    <div class="md-field"><label>Texte alternatif (alt)</label><input type="text" id="md-img-alt" placeholder="Description de l'image pour l'accessibilité"></div>
+    <div class="md-field"><label>Légende (optionnel)</label><input type="text" id="md-img-cap" placeholder="Sous-titre affiché sous l'image"></div>
+    <div class="md-actions">
+      <button class="btn-ghost" onclick="closeMD('md-img')">Annuler</button>
+      <button class="btn-primary" onclick="insertImg()">Insérer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── VIDEO DIALOG ── -->
+<div id="md-video" class="md-overlay hidden">
+  <div class="md-box">
+    <h4>🎬 Intégrer une vidéo</h4>
+    <div class="md-field"><label>URL YouTube ou Vimeo</label><input type="url" id="md-vid-url" placeholder="https://www.youtube.com/watch?v=…"></div>
+    <div class="md-field"><label>Titre de la vidéo (accessibilité)</label><input type="text" id="md-vid-title" placeholder="Présentation de Q-BOT"></div>
+    <div class="md-actions">
+      <button class="btn-ghost" onclick="closeMD('md-video')">Annuler</button>
+      <button class="btn-primary" onclick="insertVideo()">Intégrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CAROUSEL DIALOG ── -->
+<div id="md-carousel" class="md-overlay hidden">
+  <div class="md-box">
+    <h4>🎠 Créer un carousel d'images</h4>
+    <div class="md-field"><label>URLs des images (une par ligne)</label><textarea id="md-car-urls" rows="5" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg&#10;https://example.com/img3.jpg"></textarea></div>
+    <div class="md-field"><label>Légende du carousel (optionnel)</label><input type="text" id="md-car-cap" placeholder="Galerie — Q-BOT en action"></div>
+    <div class="md-actions">
+      <button class="btn-ghost" onclick="closeMD('md-carousel')">Annuler</button>
+      <button class="btn-primary" onclick="insertCarousel()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><span class="t-dot"></span><span id="toast-msg">Message</span></div>
+
+<!-- MODAL -->
+<div id="modal-bg" class="hidden">
+  <div class="modal">
+    <h3 id="modal-h"></h3>
+    <p id="modal-p"></p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="modal-cancel">Annuler</button>
+      <button class="btn-danger" id="modal-ok">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════ Q-BOT BLOG ADMIN ═══════════════════ */
+const SK = 'qbot_articles';
+const AK = 'qbot_auth';
+const CREDS = { user: 'admin', pass: 'admin' };
+
+let articles = [];
+let current = null;
+let pvVisible = true;
+let toastTmr;
+
+// ── Helpers ──────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const show = el => (typeof el === 'string' ? $(el) : el).classList.remove('hidden');
+const hide = el => (typeof el === 'string' ? $(el) : el).classList.add('hidden');
+const val = id => $(id).value.trim();
+
+function slugify(s) {
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9 -]/g,'').trim()
+    .replace(/\s+/g,'-').replace(/-+/g,'-');
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+function fmtDate(d, lang) {
+  if (!d) return '';
+  return new Date(d + 'T12:00:00').toLocaleDateString(
+    lang === 'fr' ? 'fr-FR' : 'en-GB',
+    { day:'numeric', month:'long', year:'numeric' }
+  );
+}
+
+function wordCount(html) {
+  const t = html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  const n = t ? t.split(' ').length : 0;
+  return n + ' mot' + (n > 1 ? 's' : '');
+}
+
+// ── Toast ────────────────────────────────────────────────
+function toast(msg, type = 'ok') {
+  const el = $('toast');
+  $('toast-msg').textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(toastTmr);
+  toastTmr = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ── Modal ────────────────────────────────────────────────
+function modal(h, p, onOk, danger = true) {
+  $('modal-h').textContent = h;
+  $('modal-p').textContent = p;
+  $('modal-ok').className = danger ? 'btn-danger' : 'btn-primary';
+  show('modal-bg');
+  $('modal-ok').onclick = () => { hide('modal-bg'); onOk(); };
+  $('modal-cancel').onclick = () => hide('modal-bg');
+}
+
+// ── Auth ─────────────────────────────────────────────────
+const isAuth = () => sessionStorage.getItem(AK) === '1';
+
+function doLogin() {
+  const u = val('f-user'), p = val('f-pass');
+  const err = $('login-error');
+  if (u === CREDS.user && p === CREDS.pass) {
+    sessionStorage.setItem(AK, '1');
+    hide('view-login'); show('view-app');
+    err.style.display = 'none';
+    loadDash();
+  } else {
+    err.style.display = 'block';
+    $('f-pass').value = '';
+    $('f-pass').focus();
+  }
+}
+
+$('login-btn').onclick = doLogin;
+$('f-pass').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+$('f-user').onkeydown = e => { if (e.key === 'Enter') $('f-pass').focus(); };
+
+$('sb-logout').onclick = () => {
+  sessionStorage.removeItem(AK);
+  hide('view-app'); show('view-login');
+  $('f-user').value = ''; $('f-pass').value = '';
+};
+$('sb-site').onclick = () => window.open('../index.html', '_blank');
+$('sb-folder').onclick = setupFolder;
+
+// ── Storage ──────────────────────────────────────────────
+function load() {
+  try { articles = JSON.parse(localStorage.getItem(SK) || '[]'); }
+  catch { articles = []; }
+}
+function save() { localStorage.setItem(SK, JSON.stringify(articles)); }
+
+// ── Dashboard ────────────────────────────────────────────
+function loadDash() {
+  load();
+  show('panel-dashboard'); hide('panel-editor');
+  $('topbar-title').textContent = 'Articles';
+  hide('btn-back'); hide('btn-pv-toggle'); hide('btn-export'); hide('status-badge');
+  renderCards(articles);
+}
+
+$('btn-new').onclick = () => openEditor(null);
+
+$('search-box').oninput = function () {
+  const q = this.value.toLowerCase();
+  renderCards(q ? articles.filter(a =>
+    (a.title||'').toLowerCase().includes(q) ||
+    (a.cat||'').toLowerCase().includes(q)
+  ) : articles);
+};
+
+function cardThumb(a) {
+  const isImg = a.thumbnail && (a.thumbnail.startsWith('http') || a.thumbnail.startsWith('data:'));
+  const bg = isImg ? '#111318' : (a.thumbColor || 'linear-gradient(135deg,#00CBBE,#00A79C)');
+  const content = isImg
+    ? '<img src="' + a.thumbnail + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+    : (a.thumbnail || '📝');
+  return '<div class="a-card-thumb" style="background:' + bg + ';font-size:1.6rem;">' + content + '</div>';
+}
+
+function renderCards(list) {
+  const el = $('cards-container');
+  if (!list.length) {
+    el.innerHTML = `<div class="articles-empty">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <p>${articles.length ? 'Aucun résultat pour cette recherche.' :
+        'Aucun article pour l\'instant.<br><strong>Cliquez sur « Nouvel article »</strong> pour commencer à rédiger.'}</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML = '<div class="cards-grid">' + list.map(a => `
+    <div class="a-card">
+      ${cardThumb(a)}
+      <div class="a-card-stripe ${a.status !== 'published' ? 'draft' : ''}"></div>
+      <div class="a-card-body">
+        <div class="a-card-top">
+          <span class="lang-pill">${(a.lang||'fr').toUpperCase()}</span>
+          <span class="cat-pill">${a.cat || 'Sans catégorie'}</span>
+          <span class="badge ${a.status === 'published' ? 'badge-pub' : 'badge-draft'}" style="font-size:.62rem;">${a.status === 'published' ? 'Publié' : 'Brouillon'}</span>
+        </div>
+        <div class="a-card-title">${a.title || '<em style="color:var(--g3)">Sans titre</em>'}</div>
+        <div class="a-card-date">${fmtDate(a.date, a.lang) || 'Date non définie'} · ${a.rt || '—'}</div>
+        <div class="a-card-actions">
+          <button class="btn-edit" onclick="openEditor('${a.id}')">✏️ Modifier</button>
+          <button class="btn-dl" onclick="exportHTML('${a.id}')">⬇ HTML</button>
+          <button class="btn-danger" onclick="delArticle('${a.id}')">✕ Supprimer</button>
+        </div>
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+function delArticle(id) {
+  modal('Supprimer l\'article', 'Cette action est irréversible. L\'article sera définitivement supprimé.', () => {
+    articles = articles.filter(a => a.id !== id);
+    save(); renderCards(articles); toast('Article supprimé');
+  });
+}
+
+// ── Editor ───────────────────────────────────────────────
+const ced = $('ced');
+
+function openEditor(id) {
+  load();
+  if (id) {
+    current = { ...articles.find(a => a.id === id) };
+  } else {
+    current = {
+      id: uid(), title: '', slug: '', lang: 'fr', cat: '',
+      author: 'Équipe Q-Leap', date: new Date().toISOString().slice(0,10),
+      rt: '', excerpt: '', content: '', status: 'draft',
+      createdAt: Date.now(), updatedAt: Date.now()
+    };
+  }
+  // Fill form
+  $('f-title').value  = current.title  || '';
+  $('f-slug').value   = current.slug   || '';
+  $('f-lang').value   = current.lang   || 'fr';
+  $('f-cat').value    = current.cat    || '';
+  $('f-author').value = current.author || 'Équipe Q-Leap';
+  $('f-date').value   = current.date   || '';
+  $('f-rt').value     = current.rt     || '';
+  $('f-excerpt').value = current.excerpt || '';
+  $('f-status').value = current.status || 'draft';
+  if ($('f-thumb'))       $('f-thumb').value      = current.thumbnail  || '';
+  if ($('f-thumb-color')) $('f-thumb-color').value = current.thumbColor || '';
+  updateThumbPreview();
+  ced.innerHTML       = current.content || '';
+  delete $('f-slug').dataset.manual;
+
+  hide('panel-dashboard'); show('panel-editor');
+  $('topbar-title').textContent = current.title || 'Nouvel article';
+  show('btn-back'); show('btn-pv-toggle'); show('btn-export');
+  setBadge(current.status);
+  updateWC(); updatePreview();
+}
+
+function setBadge(status) {
+  const b = $('status-badge');
+  show(b);
+  b.textContent = status === 'published' ? 'Publié' : 'Brouillon';
+  b.className = 'badge ' + (status === 'published' ? 'badge-pub' : 'badge-draft');
+}
+
+// Back
+$('btn-back').onclick = () => {
+  const dirty = ced.innerHTML !== (current ? current.content : '');
+  if (dirty) modal('Quitter sans sauvegarder ?', 'Vos modifications non enregistrées seront perdues.', loadDash, false);
+  else loadDash();
+};
+
+// Title → slug
+$('f-title').oninput = function () {
+  if (!$('f-slug').dataset.manual) $('f-slug').value = slugify(this.value);
+  $('topbar-title').textContent = this.value || 'Nouvel article';
+  updatePreview();
+};
+$('f-slug').oninput = function () { this.dataset.manual = '1'; };
+['f-cat','f-author','f-date','f-rt','f-excerpt','f-lang','f-status'].forEach(id => {
+  $(id).oninput = updatePreview;
+  $(id).onchange = updatePreview;
+});
+
+// Collect
+function collect(status) {
+  return {
+    ...current,
+    title:      val('f-title'),
+    slug:       val('f-slug') || slugify(val('f-title')),
+    lang:       val('f-lang'),
+    cat:        val('f-cat'),
+    author:     val('f-author') || 'Équipe Q-Leap',
+    date:       val('f-date'),
+    rt:         val('f-rt'),
+    excerpt:    val('f-excerpt'),
+    thumbnail:  ($('f-thumb') || {value:''}).value.trim(),
+    thumbColor: ($('f-thumb-color') || {value:''}).value.trim(),
+    content:    ced.innerHTML,
+    status:     status || val('f-status'),
+    updatedAt:  Date.now()
+  };
+}
+
+function saveArticle(status) {
+  const a = collect(status);
+  if (!a.title) { toast('Le titre est requis', 'err'); return; }
+  current = a;
+  load();
+  const i = articles.findIndex(x => x.id === a.id);
+  if (i >= 0) articles[i] = a; else articles.unshift(a);
+  save();
+  $('f-status').value = a.status;
+  setBadge(a.status);
+  if (a.status === 'published') {
+    const html = generateArticleHTML(a);
+    const slug = a.slug || slugify(a.title);
+    const path = (a.lang === 'fr' ? 'blog/' : 'en/blog/') + slug + '.html';
+    writeToFolder(slug, a.lang, html).then(saved => {
+      toast(saved ? '✓ Publié → ' + path : '✓ Article publié (configurez 📁 pour l\'export auto)', saved ? 'ok' : 'info');
+    });
+  } else {
+    toast('✓ Brouillon enregistré');
+  }
+}
+
+$('btn-publish').onclick = () => saveArticle('published');
+$('btn-draft').onclick   = () => saveArticle('draft');
+
+// Word count
+function updateWC() { $('wc-display').textContent = wordCount(ced.innerHTML); }
+ced.oninput = () => { updateWC(); updatePreview(); };
+
+// ── Toolbar ──────────────────────────────────────────────
+document.querySelectorAll('.tb').forEach(btn => {
+  btn.onmousedown = e => {
+    e.preventDefault(); // don't lose selection
+    const cmd = btn.dataset.cmd;
+    ced.focus();
+    switch (cmd) {
+      case 'bold':      document.execCommand('bold');     break;
+      case 'italic':    document.execCommand('italic');   break;
+      case 'underline': document.execCommand('underline'); break;
+      case 'h2': document.execCommand('formatBlock', false, 'h2'); break;
+      case 'h3': document.execCommand('formatBlock', false, 'h3'); break;
+      case 'p':  document.execCommand('formatBlock', false, 'p');  break;
+      case 'ul': document.execCommand('insertUnorderedList'); break;
+      case 'ol': document.execCommand('insertOrderedList');   break;
+      case 'bq': document.execCommand('formatBlock', false, 'blockquote'); break;
+      case 'code': {
+        const sel = window.getSelection();
+        const txt = sel ? sel.toString() : '';
+        if (txt) document.execCommand('insertHTML', false, `<code>${txt}</code>`);
+        break;
+      }
+      case 'pre': document.execCommand('formatBlock', false, 'pre'); break;
+      case 'link': {
+        const url = prompt('URL du lien :', 'https://');
+        if (url) document.execCommand('createLink', false, url);
+        break;
+      }
+      case 'hr':       document.execCommand('insertHorizontalRule'); break;
+      case 'undo':     document.execCommand('undo'); break;
+      case 'redo':     document.execCommand('redo'); break;
+      case 'img':      openMD('md-img');      return;
+      case 'video':    openMD('md-video');    return;
+      case 'carousel': openMD('md-carousel'); return;
+    }
+    updatePreview();
+  };
+});
+
+// Keyboard shortcuts in editor
+ced.onkeydown = e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveArticle(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'y')) setTimeout(updatePreview, 50);
+};
+
+// ── Live Preview ─────────────────────────────────────────
+function updatePreview() {
+  const lang   = val('f-lang');
+  const title  = val('f-title') || 'Titre de l\'article';
+  const date   = val('f-date');
+  const rt     = val('f-rt')     || '? min de lecture';
+  const author = val('f-author') || 'Équipe Q-Leap';
+  const cat    = val('f-cat')    || 'Blog';
+
+  $('pv-tag').textContent   = cat;
+  $('pv-title').textContent = title;
+  $('pv-meta').innerHTML = `
+    <span>📅 ${date ? fmtDate(date, lang) : 'Date non définie'}</span>
+    <span>⏱ ${rt}</span>
+    <span>✍️ ${author}</span>`;
+  $('pv-body').innerHTML = ced.innerHTML;
+}
+
+// Preview toggle
+$('btn-pv-toggle').onclick = () => {
+  pvVisible = !pvVisible;
+  $('ep-right').style.display = pvVisible ? '' : 'none';
+};
+
+// Mobile / Desktop preview
+$('pv-desk').onclick = function () {
+  this.classList.add('active'); $('pv-mob').classList.remove('active');
+  $('pv-inner').style.maxWidth = '660px';
+};
+$('pv-mob').onclick = function () {
+  this.classList.add('active'); $('pv-desk').classList.remove('active');
+  $('pv-inner').style.maxWidth = '375px';
+};
+
+// ── File System Access API ───────────────────────────────
+let _fsDb = null;
+
+function openFSDB() {
+  return new Promise((res, rej) => {
+    if (_fsDb) { res(_fsDb); return; }
+    const req = indexedDB.open('qbot_admin_fs', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('h');
+    req.onsuccess = e => { _fsDb = e.target.result; res(_fsDb); };
+    req.onerror = rej;
+  });
+}
+
+async function saveRootHandle(h) {
+  const db = await openFSDB();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('h', 'readwrite');
+    tx.objectStore('h').put(h, 'root');
+    tx.oncomplete = res; tx.onerror = rej;
+  });
+}
+
+async function loadRootHandle() {
+  try {
+    const db = await openFSDB();
+    return await new Promise((res, rej) => {
+      const tx = db.transaction('h', 'readonly');
+      const req = tx.objectStore('h').get('root');
+      req.onsuccess = e => res(e.target.result || null);
+      req.onerror = rej;
+    });
+  } catch { return null; }
+}
+
+async function setupFolder() {
+  if (!window.showDirectoryPicker) {
+    toast('Utilisez Chrome ou Edge pour cette fonctionnalité', 'err'); return;
+  }
+  try {
+    const h = await window.showDirectoryPicker({ mode: 'readwrite' });
+    await saveRootHandle(h);
+    localStorage.setItem('qbot_folder_name', h.name);
+    updateFsDot(true);
+    toast('📁 Dossier configuré : ' + h.name, 'ok');
+  } catch (e) {
+    if (e.name !== 'AbortError') toast('Erreur d\'accès au dossier', 'err');
+  }
+}
+
+function updateFsDot(ok) {
+  const d = $('fs-dot');
+  if (!d) return;
+  d.className = 'fs-dot' + (ok ? ' ok' : '');
+  const name = localStorage.getItem('qbot_folder_name') || '?';
+  $('sb-folder').title = ok
+    ? '📁 Dossier : ' + name + ' — cliquer pour changer'
+    : 'Configurer le dossier de sauvegarde automatique';
+}
+
+async function writeToFolder(slug, lang, htmlContent) {
+  try {
+    const root = await loadRootHandle();
+    if (!root) return false;
+    const perm = await root.requestPermission({ mode: 'readwrite' });
+    if (perm !== 'granted') return false;
+    let dir = root;
+    if (lang === 'en') dir = await dir.getDirectoryHandle('en', { create: true });
+    dir = await dir.getDirectoryHandle('blog', { create: true });
+    const fh = await dir.getFileHandle(slug + '.html', { create: true });
+    const w = await fh.createWritable();
+    await w.write(htmlContent);
+    await w.close();
+    return true;
+  } catch (e) {
+    console.warn('FS write:', e.message);
+    return false;
+  }
+}
+
+// ── HTML Generation + Export ─────────────────────────────
+function generateArticleHTML(a) {
+
+  const fr = a.lang === 'fr';
+  const slug  = a.slug || slugify(a.title);
+  const base  = fr ? '../assets/' : '../../assets/';
+  const nav0  = fr ? '../' : '../';
+
+  const navLinks = fr
+    ? `<li><a href="${nav0}a-propos.html" class="nav__link">À propos</a></li>
+       <li><a href="${nav0}caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+       <li><a href="${nav0}contact.html" class="nav__link">Contact</a></li>`
+    : `<li><a href="${nav0}about.html" class="nav__link">About</a></li>
+       <li><a href="${nav0}technical-specs.html" class="nav__link">Technical Specs</a></li>
+       <li><a href="${nav0}contact.html" class="nav__link">Contact</a></li>`;
+
+  const langSw = fr
+    ? `<a href="#" class="active">FR</a><span>|</span><a href="#">EN</a>`
+    : `<a href="#">FR</a><span>|</span><a href="#" class="active">EN</a>`;
+
+  const blogHref = `${nav0}${fr ? 'blog' : 'blog'}.html`;
+  const orderHref = `${nav0}${fr ? 'commandez' : 'order'}.html`;
+  const specsHref = `${nav0}${fr ? 'caracteristiques' : 'technical-specs'}.html`;
+
+  const breadcrumb = fr
+    ? `<li><a href="${nav0}index.html">Accueil</a></li><li><span>›</span></li>
+       <li><a href="${blogHref}">Blog</a></li><li><span>›</span></li>
+       <li><span aria-current="page">${a.title}</span></li>`
+    : `<li><a href="${nav0}index.html">Home</a></li><li><span>›</span></li>
+       <li><a href="${blogHref}">Blog</a></li><li><span>›</span></li>
+       <li><span aria-current="page">${a.title}</span></li>`;
+
+  const sidebarA = fr
+    ? `<p style="font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:14px;">Q-BOT automatise la double authentification (2FA) pour vos suites de tests. Aucune installation sur le système testé.</p>
+       <a href="${specsHref}" class="btn btn--outline" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Découvrir Q-BOT</a>`
+    : `<p style="font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:14px;">Q-BOT automates two-factor authentication (2FA) in your test suites. No installation required on the tested system.</p>
+       <a href="${specsHref}" class="btn btn--outline" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Discover Q-BOT</a>`;
+
+  const sidebarB = fr
+    ? `<div style="font-size:1.625rem;font-weight:800;color:#00CBBE;margin-bottom:6px;">900€<span style="font-size:.875rem;font-weight:400;color:rgba(255,255,255,.4);">/mois TTC</span></div>
+       <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Abonnement mensuel tout inclus.</p>
+       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Commander</a>`
+    : `<div style="font-size:1.625rem;font-weight:800;color:#00CBBE;margin-bottom:6px;">€900<span style="font-size:.875rem;font-weight:400;color:rgba(255,255,255,.4);">/month</span></div>
+       <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">All-inclusive monthly subscription.</p>
+       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Order now</a>`;
+
+  const footerCols = fr
+    ? `<div class="footer__col"><h4>Ressources</h4><ul role="list"><li><a href="#">Conditions de vente</a></li><li><a href="#">Confidentialité</a></li></ul></div>
+       <div class="footer__col"><h4>Q-BOT</h4><ul role="list">
+         <li><a href="${nav0}index.html">Accueil</a></li>
+         <li><a href="${nav0}caracteristiques.html">Caractéristiques</a></li>
+         <li><a href="${nav0}a-propos.html">À propos</a></li>
+         <li><a href="${blogHref}">Blog</a></li>
+         <li><a href="${orderHref}">Commandez</a></li>
+         <li><a href="${nav0}faq.html">FAQ</a></li>
+         <li><a href="${nav0}contact.html">Contact</a></li>
+       </ul></div>`
+    : `<div class="footer__col"><h4>Resources</h4><ul role="list"><li><a href="#">Terms of Sale</a></li><li><a href="#">Privacy</a></li></ul></div>
+       <div class="footer__col"><h4>Q-BOT</h4><ul role="list">
+         <li><a href="${nav0}index.html">Home</a></li>
+         <li><a href="${nav0}technical-specs.html">Technical Specs</a></li>
+         <li><a href="${nav0}about.html">About</a></li>
+         <li><a href="${blogHref}">Blog</a></li>
+         <li><a href="${orderHref}">Order</a></li>
+         <li><a href="${nav0}faq.html">FAQ</a></li>
+         <li><a href="${nav0}contact.html">Contact</a></li>
+       </ul></div>`;
+
+  const ctaBtn = fr
+    ? `<a href="${nav0}contact.html" class="btn btn--primary">Demander une démo →</a>`
+    : `<a href="${nav0}contact.html" class="btn btn--primary">Request a demo →</a>`;
+
+  const relatedTitle = fr ? 'Articles liés' : 'Related articles';
+  const relatedCard  = fr
+    ? `<div class="blog-card"><div class="blog-card__banner" style="background:linear-gradient(135deg,#00CBBE,#00A79C);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">📝</div><div class="blog-card__content"><span class="blog-card__tag">${a.cat||'Blog'}</span><h3 class="blog-card__title"><a href="${blogHref}">Voir tous les articles du blog</a></h3><p class="blog-card__excerpt">Retrouvez tous nos guides et conseils sur le test logiciel et l'automatisation QA.</p><a href="${blogHref}" class="blog-card__read-more">Voir le blog <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>`
+    : `<div class="blog-card"><div class="blog-card__banner" style="background:linear-gradient(135deg,#00CBBE,#00A79C);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">📝</div><div class="blog-card__content"><span class="blog-card__tag">${a.cat||'Blog'}</span><h3 class="blog-card__title"><a href="${blogHref}">View all blog articles</a></h3><p class="blog-card__excerpt">Browse all our guides and insights on software testing and QA automation.</p><a href="${blogHref}" class="blog-card__read-more">View the blog <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>`;
+
+  const html = `<!DOCTYPE html>
+<html lang="${a.lang}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${a.title} | Q-BOT by Q-Leap</title>
+  <meta name="description" content="${(a.excerpt||'').slice(0,158)}">
+  <meta name="robots" content="index,follow">
+  <link rel="icon" href="${base}img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="${base}css/style.css">
+</head>
+<body>
+
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner">
+      <a href="${nav0}index.html" class="nav__logo"><img src="${base}img/logo.png" alt="Q-BOT by Q-Leap" width="120" height="40"></a>
+      <button class="nav__toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
+      <ul class="nav__menu" id="nav-menu" role="list">${navLinks}</ul>
+      <div class="nav__actions">
+        <div class="nav__lang">${langSw}</div>
+        <a href="${nav0}contact.html" class="btn btn--primary">${fr ? 'Demo gratuite' : 'Free Demo'}</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <span class="section-label">${a.cat || 'Blog'}</span>
+    <h1>${a.title}</h1>
+    <p>${a.excerpt||''}</p>
+  </div>
+</section>
+
+<div class="breadcrumb"><div class="container">
+  <ol class="breadcrumb__list">${breadcrumb}</ol>
+</div></div>
+
+<section class="section">
+  <div class="container">
+    <div class="article-layout">
+      <div>
+        <div class="article-header">
+          <div class="article-meta">
+            <span>📅 ${fmtDate(a.date, a.lang)}</span>
+            <span>⏱ ${a.rt}</span>
+            <span>✍️ ${a.author}</span>
+          </div>
+        </div>
+        <div class="article-body">
+          ${a.content}
+          <div class="article-cta" style="margin-top:48px;padding:32px;background:linear-gradient(135deg,rgba(8,184,178,.08),transparent);border:1px solid rgba(8,184,178,.18);border-radius:12px;text-align:center;">
+            ${ctaBtn}
+          </div>
+        </div>
+      </div>
+      <aside class="article-sidebar">
+        <div class="sidebar-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:22px;margin-bottom:18px;">
+          <h4 style="font-size:.875rem;font-weight:600;margin-bottom:10px;color:#fff;">${fr ? 'À propos de Q-BOT' : 'About Q-BOT'}</h4>
+          ${sidebarA}
+        </div>
+        <div class="sidebar-card" style="background:linear-gradient(135deg,rgba(8,184,178,.07),rgba(6,149,145,.03));border:1px solid rgba(8,184,178,.18);border-radius:12px;padding:22px;">
+          <h4 style="font-size:.875rem;font-weight:600;margin-bottom:10px;color:#fff;">${fr ? 'Commander Q-BOT' : 'Order Q-BOT'}</h4>
+          ${sidebarB}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section section--gray">
+  <div class="container">
+    <h2 class="section-title" style="margin-bottom:28px;">${relatedTitle}</h2>
+    <div class="blog__grid">${relatedCard}</div>
+  </div>
+</section>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo"><img src="${base}img/logo.png" alt="Q-BOT by Q-Leap" width="110" height="36"></div>
+        <p class="footer__desc">${fr ? "Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap." : "The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap."}</p>
+      </div>
+      ${footerCols}
+      <div class="footer__col"><h4>Contact</h4><ul role="list">
+        <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+        <li><a href="tel:+35220211">+352 20 21 17</a></li>
+        <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+      </ul><p style="margin-top:14px;font-size:.8125rem;line-height:1.5;">10B rue des Mérovingiens<br>L-8070 Bertrange, Luxembourg</p></div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2025 Q-BOT powered by Q-Leap</p>
+      <div class="footer__social">
+        <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a href="https://www.facebook.com/qleap.lu" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="${base}js/main.js" defer><\/script>
+</body>
+</html>`;
+  return html;
+}
+
+function exportHTML(id) {
+  load();
+  const a = id ? articles.find(x => x.id === id) : collect();
+  if (!a) { toast('Aucun article à exporter', 'err'); return; }
+  if (!a.title) { toast('Le titre est requis pour exporter', 'err'); return; }
+
+  const html = generateArticleHTML(a);
+  const slug  = a.slug || slugify(a.title);
+  const path  = (a.lang === 'fr' ? 'blog/' : 'en/blog/') + slug + '.html';
+
+  writeToFolder(slug, a.lang, html).then(saved => {
+    if (saved) {
+      toast('✓ Sauvegardé → ' + path, 'ok');
+    } else {
+      const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const lnk = document.createElement('a');
+      lnk.href = url; lnk.download = slug + '.html'; lnk.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast('"' + slug + '.html" téléchargé ✓', 'info');
+    }
+  });
+}
+
+$('btn-export').onclick = () => exportHTML(null);
+
+// ── Thumbnail helpers ────────────────────────────────────
+function updateThumbPreview() {
+  const v = ($('f-thumb') || {value:''}).value.trim();
+  const c = ($('f-thumb-color') || {value:''}).value.trim();
+  const el = $('thumb-prev-sm');
+  if (!el) return;
+  if (v && (v.startsWith('http') || v.startsWith('data:'))) {
+    el.innerHTML = '<img src="' + v + '" alt="" style="width:100%;height:100%;object-fit:cover;">';
+    el.style.background = '#111';
+  } else {
+    el.innerHTML = v || '📝';
+    el.style.background = c || 'linear-gradient(135deg,#00CBBE,#00A79C)';
+  }
+}
+
+function handleThumbFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = e => { $('f-thumb').value = e.target.result; updateThumbPreview(); };
+  r.readAsDataURL(file);
+}
+
+// ── Media dialog helpers ─────────────────────────────────
+let _savedSel = null;
+
+function openMD(id) {
+  const sel = window.getSelection();
+  _savedSel = sel && sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+  show(id);
+}
+
+function closeMD(id) { hide(id); }
+
+function _restoreSel() {
+  if (!_savedSel) { ced.focus(); return; }
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(_savedSel);
+}
+
+function _insertAtCursor(html) {
+  _restoreSel();
+  ced.focus();
+  document.execCommand('insertHTML', false, html);
+  updatePreview(); updateWC();
+}
+
+function insertImg() {
+  const url  = $('md-img-url').value.trim();
+  const file = $('md-img-file').files[0];
+  const alt  = $('md-img-alt').value.trim();
+  const cap  = $('md-img-cap').value.trim();
+
+  function doInsert(src) {
+    const capH = cap
+      ? '<figcaption style="text-align:center;color:rgba(255,255,255,.5);font-size:.85rem;margin-top:6px;">' + cap + '</figcaption>'
+      : '';
+    _insertAtCursor('<figure style="margin:24px 0;"><img src="' + src + '" alt="' + alt + '" style="max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;">' + capH + '</figure><p><br></p>');
+    closeMD('md-img');
+    $('md-img-url').value = $('md-img-alt').value = $('md-img-cap').value = '';
+    $('md-img-file').value = '';
+  }
+
+  if (file) {
+    const r = new FileReader();
+    r.onload = e => doInsert(e.target.result);
+    r.readAsDataURL(file);
+  } else if (url) {
+    doInsert(url);
+  } else {
+    toast('Ajoutez une URL ou sélectionnez un fichier image', 'err');
+  }
+}
+
+function insertVideo() {
+  const url   = $('md-vid-url').value.trim();
+  const title = $('md-vid-title').value.trim() || 'Vidéo';
+  if (!url) { toast('URL requise', 'err'); return; }
+
+  let embed = url;
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (yt) embed = 'https://www.youtube.com/embed/' + yt[1];
+  const vi = url.match(/vimeo\.com\/(\d+)/);
+  if (vi) embed = 'https://player.vimeo.com/video/' + vi[1];
+
+  _insertAtCursor(
+    '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin:24px 0;">' +
+    '<iframe src="' + embed + '" title="' + title + '" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen ' +
+    'style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:10px;"></iframe></div><p><br></p>'
+  );
+  closeMD('md-video');
+  $('md-vid-url').value = $('md-vid-title').value = '';
+}
+
+function insertCarousel() {
+  const urls = $('md-car-urls').value.split('\n').map(u => u.trim()).filter(Boolean);
+  if (!urls.length) { toast('Ajoutez au moins une URL d\'image', 'err'); return; }
+  const cap = $('md-car-cap').value.trim();
+  const cid = 'car' + Math.random().toString(36).slice(2, 8);
+
+  const slides = urls.map((u, i) =>
+    '<div class="cs-slide" style="display:' + (i === 0 ? 'block' : 'none') + ';">' +
+    '<img src="' + u + '" alt="Image ' + (i + 1) + '" style="max-width:100%;height:auto;max-height:400px;object-fit:cover;display:block;margin:0 auto;border-radius:8px;"></div>'
+  ).join('');
+
+  const capH = cap
+    ? '<p style="text-align:center;color:rgba(255,255,255,.5);font-size:.85rem;margin-top:8px;">' + cap + '</p>'
+    : '';
+
+  _insertAtCursor(
+    '<div id="' + cid + '" style="margin:24px 0;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;background:rgba(255,255,255,.02);">' +
+    '<div>' + slides + '</div>' +
+    '<div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;">' +
+    '<button onclick="carPrev(\'' + cid + '\')" style="background:rgba(255,255,255,.12);border:none;color:#fff;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:1.1rem;">‹</button>' +
+    '<span id="' + cid + '-c" style="font-size:.8rem;color:rgba(255,255,255,.4);">1 / ' + urls.length + '</span>' +
+    '<button onclick="carNext(\'' + cid + '\')" style="background:rgba(255,255,255,.12);border:none;color:#fff;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:1.1rem;">›</button>' +
+    '</div>' + capH + '</div><p><br></p>'
+  );
+  closeMD('md-carousel');
+  $('md-car-urls').value = $('md-car-cap').value = '';
+}
+
+function carPrev(id) {
+  const box = document.getElementById(id); if (!box) return;
+  const slides = box.querySelectorAll('.cs-slide');
+  let cur = [...slides].findIndex(s => s.style.display !== 'none');
+  slides[cur].style.display = 'none';
+  cur = (cur - 1 + slides.length) % slides.length;
+  slides[cur].style.display = 'block';
+  const ctr = document.getElementById(id + '-c');
+  if (ctr) ctr.textContent = (cur + 1) + ' / ' + slides.length;
+}
+
+function carNext(id) {
+  const box = document.getElementById(id); if (!box) return;
+  const slides = box.querySelectorAll('.cs-slide');
+  let cur = [...slides].findIndex(s => s.style.display !== 'none');
+  slides[cur].style.display = 'none';
+  cur = (cur + 1) % slides.length;
+  slides[cur].style.display = 'block';
+  const ctr = document.getElementById(id + '-c');
+  if (ctr) ctr.textContent = (cur + 1) + ' / ' + slides.length;
+}
+
+// ── Seed existing articles ───────────────────────────────
+function seedArticles() {
+  if (localStorage.getItem('qbot_seeded_v1')) return;
+  try {
+    const el = document.getElementById('qbot-seed');
+    if (!el) return;
+    const seeds = JSON.parse(el.textContent);
+    const existing = JSON.parse(localStorage.getItem(SK) || '[]');
+    const existIds = new Set(existing.map(a => a.id));
+    const toAdd = seeds
+      .filter(s => !existIds.has(s.id))
+      .map(s => ({ ...s, createdAt: new Date(s.date + 'T12:00:00').getTime(), updatedAt: Date.now() }));
+    if (toAdd.length) {
+      localStorage.setItem(SK, JSON.stringify([...toAdd, ...existing]));
+    }
+    localStorage.setItem('qbot_seeded_v1', '1');
+  } catch (e) { console.warn('Seed error:', e); }
+}
+
+// ── INIT ────────────────────────────────────────────────
+seedArticles();
+updateFsDot(!!localStorage.getItem('qbot_folder_name'));
+if (isAuth()) { hide('view-login'); show('view-app'); loadDash(); }
+</script>
+
+<script type="application/json" id="qbot-seed">
+[
+  {
+    "id": "seed-fr-1",
+    "lang": "fr",
+    "title": "L'automatisation 2FA : le défi caché des équipes QA",
+    "slug": "automatiser-2fa-tests",
+    "cat": "Automatisation",
+    "author": "Équipe Q-Leap",
+    "date": "2025-01-15",
+    "rt": "7 min de lecture",
+    "excerpt": "La double authentification protège vos utilisateurs — mais elle bloque vos testeurs. Voici pourquoi, et comment y remédier.",
+    "thumbnail": "🔐",
+    "thumbColor": "linear-gradient(135deg,#00CBBE 0%,#00A79C 100%)",
+    "status": "published",
+    "content": "\n\n          <p>\n            Il y a quelques années, intégrer la double authentification (2FA) dans une application web était encore perçu comme une mesure de sécurité optionnelle, réservée aux systèmes bancaires ou gouvernementaux. En 2025, c'est devenu un standard incontournable. Les réglementations comme NIS2 en Europe, les exigences des assureurs cyber et la pression croissante des équipes sécurité ont généralisé la 2FA dans presque tous les secteurs.\n          </p>\n\n          <p>\n            Mais cette adoption massive a créé un paradoxe profond pour les équipes QA : <strong>la 2FA protège les utilisateurs finaux, mais elle bloque systématiquement les testeurs automatisés</strong>. Les suites de tests qui fonctionnaient parfaitement avant l'activation de la 2FA se retrouvent soudainement en échec au niveau du formulaire de connexion. Un obstacle discret, souvent sous-estimé lors de l'implémentation — et qui coûte cher quand il est découvert en production.\n          </p>\n\n          <h2>Pourquoi la 2FA pose problème aux testeurs ?</h2>\n\n          <p>\n            Pour comprendre le problème, il faut d'abord rappeler comment fonctionne la double authentification. Après avoir saisi son identifiant et son mot de passe, l'utilisateur doit prouver sa possession d'un second facteur : un code OTP (One-Time Password) généré par une application mobile, envoyé par SMS, ou produit par un dispositif physique. Ce second facteur est, par définition, <strong>éphémère et personnel</strong> — il change toutes les 30 secondes et ne peut être consulté que par la personne qui détient le device.\n          </p>\n\n          <p>\n            Les outils d'automatisation de tests comme <strong>Selenium</strong>, <strong>Cypress</strong> ou <strong>Playwright</strong> opèrent exclusivement au niveau de la couche navigateur. Ils peuvent remplir des formulaires, cliquer sur des boutons, intercepter des requêtes réseau — mais ils sont structurellement incapables d'interagir avec le monde physique. Or, c'est précisément là que la 2FA se joue :\n          </p>\n\n          <ul>\n            <li>\n              <strong>LuxTrust (Luxembourg) :</strong> dispositif physique sous forme de token USB, de carte à puce ou de clé OTP. L'utilisateur appuie sur un bouton pour générer un code à usage unique. Aucun script Selenium ne peut physiquement presser ce bouton.\n            </li>\n            <li>\n              <strong>Google Authenticator / Authy :</strong> applications mobiles TOTP. Le code est généré localement sur le smartphone de l'utilisateur. Le robot de test ne possède pas ce smartphone.\n            </li>\n            <li>\n              <strong>Microsoft Authenticator :</strong> notification push sur l'appareil de l'utilisateur. Le script de test ne reçoit pas la notification et ne peut pas l'approuver.\n            </li>\n            <li>\n              <strong>SMS / email OTP :</strong> le code est envoyé à un numéro de téléphone ou une adresse e-mail — accessibles à un humain, mais pas directement à un pipeline CI/CD.\n            </li>\n          </ul>\n\n          <p>\n            En résumé, la 2FA crée une barrière entre la couche logicielle (là où vivent les outils de test) et la couche physique ou hors-bande (là où se trouve le second facteur). Ce fossé est intentionnel du point de vue de la sécurité — mais il est dévastateur pour l'automatisation.\n          </p>\n\n          <h2>Les solutions de contournement et leurs limites</h2>\n\n          <p>\n            Face à ce blocage, les équipes QA ont développé plusieurs stratégies de contournement. Chacune présente des inconvénients sérieux qui limitent leur efficacité à long terme.\n          </p>\n\n          <p>\n            <strong>(a) Désactiver la 2FA dans les environnements de test.</strong> C'est la solution la plus répandue et la plus rapide à mettre en place. L'environnement de staging ou de recette est simplement configuré sans 2FA. Les tests tournent sans friction. Le problème ? On ne teste pas le vrai flux d'authentification. Si une régression apparaît dans le code de vérification du second facteur, elle n'est découverte qu'en production. Par ailleurs, cela introduit un risque de sécurité : si des données sensibles sont présentes dans l'environnement de test, l'absence de 2FA les expose.\n          </p>\n\n          <p>\n            <strong>(b) Utiliser des secrets TOTP codés en dur.</strong> Pour les applications qui utilisent des OTP logiciels (Google Authenticator, Microsoft Authenticator), il est techniquement possible de récupérer la graine TOTP (le secret partagé) lors de la configuration et de la stocker dans le pipeline CI/CD. La bibliothèque génère alors le code OTP valide au moment du test. Cette approche fonctionne pour les authentificateurs logiciels TOTP — mais elle est inapplicable aux dispositifs physiques comme LuxTrust, et elle crée un risque de sécurité majeur si le secret TOTP est compromis dans le dépôt de code.\n          </p>\n\n          <p>\n            <strong>(c) L'intervention humaine manuelle.</strong> Un opérateur humain surveille le pipeline et intervient manuellement à l'étape de la 2FA pour saisir le code. C'est exact à 100% — et scalable à 0%. Dès que les tests s'exécutent la nuit, en parallèle, ou plusieurs fois par heure dans un pipeline DevOps actif, cette approche devient une impasse opérationnelle.\n          </p>\n\n          <p>\n            <strong>(d) Mocker ou stuber la couche 2FA.</strong> Les ingénieurs interceptent les appels API de vérification du second facteur et retournent toujours une réponse de succès. Le test passe, mais il ne teste plus le vrai chemin d'authentification. La confiance dans la suite de tests diminue. Les bugs dans l'implémentation réelle de la 2FA ne sont pas détectés.\n          </p>\n\n          <div class=\"highlight-box\">\n            <p>\n              Chacune de ces approches représente un compromis : soit on sacrifie la sécurité, soit on sacrifie la couverture de test, soit on sacrifie la scalabilité. Dans un contexte où les exigences réglementaires et les standards de qualité se renforcent simultanément, aucune n'est acceptable à long terme.\n            </p>\n          </div>\n\n          <h2>L'approche Q-BOT : automatiser le geste humain</h2>\n\n          <p>\n            Q-BOT adopte une approche radicalement différente : au lieu d'essayer de contourner la 2FA, il la traverse — exactement comme le ferait un humain. Le principe est simple : <strong>Q-BOT est un robot physique qui interagit avec les dispositifs d'authentification comme un vrai utilisateur</strong>.\n          </p>\n\n          <p>\n            Concrètement, Q-BOT est connecté au dispositif 2FA cible (token LuxTrust, authenticator physique, etc.). Lorsque le scénario de test atteint l'étape d'authentification :\n          </p>\n\n          <ol>\n            <li>Q-BOT reçoit le signal via son API REST que le second facteur est requis.</li>\n            <li>Il <strong>appuie physiquement sur le bouton</strong> du token pour déclencher la génération du code OTP.</li>\n            <li>Il <strong>lit le code affiché</strong> grâce à la vision par ordinateur (OCR embarqué), sans manipulation du système cible.</li>\n            <li>Il <strong>retourne le code via l'API</strong> au script de test, qui l'injecte dans le formulaire comme un humain le ferait.</li>\n          </ol>\n\n          <p>\n            Cette architecture présente plusieurs avantages clés par rapport aux workarounds traditionnels :\n          </p>\n\n          <ul>\n            <li><strong>Aucune installation sur le système testé :</strong> Q-BOT n'a pas besoin d'agent, de plugin ou de modification de l'application cible. Il opère de l'extérieur, exactement comme un testeur humain.</li>\n            <li><strong>Compatible avec tous les frameworks :</strong> Selenium, Cypress, Playwright, Appium, Robot Framework — si votre outil peut appeler une API REST, Q-BOT s'y intègre.</li>\n            <li><strong>Aucun OTP n'est jamais stocké :</strong> le code est généré, lu et transmis en temps réel. Pas de secret dans le dépôt, pas de données sensibles en cache.</li>\n            <li><strong>Scalable :</strong> plusieurs instances Q-BOT peuvent être configurées pour couvrir plusieurs dispositifs en parallèle.</li>\n          </ul>\n\n          <p>\n            Pour les entreprises luxembourgeoises qui utilisent LuxTrust — l'infrastructure d'identité nationale —, Q-BOT est à ce jour la <strong>seule solution sur le marché capable d'automatiser l'authentification LuxTrust</strong> dans un pipeline de tests.\n          </p>\n\n          <h2>Quels cas de test devient-il possible d'automatiser ?</h2>\n\n          <p>\n            Une fois la barrière de la 2FA levée, un large spectre de scénarios — jusqu'ici réservés aux tests manuels — devient entièrement automatisable :\n          </p>\n\n          <ul>\n            <li>\n              <strong>Login 2FA :</strong> tester l'ensemble du flux de connexion, y compris les cas d'erreur (code expiré, code incorrect, trop de tentatives), la gestion des sessions et les redirections post-authentification.\n            </li>\n            <li>\n              <strong>Signature de documents :</strong> les workflows de signature électronique qui requièrent une validation 2FA à chaque signature peuvent désormais être testés end-to-end sans intervention humaine.\n            </li>\n            <li>\n              <strong>Validation de transactions :</strong> dans les applications fintech ou bancaires, chaque transaction sensible peut déclencher une demande de second facteur. Q-BOT permet de tester ces flux de validation en boucle.\n            </li>\n            <li>\n              <strong>Demandes officielles et démarches administratives :</strong> les portails gouvernementaux ou sectoriels qui utilisent LuxTrust pour authentifier les demandeurs peuvent être testés de bout en bout, y compris la soumission de formulaires protégés.\n            </li>\n            <li>\n              <strong>Escalations sécurisées :</strong> certains parcours applicatifs déclenchent une re-authentification renforcée pour des actions critiques. Ces scénarios, souvent omis des suites de tests automatisées, peuvent désormais être couverts.\n            </li>\n          </ul>\n\n          <p>\n            Pour les équipes QA actives au Luxembourg, l'enjeu LuxTrust est particulièrement stratégique. Des secteurs entiers — banque, assurance, administration, santé — reposent sur cette infrastructure d'identité. La capacité à automatiser les tests sur des applications LuxTrust représente un gain de temps et de couverture considérable pour ces organisations.\n          </p>\n\n          <h2>Conclusion</h2>\n\n          <p>\n            La 2FA ne va pas disparaître. Au contraire : les régulations européennes, les standards de sécurité sectoriels et les attentes des utilisateurs vont continuer à pousser son adoption vers le haut. Dans ce contexte, les équipes QA qui choisissent de contourner la 2FA dans leurs tests s'exposent à des angles morts grandissants dans leur couverture.\n          </p>\n\n          <p>\n            Investir dès maintenant dans l'automatisation de la 2FA, c'est anticiper une réalité inévitable — et prendre une longueur d'avance significative en termes de qualité logicielle. Les équipes qui maîtrisent ce défi testent plus vite, avec une couverture plus large et une confiance plus élevée dans leurs releases.\n          </p>\n\n          <p>\n            <strong>Q-BOT</strong> est la réponse concrète à ce défi : plug & play, compatible avec votre stack existant, et conçu pour les environnements les plus exigeants du marché européen — dont le Luxembourg avec LuxTrust.\n          </p>\n\n          "
+  },
+  {
+    "id": "seed-fr-2",
+    "lang": "fr",
+    "title": "Selenium & double authentification : guide pratique",
+    "slug": "selenium-double-authentification",
+    "cat": "Tutoriel",
+    "author": "Équipe Q-Leap",
+    "date": "2025-02-10",
+    "rt": "8 min de lecture",
+    "excerpt": "Les techniques concrètes pour tester des applications protégées par 2FA — et leurs limites réelles.",
+    "thumbnail": "🧪",
+    "thumbColor": "linear-gradient(135deg,#141414 0%,#1F1F1F 100%)",
+    "status": "published",
+    "content": "\n\n          <p>\n            Selenium est sans conteste le framework d'automatisation de tests le plus utilisé dans le monde.\n            Mais il existe un talon d'Achille que chaque équipe QA finit par rencontrer&nbsp;:\n            la <strong>double authentification (2FA)</strong>. Dès qu'un parcours utilisateur exige un OTP,\n            un code SMS ou un jeton physique, le script Selenium se retrouve bloqué — et le testeur, démuni.\n          </p>\n          <p>\n            Ce guide présente les techniques les plus courantes pour aborder ce problème, avec des exemples\n            de code concrets, une analyse honnête de leurs limites, et une solution pour les cas où les\n            méthodes logicielles ne suffisent pas.\n          </p>\n\n          <h2 id=\"pourquoi-selenium-ne-gere-pas-la-2fa\">Pourquoi Selenium ne peut pas gérer la 2FA nativement</h2>\n          <p>\n            Le WebDriver Selenium contrôle uniquement le navigateur&nbsp;: il peut cliquer, saisir du texte,\n            naviguer entre les pages et inspecter le DOM. En revanche, il n'a aucune visibilité sur ce\n            qui se passe en dehors du navigateur. Or, la plupart des mécanismes 2FA reposent précisément\n            sur un canal externe au navigateur.\n          </p>\n          <p>\n            Les <strong>jetons physiques</strong> comme <em>LuxTrust</em> ou <em>RSA SecurID</em> sont\n            entièrement hors de portée&nbsp;: ils génèrent un code sur un dispositif matériel qu'aucun\n            WebDriver ne peut lire ou actionner. Même pour les authentificateurs logiciels de type TOTP\n            (Google Authenticator, Microsoft Authenticator…), Selenium ne peut pas accéder à l'application\n            mobile ou à l'extension de navigateur qui génère le code — il lui manque la clé secrète partagée\n            (seed TOTP) et le mécanisme pour la lire.\n          </p>\n          <p>\n            En résumé&nbsp;: Selenium voit le champ de saisie du code 2FA, mais il est incapable de\n            produire ce code par lui-même. C'est à l'équipe de test de lui fournir le code par un moyen\n            externe. Voici les trois approches les plus répandues.\n          </p>\n\n          <h2 id=\"technique-1-totp-pyotp\">Technique 1 — TOTP logiciel avec pyotp / speakeasy</h2>\n          <p>\n            Si votre application utilise un authentificateur logiciel standard TOTP (RFC&nbsp;6238), il\n            est possible de générer le code OTP directement dans le script de test, à condition de\n            connaître la <strong>clé secrète partagée</strong> (seed). Cette clé est habituellement\n            affichée lors de l'enrôlement sous forme de QR code ou de chaîne Base32.\n          </p>\n          <p>\n            En Python, la bibliothèque <code>pyotp</code> permet de faire cela en quelques lignes&nbsp;:\n          </p>\n          <pre><code>import pyotp\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\n\n# La clé secrète TOTP de votre compte de test (Base32)\nTOTP_SECRET = \"JBSWY3DPEHPK3PXP\"\n\ndriver = webdriver.Chrome()\ndriver.get(\"https://your-app.example.com/login\")\n\n# Renseigner identifiants\ndriver.find_element(By.ID, \"username\").send_keys(\"testuser@example.com\")\ndriver.find_element(By.ID, \"password\").send_keys(\"SecretPassword123\")\ndriver.find_element(By.ID, \"btn-login\").click()\n\n# Générer le code TOTP et l'injecter dans le champ 2FA\ntotp = pyotp.TOTP(TOTP_SECRET)\notp_code = totp.now()\n\ndriver.find_element(By.ID, \"otp-input\").send_keys(otp_code)\ndriver.find_element(By.ID, \"btn-verify\").click()\n</code></pre>\n          <p>\n            En JavaScript/Node.js, l'équivalent est la bibliothèque <code>speakeasy</code>&nbsp;:\n          </p>\n          <pre><code>const speakeasy = require('speakeasy');\n\nconst token = speakeasy.totp({\n  secret: 'JBSWY3DPEHPK3PXP',\n  encoding: 'base32'\n});\n\n// Injecter token dans le champ Selenium (via WebDriverIO, etc.)\nawait $('#otp-input').setValue(token);\n</code></pre>\n          <p>\n            <strong>Limites importantes.</strong> Cette technique ne fonctionne que pour les\n            authentificateurs <em>logiciels</em> de type TOTP. Elle est totalement inutile face aux\n            dispositifs physiques (LuxTrust, YubiKey, RSA SecurID) ou aux codes envoyés par SMS. De plus,\n            exposer la clé secrète TOTP dans le code de test constitue un risque de sécurité&nbsp;: elle\n            doit être stockée dans un secret manager (HashiCorp Vault, AWS Secrets Manager, GitLab\n            CI/CD Variables, etc.), jamais en dur dans le dépôt.\n          </p>\n\n          <h2 id=\"technique-2-desactiver-2fa\">Technique 2 — Désactiver la 2FA en environnement de test</h2>\n          <p>\n            L'approche la plus répandue dans les équipes QA est tout simplement de\n            <strong>désactiver la 2FA sur l'environnement de test</strong>. On configure l'application\n            pour ignorer l'étape de double authentification lorsqu'elle détecte un paramètre d'environnement\n            particulier (<code>APP_ENV=test</code>, un header HTTP spécifique, ou un compte utilisateur\n            dédié sans 2FA).\n          </p>\n          <p><strong>Avantages&nbsp;:</strong></p>\n          <ul>\n            <li>Simple à mettre en place — aucune dépendance externe.</li>\n            <li>Compatible avec tous les frameworks de test.</li>\n            <li>N'ajoute aucune latence aux tests.</li>\n          </ul>\n          <p><strong>Inconvénients majeurs&nbsp;:</strong></p>\n          <ul>\n            <li>\n              <strong>Le flux réel n'est pas testé.</strong> Si un bug survient précisément dans l'étape\n              2FA (timeout, mauvais message d'erreur, redirection incorrecte après validation), vos tests\n              ne le détecteront jamais.\n            </li>\n            <li>\n              <strong>Risque de sécurité.</strong> La logique de désactivation peut rester active si\n              l'environnement est mal configuré. Elle peut aussi introduire une surface d'attaque\n              supplémentaire si elle est découverte.\n            </li>\n            <li>\n              <strong>Divergence production / test.</strong> Plus la configuration de l'environnement de\n              test s'éloigne de la production, plus vos tests perdent leur valeur prédictive.\n            </li>\n          </ul>\n          <p>\n            Cette approche est acceptable pour les tests fonctionnels du reste de l'application, mais\n            elle ne peut en aucun cas remplacer un vrai test du parcours d'authentification.\n          </p>\n\n          <h2 id=\"technique-3-q-bot-api\">Technique 3 — Utiliser Q-BOT comme service d'authentification externe</h2>\n          <p>\n            Pour les dispositifs physiques — et plus généralement pour tout scénario où l'OTP ne peut\n            pas être généré en logiciel — la seule solution viable est d'interagir avec le vrai dispositif.\n            C'est exactement ce que fait <strong>Q-BOT</strong>&nbsp;: un robot physique connecté au réseau\n            qui interagit avec n'importe quel dispositif 2FA (LuxTrust, smartphone, token matériel) et\n            expose les codes via une <strong>API HTTP</strong>.\n          </p>\n          <p>\n            Votre script Selenium appelle simplement l'API Q-BOT pour obtenir le code OTP en temps réel,\n            puis l'injecte dans le champ 2FA&nbsp;:\n          </p>\n          <pre><code>import requests\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\n\nQBOT_API_URL = \"https://your-qbot-instance/api/v1/otp\"\nQBOT_API_KEY = \"YOUR_API_KEY\"\n\ndriver = webdriver.Chrome()\ndriver.get(\"https://your-app.example.com/login\")\n\n# Étape 1 — Saisie des identifiants\ndriver.find_element(By.ID, \"username\").send_keys(\"testuser@example.com\")\ndriver.find_element(By.ID, \"password\").send_keys(\"SecretPassword123\")\ndriver.find_element(By.ID, \"btn-login\").click()\n\n# Étape 2 — Demander le code OTP à Q-BOT\n# Q-BOT appuie physiquement sur le dispositif LuxTrust, lit le code et le renvoie\nresponse = requests.get(\n    QBOT_API_URL,\n    headers={\"Authorization\": f\"Bearer {QBOT_API_KEY}\"},\n    params={\"device\": \"luxtrust-01\"},\n    timeout=30\n)\notp_code = response.json()[\"otp\"]\n\n# Étape 3 — Injecter le code dans le champ 2FA et valider\ndriver.find_element(By.ID, \"otp-input\").send_keys(otp_code)\ndriver.find_element(By.ID, \"btn-verify\").click()\n</code></pre>\n          <p>\n            L'ensemble du flux — depuis le déclenchement physique du dispositif jusqu'à la récupération\n            du code — se déroule en quelques secondes. Q-BOT est compatible avec <strong>LuxTrust</strong>,\n            les smartphones (Android et iOS), les clés OTP matérielles, et tout autre dispositif\n            nécessitant une interaction physique. Aucune modification de l'application testée n'est\n            nécessaire&nbsp;: Q-BOT reproduit exactement ce que ferait un utilisateur humain.\n          </p>\n\n          <h2 id=\"integration-ci-cd\">Intégration avec votre pipeline CI/CD</h2>\n          <p>\n            L'un des atouts majeurs de l'approche Q-BOT est sa parfaite compatibilité avec les pipelines\n            d'intégration continue. Puisque Q-BOT expose une API HTTP standard, il suffit que le runner\n            CI/CD ait accès au réseau où se trouve le robot physique.\n          </p>\n          <ul>\n            <li>\n              <strong>Jenkins&nbsp;:</strong> ajoutez un appel HTTP dans votre stage de test via\n              <code>httpRequest</code> ou un simple script Python/curl dans le pipeline.\n            </li>\n            <li>\n              <strong>GitLab CI&nbsp;:</strong> stockez <code>QBOT_API_KEY</code> dans les\n              CI/CD Variables et appelez l'API depuis votre script de test — aucun plugin dédié requis.\n            </li>\n            <li>\n              <strong>GitHub Actions&nbsp;:</strong> ajoutez le secret dans les GitHub Secrets et\n              utilisez-le directement dans le step de test.\n            </li>\n          </ul>\n          <p>\n            Le robot Q-BOT n'a besoin que d'une connexion réseau (Ethernet ou Wi-Fi) et d'un accès\n            physique aux dispositifs 2FA. Il peut être installé dans la salle serveur, le bureau QA,\n            ou tout autre emplacement adapté. Aucune infrastructure supplémentaire n'est requise&nbsp;:\n            pas de proxy, pas de VPN spécifique, pas de plugin CI.\n          </p>\n\n          <h2 id=\"compatibilite-frameworks\">Compatibilité avec d'autres frameworks</h2>\n          <p>\n            L'approche API de Q-BOT est par nature <strong>agnostique au framework</strong>. Quelle que\n            soit la technologie utilisée pour piloter vos tests, l'appel à Q-BOT reste identique&nbsp;:\n            une requête HTTP GET ou POST vers l'endpoint OTP.\n          </p>\n          <ul>\n            <li>\n              <strong>Cypress&nbsp;:</strong> utilisez <code>cy.request()</code> pour appeler l'API\n              Q-BOT dans un custom command, puis injectez le code dans le champ 2FA.\n            </li>\n            <li>\n              <strong>Playwright&nbsp;:</strong> l'API <code>fetch</code> native ou la bibliothèque\n              <code>axios</code> permettent d'appeler Q-BOT depuis n'importe quel test.\n            </li>\n            <li>\n              <strong>Appium&nbsp;:</strong> pour les tests mobiles, le principe est identique — Q-BOT\n              gère le dispositif physique pendant qu'Appium pilote l'application mobile.\n            </li>\n            <li>\n              <strong>Robot Framework&nbsp;:</strong> la bibliothèque <code>RequestsLibrary</code>\n              permet d'interroger Q-BOT en une seule keyword.\n            </li>\n          </ul>\n          <p>\n            Cette compatibilité universelle vous permet d'adopter Q-BOT progressivement, sans remettre\n            en cause votre stack existante.\n          </p>\n\n          <h2 id=\"conclusion\">Conclusion</h2>\n          <p>\n            Il n'existe pas de solution universelle pour la 2FA dans Selenium — le bon choix dépend\n            du type d'authentificateur que vous utilisez.\n          </p>\n          <ul>\n            <li>\n              <strong>Authentificateur logiciel TOTP</strong> (Google Authenticator, Authy…)&nbsp;:\n              <code>pyotp</code> ou <code>speakeasy</code> suffisent, à condition de stocker la clé\n              secrète de façon sécurisée.\n            </li>\n            <li>\n              <strong>2FA par SMS&nbsp;:</strong> des solutions tierces de numéros virtuels existent,\n              mais elles posent des problèmes de fiabilité et de sécurité.\n            </li>\n            <li>\n              <strong>Dispositif physique</strong> (LuxTrust, RSA SecurID, YubiKey…)&nbsp;:\n              <strong>Q-BOT est la seule solution réellement opérationnelle</strong>. Aucune bibliothèque\n              logicielle ne peut se substituer à une interaction physique avec le matériel.\n            </li>\n          </ul>\n          <p>\n            Quelle que soit votre situation, le test complet du parcours 2FA est désormais atteignable.\n            Vos pipelines CI/CD n'ont plus à contourner l'étape la plus critique de votre sécurité\n            applicative.\n          </p>\n\n          "
+  },
+  {
+    "id": "seed-fr-3",
+    "lang": "fr",
+    "title": "5 signes que votre couverture de tests est insuffisante",
+    "slug": "5-signes-tests-incomplets",
+    "cat": "QA Best Practices",
+    "author": "Équipe Q-Leap",
+    "date": "2025-03-05",
+    "rt": "6 min de lecture",
+    "excerpt": "Votre CI tourne chaque nuit — et pourtant des bugs arrivent en production. Ces 5 signaux révèlent des angles morts dans votre stratégie QA.",
+    "thumbnail": "⚠️",
+    "thumbColor": "linear-gradient(135deg,#5CDCD3 0%,#00CBBE 100%)",
+    "status": "published",
+    "content": "\n\n        <p>Votre suite de tests automatisés tourne chaque nuit dans votre pipeline CI/CD. Les rapports sont au vert. Et pourtant, semaine après semaine, des bugs remontent de la production. Des utilisateurs signalent des erreurs sur des flux que vous pensiez couverts.</p>\n\n        <p>Ce paradoxe est plus courant qu'il n'y paraît. Une couverture de tests <em>apparemment</em> satisfaisante peut masquer des angles morts critiques. Voici 5 signaux d'alarme concrets qui indiquent que votre stratégie QA laisse passer trop de risques — et comment y remédier.</p>\n\n        <h2>Signe #1 — Vos tests ignorent les flux authentifiés</h2>\n\n        <p>Si vos tests automatisés ne peuvent pas traverser le processus de connexion complet de votre application — en particulier lorsque vous utilisez la double authentification (2FA) — alors des pans entiers de votre logiciel ne sont jamais testés.</p>\n\n        <p>C'est pourtant là que se cachent la majorité des bugs critiques. Les fonctionnalités exposées derrière une authentification sont, par définition, les plus sensibles : gestion de compte, transactions, accès aux données. Tester uniquement les pages publiques revient à inspecter la façade d'un immeuble sans jamais entrer à l'intérieur.</p>\n\n        <p>La question à se poser : vos scripts de test peuvent-ils se connecter à votre application exactement comme un vrai utilisateur, y compris en validant un code 2FA via un token physique ou une application mobile ? Si la réponse est non, la majorité de votre application n'est pas réellement testée.</p>\n\n        <h2>Signe #2 — Vous avez des zones de l'application non couvertes</h2>\n\n        <p>Consultez votre rapport de couverture de code. Si des pages, des modules ou des flux complets affichent 0 % de couverture, vous naviguez à l'aveugle sur ces parties de l'application.</p>\n\n        <p>Les zones oubliées les plus fréquentes sont souvent celles que l'on considère \"secondaires\" ou \"utilisées par peu de gens\" : panneaux d'administration, flux de paiement, signature électronique de documents, processus de validation métier complexes. Ce sont pourtant précisément ces zones qui, lorsqu'elles tombent en panne, génèrent le plus d'impact.</p>\n\n        <p>Un rapport de couverture ne dit pas tout — il mesure quelles lignes de code ont été exécutées, pas si les comportements fonctionnels ont été vérifiés. Mais des zones à 0 % restent un signal d'alarme immédiat qui mérite investigation.</p>\n\n        <h2>Signe #3 — Vos tests ne reflètent pas le comportement utilisateur réel</h2>\n\n        <p>Des tests qui simulent des clics de boutons de façon programmatique, qui contournent les formulaires de connexion via des injections directes en base de données, ou qui substituent chaque appel réseau par un mock — ces tests donnent une fausse confiance.</p>\n\n        <p>Un utilisateur réel navigue dans votre application avec ses propres données, dans son propre navigateur, selon ses propres habitudes. Il rencontre des états intermédiaires, des latences réseau, des erreurs de validation que vos mocks ne simulent pas fidèlement.</p>\n\n        <p>Une suite de tests trop centrée sur les mocks et les raccourcis techniques peut valider que le code \"tourne\" sans jamais vérifier que l'expérience utilisateur est fonctionnelle. Si vos tests ne reproduisent pas les actions réelles d'un utilisateur de bout en bout, ils ne détecteront pas les bugs que cet utilisateur rencontrera.</p>\n\n        <h2>Signe #4 — Vos tests de régression n'incluent pas les cas critiques</h2>\n\n        <p>Une suite de régression qui ne commence pas par \"se connecter et effectuer l'action principale de l'application\" ne teste que les flux secondaires. Elle détecte les régressions périphériques mais laisse passer les pannes au cœur de la valeur produit.</p>\n\n        <p>Les cas critiques à couvrir absolument dans chaque cycle de régression incluent :</p>\n\n        <ul>\n          <li>La connexion complète avec double authentification (2FA), y compris les cas d'échec</li>\n          <li>Les transactions de haute valeur ou les actions irréversibles</li>\n          <li>La signature électronique de documents et les workflows de validation</li>\n          <li>L'accès aux données sensibles après authentification</li>\n          <li>Les changements d'état critiques (validation, rejet, clôture d'un dossier)</li>\n        </ul>\n\n        <p>Si l'un de ces scénarios n'est pas couvert, chaque déploiement est une prise de risque non mesurée.</p>\n\n        <h2>Signe #5 — Votre CI/CD s'arrête à la porte de la 2FA</h2>\n\n        <p>C'est le signal le plus sérieux. Si votre pipeline d'intégration continue ne sait pas gérer la double authentification, votre testing continu s'arrête précisément là où commence la partie critique de votre application.</p>\n\n        <p>Chaque commit est déployé sans avoir été testé au-delà de l'écran de connexion. En pratique, cela signifie que vos releases sont partiellement validées — et que la seule véritable couverture de vos flux authentifiés reste… vos utilisateurs en production.</p>\n\n        <p>Ce n'est pas un problème de compétences QA : c'est un problème d'outillage. Les frameworks comme Selenium ou Playwright n'ont pas été conçus pour interagir avec des dispositifs 2FA physiques (tokens USB, cartes à puce, applications LuxTrust). La solution ne peut pas venir d'un contournement logiciel — elle nécessite une approche capable de piloter l'authentification dans sa totalité, exactement comme le ferait un testeur humain.</p>\n\n        <h2>Comment corriger ces angles morts ?</h2>\n\n        <p>La bonne nouvelle : ces lacunes sont identifiables et corrigibles avec une approche méthodique.</p>\n\n        <p><strong>Auditez vos métriques de couverture</strong> avec un regard critique. Ne vous arrêtez pas aux pourcentages globaux — analysez quels flux fonctionnels sont réellement exercés, et lesquels ne le sont pas.</p>\n\n        <p><strong>Cartographiez vos parcours utilisateurs critiques</strong> : identifiez les 5 à 10 scénarios dont la panne aurait le plus d'impact pour vos utilisateurs et votre business. Ces scénarios doivent être couverts en priorité, et vérifiés à chaque release.</p>\n\n        <p><strong>Investissez dans l'automatisation de la 2FA</strong>. C'est souvent le verrou principal. Des solutions comme Q-BOT permettent d'automatiser l'authentification à deux facteurs — y compris via des dispositifs physiques ou des applications mobiles comme LuxTrust — et de l'intégrer dans votre pipeline CI/CD sans modifier votre infrastructure existante.</p>\n\n        <p><strong>Combinez les niveaux de tests</strong> : les tests unitaires vérifient la logique interne ; les tests d'intégration et E2E vérifient les parcours complets. Les deux sont nécessaires. Un projet qui n'a que des tests unitaires à 80 % de couverture peut avoir des flux utilisateurs complètement non testés.</p>\n\n        <p><strong>Instaurez des revues de couverture régulières</strong>. La couverture de tests se dégrade naturellement à mesure que l'application évolue. Intégrez une revue des zones non couvertes dans vos rétrospectives d'équipe.</p>\n\n        <h2>Conclusion</h2>\n\n        <p>Une stratégie QA véritablement solide teste le parcours utilisateur complet — de la première page jusqu'aux actions les plus critiques, en passant par chaque étape d'authentification. Les équipes qui parviennent à automatiser l'intégralité de ce parcours, 2FA incluse, livrent plus vite, avec plus de confiance, et dorment mieux la nuit.</p>\n\n        <p>Si l'un des 5 signaux décrits ici vous est familier, il est temps d'adresser l'angle mort. La production n'est pas un environnement de test — même si elle finit souvent par en jouer le rôle.</p>\n\n        "
+  },
+  {
+    "id": "seed-en-1",
+    "lang": "en",
+    "title": "2FA Automation: The Hidden Challenge in QA",
+    "slug": "automate-2fa",
+    "cat": "Automation",
+    "author": "Q-Leap Team",
+    "date": "2025-01-15",
+    "rt": "7 min read",
+    "excerpt": "Two-factor authentication protects your users — but it stops your test automation cold. Here is why, and how to fix it.",
+    "thumbnail": "🔐",
+    "thumbColor": "linear-gradient(135deg,#00CBBE 0%,#00A79C 100%)",
+    "status": "published",
+    "content": "\n\n          <p>\n            A few years ago, integrating two-factor authentication (2FA) into a web application was still seen as an optional security measure, reserved for banking or government systems. In 2025, it has become an unavoidable standard. Regulations such as NIS2 in Europe, cyber-insurance requirements, and growing pressure from security teams have made 2FA near-universal across virtually every industry.\n          </p>\n\n          <p>\n            But this widespread adoption has created a profound paradox for QA teams: <strong>2FA protects end users, but it systematically breaks automated test suites</strong>. Pipelines that ran flawlessly before 2FA was enabled suddenly fail at the login screen — a quiet obstacle, often underestimated during rollout, and expensive to discover in production.\n          </p>\n\n          <h2>Why Does 2FA Break Test Automation?</h2>\n\n          <p>\n            To understand the problem, it helps to recall how two-factor authentication works. After entering a username and password, the user must prove possession of a second factor: a one-time password (OTP) generated by a mobile app, delivered via SMS, or produced by a physical hardware token. This second factor is, by design, <strong>ephemeral and personal</strong> — it changes every 30 seconds and can only be read by the person holding the device.\n          </p>\n\n          <p>\n            Automation tools such as <strong>Selenium</strong>, <strong>Cypress</strong>, and <strong>Playwright</strong> operate exclusively at the browser layer. They can fill forms, click buttons, and intercept network requests — but they are structurally unable to interact with the physical world. And that is precisely where 2FA plays out:\n          </p>\n\n          <ul>\n            <li>\n              <strong>LuxTrust (Luxembourg):</strong> a physical device in the form of a USB token, smart card, or OTP key. The user presses a button to generate a one-time code. No Selenium script can physically press that button.\n            </li>\n            <li>\n              <strong>Google Authenticator / Authy:</strong> mobile TOTP apps. The code is generated locally on the user's smartphone. The test robot does not own that smartphone.\n            </li>\n            <li>\n              <strong>Microsoft Authenticator:</strong> push notification sent to the user's device. The test script receives no notification and cannot approve it.\n            </li>\n            <li>\n              <strong>SMS / email OTP:</strong> the code is delivered to a phone number or email address — accessible to a human, but not directly to a CI/CD pipeline.\n            </li>\n          </ul>\n\n          <p>\n            In short, 2FA creates a barrier between the software layer (where testing tools live) and the physical or out-of-band layer (where the second factor resides). This gap is intentional from a security standpoint — but it is devastating for automation.\n          </p>\n\n          <h2>Common Workarounds and Their Limits</h2>\n\n          <p>\n            Faced with this blocker, QA teams have developed several workaround strategies. Each comes with serious drawbacks that limit its long-term effectiveness.\n          </p>\n\n          <p>\n            <strong>(a) Disable 2FA in the test environment.</strong> This is the most widespread and fastest solution to implement. The staging or UAT environment is simply configured without 2FA. Tests run without friction. The problem? You are not testing the real authentication flow. If a regression appears in the second-factor verification code, it will only be discovered in production. It also introduces a security risk: if sensitive data exists in the test environment, the absence of 2FA leaves it exposed.\n          </p>\n\n          <p>\n            <strong>(b) Hardcode TOTP secrets.</strong> For applications using software OTPs (Google Authenticator, Microsoft Authenticator), it is technically possible to retrieve the TOTP seed (the shared secret) at setup time and store it in the CI/CD pipeline. A library then generates the valid OTP code at test time. This approach works for software TOTP authenticators — but it is inapplicable to physical devices like LuxTrust, and it creates a major security risk if the TOTP secret is ever exposed in the code repository.\n          </p>\n\n          <p>\n            <strong>(c) Manual human intervention.</strong> A human operator monitors the pipeline and manually intervenes at the 2FA step to enter the code. This is 100% accurate — and 0% scalable. The moment tests run overnight, in parallel, or multiple times per hour in an active DevOps pipeline, this approach becomes an operational dead end.\n          </p>\n\n          <p>\n            <strong>(d) Mock or stub the 2FA layer.</strong> Engineers intercept the API calls that verify the second factor and always return a success response. The test passes, but it no longer exercises the real authentication path. Confidence in the test suite erodes. Bugs in the actual 2FA implementation go undetected.\n          </p>\n\n          <div class=\"highlight-box\">\n            <p>\n              Each of these approaches represents a trade-off: you sacrifice security, or you sacrifice test coverage, or you sacrifice scalability. In a context where regulatory requirements and quality standards are tightening simultaneously, none is acceptable in the long run.\n            </p>\n          </div>\n\n          <h2>The Q-BOT Approach: Automating the Human Gesture</h2>\n\n          <p>\n            Q-BOT takes a radically different approach: instead of trying to circumvent 2FA, it goes through it — exactly as a human would. The principle is straightforward: <strong>Q-BOT is a physical robot that interacts with authentication devices just like a real user</strong>.\n          </p>\n\n          <p>\n            In practice, Q-BOT is connected to the target 2FA device (LuxTrust token, physical authenticator, etc.). When a test scenario reaches the authentication step:\n          </p>\n\n          <ol>\n            <li>Q-BOT receives a signal via its REST API that the second factor is required.</li>\n            <li>It <strong>physically presses the button</strong> on the token to trigger OTP generation.</li>\n            <li>It <strong>reads the displayed code</strong> using on-board computer vision (OCR), without touching the system under test.</li>\n            <li>It <strong>returns the code via the API</strong> to the test script, which injects it into the form just as a human would.</li>\n          </ol>\n\n          <p>\n            This architecture offers several key advantages over traditional workarounds:\n          </p>\n\n          <ul>\n            <li><strong>Nothing installed on the tested system:</strong> Q-BOT requires no agent, plugin, or modification to the target application. It operates from the outside, exactly like a human tester.</li>\n            <li><strong>Compatible with every major framework:</strong> Selenium, Cypress, Playwright, Appium, Robot Framework — if your tool can call a REST API, Q-BOT integrates with it.</li>\n            <li><strong>No OTP is ever stored:</strong> the code is generated, read, and transmitted in real time. No secret in the repository, no sensitive data cached.</li>\n            <li><strong>Scalable:</strong> multiple Q-BOT units can be configured to cover several devices in parallel.</li>\n          </ul>\n\n          <p>\n            For companies in Luxembourg that rely on LuxTrust — the national identity infrastructure — Q-BOT is currently the <strong>only solution on the market capable of automating LuxTrust authentication</strong> within a test pipeline.\n          </p>\n\n          <h2>Which Test Cases Can Now Be Automated?</h2>\n\n          <p>\n            Once the 2FA barrier is removed, a wide range of scenarios — previously reserved for manual testing — becomes fully automatable:\n          </p>\n\n          <ul>\n            <li>\n              <strong>2FA login flows:</strong> test the entire authentication journey, including error cases (expired code, incorrect code, too many attempts), session handling, and post-authentication redirects.\n            </li>\n            <li>\n              <strong>Document signing:</strong> e-signature workflows that require a 2FA challenge at each signature can now be tested end-to-end without human intervention.\n            </li>\n            <li>\n              <strong>Transaction validation:</strong> in fintech or banking applications, each sensitive transaction may trigger a second-factor prompt. Q-BOT enables these validation flows to be tested in a loop.\n            </li>\n            <li>\n              <strong>Official requests and administrative procedures:</strong> government or sector-specific portals that use LuxTrust to authenticate applicants can be tested end-to-end, including protected form submissions.\n            </li>\n            <li>\n              <strong>Privileged escalations:</strong> some application flows trigger step-up re-authentication for critical actions. These scenarios, often omitted from automated test suites, can now be fully covered.\n            </li>\n          </ul>\n\n          <p>\n            For QA teams operating in Luxembourg, the LuxTrust use case is particularly strategic. Entire sectors — banking, insurance, public administration, healthcare — rely on this identity infrastructure. The ability to automate tests on LuxTrust-protected applications represents a significant gain in time and coverage for these organisations.\n          </p>\n\n          <h2>Conclusion</h2>\n\n          <p>\n            2FA is not going away. On the contrary: European regulations, sector-specific security standards, and user expectations will continue to drive its adoption upward. In this context, QA teams that choose to bypass 2FA in their tests are accumulating ever-larger blind spots in their coverage.\n          </p>\n\n          <p>\n            Investing now in 2FA automation means anticipating an inevitable reality — and gaining a measurable head start in software quality. Teams that master this challenge test faster, with broader coverage and greater confidence in each release.\n          </p>\n\n          <p>\n            <strong>Q-BOT</strong> is the concrete answer to this challenge: plug-and-play, compatible with your existing stack, and built for the most demanding environments in the European market — including Luxembourg with LuxTrust.\n          </p>\n\n          "
+  },
+  {
+    "id": "seed-en-2",
+    "lang": "en",
+    "title": "Selenium & Two-Factor Authentication: A Practical Guide",
+    "slug": "selenium-2fa-guide",
+    "cat": "Tutorial",
+    "author": "Q-Leap Team",
+    "date": "2025-02-10",
+    "rt": "8 min read",
+    "excerpt": "Practical techniques for testing 2FA-protected applications — and their real-world trade-offs.",
+    "thumbnail": "🧪",
+    "thumbColor": "linear-gradient(135deg,#141414 0%,#1F1F1F 100%)",
+    "status": "published",
+    "content": "\n\n          <p>\n            Selenium is undeniably the world's most widely used test automation framework for web\n            applications. But there is one Achilles heel that every QA team eventually runs into:\n            <strong>two-factor authentication (2FA)</strong>. The moment a user journey requires an OTP,\n            an SMS code, or a physical token, the Selenium script grinds to a halt — and the tester is\n            left without options.\n          </p>\n          <p>\n            This guide walks through the most practical techniques for tackling this problem, with\n            concrete code examples, an honest assessment of their limits, and a solution for cases\n            where software-only methods simply fall short.\n          </p>\n\n          <h2 id=\"why-selenium-cant-handle-2fa\">Why Selenium Can't Handle 2FA Natively</h2>\n          <p>\n            Selenium WebDriver controls only the browser: it can click, type, navigate between pages,\n            and inspect the DOM. What it cannot do is interact with anything outside the browser context.\n            Yet almost every 2FA mechanism relies precisely on an external channel.\n          </p>\n          <p>\n            <strong>Physical tokens</strong> like <em>LuxTrust</em> or <em>RSA SecurID</em> are\n            completely out of reach: they generate a code on a hardware device that no WebDriver can\n            read or trigger. Even for software-based TOTP authenticators (Google Authenticator,\n            Microsoft Authenticator, and similar apps), Selenium has no way to access the mobile\n            application or browser extension that produces the code — it lacks both the shared secret\n            (TOTP seed) and any mechanism to retrieve it.\n          </p>\n          <p>\n            In short: Selenium can see the 2FA input field, but it cannot produce the code on its own.\n            The test team must supply that code through an external means. Here are the three most\n            widely used approaches.\n          </p>\n\n          <h2 id=\"technique-1-totp-pyotp\">Technique 1 — Software TOTP with pyotp or otplib</h2>\n          <p>\n            If your application uses a standard software TOTP authenticator (RFC 6238), it is possible\n            to generate the OTP code directly inside the test script — provided you have access to the\n            <strong>shared secret key</strong> (seed). This key is typically displayed during enrollment\n            as a QR code or a Base32 string.\n          </p>\n          <p>\n            In Python, the <code>pyotp</code> library makes this straightforward:\n          </p>\n          <pre><code>import pyotp\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\n\n# The TOTP secret key for your test account (Base32)\nTOTP_SECRET = \"JBSWY3DPEHPK3PXP\"\n\ndriver = webdriver.Chrome()\ndriver.get(\"https://your-app.example.com/login\")\n\n# Enter credentials\ndriver.find_element(By.ID, \"username\").send_keys(\"testuser@example.com\")\ndriver.find_element(By.ID, \"password\").send_keys(\"SecretPassword123\")\ndriver.find_element(By.ID, \"btn-login\").click()\n\n# Generate the TOTP code and inject it into the 2FA field\ntotp = pyotp.TOTP(TOTP_SECRET)\notp_code = totp.now()\n\ndriver.find_element(By.ID, \"otp-input\").send_keys(otp_code)\ndriver.find_element(By.ID, \"btn-verify\").click()\n</code></pre>\n          <p>\n            In JavaScript/Node.js, the equivalent library is <code>otplib</code>:\n          </p>\n          <pre><code>const { authenticator } = require('otplib');\n\nconst token = authenticator.generate('JBSWY3DPEHPK3PXP');\n\n// Inject the token into the Selenium-controlled field\nawait $('#otp-input').setValue(token);\n</code></pre>\n          <p>\n            <strong>Important limitations.</strong> This technique works only for software-based TOTP\n            authenticators. It is completely ineffective against physical devices (LuxTrust, YubiKey,\n            RSA SecurID) or SMS-based codes. Additionally, embedding the TOTP secret key in test code\n            is a security risk: it must be stored in a secrets manager (HashiCorp Vault, AWS Secrets\n            Manager, GitLab CI/CD Variables, and so on) and never hard-coded in the repository.\n          </p>\n          <p>\n            This technique does NOT work for physical devices or push-based 2FA.\n          </p>\n\n          <h2 id=\"technique-2-disabling-2fa\">Technique 2 — Disabling 2FA in the Test Environment</h2>\n          <p>\n            The most common shortcut used by QA teams is to simply\n            <strong>disable 2FA in the test environment</strong>. The application is configured to skip\n            the two-factor authentication step when it detects a specific environment flag\n            (<code>APP_ENV=test</code>), a particular HTTP header, or a dedicated test user account\n            with 2FA turned off.\n          </p>\n          <p><strong>Pros:</strong></p>\n          <ul>\n            <li>Simple to implement — no external dependencies.</li>\n            <li>Compatible with every test framework out of the box.</li>\n            <li>Adds zero latency to the test suite.</li>\n          </ul>\n          <p><strong>Significant cons:</strong></p>\n          <ul>\n            <li>\n              <strong>The real authentication flow is never tested.</strong> If a bug exists specifically\n              in the 2FA step — a timeout, an incorrect error message, a bad redirect after validation —\n              your tests will never catch it.\n            </li>\n            <li>\n              <strong>Security risk.</strong> The bypass logic may accidentally remain active if the\n              environment is misconfigured, and it can introduce an additional attack surface if\n              discovered by a malicious actor.\n            </li>\n            <li>\n              <strong>Production/test divergence.</strong> The further your test environment drifts from\n              production, the less predictive value your tests have. Disabling 2FA is one of the most\n              significant divergences possible.\n            </li>\n          </ul>\n          <p>\n            This approach is acceptable for functional tests that do not touch the authentication flow,\n            but it cannot substitute for a genuine test of the 2FA journey.\n          </p>\n\n          <h2 id=\"technique-3-q-bot-api\">Technique 3 — Using Q-BOT as an External Authentication Service</h2>\n          <p>\n            For physical devices — and more broadly for any scenario where the OTP cannot be generated\n            in software — the only viable solution is to interact with the real device. That is exactly\n            what <strong>Q-BOT</strong> does: a network-connected physical robot that interacts with any\n            2FA device (LuxTrust, smartphone, hardware token) and exposes the resulting codes via a\n            <strong>REST API</strong>.\n          </p>\n          <p>\n            Your Selenium test script sends an HTTP request to Q-BOT. Q-BOT physically presses the\n            device, reads the OTP via computer vision, and returns it in the API response. Your test\n            then injects that code into the 2FA field:\n          </p>\n          <pre><code>import requests\nfrom selenium import webdriver\nfrom selenium.webdriver.common.by import By\n\nQBOT_API_URL = \"https://your-qbot-instance/api/v1/otp\"\nQBOT_API_KEY = \"YOUR_API_KEY\"\n\ndriver = webdriver.Chrome()\ndriver.get(\"https://your-app.example.com/login\")\n\n# Step 1 — Enter credentials\ndriver.find_element(By.ID, \"username\").send_keys(\"testuser@example.com\")\ndriver.find_element(By.ID, \"password\").send_keys(\"SecretPassword123\")\ndriver.find_element(By.ID, \"btn-login\").click()\n\n# Step 2 — Request the OTP from Q-BOT\n# Q-BOT physically presses the LuxTrust device, reads the code, and returns it\nresponse = requests.get(\n    QBOT_API_URL,\n    headers={\"Authorization\": f\"Bearer {QBOT_API_KEY}\"},\n    params={\"device\": \"luxtrust-01\"},\n    timeout=30\n)\notp_code = response.json()[\"otp\"]\n\n# Step 3 — Inject the code into the 2FA field and submit\ndriver.find_element(By.ID, \"otp-input\").send_keys(otp_code)\ndriver.find_element(By.ID, \"btn-verify\").click()\n</code></pre>\n          <p>\n            The entire flow — from physically triggering the device to retrieving the code — completes\n            in a matter of seconds. Q-BOT is compatible with <strong>LuxTrust</strong>, Android and iOS\n            smartphones, hardware OTP keys, and any other device that requires a physical interaction.\n            No modification to the application under test is required: Q-BOT reproduces exactly what a\n            human user would do.\n          </p>\n\n          <h2 id=\"ci-cd-integration\">Integrating with Your CI/CD Pipeline</h2>\n          <p>\n            One of Q-BOT's key strengths is seamless compatibility with continuous integration pipelines.\n            Because Q-BOT exposes a standard HTTP API, the only requirement is that the CI/CD runner\n            has network access to the machine hosting the physical robot.\n          </p>\n          <ul>\n            <li>\n              <strong>Jenkins:</strong> add an HTTP call to your test stage via <code>httpRequest</code>\n              or a simple Python/curl script in the pipeline — no dedicated plugin required.\n            </li>\n            <li>\n              <strong>GitLab CI:</strong> store <code>QBOT_API_KEY</code> in CI/CD Variables and call\n              the API directly from your test script. No plugin or custom runner image needed.\n            </li>\n            <li>\n              <strong>GitHub Actions:</strong> add the secret to GitHub Secrets and reference it in\n              the test step — exactly as you would for any other API credential.\n            </li>\n          </ul>\n          <p>\n            The Q-BOT robot needs only a network connection (Ethernet or Wi-Fi) and physical access to\n            the 2FA devices. It can be installed in a server room, a QA office, or any suitable\n            location. No additional infrastructure is required: no proxy, no dedicated VPN, no CI plugin.\n          </p>\n\n          <h2 id=\"framework-compatibility\">Compatibility with Other Frameworks</h2>\n          <p>\n            Q-BOT's API-first approach is inherently <strong>framework-agnostic</strong>. Regardless of\n            the technology driving your tests, the call to Q-BOT is always the same: a standard HTTP\n            GET or POST request to the OTP endpoint.\n          </p>\n          <ul>\n            <li>\n              <strong>Cypress:</strong> use <code>cy.request()</code> to call the Q-BOT API inside a\n              custom command, then inject the returned code into the 2FA field.\n            </li>\n            <li>\n              <strong>Playwright:</strong> the native <code>fetch</code> API or the <code>axios</code>\n              library can call Q-BOT from any test file without additional configuration.\n            </li>\n            <li>\n              <strong>Appium:</strong> for mobile test automation, the principle is identical — Q-BOT\n              handles the physical device while Appium drives the mobile application.\n            </li>\n            <li>\n              <strong>Robot Framework:</strong> the <code>RequestsLibrary</code> lets you query Q-BOT\n              in a single keyword, keeping your test definitions clean and readable.\n            </li>\n          </ul>\n          <p>\n            This universal compatibility lets you adopt Q-BOT incrementally, without any disruption to\n            your existing stack.\n          </p>\n\n          <h2 id=\"conclusion\">Conclusion</h2>\n          <p>\n            There is no one-size-fits-all solution for 2FA in Selenium — the right choice depends on\n            the type of authenticator you are working with.\n          </p>\n          <ul>\n            <li>\n              <strong>Software TOTP authenticator</strong> (Google Authenticator, Authy, and similar):\n              <code>pyotp</code> or <code>otplib</code> work well, provided the secret key is stored\n              securely and never committed to the repository.\n            </li>\n            <li>\n              <strong>SMS-based 2FA:</strong> third-party virtual number services exist, but they\n              carry reliability and security concerns that make them unsuitable for production-grade\n              test pipelines.\n            </li>\n            <li>\n              <strong>Physical token</strong> (LuxTrust, RSA SecurID, YubiKey, and similar):\n              <strong>Q-BOT is the only production-grade solution available</strong>. No software\n              library can substitute for a physical interaction with a hardware device.\n            </li>\n          </ul>\n          <p>\n            Whatever your situation, full end-to-end testing of the 2FA flow is now achievable.\n            Your CI/CD pipelines no longer have to skip the most security-critical step in your\n            application's authentication journey.\n          </p>\n\n          "
+  },
+  {
+    "id": "seed-en-3",
+    "lang": "en",
+    "title": "5 Signs Your Automated Tests Don't Cover Enough",
+    "slug": "5-signs-incomplete-testing",
+    "cat": "QA Best Practices",
+    "author": "Q-Leap Team",
+    "date": "2025-03-05",
+    "rt": "6 min read",
+    "excerpt": "Your CI runs every night — yet bugs keep reaching production. These 5 red flags reveal blind spots in your QA strategy.",
+    "thumbnail": "⚠️",
+    "thumbColor": "linear-gradient(135deg,#5CDCD3 0%,#00CBBE 100%)",
+    "status": "published",
+    "content": "\n\n        <p>You have a test automation suite. It runs nightly in CI. Green checkmarks everywhere. And yet, week after week, bugs keep reaching production. Users report issues on flows you were convinced were covered.</p>\n\n        <p>This paradox is far more common than it seems. An <em>apparently</em> healthy test suite can hide critical blind spots. Here are 5 concrete red flags that indicate your QA strategy is letting too many risks slip through — and what you can do about it.</p>\n\n        <h2>Sign #1 — Your Tests Skip Authenticated Flows</h2>\n\n        <p>If your automated tests cannot execute the full login flow of your application — especially one involving two-factor authentication (2FA) — entire sections of your software are going completely untested.</p>\n\n        <p>And yet, that is exactly where the most critical bugs hide. Features sitting behind an authentication gate are, by definition, the most sensitive: account management, financial transactions, access to personal or business data. Testing only public-facing pages is like inspecting the facade of a building without ever going inside.</p>\n\n        <p>Ask yourself this: can your test scripts log in to your application exactly as a real user would, including validating a 2FA code via a physical token or a mobile app? If the answer is no, the majority of your application is not being tested at all.</p>\n\n        <h2>Sign #2 — Significant Areas of the App Have Zero Coverage</h2>\n\n        <p>Open your code coverage report. If entire pages, modules, or user flows show 0% coverage, you are flying completely blind on those parts of the application.</p>\n\n        <p>The most commonly forgotten areas are those considered \"secondary\" or \"low-traffic\": admin panels, payment flows, document signing, complex business validation workflows. These are, ironically, the exact areas where a failure has the highest real-world impact.</p>\n\n        <p>A coverage report does not tell the whole story — it measures which lines of code were executed, not whether the underlying business behaviours were actually verified. But zones sitting at 0% are an immediate warning signal that demands investigation. Common uncovered areas include:</p>\n\n        <ul>\n          <li>Admin panels and back-office interfaces</li>\n          <li>Payment and checkout flows</li>\n          <li>Document signing and e-signature workflows</li>\n          <li>Account creation and onboarding journeys</li>\n          <li>Multi-step validation and approval processes</li>\n        </ul>\n\n        <h2>Sign #3 — Your Tests Don't Reflect Real User Behaviour</h2>\n\n        <p>Tests that simulate button clicks programmatically, bypass login forms via direct database injection, or substitute every network call with a mock — these tests provide a false sense of security.</p>\n\n        <p>A real user navigates your application with their own data, in their own browser, in their own sequence. They encounter intermediate states, network latency, and edge-case validation errors that your mocks simply do not replicate faithfully.</p>\n\n        <p>A test suite that relies too heavily on mocks and technical shortcuts can validate that the code \"runs\" without ever confirming that the user experience actually works. Heavily mocked suites test the mock, not the system. If your tests do not reproduce the genuine end-to-end actions of a real user — including the real authentication interaction — they will not catch the bugs that user will encounter in production.</p>\n\n        <h2>Sign #4 — Your Regression Suite Skips Critical Paths</h2>\n\n        <p>A regression suite that does not begin with \"log in and perform the most important action in the application\" is only testing secondary flows. It detects peripheral regressions but lets failures at the heart of your product's value go unnoticed.</p>\n\n        <p>Critical paths that absolutely must be covered in every regression cycle include:</p>\n\n        <ul>\n          <li>Full login with two-factor authentication (2FA), including failure scenarios</li>\n          <li>High-value transactions and irreversible actions</li>\n          <li>Electronic document signing and approval workflows</li>\n          <li>Access to sensitive data after successful authentication</li>\n          <li>Critical state changes (validation, rejection, case closure)</li>\n        </ul>\n\n        <p>If any of these scenarios is missing from your regression suite, every deployment carries an unmeasured and unquantified risk. A regression suite that skips critical paths is a false safety net — it gives the team confidence it has not earned.</p>\n\n        <h2>Sign #5 — Your CI/CD Pipeline Stops at the 2FA Gate</h2>\n\n        <p>This is the most serious signal of all. If your continuous integration pipeline cannot handle two-factor authentication, your continuous testing stops exactly where the critical portion of your application begins.</p>\n\n        <p>Every commit is deployed without having been tested beyond the login screen. In practice, this means your releases are only partially validated — and the only real coverage your authenticated flows receive is from your users in production. They become your QA team by default, and that is not a position any engineering team should be comfortable with.</p>\n\n        <p>This is not a skills problem. It is a tooling problem. Frameworks like Selenium or Playwright were not designed to interact with physical 2FA devices — USB tokens, smart cards, or apps like LuxTrust. The solution cannot come from a software workaround or an environment flag. It requires an approach capable of driving the full authentication flow exactly as a human tester would — including pressing the physical button.</p>\n\n        <h2>How to Fix These Blind Spots</h2>\n\n        <p>The good news: these gaps are identifiable and fixable with a structured approach.</p>\n\n        <p><strong>Audit your coverage metrics critically.</strong> Do not stop at global percentages. Dig into which functional flows are actually being exercised, and which are not. A project with 80% line coverage can still have entire user journeys with zero test coverage.</p>\n\n        <p><strong>Map your critical user journeys end-to-end.</strong> Identify the 5 to 10 scenarios whose failure would have the highest impact on your users and your business. These scenarios must be covered as a priority and verified on every release — no exceptions.</p>\n\n        <p><strong>Invest in 2FA automation.</strong> This is often the primary blocker. Solutions like Q-BOT make it possible to automate two-factor authentication — including via physical devices or mobile apps like LuxTrust — and integrate it directly into your CI/CD pipeline without modifying your existing infrastructure. When your pipeline can handle 2FA, the entire authenticated surface of your application becomes testable.</p>\n\n        <p><strong>Combine levels of testing.</strong> Unit tests verify internal logic; integration and end-to-end tests verify complete user journeys. Both are necessary and neither replaces the other. A project with only unit tests will still have untested user flows, no matter how high the coverage percentage looks.</p>\n\n        <p><strong>Build coverage reviews into your process.</strong> Test coverage degrades naturally as an application evolves. New features ship, tests are not always added. Make reviewing uncovered areas a regular part of your team's retrospectives, not an annual audit.</p>\n\n        <h2>Conclusion</h2>\n\n        <p>A genuinely solid QA strategy tests the complete user journey — from the first public page all the way through the most critical authenticated actions, including every authentication step along the way. Teams that achieve full automation of this journey, 2FA included, ship faster, with greater confidence, and with significantly fewer production incidents.</p>\n\n        <p>If any of the 5 signs described here sounds familiar, it is time to address the blind spot. Production is not a testing environment — even if it often ends up playing that role.</p>\n\n        "
+  }
+]
+</script>
+</body>
+</html>

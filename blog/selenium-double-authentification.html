@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selenium &amp; double authentification : guide pratique | Q-BOT by Q-Leap</title>
+  <meta name="description" content="Selenium est-il compatible avec la 2FA ? Découvrez les techniques pour tester des applications avec double authentification, leurs limites, et comment Q-BOT complète votre stack Selenium.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://q-bot.eu/blog/selenium-double-authentification.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/selenium-double-authentification.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/selenium-double-authentification.html">
+
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Selenium &amp; double authentification : guide pratique">
+  <meta property="og:description" content="Selenium est-il compatible avec la 2FA ? Découvrez les techniques pour tester des applications avec double authentification, leurs limites, et comment Q-BOT complète votre stack Selenium.">
+  <meta property="og:url" content="https://q-bot.eu/blog/selenium-double-authentification.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/hero-device.png">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-BOT by Q-Leap">
+  <meta property="article:published_time" content="2025-02-10">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Selenium &amp; double authentification : guide pratique">
+  <meta name="twitter:description" content="Selenium est-il compatible avec la 2FA ? Découvrez les techniques pour tester des applications avec double authentification, leurs limites, et comment Q-BOT complète votre stack Selenium.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/hero-device.png">
+  <!-- Favicon -->
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script src="../assets/js/theme-init.js"></script>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-BOT",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/hero-device.png",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://q-bot.eu/blog.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Selenium & double authentification : guide pratique",
+      "item": "https://q-bot.eu/blog/selenium-double-authentification.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://q-bot.eu/blog/selenium-double-authentification.html"
+  },
+  "headline": "Selenium & double authentification : guide pratique",
+  "description": "Selenium est-il compatible avec la 2FA ? Découvrez les techniques pour tester des applications avec double authentification, leurs limites, et comment Q-BOT complète votre stack Selenium.",
+  "image": "https://q-bot.eu/assets/img/hero-device.png",
+  "datePublished": "2025-02-10",
+  "inLanguage": "fr-FR",
+  "author": {
+    "@type": "Organization",
+    "name": "Q-Leap",
+    "url": "https://q-bot.eu/"
+  },
+  "publisher": {
+    "@id": "https://q-bot.eu/#organization"
+  }
+}
+  </script>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="../index.html" class="nav__logo" aria-label="Q-BOT — Accueil">
+        <img src="../assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="94" height="40">
+      </a>
+
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../a-propos.html" class="nav__link">À propos</a></li>
+        <li><a href="../caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="../faq.html" class="nav__link">FAQ</a></li>
+        <li><a href="../blog.html" class="nav__link active">Blog</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+
+      <div class="nav__actions">
+        <div class="nav__lang" aria-label="Langue">
+          <a href="selenium-double-authentification.html" class="active">FR</a>
+          <span>|</span>
+          <a href="../en/blog/selenium-2fa-guide.html">EN</a>
+        </div>
+                <a href="../contact.html" class="btn btn--primary">Demo gratuite</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<section id="main" class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Tutoriel</span>
+    <h1 id="page-title">Selenium &amp; double authentification&nbsp;: guide pratique</h1>
+    <p>Les techniques concrètes pour tester des applications protégées par 2FA — et leurs limites réelles.</p>
+  </div>
+</section>
+
+<!-- ======= BREADCRUMB ======= -->
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Fil d'Ariane">
+      <li><a href="../index.html">Accueil</a></li>
+      <li><span aria-hidden="true">›</span></li>
+      <li><a href="../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">›</span></li>
+      <li aria-current="page">Selenium &amp; double authentification : guide pratique</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ======= ARTICLE ======= -->
+<section class="section">
+  <div class="container">
+    <div class="article-layout">
+
+      <!-- ── Main content ── -->
+      <main>
+        <!-- Article header -->
+        <header class="article-header">
+          <span class="blog-card__tag">Tutoriel</span>
+          <h1>Selenium &amp; double authentification&nbsp;: guide pratique</h1>
+          <div class="article-meta">
+            <span><strong>Date&nbsp;:</strong> 10 février 2025</span>
+            <span><strong>Durée&nbsp;:</strong> 8 min de lecture</span>
+            <span><strong>Auteur&nbsp;:</strong> Équipe Q-Leap</span>
+          </div>
+        </header>
+
+        <!-- Article body -->
+        <article class="article-body" itemscope itemtype="https://schema.org/Article">
+
+          <p>
+            Selenium est sans conteste le framework d'automatisation de tests le plus utilisé dans le monde.
+            Mais il existe un talon d'Achille que chaque équipe QA finit par rencontrer&nbsp;:
+            la <strong>double authentification (2FA)</strong>. Dès qu'un parcours utilisateur exige un OTP,
+            un code SMS ou un jeton physique, le script Selenium se retrouve bloqué — et le testeur, démuni.
+          </p>
+          <p>
+            Ce guide présente les techniques les plus courantes pour aborder ce problème, avec des exemples
+            de code concrets, une analyse honnête de leurs limites, et une solution pour les cas où les
+            méthodes logicielles ne suffisent pas.
+          </p>
+
+          <!-- H2 1 -->
+          <h2 id="pourquoi-selenium-ne-gere-pas-la-2fa">Pourquoi Selenium ne peut pas gérer la 2FA nativement</h2>
+          <p>
+            Le WebDriver Selenium contrôle uniquement le navigateur&nbsp;: il peut cliquer, saisir du texte,
+            naviguer entre les pages et inspecter le DOM. En revanche, il n'a aucune visibilité sur ce
+            qui se passe en dehors du navigateur. Or, la plupart des mécanismes 2FA reposent précisément
+            sur un canal externe au navigateur.
+          </p>
+          <p>
+            Les <strong>jetons physiques</strong> comme <em>LuxTrust</em> ou <em>RSA SecurID</em> sont
+            entièrement hors de portée&nbsp;: ils génèrent un code sur un dispositif matériel qu'aucun
+            WebDriver ne peut lire ou actionner. Même pour les authentificateurs logiciels de type TOTP
+            (Google Authenticator, Microsoft Authenticator…), Selenium ne peut pas accéder à l'application
+            mobile ou à l'extension de navigateur qui génère le code — il lui manque la clé secrète partagée
+            (seed TOTP) et le mécanisme pour la lire.
+          </p>
+          <p>
+            En résumé&nbsp;: Selenium voit le champ de saisie du code 2FA, mais il est incapable de
+            produire ce code par lui-même. C'est à l'équipe de test de lui fournir le code par un moyen
+            externe. Voici les trois approches les plus répandues.
+          </p>
+
+          <!-- H2 2 -->
+          <h2 id="technique-1-totp-pyotp">Technique 1 — TOTP logiciel avec pyotp / speakeasy</h2>
+          <p>
+            Si votre application utilise un authentificateur logiciel standard TOTP (RFC&nbsp;6238), il
+            est possible de générer le code OTP directement dans le script de test, à condition de
+            connaître la <strong>clé secrète partagée</strong> (seed). Cette clé est habituellement
+            affichée lors de l'enrôlement sous forme de QR code ou de chaîne Base32.
+          </p>
+          <p>
+            En Python, la bibliothèque <code>pyotp</code> permet de faire cela en quelques lignes&nbsp;:
+          </p>
+          <pre><code>import pyotp
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+# La clé secrète TOTP de votre compte de test (Base32)
+TOTP_SECRET = "JBSWY3DPEHPK3PXP"
+
+driver = webdriver.Chrome()
+driver.get("https://your-app.example.com/login")
+
+# Renseigner identifiants
+driver.find_element(By.ID, "username").send_keys("testuser@example.com")
+driver.find_element(By.ID, "password").send_keys("SecretPassword123")
+driver.find_element(By.ID, "btn-login").click()
+
+# Générer le code TOTP et l'injecter dans le champ 2FA
+totp = pyotp.TOTP(TOTP_SECRET)
+otp_code = totp.now()
+
+driver.find_element(By.ID, "otp-input").send_keys(otp_code)
+driver.find_element(By.ID, "btn-verify").click()
+</code></pre>
+          <p>
+            En JavaScript/Node.js, l'équivalent est la bibliothèque <code>speakeasy</code>&nbsp;:
+          </p>
+          <pre><code>const speakeasy = require('speakeasy');
+
+const token = speakeasy.totp({
+  secret: 'JBSWY3DPEHPK3PXP',
+  encoding: 'base32'
+});
+
+// Injecter token dans le champ Selenium (via WebDriverIO, etc.)
+await $('#otp-input').setValue(token);
+</code></pre>
+          <p>
+            <strong>Limites importantes.</strong> Cette technique ne fonctionne que pour les
+            authentificateurs <em>logiciels</em> de type TOTP. Elle est totalement inutile face aux
+            dispositifs physiques (LuxTrust, YubiKey, RSA SecurID) ou aux codes envoyés par SMS. De plus,
+            exposer la clé secrète TOTP dans le code de test constitue un risque de sécurité&nbsp;: elle
+            doit être stockée dans un secret manager (HashiCorp Vault, AWS Secrets Manager, GitLab
+            CI/CD Variables, etc.), jamais en dur dans le dépôt.
+          </p>
+
+          <!-- H2 3 -->
+          <h2 id="technique-2-desactiver-2fa">Technique 2 — Désactiver la 2FA en environnement de test</h2>
+          <p>
+            L'approche la plus répandue dans les équipes QA est tout simplement de
+            <strong>désactiver la 2FA sur l'environnement de test</strong>. On configure l'application
+            pour ignorer l'étape de double authentification lorsqu'elle détecte un paramètre d'environnement
+            particulier (<code>APP_ENV=test</code>, un header HTTP spécifique, ou un compte utilisateur
+            dédié sans 2FA).
+          </p>
+          <p><strong>Avantages&nbsp;:</strong></p>
+          <ul>
+            <li>Simple à mettre en place — aucune dépendance externe.</li>
+            <li>Compatible avec tous les frameworks de test.</li>
+            <li>N'ajoute aucune latence aux tests.</li>
+          </ul>
+          <p><strong>Inconvénients majeurs&nbsp;:</strong></p>
+          <ul>
+            <li>
+              <strong>Le flux réel n'est pas testé.</strong> Si un bug survient précisément dans l'étape
+              2FA (timeout, mauvais message d'erreur, redirection incorrecte après validation), vos tests
+              ne le détecteront jamais.
+            </li>
+            <li>
+              <strong>Risque de sécurité.</strong> La logique de désactivation peut rester active si
+              l'environnement est mal configuré. Elle peut aussi introduire une surface d'attaque
+              supplémentaire si elle est découverte.
+            </li>
+            <li>
+              <strong>Divergence production / test.</strong> Plus la configuration de l'environnement de
+              test s'éloigne de la production, plus vos tests perdent leur valeur prédictive.
+            </li>
+          </ul>
+          <p>
+            Cette approche est acceptable pour les tests fonctionnels du reste de l'application, mais
+            elle ne peut en aucun cas remplacer un vrai test du parcours d'authentification.
+          </p>
+
+          <!-- H2 4 -->
+          <h2 id="technique-3-q-bot-api">Technique 3 — Utiliser Q-BOT comme service d'authentification externe</h2>
+          <p>
+            Pour les dispositifs physiques — et plus généralement pour tout scénario où l'OTP ne peut
+            pas être généré en logiciel — la seule solution viable est d'interagir avec le vrai dispositif.
+            C'est exactement ce que fait <strong>Q-BOT</strong>&nbsp;: un robot physique connecté au réseau
+            qui interagit avec n'importe quel dispositif 2FA (LuxTrust, smartphone, token matériel) et
+            expose les codes via une <strong>API HTTP</strong>.
+          </p>
+          <p>
+            Votre script Selenium appelle simplement l'API Q-BOT pour obtenir le code OTP en temps réel,
+            puis l'injecte dans le champ 2FA&nbsp;:
+          </p>
+          <pre><code>import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+QBOT_API_URL = "https://your-qbot-instance/api/v1/otp"
+QBOT_API_KEY = "YOUR_API_KEY"
+
+driver = webdriver.Chrome()
+driver.get("https://your-app.example.com/login")
+
+# Étape 1 — Saisie des identifiants
+driver.find_element(By.ID, "username").send_keys("testuser@example.com")
+driver.find_element(By.ID, "password").send_keys("SecretPassword123")
+driver.find_element(By.ID, "btn-login").click()
+
+# Étape 2 — Demander le code OTP à Q-BOT
+# Q-BOT appuie physiquement sur le dispositif LuxTrust, lit le code et le renvoie
+response = requests.get(
+    QBOT_API_URL,
+    headers={"Authorization": f"Bearer {QBOT_API_KEY}"},
+    params={"device": "luxtrust-01"},
+    timeout=30
+)
+otp_code = response.json()["otp"]
+
+# Étape 3 — Injecter le code dans le champ 2FA et valider
+driver.find_element(By.ID, "otp-input").send_keys(otp_code)
+driver.find_element(By.ID, "btn-verify").click()
+</code></pre>
+          <p>
+            L'ensemble du flux — depuis le déclenchement physique du dispositif jusqu'à la récupération
+            du code — se déroule en quelques secondes. Q-BOT est compatible avec <strong>LuxTrust</strong>,
+            les smartphones (Android et iOS), les clés OTP matérielles, et tout autre dispositif
+            nécessitant une interaction physique. Aucune modification de l'application testée n'est
+            nécessaire&nbsp;: Q-BOT reproduit exactement ce que ferait un utilisateur humain.
+          </p>
+
+          <!-- H2 5 -->
+          <h2 id="integration-ci-cd">Intégration avec votre pipeline CI/CD</h2>
+          <p>
+            L'un des atouts majeurs de l'approche Q-BOT est sa parfaite compatibilité avec les pipelines
+            d'intégration continue. Puisque Q-BOT expose une API HTTP standard, il suffit que le runner
+            CI/CD ait accès au réseau où se trouve le robot physique.
+          </p>
+          <ul>
+            <li>
+              <strong>Jenkins&nbsp;:</strong> ajoutez un appel HTTP dans votre stage de test via
+              <code>httpRequest</code> ou un simple script Python/curl dans le pipeline.
+            </li>
+            <li>
+              <strong>GitLab CI&nbsp;:</strong> stockez <code>QBOT_API_KEY</code> dans les
+              CI/CD Variables et appelez l'API depuis votre script de test — aucun plugin dédié requis.
+            </li>
+            <li>
+              <strong>GitHub Actions&nbsp;:</strong> ajoutez le secret dans les GitHub Secrets et
+              utilisez-le directement dans le step de test.
+            </li>
+          </ul>
+          <p>
+            Le robot Q-BOT n'a besoin que d'une connexion réseau (Ethernet ou Wi-Fi) et d'un accès
+            physique aux dispositifs 2FA. Il peut être installé dans la salle serveur, le bureau QA,
+            ou tout autre emplacement adapté. Aucune infrastructure supplémentaire n'est requise&nbsp;:
+            pas de proxy, pas de VPN spécifique, pas de plugin CI.
+          </p>
+
+          <!-- H2 6 -->
+          <h2 id="compatibilite-frameworks">Compatibilité avec d'autres frameworks</h2>
+          <p>
+            L'approche API de Q-BOT est par nature <strong>agnostique au framework</strong>. Quelle que
+            soit la technologie utilisée pour piloter vos tests, l'appel à Q-BOT reste identique&nbsp;:
+            une requête HTTP GET ou POST vers l'endpoint OTP.
+          </p>
+          <ul>
+            <li>
+              <strong>Cypress&nbsp;:</strong> utilisez <code>cy.request()</code> pour appeler l'API
+              Q-BOT dans un custom command, puis injectez le code dans le champ 2FA.
+            </li>
+            <li>
+              <strong>Playwright&nbsp;:</strong> l'API <code>fetch</code> native ou la bibliothèque
+              <code>axios</code> permettent d'appeler Q-BOT depuis n'importe quel test.
+            </li>
+            <li>
+              <strong>Appium&nbsp;:</strong> pour les tests mobiles, le principe est identique — Q-BOT
+              gère le dispositif physique pendant qu'Appium pilote l'application mobile.
+            </li>
+            <li>
+              <strong>Robot Framework&nbsp;:</strong> la bibliothèque <code>RequestsLibrary</code>
+              permet d'interroger Q-BOT en une seule keyword.
+            </li>
+          </ul>
+          <p>
+            Cette compatibilité universelle vous permet d'adopter Q-BOT progressivement, sans remettre
+            en cause votre stack existante.
+          </p>
+
+          <!-- Conclusion -->
+          <h2 id="conclusion">Conclusion</h2>
+          <p>
+            Il n'existe pas de solution universelle pour la 2FA dans Selenium — le bon choix dépend
+            du type d'authentificateur que vous utilisez.
+          </p>
+          <ul>
+            <li>
+              <strong>Authentificateur logiciel TOTP</strong> (Google Authenticator, Authy…)&nbsp;:
+              <code>pyotp</code> ou <code>speakeasy</code> suffisent, à condition de stocker la clé
+              secrète de façon sécurisée.
+            </li>
+            <li>
+              <strong>2FA par SMS&nbsp;:</strong> des solutions tierces de numéros virtuels existent,
+              mais elles posent des problèmes de fiabilité et de sécurité.
+            </li>
+            <li>
+              <strong>Dispositif physique</strong> (LuxTrust, RSA SecurID, YubiKey…)&nbsp;:
+              <strong>Q-BOT est la seule solution réellement opérationnelle</strong>. Aucune bibliothèque
+              logicielle ne peut se substituer à une interaction physique avec le matériel.
+            </li>
+          </ul>
+          <p>
+            Quelle que soit votre situation, le test complet du parcours 2FA est désormais atteignable.
+            Vos pipelines CI/CD n'ont plus à contourner l'étape la plus critique de votre sécurité
+            applicative.
+          </p>
+
+          <!-- Inline CTA -->
+          <div class="article-cta reveal">
+            <h3>Besoin d'une démo de Q-BOT avec votre stack Selenium&nbsp;?</h3>
+            <p>
+              Nos experts vous montrent en 30 minutes comment intégrer Q-BOT dans votre pipeline de test
+              existant, quelle que soit votre stack — Selenium, Playwright, Cypress ou autre.
+            </p>
+            <a href="../contact.html" class="btn btn--primary btn--lg">Demander une démo gratuite</a>
+          </div>
+
+          <!-- Related articles -->
+          <div class="related-articles reveal">
+            <h2>Articles connexes</h2>
+            <div class="blog__grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+
+              <article class="blog-card">
+                <div class="blog-card__banner" style="background:linear-gradient(135deg,#00CBBE 0%,#00A79C 100%); display:flex; align-items:center; justify-content:center; font-size:3rem;">🔐</div>
+                <div class="blog-card__content">
+                  <span class="blog-card__tag">Automatisation</span>
+                  <h3 class="blog-card__title">
+                    <a href="automatiser-2fa-tests.html">L'automatisation 2FA : le défi caché des équipes QA</a>
+                  </h3>
+                  <p class="blog-card__excerpt">
+                    La double authentification protège vos utilisateurs — mais elle bloque vos testeurs.
+                    Découvrez pourquoi la 2FA est devenue l'un des principaux obstacles à la couverture de test automatisé.
+                  </p>
+                  <div class="blog-card__meta">
+                    <span>Janvier 2025</span>
+                    <span>7 min</span>
+                  </div>
+                  <a href="automatiser-2fa-tests.html" class="blog-card__read-more">
+                    Lire l'article
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+              </article>
+
+              <article class="blog-card">
+                <div class="blog-card__banner" style="background:linear-gradient(135deg,#5CDCD3 0%,#00CBBE 100%); display:flex; align-items:center; justify-content:center; font-size:3rem;">⚠️</div>
+                <div class="blog-card__content">
+                  <span class="blog-card__tag">QA Best Practices</span>
+                  <h3 class="blog-card__title">
+                    <a href="5-signes-tests-incomplets.html">5 signes que votre couverture de tests est insuffisante</a>
+                  </h3>
+                  <p class="blog-card__excerpt">
+                    Pensez-vous que votre suite de tests automatisés est complète ? Voici 5 signaux d'alarme
+                    concrets qui révèlent des angles morts dans votre stratégie QA.
+                  </p>
+                  <div class="blog-card__meta">
+                    <span>Mars 2025</span>
+                    <span>6 min</span>
+                  </div>
+                  <a href="5-signes-tests-incomplets.html" class="blog-card__read-more">
+                    Lire l'article
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+        </article>
+      </main>
+
+      <!-- ── Sidebar ── -->
+      <aside class="article-sidebar" aria-label="Informations complémentaires">
+
+        <div class="sidebar-card">
+          <h4>À propos de Q-BOT</h4>
+          <p>
+            Q-BOT est la solution unique sur le marché pour automatiser la double authentification physique
+            dans vos tests logiciels. Conçu et fabriqué au Luxembourg par Q-Leap, il s'intègre en quelques
+            minutes dans n'importe quel pipeline CI/CD.
+          </p>
+          <a href="../caracteristiques.html" class="btn btn--primary">Voir les caractéristiques</a>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>Tarification</h4>
+          <p>
+            <strong>900&nbsp;€/mois TTC</strong>, tout inclus — matériel, API, support et mises à jour.
+            Aucun frais cachés, aucun engagement minimum.
+          </p>
+          <a href="../commandez.html" class="btn btn--outline">Commander Q-BOT</a>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge">&#127473;&#127482; Conçu au Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Q-BOT</h4>
+        <ul role="list">
+          <li><a href="../index.html">Accueil</a></li>
+          <li><a href="../caracteristiques.html">Caractéristiques</a></li>
+          <li><a href="../a-propos.html">À propos</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Produit</h4>
+        <ul role="list">
+          <li><a href="../modele-3d.html">Modèle 3D</a></li>
+          <li><a href="../commandez.html">Commander</a></li>
+          <li><a href="../contact.html">Démo gratuite</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul role="list">
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-BOT powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="https://q-bot.eu/conditions-vente/" target="_blank" rel="noopener">Conditions de vente</a>
+        <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

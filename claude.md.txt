@@ -1,0 +1,44 @@
+# Instructions permanentes
+
+# Projet Q-Bot
+
+Site original :
+https://q-bot.eu/
+
+## Objectif
+
+Ce projet est une migration statique du site WordPress original.
+
+Le site local doit reproduire fidèlement :
+
+* le design
+* les animations
+* les effets de scroll
+* les hover
+* les transitions
+* le responsive
+
+Le site original est toujours la référence.
+
+## Règles
+
+Avant chaque modification :
+
+1. Comparer le site local au site original.
+2. Identifier les différences visuelles et comportementales.
+3. Documenter les écarts détectés.
+4. Corriger les écarts.
+
+Ne jamais supprimer une animation pour simplifier le code.
+
+Ne jamais modifier le contenu marketing sans validation.
+
+Privilégier :
+
+* CSS natif
+* JavaScript vanilla
+* GSAP uniquement lorsque nécessaire
+
+Objectif final :
+
+Le visiteur ne doit pas percevoir de différence entre le site WordPress et la version statique.

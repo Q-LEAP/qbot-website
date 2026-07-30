@@ -1,0 +1,18 @@
+# ── macOS / volume exFAT ──────────────────────────────────────────────
+# Fichiers « AppleDouble » (forks de ressources) générés par macOS sur ce
+# volume : ce ne sont pas des fichiers du projet.
+._*
+.DS_Store
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# ── Config locale Claude Code ─────────────────────────────────────────
+# Spécifique à une machine (chemins Windows absolus d'un autre poste).
+.claude/settings.local.json
+
+# ── Gros média de travail ─────────────────────────────────────────────
+# Enregistrement d'écran de ~29 Mo du viewer 3D : matériel de travail, ne fait
+# pas partie du site déployé. Supprimez cette ligne si vous voulez le versionner
+# (les rendus PNG de référence du même dossier, eux, sont bien suivis).
+Screen modèle 3D/*.mov

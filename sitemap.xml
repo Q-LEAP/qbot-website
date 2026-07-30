@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://q-bot.eu/</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/a-propos.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/a-propos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/a-propos.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/caracteristiques.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/caracteristiques.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/technical-specs.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/caracteristiques.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/modele-3d.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/modele-3d.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/3d-model.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/modele-3d.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/commandez.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/commandez.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/order.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/commandez.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/faq.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/faq.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/contact.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/contact.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/selenium-double-authentification.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/automatiser-2fa-tests.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/5-signes-tests-incomplets.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/5-signs-incomplete-testing.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+  </url>
+
+  <url>
+    <loc>https://q-bot.eu/en/</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/about.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/a-propos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/a-propos.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/technical-specs.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/caracteristiques.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/technical-specs.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/caracteristiques.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/3d-model.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/modele-3d.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/3d-model.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/modele-3d.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/order.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/commandez.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/order.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/commandez.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/faq.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/faq.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/contact.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/contact.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/selenium-2fa-guide.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/automate-2fa.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/5-signs-incomplete-testing.html</loc>
+    <lastmod>2026-07-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/5-signs-incomplete-testing.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+  </url>
+
+</urlset>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog QA — Tests logiciels, automatisation, 2FA | Q-BOT by Q-Leap</title>
+  <meta name="description" content="Conseils, guides et bonnes pratiques sur le test logiciel, l'automatisation et la double authentification (2FA). Par les experts Q-Leap Luxembourg.">
+  <link rel="canonical" href="https://q-bot.eu/blog.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Blog QA — Tests logiciels, automatisation, 2FA">
+  <meta property="og:description" content="Conseils, guides et bonnes pratiques sur le test logiciel, l'automatisation et la double authentification (2FA). Par les experts Q-Leap Luxembourg.">
+  <meta property="og:url" content="https://q-bot.eu/blog.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/hero-device.png">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-BOT by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blog QA — Tests logiciels, automatisation, 2FA">
+  <meta name="twitter:description" content="Conseils, guides et bonnes pratiques sur le test logiciel, l'automatisation et la double authentification (2FA). Par les experts Q-Leap Luxembourg.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/hero-device.png">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="assets/js/theme-init.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-BOT",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/hero-device.png",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://q-bot.eu/blog.html"
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="index.html" class="nav__logo" aria-label="Q-BOT — Accueil">
+        <img src="assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="a-propos.html" class="nav__link">À propos</a></li>
+        <li><a href="caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="faq.html" class="nav__link">FAQ</a></li>
+        <li><a href="blog.html" class="nav__link">Blog</a></li>
+        <li><a href="contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <div class="nav__lang" aria-label="Langue">
+          <a href="blog.html" class="active">FR</a>
+          <span>|</span>
+          <a href="en/blog.html">EN</a>
+        </div>
+                <a href="contact.html" class="btn btn--primary">Demo gratuite</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Blog</span>
+    <h1 id="page-title">Test logiciel &amp; Automatisation</h1>
+    <p>Conseils pratiques, guides techniques et retours d'expérience par les experts QA de Q-Leap.</p>
+  </div>
+</section>
+
+<!-- ======= BREADCRUMB ======= -->
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Fil d'Ariane">
+      <li><a href="index.html">Accueil</a></li>
+      <li><span aria-hidden="true">›</span></li>
+      <li><a href="blog.html" aria-current="page">Blog</a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ======= ARTICLE À LA UNE ======= -->
+<section class="section" aria-labelledby="featured-title">
+  <div class="container">
+    <div class="blog__featured">
+      <div class="blog__featured-img">
+        <div class="blog-color-banner" style="background:linear-gradient(135deg,#00CBBE 0%,#00A79C 100%); display:flex; align-items:center; justify-content:center; font-size:4rem;">🔐</div>
+      </div>
+      <div>
+        <span class="blog-card__tag">Automatisation</span>
+        <h2 class="section-title" id="featured-title" style="font-size:1.75rem; margin-bottom:16px;">
+          <a href="blog/automatiser-2fa-tests.html" style="color:inherit; text-decoration:none; transition:color .2s;">L'automatisation 2FA : le défi caché des équipes QA</a>
+        </h2>
+        <p style="color:var(--gray); line-height:1.7; margin-bottom:24px;">La double authentification protège vos utilisateurs — mais elle bloque vos testeurs. Découvrez pourquoi la 2FA est devenue l'un des principaux obstacles à la couverture de test automatisé, et comment les équipes QA modernes y répondent.</p>
+        <div class="blog-card__meta" style="margin-bottom:24px;">
+          <span>📅 Janvier 2025</span>
+          <span>⏱ 7 min de lecture</span>
+          <span>✍️ Équipe Q-Leap</span>
+        </div>
+        <a href="blog/automatiser-2fa-tests.html" class="btn btn--primary">
+          Lire l'article
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- ======= GRILLE ARTICLES ======= -->
+    <div class="blog__grid" role="list">
+
+      <article class="blog-card reveal" role="listitem">
+        <div class="blog-card__banner" style="background:linear-gradient(135deg,#141414 0%,#1F1F1F 100%);">🧪</div>
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Tutoriel</span>
+          <h3 class="blog-card__title"><a href="blog/selenium-double-authentification.html">Selenium &amp; 2FA : comment tester vos applications sécurisées</a></h3>
+          <p class="blog-card__excerpt">Selenium est l'outil d'automatisation le plus populaire, mais il reste impuissant face à la double authentification physique. Guide pratique avec exemples de code.</p>
+          <div class="blog-card__meta">
+            <span>Février 2025</span>
+            <span>8 min</span>
+          </div>
+          <a href="blog/selenium-double-authentification.html" class="blog-card__read-more">
+            Lire l'article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <div class="blog-card__banner" style="background:linear-gradient(135deg,#5CDCD3 0%,#00CBBE 100%);">⚠️</div>
+        <div class="blog-card__content">
+          <span class="blog-card__tag">QA Best Practices</span>
+          <h3 class="blog-card__title"><a href="blog/5-signes-tests-incomplets.html">5 signes que votre couverture de tests est insuffisante</a></h3>
+          <p class="blog-card__excerpt">Pensez-vous que votre suite de tests automatisés est complète ? Voici 5 signaux d'alarme concrets qui révèlent des angles morts dans votre stratégie QA.</p>
+          <div class="blog-card__meta">
+            <span>Mars 2025</span>
+            <span>6 min</span>
+          </div>
+          <a href="blog/5-signes-tests-incomplets.html" class="blog-card__read-more">
+            Lire l'article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= CTA NEWSLETTER ======= -->
+<div class="newsletter">
+  <div class="container">
+    <h2>Newsletter</h2>
+    <p>Si vous souhaitez bénéficier ds dernières nouveautés de Q-Bot, incrivez-vous à notre newsletter.</p>
+    <form class="newsletter__form" action="#" method="post" aria-label="Inscription newsletter">
+      <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email">
+      <button type="submit" class="btn">S'INSCRIRE</button>
+    </form>
+  </div>
+</div>
+
+</main>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge">&#127473;&#127482; Conçu au Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Q-BOT</h4>
+        <ul role="list">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="caracteristiques.html">Caractéristiques</a></li>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Produit</h4>
+        <ul role="list">
+          <li><a href="modele-3d.html">Modèle 3D</a></li>
+          <li><a href="commandez.html">Commander</a></li>
+          <li><a href="contact.html">Démo gratuite</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul role="list">
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-BOT powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="https://q-bot.eu/conditions-vente/" target="_blank" rel="noopener">Conditions de vente</a>
+        <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+<script>
+(function(){
+  var SK='qbot_articles';
+  try{
+    var arts=JSON.parse(localStorage.getItem(SK)||'[]');
+    var pub=arts.filter(function(a){return a.lang==='fr'&&a.status==='published';});
+    pub.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+    if(!pub.length)return;
+    function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function dateFR(d){if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});}
+    var AR='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    var ARS='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+    function thumbFeat(a){
+      if(a.thumbnail&&(a.thumbnail.startsWith('http')||a.thumbnail.startsWith('data:'))){
+        return '<img src="'+esc(a.thumbnail)+'" alt="" style="width:100%;height:100%;object-fit:cover;">';
+      }
+      return '<div style="background:'+(a.thumbColor||'linear-gradient(135deg,#00CBBE,#00A79C)')+';height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;">'+(a.thumbnail||'📝')+'</div>';
+    }
+    function thumbCard(a){
+      if(a.thumbnail&&(a.thumbnail.startsWith('http')||a.thumbnail.startsWith('data:'))){
+        return {style:'background:#111;',content:'<img src="'+esc(a.thumbnail)+'" alt="" style="width:100%;height:100%;object-fit:cover;">'};
+      }
+      return {style:'background:'+(a.thumbColor||'linear-gradient(135deg,#00CBBE,#00A79C)')+';',content:esc(a.thumbnail||'📝')};
+    }
+    // Replace featured with newest
+    var feat=pub[0];
+    var featEl=document.querySelector('.blog__featured');
+    if(featEl){
+      featEl.innerHTML='<div class="blog__featured-img"><div class="blog-color-banner" style="height:100%;">'+thumbFeat(feat)+'</div></div>'+
+        '<div>'+
+        '<span class="blog-card__tag">'+esc(feat.cat||'Blog')+'</span>'+
+        '<h2 class="section-title" id="featured-title" style="font-size:1.75rem;margin-bottom:16px;">'+
+        '<a href="blog/'+esc(feat.slug)+'.html" style="color:inherit;text-decoration:none;transition:color .2s;">'+esc(feat.title)+'</a></h2>'+
+        '<p style="color:var(--gray);line-height:1.7;margin-bottom:24px;">'+esc(feat.excerpt||'')+'</p>'+
+        '<div class="blog-card__meta" style="margin-bottom:24px;">'+
+        '<span>📅 '+dateFR(feat.date)+'</span><span>⏱ '+(feat.rt||'')+'</span><span>✍️ '+(feat.author||'')+'</span></div>'+
+        '<a href="blog/'+esc(feat.slug)+'.html" class="btn btn--primary">Lire l\'article '+AR+'</a></div>';
+    }
+    // Prepend remaining as grid cards
+    var grid=document.querySelector('.blog__grid');
+    if(grid&&pub.length>1){
+      var cards=pub.slice(1).map(function(a){
+        var t=thumbCard(a);
+        return '<article class="blog-card is-visible" role="listitem">'+
+          '<div class="blog-card__banner" style="'+t.style+'">'+t.content+'</div>'+
+          '<div class="blog-card__content">'+
+          '<span class="blog-card__tag">'+esc(a.cat||'Blog')+'</span>'+
+          '<h3 class="blog-card__title"><a href="blog/'+esc(a.slug)+'.html">'+esc(a.title)+'</a></h3>'+
+          '<p class="blog-card__excerpt">'+esc(a.excerpt||'')+'</p>'+
+          '<div class="blog-card__meta"><span>'+dateFR(a.date)+'</span><span>'+(a.rt||'')+'</span></div>'+
+          '<a href="blog/'+esc(a.slug)+'.html" class="blog-card__read-more">Lire l\'article '+ARS+'</a>'+
+          '</div></article>';
+      }).join('');
+      grid.innerHTML=cards;
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

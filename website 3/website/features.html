@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Features — Q-Bot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-md sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><img src="https://i0.wp.com/q-bot.eu/wp-content/uploads/2022/08/cropped-cropped-Untitled-design-9-1-e1663839739772.png" alt="Q-Bot" height="96"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto gap-1">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="how-it-works.html">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link active" href="features.html">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="use-cases.html">Use Cases</a></li>
+        </ul>
+        <a href="https://q-leap.eu" target="_blank" class="btn btn-accent btn-sm ms-3">By Q-Leap</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" style="padding:72px 0 60px;">
+    <div class="container">
+      <div class="badge-pill"><i class="bi bi-grid me-1"></i> Capabilities</div>
+      <h1>Everything your QA pipeline needs<br>to automate 2FA.</h1>
+      <p class="lead mt-3" style="max-width:560px;">Q-Bot is focused, self-contained, and built for teams who value reliability over complexity. No extras. Nothing missing.</p>
+    </div>
+  </section>
+
+  <!-- Feature 1: Visual Scenario Editor -->
+  <section class="section">
+    <div class="container">
+      <div class="feature-block">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-7">
+            <div class="feature-tag">Scenario Editor</div>
+            <h3>Build automation without writing a line of code.</h3>
+            <p class="lead">The Q-Bot web interface lets any tester create a scenario in minutes — no scripting, no XPath selectors, no brittle element IDs.</p>
+            <ul class="check-list">
+              <li><i class="bi bi-check-circle-fill"></i>Upload a screenshot of the target app screen as the step background</li>
+              <li><i class="bi bi-check-circle-fill"></i>Place numbered tap points by clicking directly on the screenshot</li>
+              <li><i class="bi bi-check-circle-fill"></i>Set millisecond-precision wait times between actions to match real app behaviour</li>
+              <li><i class="bi bi-check-circle-fill"></i>Add, reorder, and remove steps at any time</li>
+              <li><i class="bi bi-check-circle-fill"></i>Scenarios are saved and versioned in the Q-Bot backend</li>
+              <li><i class="bi bi-check-circle-fill"></i>Step images stored locally on the Q-Bot device — no cloud uploads</li>
+            </ul>
+            <p class="mt-3 text-muted" style="font-size:.9rem;">The result is a reusable, named scenario — a visual map of what to tap and when — ready to be triggered on demand from any test pipeline.</p>
+          </div>
+          <div class="col-lg-5">
+            <div class="feature-visual">
+              <div class="text-center">
+                <i class="bi bi-layout-text-window-reverse" style="font-size:4.5rem;color:var(--qbot-blue);opacity:.3;display:block;margin-bottom:1rem;"></i>
+                <div style="display:flex;flex-direction:column;gap:.5rem;max-width:220px;margin:auto;">
+                  <div style="background:#dee2e6;border-radius:6px;height:10px;width:100%;"></div>
+                  <div style="background:#dee2e6;border-radius:6px;height:10px;width:75%;"></div>
+                  <div style="background:var(--qbot-blue);border-radius:6px;height:10px;width:50%;opacity:.4;"></div>
+                </div>
+                <div class="mt-3 text-muted" style="font-size:.8rem;">Visual tap editor</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 2: Real Device -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="feature-block" style="border-bottom:none;">
+        <div class="row align-items-center g-5 flex-row-reverse">
+          <div class="col-lg-7">
+            <div class="feature-tag">Real-Device Execution</div>
+            <h3>Not a simulator. The actual app, on actual hardware.</h3>
+            <p class="lead">Q-Bot drives a real Android device over USB using ADB — Android Debug Bridge. Every tap and swipe is delivered to the physical screen of a real device running your real 2FA app.</p>
+            <ul class="check-list">
+              <li><i class="bi bi-check-circle-fill"></i>Operates the genuine 2FA application, not a mock or stub</li>
+              <li><i class="bi bi-check-circle-fill"></i>Touch actions delivered via ADB: tap, swipe, wait</li>
+              <li><i class="bi bi-check-circle-fill"></i>Works with any Android 2FA app — banking, enterprise SSO, LuxTrust, authenticators</li>
+              <li><i class="bi bi-check-circle-fill"></i>App-level security checks, certificate pinning, and biometric prompts behave as in production</li>
+            </ul>
+            <div class="mt-3 p-3 rounded" style="background:#fff3cd;border-left:3px solid #ffc107;font-size:.9rem;">
+              <strong>Why this matters:</strong> Simulators lie. Production 2FA apps behave differently from mocks. Q-Bot operates in the same environment your users do.
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="feature-visual" style="background:#fff;">
+              <div class="text-center">
+                <i class="bi bi-phone" style="font-size:4.5rem;color:var(--qbot-blue);opacity:.3;display:block;margin-bottom:.75rem;"></i>
+                <div style="color:#adb5bd;font-size:.8rem;">Real Android device<br>connected via USB/ADB</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 3: REST API -->
+  <section class="section">
+    <div class="container">
+      <div class="feature-block">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-7">
+            <div class="feature-tag">REST API Integration</div>
+            <h3>One HTTP call. Any pipeline. Any framework.</h3>
+            <p class="lead">Every scenario in Q-Bot is accessible via a simple REST API. No SDK, no proprietary plugin, no agent to install in your CI environment.</p>
+            <p class="text-muted" style="font-size:.95rem;">Three endpoints are available for external use:</p>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered api-table mt-2">
+                <thead class="table-light">
+                  <tr><th>Endpoint</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><code>GET /scenarios/:id/execute</code></td><td>Run a saved scenario on the connected device</td></tr>
+                  <tr><td><code>GET /get-luxtrust-otp</code></td><td>Return the current OTP from the LuxTrust app</td></tr>
+                  <tr><td><code>POST /display-image</code></td><td>Display a QR code on Q-Bot's screen for the Android device to scan</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul class="check-list mt-3">
+              <li><i class="bi bi-check-circle-fill"></i>Self-hosted, runs on your local network</li>
+              <li><i class="bi bi-check-circle-fill"></i>No authentication tokens or API keys required</li>
+              <li><i class="bi bi-check-circle-fill"></i>Compatible with Selenium, Cypress, Playwright, Robot Framework, JUnit, shell scripts, and more</li>
+              <li><i class="bi bi-check-circle-fill"></i>Integration takes under an hour</li>
+            </ul>
+          </div>
+          <div class="col-lg-5">
+            <pre class="code-block"><code><span class="comment"># Selenium (Python) example</span>
+import requests
+
+<span class="comment"># Trigger 2FA scenario</span>
+requests.get(
+  <span class="value">"http://q-bot.local:8000"</span>
+  <span class="value">"/scenarios/42/execute"</span>
+)
+
+<span class="comment"># Test continues normally</span>
+driver.find_element(
+  By.ID, <span class="value">"dashboard"</span>
+).is_displayed()</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 4: BLE Companion App -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="feature-block" style="border-bottom:none;">
+        <div class="row align-items-center g-5 flex-row-reverse">
+          <div class="col-lg-7">
+            <div class="feature-tag">Bluetooth Companion App</div>
+            <h3>Let Q-Bot react to 2FA notifications the moment they arrive.</h3>
+            <p class="lead">The optional Q-Bot companion app runs on a second Android device. Using Android's Accessibility Service, it monitors notifications from 2FA apps and notifies Q-Bot over Bluetooth Low Energy when one is detected.</p>
+            <ul class="check-list">
+              <li><i class="bi bi-check-circle-fill"></i>Monitors 2FA app notifications via Android Accessibility Service</li>
+              <li><i class="bi bi-check-circle-fill"></i>Sends trigger to Q-Bot over BLE — no call from the test runner needed</li>
+              <li><i class="bi bi-check-circle-fill"></i>Ideal when 2FA timing is unpredictable or controlled by the app under test</li>
+              <li><i class="bi bi-check-circle-fill"></i>Supports auto-reconnect to the paired Q-Bot device</li>
+              <li><i class="bi bi-check-circle-fill"></i>Both BLE and API triggers can be used in the same environment</li>
+            </ul>
+          </div>
+          <div class="col-lg-5">
+            <div class="feature-visual" style="background:#fff;">
+              <div class="text-center">
+                <i class="bi bi-bluetooth" style="font-size:4.5rem;color:var(--qbot-accent);opacity:.4;display:block;margin-bottom:.75rem;"></i>
+                <div style="color:#adb5bd;font-size:.8rem;">Companion app → BLE → Q-Bot<br>Automatic trigger on notification</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 5: Self-contained hardware -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center mb-5">
+          <div class="feature-tag" style="color:var(--qbot-accent);">Hardware Stack</div>
+          <h2 class="section-title">Runs on a Raspberry Pi.<br>No cloud. No lock-in.</h2>
+          <p class="section-subtitle">Q-Bot is a complete, self-hosted system. Everything stays on your local network.</p>
+        </div>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.75rem;height:100%;">
+            <i class="bi bi-hdd-network" style="font-size:2rem;color:var(--qbot-accent);margin-bottom:1rem;display:block;"></i>
+            <h6 class="fw-bold text-white">Self-hosted on Raspberry Pi</h6>
+            <p style="color:rgba(255,255,255,.5);font-size:.9rem;margin:0;">All services run as Docker containers on Raspberry Pi OS Lite. Single Docker Compose command to deploy and update.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.75rem;height:100%;">
+            <i class="bi bi-shield-lock" style="font-size:2rem;color:var(--qbot-accent);margin-bottom:1rem;display:block;"></i>
+            <h6 class="fw-bold text-white">No cloud dependency</h6>
+            <p style="color:rgba(255,255,255,.5);font-size:.9rem;margin:0;">No external API calls, no data leaving your environment, no internet connection required during test runs.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1.75rem;height:100%;">
+            <i class="bi bi-box-seam" style="font-size:2rem;color:var(--qbot-accent);margin-bottom:1rem;display:block;"></i>
+            <h6 class="fw-bold text-white">Complete stack included</h6>
+            <p style="color:rgba(255,255,255,.5);font-size:.9rem;margin:0;">Web UI, backend API with SQLite storage, BLE service, and a small attached screen for displaying QR codes — all in one device.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section-alt">
+    <div class="container text-center">
+      <h2 class="section-title mb-3">See Q-Bot in a real pipeline</h2>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="use-cases.html" class="btn btn-primary btn-lg px-4">Use Cases &amp; Integrations</a>
+        <a href="mailto:bot@q-leap.eu" class="btn btn-accent btn-lg px-4">Get Q-Bot →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-4">
+          <img src="https://i0.wp.com/q-bot.eu/wp-content/uploads/2020/06/QBOT_01-logo_baseline-HD.png" alt="Q-Bot" height="56">
+        </div>
+        <div class="col-md-4 text-center my-3 my-md-0">
+          <a href="index.html" class="me-3">Home</a>
+          <a href="how-it-works.html" class="me-3">How It Works</a>
+          <a href="features.html" class="me-3">Features</a>
+          <a href="use-cases.html">Use Cases</a>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <small>© 2024–2026 Q-Leap S.A. &mdash; Luxembourg</small>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

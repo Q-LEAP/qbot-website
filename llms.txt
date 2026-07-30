@@ -1,0 +1,49 @@
+# Q-BOT by Q-Leap
+
+> Q-BOT is a physical robot that automates two-factor authentication (2FA) — including LuxTrust hardware tokens — for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It physically presses the 2FA device, reads the one-time code with a camera, and returns it over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
+
+Q-BOT solves a problem no software-only tool can: 2FA methods that require a physical action (a hardware token button, a phone notification) cannot be automated by a browser driver like Selenium. Q-BOT is a robot, not a script — it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
+
+Key facts:
+- Subscription: €900/month, all inclusive (support, replacement, no long-term commitment).
+- Hardware: Raspberry Pi 5, OLED display, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
+- Compatible with: LuxTrust (physical token and mobile), Google/Microsoft Authenticator, most smartphone-based 2FA.
+- Compatible test frameworks: Selenium, Cypress, Playwright, Appium, Robot Framework, TestComplete, Jenkins, GitLab CI.
+- Privacy: screenshots are deleted immediately after OTP extraction; no data retention; runs on the customer's local network.
+- Company: Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange, Luxembourg. Contact: bot@q-leap.eu / +352 20 21 17.
+
+Site available in French (default, root paths) and English (`/en/`).
+
+## Product
+
+- [Homepage (FR)](https://q-bot.eu/): product overview, how it works, pricing.
+- [Homepage (EN)](https://q-bot.eu/en/)
+- [Technical specifications (FR)](https://q-bot.eu/caracteristiques.html)
+- [Technical specifications (EN)](https://q-bot.eu/en/technical-specs.html)
+- [Interactive 3D model (FR)](https://q-bot.eu/modele-3d.html)
+- [Interactive 3D model (EN)](https://q-bot.eu/en/3d-model.html)
+- [Order / pricing (FR)](https://q-bot.eu/commandez.html)
+- [Order / pricing (EN)](https://q-bot.eu/en/order.html)
+
+## Company
+
+- [About Q-Leap (FR)](https://q-bot.eu/a-propos.html)
+- [About Q-Leap (EN)](https://q-bot.eu/en/about.html)
+- [Contact (FR)](https://q-bot.eu/contact.html)
+- [Contact (EN)](https://q-bot.eu/en/contact.html)
+
+## FAQ
+
+- [FAQ (FR)](https://q-bot.eu/faq.html)
+- [FAQ (EN)](https://q-bot.eu/en/faq.html)
+
+## Blog (software testing & 2FA automation guides)
+
+- [Selenium & two-factor authentication guide (FR)](https://q-bot.eu/blog/selenium-double-authentification.html) / [EN](https://q-bot.eu/en/blog/selenium-2fa-guide.html)
+- [How to automate 2FA tests (FR)](https://q-bot.eu/blog/automatiser-2fa-tests.html) / [EN](https://q-bot.eu/en/blog/automate-2fa.html)
+- [5 signs your test coverage is incomplete (FR)](https://q-bot.eu/blog/5-signes-tests-incomplets.html) / [EN](https://q-bot.eu/en/blog/5-signs-incomplete-testing.html)
+
+## Legal
+
+- [Terms of sale (FR)](https://q-bot.eu/conditions-vente/) / [EN](https://q-bot.eu/en/terms-and-conditions-of-sale/)
+- [Privacy policy (FR)](https://q-bot.eu/confidentialite/) / [EN](https://q-bot.eu/en/privacy/)
