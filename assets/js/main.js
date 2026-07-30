@@ -195,53 +195,123 @@ document.querySelectorAll('.faq-item__question').forEach(btn => {
 });
 
 /* ════════════════════════════════════════
-   4. SCROLL REVEAL — classes CSS, stagger
+   4. SCROLL REVEAL — variantes typées + stagger
+   Trois familles d'éléments, trois façons d'arriver
+   (cf. « MOTION SYSTEM » dans style.css) :
+     media  → masque qui remonte + dézoom  (images, vidéo)
+     group  → le conteneur ne bouge pas, ses enfants s'enchaînent
+              (en-têtes de section, colonnes de texte)
+     card   → montée + léger rapprochement (défaut : cartes, items)
+   Le type n'est PAS écrit dans le HTML : les 24 pages restent inchangées,
+   la table ci-dessous est la seule source de vérité.
 ════════════════════════════════════════ */
 if ('IntersectionObserver' in window) {
-  const REVEAL_SELECTORS = [
-    '.feature-card',
-    '.faq-item',
-    '.timeline-item',
-    '.product-card',
-    '.stat-item',
-    '.tool-tag',
-    '.spec-item',
-    '.contact-info__item',
-    '.pricing-card',
-    '.intro__image',
-    '.specs__image',
-    '.section-header',
-    '.calendly-box',
-    '.video__wrapper',
-    '.badge-lux',
-    '.model-viewer-frame',
-  ].join(',');
+  /* Éléments qui portent DÉJÀ .reveal dans le HTML (pages d'articles de blog :
+     .article-header, .article-body, .sidebar-card, .article-cta…).
+     À relever AVANT que ce module ne pose ses propres classes, sinon la
+     requête ramènerait aussi les éléments qu'il vient de marquer.
 
-  const revealEls = Array.from(document.querySelectorAll(REVEAL_SELECTORS));
+     Sans ceci, ces éléments restent à opacity:0 pour toujours : la classe
+     .reveal les cache, mais aucun observer ne leur ajoute jamais .is-visible
+     puisqu'ils ne figurent pas dans la table ci-dessous — le corps entier de
+     blog/automatiser-2fa-tests.html et en/blog/automate-2fa.html était ainsi
+     invisible. Les récupérer ici les remet dans le circuit. */
+  const preMarked = Array.from(document.querySelectorAll('.reveal'));
 
-  // Stagger : index dans le groupe parent, max 5 (= 400ms max)
-  const groups = new Map();
-  revealEls.forEach(el => {
-    const parent = el.parentElement;
-    if (!groups.has(parent)) groups.set(parent, []);
-    groups.get(parent).push(el);
+  /* Ordre significatif : le premier motif qui matche gagne, donc les
+     sélecteurs les plus spécifiques d'abord. */
+  const REVEAL_MAP = [
+    ['media', [
+      '.intro__image',
+      '.video__wrapper',
+      '.blog__featured-img',
+    ]],
+    ['group', [
+      '.section-header',
+      /* Colonne de texte d'une section intro : label → titre → paragraphes
+         arrivent en cascade. `:not()` écarte la colonne image du même grid. */
+      '.intro__grid > div:not(.intro__image)',
+    ]],
+    ['card', [
+      '.feature-card',
+      '.faq-item',
+      '.timeline-item',
+      '.product-card',
+      '.stat-item',
+      '.tool-tag',
+      '.spec-item',
+      '.contact-info__item',
+      '.pricing-card',
+      '.blog-card',
+      '.calendly-box',
+      /* Exclu de « media » : le bloc contient aussi un bouton, un masque
+         clippé lui rognerait les angles (cf. .specs__image dans style.css). */
+      '.specs__image',
+      '.badge-lux',
+      /* Exclu de « media » : un clip-path permanent sur le cadre du viewer 3D
+         interférerait avec son passage en plein écran (et avec son canvas). */
+      '.model-viewer-frame',
+      '.contact-map',
+    ]],
+  ];
+
+  const revealEls = [];
+  const seen = new Set();
+
+  REVEAL_MAP.forEach(([variant, selectors]) => {
+    document.querySelectorAll(selectors.join(',')).forEach(el => {
+      if (seen.has(el)) return;      // un élément ne prend qu'une variante
+      seen.add(el);
+      el.dataset.mxVariant = variant;
+      revealEls.push(el);
+    });
   });
-  groups.forEach(children => {
+
+  /* Variante « plain » pour les .reveal du HTML : montée + fondu, sans flou.
+     Certains de ces blocs (.article-body) font plusieurs milliers de pixels de
+     haut — y appliquer un filter coûterait une passe de flou sur toute la
+     surface pour un effet invisible à cette échelle. */
+  preMarked.forEach(el => {
+    if (seen.has(el)) return;
+    seen.add(el);
+    el.dataset.mxVariant = 'plain';
+    revealEls.push(el);
+  });
+
+  /* Un élément « group » dont un parent est déjà révélé en cascade serait
+     animé deux fois (une fois comme enfant du groupe, une fois pour lui-même)
+     et repartirait de zéro au milieu de sa propre arrivée. */
+  const filtered = revealEls.filter(el =>
+    !revealEls.some(other =>
+      other !== el &&
+      other.dataset.mxVariant === 'group' &&
+      other.contains(el)
+    )
+  );
+
+  // Stagger : index dans le groupe parent, max 5 (= 375 ms max)
+  const parents = new Map();
+  filtered.forEach(el => {
+    const parent = el.parentElement;
+    if (!parents.has(parent)) parents.set(parent, []);
+    parents.get(parent).push(el);
+  });
+  parents.forEach(children => {
     children.forEach((el, i) => {
       el.style.setProperty('--stagger-i', Math.min(i, 5));
     });
   });
 
-  // Ajoute .reveal sans transition (évite le FOUC)
-  revealEls.forEach(el => {
-    el.classList.add('reveal');
+  // Ajoute les classes sans transition (évite le FOUC)
+  filtered.forEach(el => {
+    el.classList.add('reveal', 'reveal--' + el.dataset.mxVariant);
     el.style.transition = 'none';
   });
 
   // Double RAF : re-active les transitions après le premier paint
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      revealEls.forEach(el => { el.style.transition = ''; });
+      filtered.forEach(el => { el.style.transition = ''; });
 
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -251,7 +321,7 @@ if ('IntersectionObserver' in window) {
         });
       }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
 
-      revealEls.forEach(el => observer.observe(el));
+      filtered.forEach(el => observer.observe(el));
     });
   });
 }
@@ -424,70 +494,222 @@ backToTop.addEventListener('click', () => {
 
 
 /* ════════════════════════════════════════
-   9. PARALLAX — index.html uniquement
-   Trois couches de profondeur au scroll :
-   orbes (lentes) · image hero · images de section.
-   Utilise la propriété CSS `translate` individuelle
-   pour composer sans conflit avec transform/animations.
+   9. MOTION ENGINE — parallaxe au scroll
+   Un seul listener de scroll et une seule boucle rAF pour tout le site.
+   Le moteur n'écrit que des variables CSS (--mx-y, --orb-y, --hero-p) :
+   les amplitudes finales, les media queries et prefers-reduced-motion sont
+   gérés côté CSS (section « MOTION SYSTEM » de style.css).
+
+   Amplitude (px) = déplacement maximal quand l'élément traverse le viewport.
+     amplitude > 0 → l'élément traîne derrière le scroll  → paraît plus loin
+     amplitude < 0 → l'élément devance le scroll           → paraît plus près
+   Une image reçoit toujours le signe opposé à celui de son cadre : c'est ce
+   contre-mouvement dans un cadre immobile qui lit comme de la profondeur,
+   plutôt que comme un bloc qui glisse.
+
+   L'interpolation (LERP) est ce qui distingue le rendu « premium » : la
+   position poursuit sa cible au lieu de la suivre au pixel, ce qui donne
+   l'inertie d'une masse. Sans elle, le parallaxe est net mais mécanique.
 ════════════════════════════════════════ */
 (function () {
-  /* Uniquement sur l'index (seule page avec .hero) */
-  var hero = document.querySelector('.hero');
-  if (!hero) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var heroImg   = document.querySelector('.hero__image');
-  var introImgs = Array.from(document.querySelectorAll('.intro__image img'));
-  var root      = document.documentElement;
-  var vh        = window.innerHeight;
+  var LAYERS = [
+    /* Cadres — la couche la plus lente */
+    ['.hero__image',                                    34],
+    ['.intro__image, .specs__image',                    38],
+    /* .specs__image ne reçoit pas de contre-mouvement interne : son image et
+       son bouton doivent rester solidaires (cf. style.css). */
+    ['.blog__featured-img',                             28],
+    ['.video__wrapper',                                 24],
+    ['.model-viewer-frame',                             20],
+    /* Images à l'intérieur d'un cadre clippé : contre-mouvement.
+       L'amplitude reste sous la marge de sur-dimensionnement définie en CSS
+       (--media-scale: 1.08, soit ~16 px de réserve de chaque côté sur une
+       image de 420 px) — au-delà, un bord vide apparaîtrait dans le cadre. */
+    ['.intro__image img',                              -14],
+    ['.blog__featured-img img',                        -12],
+    /* Titres de section : dérive très légère, juste assez pour que le bloc de
+       texte et son image ne défilent pas exactement à la même vitesse. */
+    ['.section-header',                                -14],
+  ];
 
-  window.addEventListener('resize', function () { vh = window.innerHeight; }, { passive: true });
+  /* Progressions « scrubbées » : la variable passe de 0 à 1 pendant que
+     l'élément traverse le viewport, le CSS en fait ce qu'il veut (ici le trait
+     de la timeline qui se remplit). Sans interpolation : une progression doit
+     coller au scroll, l'inertie y serait perçue comme du retard. */
+  var PROGRESS = [
+    ['.timeline', '--tl-p'],
+  ];
 
-  var ticking = false;
+  var LERP = 0.14;          // 0 = figé, 1 = suivi immédiat (aucune inertie)
+  var SETTLED = 0.05;       // px — en dessous, on considère la cible atteinte
+  var READ_LINE = 0.7;      // hauteur de viewport où « se lit » une progression
 
-  window.addEventListener('scroll', function () {
-    if (ticking) return;
-    ticking = true;
+  var root  = document.documentElement;
+  var hero  = document.querySelector('.hero');
+  var items = [];
+  var byEl  = new Map();
 
-    requestAnimationFrame(function () {
-      var sy = window.scrollY;
-
-      /* ── Couche 1 : orbes (très lentes, facteur 0.12) ── */
-      root.style.setProperty('--orb-y', (sy * 0.12) + 'px');
-
-      /* ── Couche 2 : image hero (facteur 0.20 → apparaît plus profonde) ── */
-      if (heroImg) {
-        heroImg.style.translate = '0 ' + (sy * 0.20) + 'px';
-      }
-
-      /* ── Couche 3 : images de section (parallax dans fenêtre overflow:hidden) ── */
-      introImgs.forEach(function (img) {
-        var rect    = img.getBoundingClientRect();
-        if (rect.top > vh + 100 || rect.bottom < -100) return;
-        /* Progress : 0 quand l'élément entre en bas, augmente en scrollant */
-        var progress = (vh - rect.top) * 0.10;
-        img.style.translate = '0 ' + progress + 'px';
-      });
-
-      ticking = false;
+  LAYERS.forEach(function (layer) {
+    document.querySelectorAll(layer[0]).forEach(function (el) {
+      if (byEl.has(el)) return;   // une seule couche par élément
+      el.classList.add('mx-parallax');
+      /* visible: true au départ — les callbacks d'IntersectionObserver sont
+         asynchrones, donc au premier update() tout serait encore « invisible »
+         et les éléments déjà à l'écran partiraient de 0 pour rejoindre leur
+         position, ce qui se verrait comme un sursaut au chargement. */
+      var item = { el: el, amp: layer[1], cur: 0, target: 0, visible: true };
+      byEl.set(el, item);
+      items.push(item);
     });
+  });
+
+  var progressEls = [];
+  PROGRESS.forEach(function (entry) {
+    document.querySelectorAll(entry[0]).forEach(function (el) {
+      progressEls.push({ el: el, name: entry[1] });
+    });
+  });
+
+  if (!items.length && !progressEls.length && !hero) return;
+
+  var vh = window.innerHeight;
+
+  /* N'anime que ce qui est à l'écran (marge généreuse pour que l'élément soit
+     déjà à la bonne position quand il entre réellement dans le viewport). */
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var item = byEl.get(entry.target);
+        if (item) item.visible = entry.isIntersecting;
+      });
+      kick();
+    }, { rootMargin: '25% 0px 25% 0px' });
+    items.forEach(function (i) { io.observe(i.el); });
+  }
+
+  function clamp(v, min, max) { return v < min ? min : (v > max ? max : v); }
+
+  /* snap = true : on se cale directement sur la cible sans interpolation
+     (chargement, redimensionnement) — l'inertie n'a de sens qu'en réaction
+     à un mouvement de l'utilisateur. */
+  function update(snap) {
+    var moving = false;
+    var sy = window.scrollY;
+
+    /* Orbes de fond — pilotées par le scroll absolu (elles sont ancrées au
+       hero, pas traversées par le viewport). */
+    root.style.setProperty('--orb-y', (sy * 0.1).toFixed(1) + 'px');
+
+    /* Sortie du hero : 0 en haut de page, 1 quand il a entièrement défilé. */
+    if (hero) {
+      var h = hero.offsetHeight || 1;
+      hero.style.setProperty('--hero-p', clamp(sy / h, 0, 1).toFixed(4));
+    }
+
+    /* Progressions : modèle de « ligne de lecture » — une ligne imaginaire à
+       READ_LINE de la hauteur du viewport, la progression valant la fraction de
+       l'élément déjà passée au-dessus d'elle. 0 quand son haut atteint la
+       ligne, 1 quand son bas la franchit.
+       (Une première version rapportait le défilement au seul haut de
+       l'élément : sur un bloc haut, la barre était déjà pleine alors qu'on
+       n'en avait lu que la moitié.) */
+    for (var k = 0; k < progressEls.length; k++) {
+      var pe = progressEls[k];
+      var pr = pe.el.getBoundingClientRect();
+      if (pr.height > 0) {
+        pe.el.style.setProperty(
+          pe.name,
+          clamp((vh * READ_LINE - pr.top) / pr.height, 0, 1).toFixed(4)
+        );
+      }
+    }
+
+    for (var i = 0; i < items.length; i++) {
+      var it = items[i];
+      if (!it.visible) continue;
+
+      var rect = it.el.getBoundingClientRect();
+      /* On retire le décalage déjà appliqué : getBoundingClientRect() reflète
+         le translate en cours, et s'en servir tel quel ferait boucler le
+         calcul sur lui-même (la position influencerait sa propre cible). */
+      var top    = rect.top - it.cur;
+      var center = top + rect.height / 2;
+
+      /* Progression normalisée : -1 juste sous le viewport, 0 au centre,
+         +1 juste au-dessus. Le dénominateur inclut la hauteur de l'élément,
+         donc un grand bloc parcourt la même plage qu'un petit. */
+      var p = clamp((vh / 2 - center) / ((vh + rect.height) / 2), -1, 1);
+
+      it.target = p * it.amp;
+
+      var delta = it.target - it.cur;
+      if (snap || Math.abs(delta) <= SETTLED) {
+        it.cur = it.target;
+      } else {
+        it.cur += delta * LERP;
+        moving = true;
+      }
+      it.el.style.setProperty('--mx-y', it.cur.toFixed(2) + 'px');
+    }
+    return moving;
+  }
+
+  /* Boucle active seulement tant que quelque chose bouge : un scroll relance
+     la boucle, l'inertie la maintient quelques frames après l'arrêt, puis
+     elle s'éteint (aucun rAF ne tourne au repos). */
+  var running = false;
+  function loop() {
+    running = update();
+    if (running) requestAnimationFrame(loop);
+  }
+  function kick() {
+    if (running) return;
+    running = true;
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('scroll', kick, { passive: true });
+  window.addEventListener('resize', function () {
+    vh = window.innerHeight;
+    update(true);
   }, { passive: true });
+
+  update(true);   // position initiale
+
+  /* Second calage après `load` : c'est là que le navigateur restaure la
+     position de scroll, et que le module 11 la réapplique au changement de
+     langue. Sans ce snap, les couches partent de 0 et rejoignent leur
+     position par interpolation — visible comme un glissement au chargement. */
+  window.addEventListener('load', function () {
+    vh = window.innerHeight;
+    update(true);
+  });
 }());
 
 /* ════════════════════════════════════════
-   10. CARD — Spotlight curseur + 3D tilt
-   Feature cards et product cards réagissent
-   au curseur : rotation 3D + halo teal.
+   10. POINTEUR — inclinaison des cartes + du rendu produit
+   Deux réglages font toute la différence entre « gadget » et « premium » :
+     • l'amplitude — une carte s'incline de 3-4°, pas de 7° ;
+     • la durée de transition — assez longue (0,4 s) pour que la carte
+       *poursuive* le curseur avec de l'inertie au lieu d'y être collée.
+       L'ancienne valeur (0,07 s) suivait la souris au pixel : net, mais nerveux.
 ════════════════════════════════════════ */
 (function () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* Écarte le tactile : sur un écran tactile, `mousemove` n'est émis qu'au
+     moment du tap et l'inclinaison resterait figée après le doigt. */
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  var FAST_TRANSITION = 'border-color 0.25s ease, box-shadow 0.3s ease, transform 0.07s ease';
+  /* ── Cartes : inclinaison 3D + halo qui suit le curseur ── */
+  var CARD_TRANSITION =
+    'border-color 0.25s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
 
   document.querySelectorAll('.feature-card, .product-card').forEach(function (card) {
     card.addEventListener('mouseenter', function () {
-      card.style.willChange  = 'transform';
-      card.style.transition  = FAST_TRANSITION;
+      card.style.willChange = 'transform';
+      card.style.transition = CARD_TRANSITION;
     });
 
     card.addEventListener('mousemove', function (e) {
@@ -496,21 +718,55 @@ backToTop.addEventListener('click', () => {
       var yRatio = (e.clientY - rect.top)  / rect.height - 0.5;
 
       card.style.transform =
-        'perspective(700px)' +
-        ' rotateY(' + (xRatio * 14) + 'deg)' +
-        ' rotateX(' + (-yRatio * 10) + 'deg)' +
-        ' translateZ(8px) translateY(-6px)';
+        'perspective(900px)' +
+        ' rotateY(' + (xRatio * 7).toFixed(2) + 'deg)' +
+        ' rotateX(' + (-yRatio * 5).toFixed(2) + 'deg)' +
+        ' translateY(-6px)';
 
       card.style.setProperty('--spot-x', (e.clientX - rect.left) + 'px');
       card.style.setProperty('--spot-y', (e.clientY - rect.top)  + 'px');
     });
 
     card.addEventListener('mouseleave', function () {
-      card.style.willChange  = '';
-      card.style.transition  = '';
-      card.style.transform   = '';
+      card.style.willChange = '';
+      card.style.transition = '';
+      card.style.transform  = '';
     });
   });
+
+  /* ── Rendu produit du hero : inclinaison depuis le centre du hero ──
+     Remplace l'ancienne animation de flottement en boucle : le mouvement
+     devient une réponse au visiteur plutôt qu'un va-et-vient automatique.
+     Le CSS applique --mx-rx / --mx-ry (cf. « MOTION SYSTEM »), le suivi est
+     lissé par la transition de 0,5 s posée sur .hero__image img. */
+  var heroFrame = document.querySelector('.hero__image');
+  var heroImg   = heroFrame && heroFrame.querySelector('img');
+
+  if (heroImg) {
+    var MAX_TILT = 6;   // degrés
+
+    /* Écoute sur .hero et non sur l'image : le mouvement démarre dès que le
+       curseur entre dans la section, l'image réagit donc à l'approche. */
+    var heroSection = heroFrame.closest('.hero') || heroFrame;
+
+    heroSection.addEventListener('mousemove', function (e) {
+      var rect = heroFrame.getBoundingClientRect();
+      var x = (e.clientX - rect.left - rect.width  / 2) / (rect.width  / 2);
+      var y = (e.clientY - rect.top  - rect.height / 2) / (rect.height / 2);
+      /* Bornées : le curseur peut être loin de l'image (on écoute toute la
+         section), sans quoi les ratios dépasseraient largement ±1. */
+      x = Math.max(-1, Math.min(1, x));
+      y = Math.max(-1, Math.min(1, y));
+
+      heroImg.style.setProperty('--mx-ry', (x * MAX_TILT).toFixed(2) + 'deg');
+      heroImg.style.setProperty('--mx-rx', (-y * MAX_TILT).toFixed(2) + 'deg');
+    }, { passive: true });
+
+    heroSection.addEventListener('mouseleave', function () {
+      heroImg.style.setProperty('--mx-ry', '0deg');
+      heroImg.style.setProperty('--mx-rx', '0deg');
+    }, { passive: true });
+  }
 }());
 
 /* ════════════════════════════════════════
@@ -764,24 +1020,34 @@ backToTop.addEventListener('click', () => {
 }());
 
 /* ════════════════════════════════════════
-   10. MAGNETIC BUTTONS — CTA suit le curseur
-   Les boutons principaux suivent légèrement
-   le curseur pour un effet premium.
+   13. MAGNETIC BUTTONS — CTA suit le curseur
+   Amplitude volontairement faible (0,10 / 0,14) : à 0,28 / 0,35 le bouton se
+   déplaçait de plus de 20 px et pouvait fuir sous le curseur au bord de la
+   zone, ce qui rend le clic difficile. Ici le déplacement reste sous ~6 px —
+   perceptible comme une matière, jamais comme une cible mouvante.
 ════════════════════════════════════════ */
 (function () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (window.innerWidth < 1024) return; // touch screens
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (window.innerWidth < 1024) return;
+
+  var PULL_X = 0.10;
+  var PULL_Y = 0.14;
+  var MAX    = 6;      // px — plafond, indépendant de la taille du bouton
+
+  function bounded(v) { return Math.max(-MAX, Math.min(MAX, v)); }
 
   var SELECTORS = '.hero__actions .btn, .page-hero .btn, .calendly-box .btn, .cta-section .btn';
   document.querySelectorAll(SELECTORS).forEach(function (btn) {
     btn.addEventListener('mousemove', function (e) {
       var rect = btn.getBoundingClientRect();
-      var x = (e.clientX - rect.left  - rect.width  / 2) * 0.28;
-      var y = (e.clientY - rect.top   - rect.height / 2) * 0.35;
-      btn.style.transform = 'translate(' + x + 'px, ' + y + 'px) translateY(-1px)';
-    });
+      var x = bounded((e.clientX - rect.left - rect.width  / 2) * PULL_X);
+      var y = bounded((e.clientY - rect.top  - rect.height / 2) * PULL_Y);
+      btn.style.transform = 'translate(' + x.toFixed(2) + 'px, ' + y.toFixed(2) + 'px)';
+    }, { passive: true });
+
     btn.addEventListener('mouseleave', function () {
       btn.style.transform = '';
-    });
+    }, { passive: true });
   });
 }());

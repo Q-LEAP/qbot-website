@@ -20,7 +20,7 @@ faq.html
 modele-3d.html               ← Interactive 3D model viewer (Google <model-viewer>)
 en/                         ← English versions (same structure)
 assets/css/style.css        ← Single stylesheet, CSS custom properties design system
-assets/js/main.js           ← Single script: nav, FAQ accordion, scroll reveal, counters, back-to-top, 3D viewer controls
+assets/js/main.js           ← Single script: nav, FAQ accordion, motion engine (scroll parallax + typed reveals), counters, back-to-top, 3D viewer controls
 assets/img/                 ← Images downloaded from WordPress CDN
 assets/models/               ← .glb 3D model(s) for modele-3d.html / en/3d-model.html
 ```
@@ -63,13 +63,20 @@ open('assets/models/qbot.glb.data.js', 'w').write(
 - `--font: 'Roboto'`, `--font-heading: 'Roboto'` — Google Fonts
 - `--container: 1180px`, `--section-py: 96px`
 
-**JS architecture** (main.js, 6 independent modules in one file):
-1. Nav sticky shadow + mobile toggle (hamburger → X via `aria-expanded` CSS selector)
+**JS architecture** (main.js, independent IIFE modules in one file, numbered by comment banner):
+0. Dark/light theme toggle (button injected into `.nav__actions`; initial state set by `theme-init.js` in `<head>`)
+1. Nav sticky shadow + mobile toggle (hamburger → X via `aria-expanded` CSS selector) + smart hide on scroll down
 2. Active nav link detection (pathname-based)
 3. FAQ accordion with dynamic `scrollHeight` (no hardcoded max-height)
-4. Scroll reveal: `.reveal` class added by JS → `.is-visible` via `IntersectionObserver`; double-RAF prevents FOUC; stagger via `--stagger-i` CSS custom property
+4. Scroll reveal: `.reveal` + a **variant** class added by JS → `.is-visible` via `IntersectionObserver`; double-RAF prevents FOUC; stagger via `--stagger-i` CSS custom property. See the motion section below.
 5. Stats counter: `IntersectionObserver` + `requestAnimationFrame` on `[data-count]` elements
 6. Back-to-top FAB (injected by JS)
+7. Article UX: reading time, reading-progress bar, copy-code buttons
+9. **Motion engine** — the single scroll listener/rAF loop for the whole site; writes CSS variables only
+10. Pointer interactions: card 3D tilt + cursor spotlight, hero product-render tilt
+11. Language switch preserves scroll position (ratio in `sessionStorage`)
+12. 3D viewer controls
+13. Magnetic CTA buttons
 
 ## Reference site
 
@@ -90,12 +97,13 @@ Before any modification:
 - Never remove an animation to simplify code.
 
 Target behaviours to preserve:
-- Hero: sequential `fadeInUp` entrance (label → title → desc → CTAs → image), then continuous `float` on the product image.
-- Page hero (sub-pages): `fadeInUp` entrance on label, h1, p.
-- Scroll reveal: `.reveal` → `.is-visible` with per-sibling stagger (`--stagger-i`, capped at 5).
+- Hero: sequential `riseIn` entrance (label → title → desc → CTAs), `mediaIn` mask reveal on the product image, then scroll-driven depth (content lifts/fades via `--hero-p`, image lags via parallax) and cursor tilt. **No looping float** — see the motion section below.
+- Page hero (sub-pages): `riseIn` entrance on label, h1, p.
+- Scroll reveal: `.reveal` + variant → `.is-visible` with per-sibling stagger (`--stagger-i`, capped at 5).
 - FAQ accordion: smooth `max-height` transition driven by `scrollHeight`.
 - Mobile nav: hamburger animates to X; menu slides down (`menuSlideDown` keyframe).
-- `prefers-reduced-motion` media query disables all animations.
+- Timeline: teal progress line scrubbed by scroll (`--tl-p`).
+- `prefers-reduced-motion` media query disables all animations **and** neutralises the whole motion layer (parallax, tilt, masks) while forcing every `.reveal` variant visible.
 
 ## Known placeholders to replace
 
@@ -232,3 +240,111 @@ python -m http.server 8080
 ```
 
 No build step required.
+
+## Motion pass — premium SaaS scroll layer (2026-07-30)
+
+Brief: scroll animations in the spirit of `circle-website.webflow.io` (animated parallax),
+and a rework of every image animation — the looping float was called out as unattractive —
+toward an Apple/Linear feel while staying more dynamic than either.
+
+### Architecture: JS writes variables, CSS decides how it looks
+
+One module (`main.js` #9, "MOTION ENGINE") owns **the site's only scroll listener and rAF
+loop**. It never writes computed styles, only CSS custom properties:
+
+| Variable | Written on | Meaning |
+|----------|-----------|---------|
+| `--mx-y` | each `.mx-parallax` element | vertical parallax offset, px |
+| `--orb-y` | `:root` | ambient hero glow offset |
+| `--hero-p` | `.hero` | hero scroll-out progress, 0 → 1 |
+| `--tl-p` | `.timeline` | scrubbed progress of the timeline line, 0 → 1 |
+| `--mx-rx` / `--mx-ry` | hero `<img>` (module #10) | pointer tilt |
+
+Amplitudes, breakpoint tuning and `prefers-reduced-motion` all live in CSS (section
+"MOTION SYSTEM" at the end of `style.css`), so the *feel* can be retuned without touching
+the script. Three things make the result read as premium rather than mechanical:
+
+1. **LERP smoothing** (factor `0.14`): positions *chase* their target instead of tracking
+   the scroll pixel-for-pixel, which reads as mass/inertia.
+2. **Opposing layers**: a media frame drifts with a positive amplitude (lags behind the
+   scroll → looks further away) while the image *inside* it gets a negative one. That
+   counter-movement inside a still frame is what reads as depth. Sign convention is
+   documented in both files.
+3. **The loop shuts off at rest** — `kick()` restarts it on scroll, inertia keeps it a few
+   frames, then it stops. No rAF runs when idle.
+
+Two correctness details that are easy to regress:
+- `getBoundingClientRect()` reflects the translate already applied, so the engine subtracts
+  the current offset before computing the next target. Without that the position feeds back
+  into itself.
+- `update(true)` snaps without interpolation, and is called on init, on `resize`, **and on
+  `load`** — `load` is when the browser restores scroll position (and when module #11
+  re-applies it after a language switch); without the snap the layers visibly slide into
+  place on arrival.
+
+### Typed reveals
+
+`main.js` #4 assigns a variant class from a table in the JS — **nothing was added to the 24
+HTML pages**. Each element gets exactly one variant:
+
+- `media` — mask reveal: `clip-path: inset(… round)` rising + the image settling from a
+  slight overscale, plus a one-shot light sweep. Used for `.intro__image`,
+  `.video__wrapper`, `.blog__featured-img`.
+- `group` — the container itself doesn't move; its children cascade (label → title → text)
+  via `--child-delay` on `nth-child`. Used for `.section-header` and intro text columns. A
+  whole-block fade made all three land at once, which reads flat.
+- `card` — rise + slight scale-up. Default for cards and list items.
+- `plain` — rise + fade, no blur. Reserved for elements that already carry `.reveal` in the
+  markup (see the bug below); a blur pass over a several-thousand-pixel `.article-body`
+  costs a lot for an effect invisible at that scale.
+
+`.specs__image` is deliberately **not** a media frame: it holds an image *and* a button, so
+a clipped rounded frame would round the button's corners too. It keeps radius/shadow on the
+`<img>` and moves as one block.
+
+### What was removed or toned down
+
+| Before | After | Why |
+|--------|-------|-----|
+| `@keyframes float` looping forever on the hero image | removed; replaced by scroll parallax + pointer tilt | the brief; motion now answers the visitor instead of bobbing on its own |
+| `fadeInUp` / `fadeInRight` entrances | `riseIn` (rise + focus-in blur) / `mediaIn` (mask) | a mask reveal is the premium signature; both old keyframes are gone |
+| `iconBounce` (scale 1.22 → 0.93) | `iconIn` (rise + settle) + a hover micro-interaction | the bounce read as a toy |
+| Card tilt ±7°, transition 0.07 s | ±3.5°/±2.5°, transition 0.4 s | 0.07 s glued the card to the cursor; the longer transition gives it inertia |
+| Magnetic buttons, factors 0.28/0.35 | 0.10/0.14, capped at 6 px | the button could move >20 px and slide out from under the cursor |
+| Hero orbs: 12–16 s, scale 1.25, 40–50 px | 22–26 s, scale ~1.10, ~20 px | at the old scale it read as an animation, not as ambience |
+| `.section-label` shimmer `infinite` | 2 iterations | a permanent shimmer on every label is template signature |
+
+Also added: the timeline's teal progress line (`.timeline::after`, `scaleY(var(--tl-p))`) —
+the only genuinely scroll-scrubbed effect on the site.
+
+### Bugs the pass surfaced (all pre-existing, all fixed)
+
+- **`blog/automatiser-2fa-tests.html` and `en/blog/automate-2fa.html` rendered their entire
+  article invisible.** These pages carry `class="reveal"` **hardcoded in the HTML** on
+  `.article-header`, `.article-meta`, `.article-body`, `.sidebar-card`, `.article-cta`,
+  `.related-articles` — but none of those selectors were in `main.js`'s reveal list, so
+  nothing ever added `.is-visible` and `.reveal { opacity: 0 }` held forever. Verified
+  against the initial commit before fixing. Module #4 now collects pre-marked `.reveal`
+  elements (before it stamps its own classes, or the query would return everything) and
+  gives them the `plain` variant. **Any future `.reveal` written directly in markup is now
+  picked up automatically.**
+- **`.timeline`'s vertical lines painted over the dots**, striking through the step numbers.
+  Root cause was subtle: the reveal left a `filter: blur(0)` on `.timeline-item`, and a
+  non-`none` filter — even at zero — makes the element a stacking context, which trapped
+  `.timeline-item__dot`'s `z-index: 1` inside it and dropped the whole item below the
+  absolutely-positioned lines. Fixed both ends: revealed elements now end at `filter: none`
+  (which also stops leaking one compositing layer per card, ~30 on some pages), and the
+  timeline's stacking order is explicit (`item: z-index 1`, lines: `z-index 0`).
+- **`.intro__image`'s shadow never rendered** — `overflow: hidden` on the container clipped
+  a `box-shadow` declared on the child `<img>`. Radius and shadow now sit on the frame.
+- **`prefers-reduced-motion` left below-the-fold `.reveal` content hidden** until the
+  observer reached it, and the global override didn't reset `animation-delay`, so
+  `backwards`-filled entrances held an empty screen for up to 0.4 s. Both fixed.
+
+### Verifying a motion change
+
+`prefers-reduced-motion` and "did anything stay invisible" are the two things eyeballing
+misses. A Playwright sweep over all 24 pages × (normal, reduced-motion) that scrolls to the
+bottom and asserts no `.reveal` element (or `group` child) is left under `opacity: 0.9`,
+plus no console error and no horizontal overflow, catches the whole class of regression —
+that is how the article-body bug above was found. Worth re-running after any change here.

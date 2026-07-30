@@ -49,6 +49,22 @@
 
   --transition:  0.25s ease;
 
+  /* ── Motion (voir la section « MOTION SYSTEM » en fin de fichier) ──
+     Trois courbes seulement, pour que tout le site partage la même « physique » :
+       --ease-out   : sortie longue et calme — entrées de contenu, reveals
+       --ease-soft  : symétrique discrète — hovers, changements d'état
+       --ease-spring: léger dépassement — micro-interactions (icônes, chips)
+     Pas de rebond marqué : la sensation cible est « lourd mais fluide »
+     (Apple / Linear), pas « élastique ». */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.32, 0.64, 1);
+
+  /* Durées de reveal — les médias sont volontairement plus lents que le texte :
+     une image qui se dévoile lentement lit « premium », un texte lent lit « lent ». */
+  --dur-text:  0.7s;
+  --dur-media: 1.05s;
+
   --container:   1180px;
   --section-py:  96px;
 
@@ -318,7 +334,7 @@ p { color: var(--gray); }
   width: 500px; height: 500px;
   background: radial-gradient(circle, rgba(0,203,190,0.18) 0%, transparent 70%);
   pointer-events: none;
-  animation: heroOrb1 12s ease-in-out infinite alternate;
+  animation: heroOrb1 24s ease-in-out infinite alternate;
   translate: 0 var(--orb-y, 0px);
 }
 
@@ -387,10 +403,9 @@ p { color: var(--gray); }
   align-items: center;
 }
 
-.intro__image img {
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-}
+/* Le radius/l'ombre sont portés par le cadre .intro__image (cf. « Image produit
+   — cadre clippé »), pas par l'image : dans un conteneur overflow:hidden une
+   ombre posée sur l'enfant est de toute façon rognée. */
 
 /* ---- Avantages / Features ---- */
 .features__grid {
@@ -706,11 +721,8 @@ p { color: var(--gray); }
   border-color: #2B2B2B;
 }
 
-.specs__image img {
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-}
+/* .specs__image img : radius + ombre + hover sont regroupés dans la section
+   « Image produit » avec ceux de .intro__image. */
 
 /* ---- Contact ---- */
 .contact__grid {
@@ -920,13 +932,20 @@ p { color: var(--gray); }
   left: 20px; top: 0; bottom: 0;
   width: 2px;
   background: var(--border);
+  z-index: 0;   /* sous les items (cf. .timeline-item) */
 }
 
 .timeline-item {
   display: flex;
   gap: 24px;
   padding-bottom: 36px;
+  /* z-index explicite sur l'item plutôt que sur la seule pastille : les deux
+     traits verticaux de .timeline sont en absolute, donc peints après le flux
+     normal. Sans cela, tout ce qui transforme l'item en contexte d'empilement
+     (un filter de reveal, par exemple) enferme le z-index de la pastille et
+     laisse les traits passer par-dessus les numéros. */
   position: relative;
+  z-index: 1;
 }
 .timeline-item:last-child { padding-bottom: 0; }
 
@@ -937,6 +956,11 @@ p { color: var(--gray); }
   border: 2px solid var(--teal);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  /* `position: relative` explicite : sans elle, le z-index ci-dessous n'était
+     pas appliqué et la pastille se retrouvait *sous* les traits verticaux de
+     .timeline (le numéro était barré par le trait de progression, qui est un
+     ::after donc plus loin dans l'ordre de l'arbre). */
+  position: relative;
   z-index: 1;
   font-size: 0.75rem;
   font-weight: 700;
@@ -1064,63 +1088,75 @@ p { color: var(--gray); }
 ══════════════════════════════════════════════ */
 
 /* ── Keyframes ── */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: none; }
-}
-
-@keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(40px); }
-  to   { opacity: 1; transform: none; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-14px); }
-}
-
 @keyframes menuSlideDown {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: none; }
 }
 
-/* ── Hero entrance — séquentiel ── */
-.hero__label   { animation: fadeInUp 0.55s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
-.hero__title   { animation: fadeInUp 0.60s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
-.hero__desc    { animation: fadeInUp 0.60s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
-.hero__actions { animation: fadeInUp 0.60s cubic-bezier(0.16,1,0.3,1) 0.35s both; }
-.hero__image   { animation: fadeInRight 0.75s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
+/* ── Entrances (hero + page-hero) ──
+   Le texte monte avec un très léger flou de mise au point (« focus-in ») :
+   c'est ce qui distingue une entrée premium d'un simple fadeInUp. */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(22px); filter: blur(6px); }
+  to   { opacity: 1; transform: none;             filter: blur(0); }
+}
 
-/* Hero image flottante (après l'entrée) */
-.hero__image img { animation: float 5.5s ease-in-out 1.2s infinite; }
+/* Variante sans flou, pour les éléments dont le texte est peint par un
+   dégradé (`background-clip: text` + `text-fill-color: transparent`) :
+   combiner un filter avec cette technique casse le rendu du dégradé sur
+   certaines versions de Safari. Concerne .hero__title (son <em>) et
+   .section-label (shimmer). */
+@keyframes riseInSoft {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Le média du hero se dévoile par un masque qui remonte + un léger dézoom,
+   au lieu de glisser depuis la droite puis de flotter en boucle. */
+@keyframes mediaIn {
+  from { opacity: 0; clip-path: inset(0 0 22% 0); transform: scale(1.06); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0);   transform: scale(1); }
+}
+
+.hero__label   { animation: riseIn     0.75s var(--ease-out) 0.05s both; }
+.hero__title   { animation: riseInSoft 0.85s var(--ease-out) 0.15s both; }
+.hero__desc    { animation: riseIn     0.85s var(--ease-out) 0.27s both; }
+.hero__actions { animation: riseIn     0.85s var(--ease-out) 0.39s both; }
+
+/* fill-mode `backwards` : `both` figerait `transform: scale(1)` après coup et
+   neutraliserait l'inclinaison au pointeur posée plus bas. */
+.hero__image img { animation: mediaIn 1.25s var(--ease-out) 0.30s backwards; }
 
 /* ── Page hero sous-pages — entrance ── */
-.page-hero .section-label { animation: fadeInUp 0.50s cubic-bezier(0.16,1,0.3,1) 0.00s both; }
-.page-hero h1              { animation: fadeInUp 0.60s cubic-bezier(0.16,1,0.3,1) 0.10s both; }
-.page-hero p               { animation: fadeInUp 0.60s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
+.page-hero .section-label { animation: riseInSoft 0.70s var(--ease-out) 0.00s both; }
+.page-hero h1             { animation: riseIn     0.85s var(--ease-out) 0.12s both; }
+.page-hero p              { animation: riseIn     0.85s var(--ease-out) 0.24s both; }
 
-/* ── Scroll reveal — CSS-class driven ── */
+/* ── Scroll reveal — CSS-class driven ──
+   Base commune : montée courte + focus-in. Les variantes (--media, --card,
+   --text) sont posées par main.js selon le type d'élément ; voir la section
+   « MOTION SYSTEM » en fin de fichier pour le détail de chacune. */
 .reveal {
+  --reveal-delay: calc(var(--stagger-i, 0) * 0.075s);
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(22px);
+  filter: blur(5px);
   transition:
-    opacity  0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--stagger-i, 0) * 0.08s),
-    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--stagger-i, 0) * 0.08s);
-  will-change: opacity, transform;
+    opacity   var(--dur-text) var(--ease-out) var(--reveal-delay),
+    transform var(--dur-text) var(--ease-out) var(--reveal-delay),
+    filter    var(--dur-text) var(--ease-out) var(--reveal-delay);
 }
+/* `filter: none` et non `blur(0)` : un filter non-`none`, même à 0, laisse
+   l'élément en contexte d'empilement et sur sa propre couche de composition
+   pour toute la durée de vie de la page — sur une page à 30 cartes c'est 30
+   couches inutiles, et cela réordonne le rendu (le z-index des enfants n'est
+   plus comparable à celui du reste de la page : voir .timeline-item__dot).
+   L'interpolation blur(4px) → none est bien animée, `none` étant traité comme
+   l'identité du filtre. */
 .reveal.is-visible {
   opacity: 1;
   transform: none;
-}
-
-/* stat-item : pop depuis bas-centre */
-.stat-item.reveal {
-  transform: scale(0.75) translateY(16px);
-}
-
-/* section-header : fade simple (pas de décalage vertical fort) */
-.section-header.reveal {
-  transform: translateY(16px);
+  filter: none;
 }
 
 /* ── Hamburger → X ── */
@@ -1157,19 +1193,44 @@ p { color: var(--gray); }
   transform: translateY(-2px);
 }
 
-/* ── Image produit — hover zoom ── */
-.intro__image,
-.specs__image {
+/* ── Image produit — cadre clippé + hover ──
+   Le cadre porte le border-radius et le clipping ; l'image dedans est
+   sur-dimensionnée (--media-scale) pour laisser de la marge au parallaxe
+   interne sans jamais découvrir un bord vide. Voir « MOTION SYSTEM ».
+   Ne concerne que .intro__image, dont le conteneur ne contient qu'une image :
+   .specs__image, lui, héberge aussi un bouton (« Explorer le modèle 3D ») et
+   est traité juste en dessous. */
+.intro__image {
+  position: relative;
   overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
-.intro__image img,
+.intro__image img {
+  --media-scale: 1.08;
+  display: block;
+  width: 100%;
+  transform: scale(var(--media-scale));
+  transition: transform 0.85s var(--ease-out);
+}
+.intro__image:hover img {
+  --media-scale: 1.13;
+}
+
+/* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
+   restent donc portés par l'image (un cadre clippé arrondirait aussi les
+   angles du bouton), et le bloc entier se déplace d'un seul tenant au
+   parallaxe — pas de contre-mouvement interne, qui décollerait l'image
+   de son bouton. */
+.specs__image { position: relative; overflow: hidden; }
 .specs__image img {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.85s var(--ease-out);
 }
-.intro__image:hover img,
-.specs__image:hover img {
-  transform: scale(1.04);
-}
+.specs__image:hover img { transform: scale(1.04); }
 
 /* ── Timeline dot — glow au reveal ── */
 .timeline-item__dot {
@@ -1824,7 +1885,12 @@ a:focus-visible { border-radius: var(--radius-sm); }
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Le délai doit tomber aussi : les entrées en fill-mode `backwards`
+       maintiennent leur état initial (opacity 0) pendant toute la durée du
+       délai, soit jusqu'à ~0,4 s d'écran vide pour rien. */
+    animation-delay: 0.01ms !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
   }
   .hero__image img { animation: none !important; }
@@ -2196,23 +2262,27 @@ a:focus-visible { border-radius: var(--radius-sm); }
    Orbs · Shimmer · Spotlight · Tilt · Magnetic
    ══════════════════════════════════════════════ */
 
-/* ── Keyframes supplémentaires ── */
+/* ── Keyframes supplémentaires ──
+   Les deux orbes de fond respirent très lentement (20-26 s) et de très peu :
+   à l'échelle précédente (scale 1.25, 40-50 px, 12 s) le mouvement était
+   perceptible comme une animation ; ici il ne l'est que comme une ambiance. */
 @keyframes heroOrb1 {
-  0%   { opacity: 0.15; transform: scale(1)    translate(0, 0); }
-  100% { opacity: 0.30; transform: scale(1.25) translate(-40px, 30px); }
+  0%   { opacity: 0.16; transform: scale(1)    translate(0, 0); }
+  100% { opacity: 0.26; transform: scale(1.10) translate(-18px, 14px); }
 }
 @keyframes heroOrb2 {
-  0%   { opacity: 0.07; transform: scale(1)   translate(0, 0); }
-  100% { opacity: 0.18; transform: scale(1.2) translate(50px, -40px); }
+  0%   { opacity: 0.08; transform: scale(1)    translate(0, 0); }
+  100% { opacity: 0.16; transform: scale(1.09) translate(22px, -18px); }
 }
 @keyframes shimmerLabel {
   0%   { background-position: 200% center; }
   100% { background-position:   0% center; }
 }
-@keyframes iconBounce {
-  0%, 100% { transform: scale(1); }
-  40%       { transform: scale(1.22); }
-  70%       { transform: scale(0.93); }
+/* Remplace l'ancien iconBounce (scale 1.22 → 0.93) : le rebond « jouet » est
+   troqué contre une arrivée sobre, alignée sur le reveal de la carte. */
+@keyframes iconIn {
+  0%   { opacity: 0; transform: translateY(10px) scale(0.88); }
+  100% { opacity: 1; transform: none; }
 }
 
 /* ── Hero — second orbe animé (::after) ── */
@@ -2223,7 +2293,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   width: 480px; height: 480px;
   background: radial-gradient(circle, rgba(0,203,190,0.10) 0%, transparent 68%);
   pointer-events: none;
-  animation: heroOrb2 16s ease-in-out infinite alternate;
+  animation: heroOrb2 26s ease-in-out infinite alternate;
   translate: 0 calc(var(--orb-y, 0px) * 1.6);
 }
 
@@ -2236,7 +2306,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   width: 340px; height: 340px;
   background: radial-gradient(circle, rgba(0,203,190,0.16) 0%, transparent 70%);
   pointer-events: none;
-  animation: heroOrb1 11s ease-in-out infinite alternate;
+  animation: heroOrb1 22s ease-in-out infinite alternate;
 }
 
 /* ── Section label — gradient shimmer ──
@@ -2249,7 +2319,11 @@ a:focus-visible { border-radius: var(--radius-sm); }
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmerLabel 4s linear infinite;
+    /* 2 passages, pas `infinite` : un scintillement en boucle sur chaque label
+       de chaque section attire l'œil en permanence sur une décoration — c'est
+       la signature d'un template, pas d'un produit. Il joue à l'arrivée sur la
+       page puis se tait. */
+    animation: shimmerLabel 4s linear 2;
   }
   .hero .section-label,
   .page-hero .section-label,
@@ -2262,11 +2336,21 @@ a:focus-visible { border-radius: var(--radius-sm); }
   }
 }
 
-/* ── Feature card icon — bounce au reveal ── */
+/* ── Feature card icon — arrivée au reveal + micro-interaction au survol ── */
+/* fill-mode « backwards » et non « both » : avec « both » la keyframe 100%
+   (transform: none) reste appliquée après la fin de l'animation et écrase en
+   permanence le transform du hover juste en dessous. « backwards » ne fige que
+   l'état initial pendant le délai, ce qui suffit ici. */
 .feature-card.is-visible .feature-card__icon {
-  animation: iconBounce 0.65s cubic-bezier(0.16, 1, 0.3, 1)
-    calc(var(--stagger-i, 0) * 0.08s + 0.22s) both;
+  animation: iconIn 0.7s var(--ease-out)
+    calc(var(--stagger-i, 0) * 0.075s + 0.18s) backwards;
 }
+.feature-card__icon,
+.feature-card__icon svg {
+  transition: transform 0.45s var(--ease-spring), background 0.3s var(--ease-soft);
+}
+.feature-card:hover .feature-card__icon { transform: translateY(-3px); }
+.feature-card:hover .feature-card__icon svg { transform: scale(1.08); }
 
 /* ── Card spotlight (curseur suit le hover) ── */
 .feature-card::after,
@@ -2403,4 +2487,246 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 @media (max-width: 768px) {
   .grid-2 { grid-template-columns: 1fr; }
+}
+/* ══════════════════════════════════════════════
+   MOTION SYSTEM
+   Parallaxe au scroll · reveals typés · pointeur
+   ──────────────────────────────────────────────
+   Toute la couche de mouvement au scroll est pilotée par le module « MOTION
+   ENGINE » de main.js, qui n'écrit que des variables CSS (jamais de style
+   calculé) :
+     --mx-y   décalage vertical de parallaxe, en px (couche par couche)
+     --hero-p progression de sortie du hero, 0 → 1
+     --mx-rx / --mx-ry  rotation de l'inclinaison au pointeur
+   Le JS lit/écrit, le CSS décide *à quoi ça ressemble* : les amplitudes
+   restent donc ajustables par media query sans toucher au script.
+
+   Convention de signe de --mx-y (cf. main.js) : une amplitude positive fait
+   « traîner » l'élément derrière le scroll (il paraît plus loin), une
+   amplitude négative le fait devancer le scroll (il paraît plus près). Les
+   images internes utilisent l'amplitude opposée à celle de leur cadre : c'est
+   ce contre-mouvement dans un cadre fixe qui donne la profondeur.
+   ══════════════════════════════════════════════ */
+
+/* La propriété individuelle `translate` (et non `transform`) est utilisée
+   partout ici : elle se compose avec les `transform` déjà posés par les
+   hovers, les reveals et les animations d'entrée, sans les écraser. */
+.mx-parallax { translate: 0 var(--mx-y, 0px); }
+
+/* En plein écran, l'élément sort du flux mais garde son `translate` : le
+   viewer 3D apparaîtrait décalé de la valeur de parallaxe figée au moment du
+   clic (et il n'y a plus de scroll pour la remettre à zéro). */
+.model-viewer-frame.is-fullscreen,
+.mx-parallax:fullscreen { translate: none; }
+
+/* Sur-dimensionnement des images clippées : donne au parallaxe interne la
+   marge nécessaire pour bouger sans jamais découvrir un bord du cadre. */
+.blog__featured-img { position: relative; }
+.blog__featured-img img {
+  --media-scale: 1.08;
+  transform: scale(var(--media-scale));
+  transition: transform 0.85s var(--ease-out);
+}
+.video__wrapper { position: relative; }
+
+/* ── Hero — sortie au scroll ──
+   Le contenu s'efface et remonte doucement pendant que le hero quitte
+   l'écran, l'image reste plus longtemps (amplitude de parallaxe plus faible
+   dans main.js) : c'est ce décalage qui crée la profondeur, et qui remplace
+   l'ancienne animation de flottement en boucle sur l'image. */
+.hero__content {
+  opacity: calc(1 - var(--hero-p, 0) * 0.8);
+  translate: 0 calc(var(--hero-p, 0) * -44px);
+}
+.hero__image { perspective: 1100px; }
+
+/* Inclinaison au pointeur sur le rendu produit (desktop, souris uniquement).
+   L'entrée `mediaIn` est en fill-mode `backwards` — et non `both` — pour ne
+   pas figer `transform` après coup et bloquer cette inclinaison. */
+.hero__image img {
+  transform: rotateX(var(--mx-rx, 0deg)) rotateY(var(--mx-ry, 0deg));
+  transition: transform 0.5s var(--ease-soft);
+}
+
+/* ══ Reveals typés ══
+   Trois variantes posées par main.js selon le type d'élément. Le texte monte,
+   les cartes montent en se rapprochant, les médias se dévoilent par un
+   masque : trois vitesses distinctes, une seule courbe. */
+
+/* ── Variante « média » : masque qui remonte ──
+   clip-path plutôt qu'un translate : l'image ne bouge pas, elle se découvre.
+   `round` reprend le radius du cadre, sinon les angles redeviennent carrés
+   pendant toute la transition. */
+.reveal--media {
+  --media-radius: var(--radius-lg);
+  opacity: 0;
+  transform: none;
+  filter: none;
+  clip-path: inset(0 0 26% 0 round var(--media-radius));
+  transition:
+    opacity   var(--dur-media) var(--ease-out) var(--reveal-delay),
+    clip-path var(--dur-media) var(--ease-out) var(--reveal-delay);
+}
+.reveal--media.is-visible {
+  opacity: 1;
+  clip-path: inset(0 0 0 0 round var(--media-radius));
+}
+/* Le dézoom accompagne le masque : l'image « se pose » au lieu d'apparaître.
+   Keyframe (fill `backwards`) et non transition : une transition de 1,35 s
+   posée sur `.is-visible` resterait la transition active *après* le reveal et
+   ferait durer 1,35 s le zoom au survol. Ici l'animation ne fige rien à la
+   fin, le hover retrouve donc sa propre transition de 0,85 s. */
+@keyframes mediaSettle {
+  from { transform: scale(calc(var(--media-scale, 1) + 0.05)); }
+  to   { transform: scale(var(--media-scale, 1)); }
+}
+.reveal--media:not(.is-visible) img {
+  transform: scale(calc(var(--media-scale, 1) + 0.05));
+}
+.reveal--media.is-visible img {
+  animation: mediaSettle 1.35s var(--ease-out) var(--reveal-delay) backwards;
+}
+
+/* Passage de lumière, une seule fois, juste après le masque. */
+@keyframes mediaSheen {
+  from { transform: translateX(-130%) skewX(-14deg); }
+  to   { transform: translateX(130%)  skewX(-14deg); }
+}
+.reveal--media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(255,255,255,0.20) 50%,
+    transparent 62%
+  );
+  transform: translateX(-130%) skewX(-14deg);
+}
+.reveal--media.is-visible::after {
+  animation: mediaSheen 1.5s var(--ease-soft) calc(var(--reveal-delay) + 0.3s) 1;
+}
+
+/* ── Variante « plain » : montée + fondu, sans flou ──
+   Réservée aux éléments qui portent .reveal directement dans le HTML (blocs
+   d'article), dont la hauteur rend un filter inutilement coûteux. */
+.reveal--plain {
+  transform: translateY(18px);
+  filter: none;
+}
+.reveal--plain.is-visible {
+  transform: none;
+  filter: none;
+}
+
+/* ── Variante « carte » : montée + rapprochement ── */
+.reveal--card {
+  transform: translateY(30px) scale(0.975);
+  filter: blur(4px);
+}
+.reveal--card.is-visible {
+  transform: none;
+  filter: none;
+}
+
+/* ── Variante « groupe » : le conteneur ne bouge pas, ses enfants s'enchaînent ──
+   Utilisée sur les en-têtes de section et les colonnes de texte : label puis
+   titre puis paragraphe, comme une phrase qui se compose. Un reveal du bloc
+   entier ferait arriver les trois d'un coup. */
+.reveal--group {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: none;
+}
+.reveal--group > * {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(5px);
+  transition:
+    opacity   var(--dur-text) var(--ease-out) var(--child-delay, 0s),
+    transform var(--dur-text) var(--ease-out) var(--child-delay, 0s),
+    filter    var(--dur-text) var(--ease-out) var(--child-delay, 0s);
+}
+.reveal--group.is-visible > * {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* Même précaution que riseInSoft : pas de filter sur le label à dégradé. */
+.reveal--group > .section-label,
+.reveal--group.is-visible > .section-label { filter: none; }
+
+.reveal--group > *:nth-child(1) { --child-delay: 0s;    }
+.reveal--group > *:nth-child(2) { --child-delay: 0.09s; }
+.reveal--group > *:nth-child(3) { --child-delay: 0.18s; }
+.reveal--group > *:nth-child(4) { --child-delay: 0.27s; }
+.reveal--group > *:nth-child(5) { --child-delay: 0.34s; }
+.reveal--group > *:nth-child(n+6) { --child-delay: 0.4s; }
+
+/* ── Ligne de temps — le trait se dessine au scroll ──
+   Un second trait, teal, se superpose au trait gris de .timeline::before et se
+   remplit à mesure que la section défile (--tl-p, écrit par le moteur). C'est
+   le seul effet du site réellement « scrubbé » par le scroll plutôt que
+   déclenché à l'entrée : il donne un repère de progression dans la section.
+   En prefers-reduced-motion le moteur ne tourne pas, --tl-p reste à 0, donc
+   scaleY(0) : le trait teal est simplement absent et le trait gris subsiste. */
+.timeline::after {
+  content: '';
+  position: absolute;
+  left: 20px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--teal), var(--teal-dark));
+  transform: scaleY(var(--tl-p, 0));
+  transform-origin: top center;
+  z-index: 0;   /* sous les items (cf. .timeline-item) */
+}
+.timeline-item__dot { transition: box-shadow 0.6s var(--ease-out) 0.25s; }
+
+/* ── Mobile : amplitudes réduites ──
+   Sur un écran court, un parallaxe calé sur le desktop devient un décalage
+   visible plutôt qu'une profondeur ; et le hero passe en une colonne, donc
+   sa sortie doit rester discrète. */
+@media (max-width: 768px) {
+  .mx-parallax { translate: 0 calc(var(--mx-y, 0px) * 0.45); }
+  .hero__content {
+    opacity: calc(1 - var(--hero-p, 0) * 0.5);
+    translate: 0 calc(var(--hero-p, 0) * -20px);
+  }
+}
+
+/* ── prefers-reduced-motion — neutralisation complète de la couche motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .mx-parallax { translate: none; }
+  .hero__content { opacity: 1; translate: none; }
+  .hero__image img { transform: none; }
+  /* `.reveal` de base et `.reveal--plain` inclus : sans eux, ces éléments
+     restaient à opacity:0 jusqu'à ce que l'observer les atteigne, alors qu'en
+     mouvement réduit il n'y a plus d'animation à attendre — autant les
+     afficher d'emblée, ce qui élimine aussi tout risque qu'un contenu reste
+     invisible si l'observer ne se déclenche pas. */
+  .reveal,
+  .reveal--plain,
+  .reveal--media,
+  .reveal--card,
+  .reveal--group,
+  .reveal--group > * {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    clip-path: none;
+    transition: none !important;
+  }
+  .reveal--media::after,
+  .reveal--media.is-visible::after { animation: none; opacity: 0; }
+  .reveal--media:not(.is-visible) img,
+  .reveal--media.is-visible img {
+    animation: none;
+    transform: scale(var(--media-scale, 1));
+  }
+  .feature-card:hover .feature-card__icon,
+  .feature-card:hover .feature-card__icon svg { transform: none; }
 }
