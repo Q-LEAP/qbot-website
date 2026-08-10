@@ -16,13 +16,13 @@
   <meta property="og:description" content="Q-BOT est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
   <meta property="og:url" content="https://q-bot.eu/">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-v3-hero.png">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Q-BOT by Q-Leap">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Q-BOT — Automatiser la double authentification 2FA">
   <meta name="twitter:description" content="Q-BOT est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
-  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-v3-hero.png">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <!-- Favicon -->
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="assets/img/favicon.png" sizes="192x192" type="image/png">
@@ -44,7 +44,7 @@
     "alternateName": "Q-BOT",
     "url": "https://q-bot.eu/",
     "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
-    "image": "https://q-bot.eu/assets/img/qbot-v3-hero.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
     "email": "bot@q-leap.eu",
     "telephone": "+352202117",
     "address": {
@@ -83,7 +83,7 @@
   "@type": "Product",
   "name": "Q-BOT",
   "description": "Q-BOT est un robot qui automatise la double authentification (2FA), y compris LuxTrust, pour les équipes de test logiciel. Conçu et fabriqué au Luxembourg par Q-Leap.",
-  "image": "https://q-bot.eu/assets/img/qbot-v3-hero.png",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
   "brand": {
     "@type": "Brand",
     "name": "Q-Leap"
@@ -166,9 +166,9 @@
       </div>
       <div class="hero__image">
         <img
-          src="assets/img/qbot-v3-hero.png"
-          alt="Robot Q-BOT — boîtier actuel avec un smartphone en place"
-          width="520" height="544"
+          src="assets/img/qbot-hero.webp"
+          alt="Robot Q-BOT — boîtier d'automatisation de la double authentification"
+          width="560" height="442"
           loading="eager"
         >
       </div>
@@ -197,11 +197,11 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="intro__image intro__image--product">
+      <div class="intro__image">
         <img
-          src="assets/img/qbot-v3-solution.png"
+          src="assets/img/qbot-solution.jpg"
           alt="Q-BOT — Robot d'automatisation 2FA"
-          width="560" height="575"
+          width="560" height="368"
           loading="lazy"
         >
       </div>
@@ -321,16 +321,21 @@
       <p class="section-subtitle">Automatisez la validation de l'authentification mobile dans vos scénarios de test</p>
     </div>
     <div class="video__wrapper">
-      <!-- Remplacer VIDEO_ID par l'identifiant YouTube réel — domaine
-           youtube-nocookie.com : pas de cookie de tracking tant que la
-           vidéo n'est pas lancée (RGPD). -->
-      <iframe
-        src="https://www.youtube-nocookie.com/embed/VIDEO_ID"
-        title="Démonstration Q-BOT — Automatisation 2FA LuxTrust"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-        loading="lazy"
-      ></iframe>
+      <!-- Vidéo auto-hébergée : ni iframe ni cookie tiers, et rien n'est
+           téléchargé tant que le visiteur n'a pas lancé la lecture
+           (preload="none" + poster). Le film est muet et bouclé. -->
+      <video
+        class="video__player"
+        src="assets/video/qbot-home.mp4"
+        poster="assets/img/qbot-video-poster.jpg"
+        controls
+        muted
+        loop
+        playsinline
+        preload="none"
+        width="1280" height="720"
+        aria-label="Film produit Q-BOT — robot d'automatisation de la double authentification"
+      ></video>
     </div>
     <div style="text-align:center; margin-top:32px;">
       <span class="section-label">Un produit 100&nbsp;% conçu et développé au Luxembourg</span>
@@ -339,9 +344,6 @@
       </p>
       <p style="max-width:680px; margin:16px auto 0;">
         Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.
-      </p>
-      <p style="margin-top:20px;">
-        <a href="contact.html" style="color:var(--teal-text); font-weight:500;">Découvrez d'autres vidéos avec Postman et l'interface Web&nbsp;!</a>
       </p>
     </div>
   </div>

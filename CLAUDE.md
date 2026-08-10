@@ -113,7 +113,6 @@ Target behaviours to preserve:
 
 | File | Placeholder | What to replace with |
 |------|-------------|----------------------|
-| `index.html`, `en/index.html` | `VIDEO_ID` in YouTube `<iframe>` | Actual YouTube video ID |
 | `index.html`, `en/index.html`, newsletter `<form>` | Static `<form action="#">` | Sendinblue/Brevo embed code |
 
 ## SEO/GEO/UX audit (2026-07-09)
@@ -464,3 +463,59 @@ substance (one-click unsubscribe + Sendinblue as processor). The inline styles m
 `.newsletter__consent` / `.newsletter__legal`, and the section padding went 72 px → 52 px.
 Note `.newsletter .newsletter__legal` is doubled up on purpose: `.newsletter p` sets both colour
 and `margin-bottom` and would otherwise win on specificity.
+
+
+## Media pass — client-supplied renders + product film (2026-08-10)
+
+A folder of raw assets (three 1672×941 renders + `QBHome.mp4`) was handed over to be sorted and
+placed. Masters are archived under `Documentations/assets-sources/` (renamed to stable ASCII
+names); the delivered folder is gone.
+
+**All three renders were blue.** Measured hue was a very tight ≈ 215° (p10 213, p90 217) while
+the charter allows only teal `#00CBBE` (≈ 174°) and black. A single global hue rotation of −41°
+lands them exactly on brand, and because the hue distribution is that narrow — the product itself
+is neutral black/grey — nothing else in the image shifts. Blacks were then re-graded to a true
+`#000` floor: the renders' background bottomed out around luminance 12-15, which read as a
+visibly lighter rectangle sitting on the hero's pure black.
+
+| Source | Becomes | Where |
+|--------|---------|-------|
+| `…14_05_23` (product right, empty left) | `qbot-hero.webp` — cropped to the product, edges feathered to alpha | hero, FR + EN |
+| `…14_05_23` | `qbot-og.jpg` — 1200×630 | `og:image`/`twitter:image`/JSON-LD `image` on all 23 pages |
+| `…14_02_59` (cinematic close-up) | `qbot-solution.jpg` | homepage "La solution" (plain `.intro__image`, full-bleed — not the `--product` frame) |
+| `…14_05_26` (podium, UI cards) | `qbot-video-poster.jpg` | `poster` of the homepage video |
+
+The hero is **WebP with alpha**: the same feathered crop as PNG was 766 KB, as WebP q88 it is
+45 KB for a mean pixel difference of 1.05. Alpha is required (the hero background is black *plus*
+two animated teal orbs, so a baked-in matte would show).
+
+`og:image` previously pointed at `qbot-v3-hero.png` — a portrait transparent PNG, which social
+previews crop badly and composite on an unpredictable colour. It is now a proper 1200×630 JPEG.
+
+### The video
+
+`QBHome.mp4` was 45.8 s / 1920×1080 — but the picture stops at **8.72 s** and the remaining 37 s
+are pure black, and its audio track is **entirely silent** (both verified by sampling decoded
+pixels and by `decodeAudioData` RMS in Chrome, not by screenshots — element screenshots of a
+playing video go black under Chrome's video overlay and will lie to you). So it is really a
+silent 8.7 s product film with a broken export tail.
+
+Trimmed and re-encoded with macOS's `/usr/bin/avconvert` (`--preset Preset1280x720 --duration
+8.72`) → `assets/video/qbot-home.mp4`, 2.9 MB. Note the toolchain: Playwright's bundled ffmpeg is
+a stripped build with no H.264 decoder and no MP4 demuxer, so it is useless here; `avconvert` is
+the one encoder present on this machine.
+
+It replaces the long-standing `VIDEO_ID` YouTube placeholder in the homepage video section, as a
+self-hosted `<video controls muted loop playsinline preload="none">` with the poster above — no
+iframe, no third-party cookie, and nothing downloaded until the visitor presses play. `.video__wrapper`'s
+`iframe` rule now also covers `.video__player`.
+
+**If a clean export arrives**, drop it at the same path; nothing else needs touching.
+
+### Copy removed
+
+"Découvrez d'autres vidéos avec Postman et l'interface Web !" / "Discover more videos with
+Postman and the Web interface!" — flagged by the client as meaningless: it promised other videos
+that do not exist and linked to the contact page. Removed from both homepages rather than
+reworded. This is the one case where the "never reword marketing copy" rule yields: the site
+owner explicitly called the line wrong.
