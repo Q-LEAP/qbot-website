@@ -1,68 +1,10 @@
 ﻿'use strict';
 
 /* ════════════════════════════════════════
-   0. DARK / LIGHT MODE — toggle bouton
-   L'état initial est défini par theme-init.js
-   (dans <head>) pour éviter le flash au chargement.
+   THÈME — le site n'a plus qu'un seul thème (sombre).
+   data-theme="dark" est écrit en dur dans le <html> de chaque page ;
+   il n'y a plus ni bouton de bascule ni script d'init dans le <head>.
 ════════════════════════════════════════ */
-(function () {
-  var html = document.documentElement;
-  var FR   = (html.lang || 'fr').slice(0, 2) !== 'en';
-
-  function current()       { return html.getAttribute('data-theme') || 'light'; }
-
-  function applyTheme(theme) {
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem('qbot-theme', theme);
-    updateBtn(theme);
-  }
-
-  function updateBtn(theme) {
-    var btn = document.querySelector('.nav__theme-btn');
-    if (!btn) return;
-    var dark = theme === 'dark';
-    btn.setAttribute('aria-label',
-      dark
-        ? (FR ? 'Activer le mode clair'  : 'Switch to light mode')
-        : (FR ? 'Activer le mode sombre' : 'Switch to dark mode')
-    );
-    btn.setAttribute('aria-pressed', String(dark));
-  }
-
-  /* Injection du bouton dans .nav__actions, avant le bouton search */
-  var actions = document.querySelector('.nav__actions');
-  if (actions) {
-    var btn = document.createElement('button');
-    btn.className = 'nav__theme-btn';
-    btn.type      = 'button';
-    btn.setAttribute('aria-pressed', String(current() === 'dark'));
-    btn.innerHTML =
-      '<svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"' +
-      ' stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-        '<circle cx="12" cy="12" r="4"/>' +
-        '<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41' +
-              'M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>' +
-      '</svg>' +
-      '<svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"' +
-      ' stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-        '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>' +
-      '</svg>';
-
-    actions.insertBefore(btn, actions.firstElementChild);
-    updateBtn(current());
-
-    btn.addEventListener('click', function () {
-      applyTheme(current() === 'dark' ? 'light' : 'dark');
-    });
-  }
-
-  /* Suit les changements de préférence système (si pas de préférence stockée) */
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-    if (!localStorage.getItem('qbot-theme')) {
-      applyTheme(e.matches ? 'dark' : 'light');
-    }
-  });
-}());
 
 /* ════════════════════════════════════════
    1. NAVIGATION — sticky shadow + mobile + smart hide
@@ -236,6 +178,7 @@ if ('IntersectionObserver' in window) {
       '.feature-card',
       '.faq-item',
       '.timeline-item',
+      '.evo-card',
       '.product-card',
       '.stat-item',
       '.tool-tag',
@@ -527,7 +470,10 @@ backToTop.addEventListener('click', () => {
        L'amplitude reste sous la marge de sur-dimensionnement définie en CSS
        (--media-scale: 1.08, soit ~16 px de réserve de chaque côté sur une
        image de 420 px) — au-delà, un bord vide apparaîtrait dans le cadre. */
-    ['.intro__image img',                              -14],
+    /* Exclut .intro__image--product : ce contre-mouvement est fait pour une
+       photo qui remplit son cadre ; sur un rendu détouré, il fait sortir le
+       produit de son halo et le rogne au bord du cadre. */
+    ['.intro__image:not(.intro__image--product) img',  -14],
     ['.blog__featured-img img',                        -12],
     /* Titres de section : dérive très légère, juste assez pour que le bloc de
        texte et son image ne défilent pas exactement à la même vitesse. */
@@ -540,6 +486,9 @@ backToTop.addEventListener('click', () => {
      coller au scroll, l'inertie y serait perçue comme du retard. */
   var PROGRESS = [
     ['.timeline', '--tl-p'],
+    /* Même mécanique pour le rail horizontal de la section « évolution » :
+       la portion teal du rail se remplit au fil du scroll (scaleX). */
+    ['.evolution__rail', '--tl-p'],
   ];
 
   var LERP = 0.14;          // 0 = figé, 1 = suivi immédiat (aucune inertie)
@@ -796,8 +745,12 @@ backToTop.addEventListener('click', () => {
   var DEFAULT_TARGET = viewer.getAttribute('camera-target') || 'auto auto auto';
   var STANDARD_SRC  = viewer.getAttribute('src');
 
-  var DAY_EXPOSURE   = Number(viewer.getAttribute('exposure')) || 1.1;
-  var DAY_SHADOW     = Number(viewer.getAttribute('shadow-intensity')) || 1;
+  /* Presets d'éclairage — valeurs en dur : le viewer démarre en nuit (ses
+     attributs exposure/shadow-intensity portent donc déjà le preset nuit
+     pour le premier rendu), on ne peut plus les relire pour en déduire le
+     preset jour. */
+  var DAY_EXPOSURE   = 1.1;
+  var DAY_SHADOW     = 1;
   var NIGHT_EXPOSURE = 0.5;
   var NIGHT_SHADOW   = 1.3;
 

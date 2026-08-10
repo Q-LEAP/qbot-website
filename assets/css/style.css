@@ -597,14 +597,49 @@ p { color: var(--gray); }
 }
 
 /* ---- Newsletter ---- */
+/* Bande newsletter — volontairement compacte : une accroche d'une ligne, le
+   champ, puis le consentement et la mention légale sur deux lignes fines.
+   La version longue (trois paragraphes empilés) occupait presque un écran
+   entier pour un simple champ email. */
 .newsletter {
   background: var(--teal);
   color: var(--white);
-  padding: 72px 0;
+  padding: 52px 0;
   text-align: center;
 }
-.newsletter h2 { color: var(--white); margin-bottom: 12px; }
-.newsletter p { color: rgba(255,255,255,0.85); margin-bottom: 32px; }
+.newsletter h2 { color: var(--white); margin-bottom: 8px; }
+.newsletter p { color: rgba(255,255,255,0.85); margin-bottom: 22px; }
+
+.newsletter__consent {
+  max-width: 560px;
+  margin: 14px auto 0;
+}
+.newsletter__consent label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.82);
+  text-align: left;
+}
+.newsletter__consent input[type="checkbox"] {
+  width: auto;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--white);
+}
+.newsletter__consent a { text-decoration: underline; }
+/* Sélecteur doublé : .newsletter p (couleur + margin-bottom) est plus
+   spécifique qu'une classe seule et l'emporterait. */
+.newsletter .newsletter__legal {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.62);
+  margin: 8px 0 0;
+}
 
 .newsletter__form {
   display: flex;
@@ -972,6 +1007,153 @@ p { color: var(--gray); }
 .timeline-item__content h4 { margin-bottom: 4px; }
 .timeline-item__content p { font-size: 0.9rem; }
 
+/* ---- Évolution du produit ----
+   Trois étapes côte à côte (prototype → boîtier actuel → suite), reliées par
+   un rail horizontal dont la portion teal se remplit au scroll (--tl-p, écrit
+   par le moteur de motion, cf. « MOTION SYSTEM »). Remplace la timeline datée
+   de la homepage.
+   Le rail et ses pastilles ne sont dessinés qu'en desktop : en colonne unique
+   ils relieraient des cartes empilées verticalement, ce qui n'a plus de sens. */
+.evolution__rail {
+  --evo-gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--evo-gap);
+  position: relative;
+  padding-top: 40px;
+}
+.evolution__rail::before,
+.evolution__rail::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  /* D'un centre de colonne à l'autre : avec 3 colonnes égales séparées de
+     --evo-gap, une colonne mesure (100% − 2×gap)/3 et son centre est donc à
+     (100% − 2×gap)/6 du bord. */
+  left:  calc((100% - 2 * var(--evo-gap)) / 6);
+  right: calc((100% - 2 * var(--evo-gap)) / 6);
+  height: 2px;
+  border-radius: 2px;
+}
+.evolution__rail::before { background: var(--border); }
+.evolution__rail::after {
+  background: linear-gradient(90deg, var(--teal), var(--teal-dark));
+  transform: scaleX(var(--tl-p, 0));
+  transform-origin: left center;
+}
+
+.evo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #141414;
+  border: 1px solid #2B2B2B;
+  border-radius: var(--radius);
+  padding: 22px 24px 26px;
+  transition: border-color var(--transition), transform 0.5s var(--ease-out);
+}
+.evo-card:hover { border-color: rgba(0,203,190,0.35); transform: translateY(-4px); }
+
+/* Pastille posée sur le rail, au centre de la colonne. */
+.evo-card__node {
+  position: absolute;
+  /* Centre la pastille (12 px de haut) sur le rail : rail à 7 px + 1 px de
+     demi-épaisseur = axe à 8 px du haut de .evolution__rail, lui-même à
+     40 px au-dessus de la carte → -38 px. */
+  top: -38px;
+  left: 50%;
+  width: 12px; height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--light);
+  border: 2px solid var(--border);
+}
+.evo-card--current .evo-card__node {
+  background: var(--teal);
+  border-color: var(--teal);
+  box-shadow: 0 0 0 5px rgba(0,203,190,0.16);
+}
+.evo-card--next .evo-card__node { border-style: dashed; }
+
+.evo-card__media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 20px;
+  border-radius: var(--radius-sm);
+  background:
+    radial-gradient(80% 70% at 50% 45%, rgba(0,203,190,0.10), transparent 70%),
+    linear-gradient(165deg, #1B1B1B, #0E0E0E);
+  overflow: hidden;
+}
+/* Positionnement absolu + object-fit plutôt qu'un max-height en pourcentage :
+   la hauteur du cadre vient de son aspect-ratio, et Chrome ne résout pas
+   toujours un max-height % contre une hauteur obtenue ainsi — l'image
+   débordait alors du cadre et se faisait rogner en bas. */
+.evo-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  object-fit: contain;
+  transition: transform 0.85s var(--ease-out);
+}
+.evo-card:hover .evo-card__media img { transform: scale(1.05); }
+
+/* Étape à venir : cadre en pointillés + trois points qui « respirent ». */
+.evo-card__media--pending {
+  background: transparent;
+  border: 1px dashed #2B2B2B;
+}
+.evo-pending { display: flex; gap: 9px; }
+.evo-pending i {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--teal);
+  opacity: 0.25;
+  animation: evoPending 1.8s var(--ease-soft) infinite;
+}
+.evo-pending i:nth-child(2) { animation-delay: 0.22s; }
+.evo-pending i:nth-child(3) { animation-delay: 0.44s; }
+@keyframes evoPending {
+  0%, 70%, 100% { opacity: 0.22; transform: translateY(0); }
+  35%           { opacity: 1;    transform: translateY(-4px); }
+}
+
+.evo-card__step {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.evo-card--current .evo-card__step { color: var(--teal); }
+.evo-card h3 { margin-bottom: 10px; }
+.evo-card p  { font-size: 0.9375rem; }
+
+.evo-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--teal);
+}
+.evo-card__link svg { transition: transform var(--transition); }
+.evo-card__link:hover svg { transform: translateX(4px); }
+
+@media (max-width: 900px) {
+  .evolution__rail { grid-template-columns: 1fr; padding-top: 0; gap: 20px; }
+  .evolution__rail::before,
+  .evolution__rail::after,
+  .evo-card__node { display: none; }
+}
+
 /* ---- Breadcrumb ---- */
 .breadcrumb {
   padding: 12px 0;
@@ -1216,6 +1398,21 @@ p { color: var(--gray); }
 .intro__image:hover img {
   --media-scale: 1.13;
 }
+
+/* Variante « produit » — rendus 3D détourés (PNG transparents) plutôt que
+   photos plein cadre. Le cadre reçoit donc sa propre surface (halo teal + fond
+   sombre) pour que l'objet ne flotte pas dans le vide, et la sur-échelle
+   interne retombe à 1 : elle sert à masquer les bords lors du parallaxe d'une
+   photo qui remplit le cadre, ici elle ne ferait que rogner le produit. */
+.intro__image--product {
+  padding: 30px;
+  background:
+    radial-gradient(70% 60% at 50% 42%, rgba(0,203,190,0.12), transparent 72%),
+    linear-gradient(165deg, #171717, #0C0C0C);
+  border: 1px solid #212121;
+}
+.intro__image--product img { --media-scale: 1; }
+.intro__image--product:hover img { --media-scale: 1.05; }
 
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
    restent donc portés par l'image (un cadre clippé arrondirait aussi les
@@ -1742,8 +1939,10 @@ a:focus-visible { border-radius: var(--radius-sm); }
   color: var(--dark);
 }
 
-/* Toggle jour/nuit — même pill, icône soleil/lune façon .nav__theme-btn :
-   on affiche l'icône du mode vers lequel on va basculer */
+/* Toggle jour/nuit — pill soleil/lune : on affiche l'icône du mode vers
+   lequel on va basculer. Le viewer démarre en éclairage nuit (le site n'a
+   plus qu'un thème sombre) ; le bouton sert à rallumer la lumière du jour
+   pour mieux lire les détails du boîtier. */
 .mv-lighting-btn { padding: 7px 9px; }
 .mv-lighting-btn .mv-icon-sun  { display: none; }
 .mv-lighting-btn .mv-icon-moon { display: block; }
@@ -1920,8 +2119,12 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .highlight-box p { margin: 0; color: var(--dark); line-height: 1.7; }
 
 /* ══════════════════════════════════════════════════════════
-   DARK MODE — [data-theme="dark"] sur <html>
-   Détecté par theme-init.js (dans <head>) avant le rendu.
+   PALETTE OFFICIELLE — thème sombre unique
+   Le site n'a plus de mode clair : [data-theme="dark"] est écrit en dur
+   dans le <html> de chaque page (plus de bouton de bascule, plus de
+   theme-init.js). Les tokens de :root plus haut restent la couche de base
+   (charte : teal + noir + gris neutres) ; ce bloc est la déclinaison
+   sombre officielle qui les recouvre.
    ══════════════════════════════════════════════════════════ */
 
 /* ── Tokens sombres ── */
@@ -2074,35 +2277,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 
 /* ── Sidebar ── */
 [data-theme="dark"] .sidebar-card h4 { color: #E6E7E8; }
-
-/* ══════════════════════════════════════════════
-   BOUTON DARK / LIGHT MODE
-   ══════════════════════════════════════════════ */
-.nav__theme-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px; height: 34px;
-  border-radius: 8px;
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.45);
-  flex-shrink: 0;
-  transition: color 0.2s, background 0.2s;
-  cursor: pointer;
-}
-.nav__theme-btn:hover {
-  color: var(--teal);
-  background: rgba(255,255,255,0.08);
-}
-/* Mode clair : affiche la lune (pour basculer vers le sombre) */
-.nav__theme-btn .icon-sun  { display: none; }
-.nav__theme-btn .icon-moon { display: block; }
-/* Mode sombre : affiche le soleil (pour basculer vers le clair) */
-[data-theme="dark"] .nav__theme-btn .icon-sun  { display: block; }
-[data-theme="dark"] .nav__theme-btn .icon-moon { display: none; }
-[data-theme="dark"] .nav__theme-btn            { color: rgba(255,255,255,0.38); }
-[data-theme="dark"] .nav__theme-btn:hover      { color: var(--teal); background: rgba(255,255,255,0.08); }
 
 /* ══════════════════════════════════════════════
    BARRE DE PROGRESSION DE LECTURE
@@ -2422,7 +2596,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
    prefers-reduced-motion — dark mode & UX
    ══════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  .nav__theme-btn { transition: none; }
   .hero::before, .hero::after,
   .page-hero::after { animation: none; }
   .section-label { animation: none; background: none; -webkit-text-fill-color: var(--teal-text); color: var(--teal-text); }

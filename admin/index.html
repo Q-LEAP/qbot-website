@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1151,7 +1151,7 @@ function generateArticleHTML(a) {
     : `<div class="blog-card"><div class="blog-card__banner" style="background:linear-gradient(135deg,#00CBBE,#00A79C);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">📝</div><div class="blog-card__content"><span class="blog-card__tag">${a.cat||'Blog'}</span><h3 class="blog-card__title"><a href="${blogHref}">View all blog articles</a></h3><p class="blog-card__excerpt">Browse all our guides and insights on software testing and QA automation.</p><a href="${blogHref}" class="blog-card__read-more">View the blog <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div></div>`;
 
   const html = `<!DOCTYPE html>
-<html lang="${a.lang}">
+<html lang="${a.lang}" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

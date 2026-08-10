@@ -63,8 +63,12 @@ open('assets/models/qbot.glb.data.js', 'w').write(
 - `--font: 'Roboto'`, `--font-heading: 'Roboto'` — Google Fonts
 - `--container: 1180px`, `--section-py: 96px`
 
+**Single theme (dark).** There is no light mode and no theme toggle — `data-theme="dark"`
+is written directly into the `<html>` tag of every page (and of the page template inside
+`admin/index.html`). See the "night mode removed" section below.
+
 **JS architecture** (main.js, independent IIFE modules in one file, numbered by comment banner):
-0. Dark/light theme toggle (button injected into `.nav__actions`; initial state set by `theme-init.js` in `<head>`)
+0. *(removed — was the dark/light toggle)*
 1. Nav sticky shadow + mobile toggle (hamburger → X via `aria-expanded` CSS selector) + smart hide on scroll down
 2. Active nav link detection (pathname-based)
 3. FAQ accordion with dynamic `scrollHeight` (no hardcoded max-height)
@@ -348,3 +352,99 @@ misses. A Playwright sweep over all 24 pages × (normal, reduced-motion) that sc
 bottom and asserts no `.reveal` element (or `group` child) is left under `opacity: 0.9`,
 plus no console error and no horizontal overflow, catches the whole class of regression —
 that is how the article-body bug above was found. Worth re-running after any change here.
+
+## Dark-only site + accurate product imagery (2026-08-10)
+
+Four changes asked for in one pass. The first two are structural, the last two are content.
+
+### 1. Night mode removed — the dark palette *is* the site
+
+There is no longer a light theme, a toggle, or a system-preference follow. Instead:
+
+- `data-theme="dark"` is hardcoded in the `<html>` tag of all 23 pages **and** in the article
+  template string inside `admin/index.html` (pages it generates would otherwise render light).
+- `assets/js/theme-init.js` is **deleted** and its `<script>` removed from every `<head>` —
+  there is nothing to flash, so nothing to pre-empt.
+- main.js module 0 (toggle injection + `matchMedia` listener) is gone; the banner comment that
+  replaces it says why.
+- `.nav__theme-btn` CSS is gone (including its `prefers-reduced-motion` line).
+- The `[data-theme="dark"]` block in `style.css` is unchanged and is now simply *the* palette;
+  its banner comment was rewritten to say so. The `:root` tokens above it remain as the base
+  layer the dark block overrides — deliberately not merged, since keeping the two layers means
+  the sitewide teal/grey/typography tokens still read as one charter-driven block.
+
+**The 3D viewer's day/night button is a different thing and was kept** — it swaps
+`exposure`/`shadow-intensity` on `<model-viewer>`, not the site theme. It now *starts* in night
+(`aria-pressed="true"`, `.model-viewer-frame.is-night`, and the tag's own `exposure="0.5"` /
+`shadow-intensity="1.3"` so the first paint is already right). Because those attributes now
+carry the night preset, `DAY_EXPOSURE`/`DAY_SHADOW` in main.js can no longer be read back from
+them and are hardcoded (1.1 / 1).
+
+### 2. Homepage imagery regenerated from the real v3 model
+
+`hero-device.png` / `device-3d.png` (the same washed-out CAD screenshot of an early proto) and
+the gantry photos were still presenting the **first prototype** as the product. New renders are
+produced from `assets/models/qbot.glb` itself — the authoritative v3 geometry — so the site and
+the interactive 3D viewer now show the same object:
+
+| Asset | Camera / state | Used by |
+|-------|----------------|---------|
+| `qbot-v3-hero.png` | `-32deg 68deg 105%`, phone docked | hero (FR+EN) + every page's `og:image`/`twitter:image`/JSON-LD `image` |
+| `qbot-v3-solution.png` | `-28deg 70deg 92%`, no phone | homepage "La solution", evolution card 2 |
+| `qbot-v3-luxtrust.png` | `-15deg 74deg 100%`, phone docked | homepage LuxTrust section, `commandez`/`order` |
+| `qbot-v3-exploded.png` | `-25deg 65deg 118%`, `currentTime 0.97` | `caracteristiques`/`technical-specs` technical view |
+| `qbot-v3-poster.png` | default orbit, night exposure | `<model-viewer poster>` (replaces `qbot-v3-render.png`, an Autodesk-Viewer screen grab complete with watermark and filename caption) |
+| `qbot-proto-gen1.png` | — | `device-comparison.png` cropped/quantised, evolution card 1 |
+
+**How to regenerate** (the interactive viewer is the renderer — no offline 3D pipeline):
+serve the repo (`python -m http.server 8123`), drop a page at the repo root embedding
+`<model-viewer src="/assets/models/qbot.glb" environment-image="neutral" animation-name="Explode" …>`,
+then drive it from Playwright: wait for `load`, `mv.pause()`, set `cameraOrbit`/`exposure`/
+`currentTime`, and `element.screenshot(omit_background=True)`. Two things are non-obvious:
+`animation-name="Explode"` **must** be on the tag or `currentTime` does nothing (no clip is
+selected, so the phone never docks and nothing explodes); and a custom equirectangular PNG as
+`environment-image` renders the model pitch black — `neutral` is what works, and it also keeps
+the stills consistent with the live viewer. Trim with `Image.getbbox()` + ~3 % padding.
+
+The renders are transparent PNGs, which the old full-bleed photo frames were not built for:
+- `.intro__image--product` (new modifier) gives the clipped frame its own surface — dark
+  gradient + teal spotlight + hairline border + 30 px padding — so the detoured product sits on
+  something instead of floating, and resets `--media-scale` to 1 (the 1.08 overscale exists to
+  hide the edges of a photo during parallax; on a detoured render it just crops the product).
+- The motion engine's internal counter-parallax is now scoped to
+  `.intro__image:not(.intro__image--product) img` for the same reason.
+
+`hero-device.png`, `device-3d.png`, `device-comparison.png` and `qbot-v3-render.png` are no
+longer referenced anywhere; the files were left on disk. `device-photo.jpg` is still used on
+`en/about.html`, where it is explicitly captioned as a prototype.
+
+### 3. Timeline → product-evolution section
+
+The dated "L'innovation continue… / Évolutions" timeline (Feb 2022 → Dec 2023, v1 / v2 /
+"Mobile Pro") was inaccurate and is **replaced** on both homepages by `.evolution`: three cards
+— *the first prototype* (gantry photo) → *Q-BOT today* (v3 render, links to the 3D model) →
+*the roadmap is being written* (dashed frame + pulsing dots, links to contact). No dates are
+claimed anywhere in the new copy, deliberately: the only two product states there is evidence
+for are the proto photo and the current FBX.
+
+The three cards hang off a horizontal rail whose teal portion is scrubbed by scroll. That reuses
+the timeline's `--tl-p` mechanism verbatim — `.evolution__rail` was added to `PROGRESS` in the
+motion engine — so `.timeline`'s CSS/JS is now unused by any page but is *not* dead machinery;
+it is the same code path. `.evo-card` was added to the `card` reveal list.
+
+Two geometry details: the rail's ends sit at `calc((100% - 2 * var(--evo-gap)) / 6)` (the centre
+of the outer columns, gaps included — a flat `16.666%` is off by half a gap), and card images are
+`position: absolute; inset: 0; object-fit: contain` rather than `max-height: 88%`, because Chrome
+does not reliably resolve a percentage `max-height` against a height that came from
+`aspect-ratio`, and the images overflowed the bottom of their frame.
+
+### 4. Newsletter band condensed (FR + EN)
+
+Was ~450 px tall for one email field: a full-sentence lead, then three stacked paragraphs of
+consent and Sendinblue boilerplate, all as inline styles. Now ~325 px — one-line lead, the
+consent checkbox on a single line (with a real link to the privacy policy, `/confidentialite/`
+for FR and `/en/privacy/` for EN, matching the footers), and one fine-print line that keeps the
+substance (one-click unsubscribe + Sendinblue as processor). The inline styles moved into
+`.newsletter__consent` / `.newsletter__legal`, and the section padding went 72 px → 52 px.
+Note `.newsletter .newsletter__legal` is doubled up on purpose: `.newsletter p` sets both colour
+and `margin-bottom` and would otherwise win on specificity.
