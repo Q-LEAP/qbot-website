@@ -1122,6 +1122,13 @@ p { color: var(--gray); }
   35%           { opacity: 1;    transform: translateY(-4px); }
 }
 
+.evo-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
 .evo-card__step {
   font-size: 0.6875rem;
   font-weight: 700;
@@ -1147,11 +1154,39 @@ p { color: var(--gray); }
 .evo-card__link svg { transition: transform var(--transition); }
 .evo-card__link:hover svg { transform: translateX(4px); }
 
+/* Sous 900 px, la grille passe à une colonne — et la carte à une *ligne* :
+   image à gauche, texte à droite. Sans ça le cadre image, en aspect-ratio 4/3,
+   suit la pleine largeur de la carte (≈ 640 px de haut sur une carte de
+   850 px) : trois pavés géants empilés, une section de 2 500 px et un cadre
+   « prochaine étape » vide grand comme l'écran. */
 @media (max-width: 900px) {
-  .evolution__rail { grid-template-columns: 1fr; padding-top: 0; gap: 20px; }
+  .evolution__rail { grid-template-columns: 1fr; padding-top: 0; gap: 18px; }
   .evolution__rail::before,
   .evolution__rail::after,
   .evo-card__node { display: none; }
+
+  .evo-card { flex-direction: row; align-items: center; gap: 24px; padding: 20px; }
+  .evo-card__media {
+    flex: 0 0 min(34%, 210px);
+    width: min(34%, 210px);
+    aspect-ratio: 1;
+    margin-bottom: 0;
+  }
+  .evo-card__link { padding-top: 14px; }
+}
+
+/* Trop étroit pour deux colonnes dans la carte : on réempile. Hauteur fixe
+   plutôt qu'un ratio — un 4/3 pleine largeur redonnerait un cadre inutilement
+   haut, et les visuels sont détourés donc contenus quoi qu'il arrive. */
+@media (max-width: 520px) {
+  .evo-card { flex-direction: column; align-items: stretch; gap: 0; padding: 20px 20px 24px; }
+  .evo-card__media {
+    flex: none;
+    width: auto;
+    aspect-ratio: auto;
+    height: 190px;
+    margin-bottom: 18px;
+  }
 }
 
 /* ---- Breadcrumb ---- */

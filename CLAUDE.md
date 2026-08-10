@@ -438,6 +438,22 @@ of the outer columns, gaps included — a flat `16.666%` is off by half a gap), 
 does not reliably resolve a percentage `max-height` against a height that came from
 `aspect-ratio`, and the images overflowed the bottom of their frame.
 
+**Responsive — the trap this section fell into.** The card is `.evo-card__media` +
+`.evo-card__body`, and the media frame is sized by `aspect-ratio`. That is fine in the 3-column
+desktop grid (media ≈ 310 × 233), but the first version dropped straight to one full-width
+column below 900 px: the media then followed the *card* width, so a 4/3 frame on an 852 px card
+was 640 px tall — three enormous stacked blocks, a 2 470 px section and an empty dashed frame
+the size of the viewport. Any Chrome window under ~900 px (a non-maximised window, a half-screen
+split) showed it, which is exactly what got reported. Now:
+- ≤ 900 px the card becomes a **row** — media `flex: 0 0 min(34%, 210px)`, square, text beside it
+  (section back to ~1 070 px);
+- ≤ 520 px it stacks again with the media on a **fixed 190 px height** (`aspect-ratio: auto`) —
+  a full-width ratio would just reintroduce a needlessly tall frame, and the visuals are cut-out
+  PNGs so they stay contained either way.
+
+Check any change to this section at 375 / 520 / 601 / 768 / 900 / 901 / 1280 px, not just at
+desktop width — the two breakpoints are where it goes wrong.
+
 ### 4. Newsletter band condensed (FR + EN)
 
 Was ~450 px tall for one email field: a full-sentence lead, then three stacked paragraphs of
