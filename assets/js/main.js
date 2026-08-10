@@ -459,7 +459,7 @@ backToTop.addEventListener('click', () => {
 
   var LAYERS = [
     /* Cadres — la couche la plus lente */
-    ['.hero__image',                                    34],
+    ['.hero__image, .hero__film',                       34],
     ['.intro__image, .specs__image',                    38],
     /* .specs__image ne reçoit pas de contre-mouvement interne : son image et
        son bouton doivent rester solidaires (cf. style.css). */
@@ -688,8 +688,12 @@ backToTop.addEventListener('click', () => {
      devient une réponse au visiteur plutôt qu'un va-et-vient automatique.
      Le CSS applique --mx-rx / --mx-ry (cf. « MOTION SYSTEM »), le suivi est
      lissé par la transition de 0,5 s posée sur .hero__image img. */
-  var heroFrame = document.querySelector('.hero__image');
-  var heroImg   = heroFrame && heroFrame.querySelector('img');
+  /* Le hero porte soit un rendu produit (.hero__image > img), soit le film
+     produit (.hero__film). Dans le premier cas on incline l'image dans son
+     cadre ; dans le second on incline le cadre lui-même — incliner la vidéo à
+     l'intérieur d'un cadre clippé arrondi en découvrirait les bords. */
+  var heroFrame = document.querySelector('.hero__image, .hero__film');
+  var heroImg   = heroFrame && (heroFrame.querySelector('img') || heroFrame);
 
   if (heroImg) {
     var MAX_TILT = 6;   // degrés
@@ -1004,3 +1008,25 @@ backToTop.addEventListener('click', () => {
     }, { passive: true });
   });
 }());
+
+/* ════════════════════════════════════════
+   14. FILM DU HERO — respect de prefers-reduced-motion
+   L'attribut `autoplay` est dans le HTML (il doit l'être : sans lui la lecture
+   ne démarre pas assez tôt pour éviter un poster figé au chargement). Pour un
+   visiteur qui demande moins d'animation, on l'arrête et on lui rend la main
+   plutôt que de lui supprimer le contenu.
+════════════════════════════════════════ */
+(function () {
+  var film = document.querySelector('.hero__film-video');
+  if (!film) return;
+  /* Même traitement pour « économiseur de données » : le film pèse ~3 Mo et
+     l'autoplay le télécharge immédiatement. */
+  var saveData = navigator.connection && navigator.connection.saveData;
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && !saveData) return;
+  film.autoplay = false;
+  film.loop     = false;
+  film.controls = true;
+  film.pause();
+  film.currentTime = 0;
+}());
+

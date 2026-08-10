@@ -505,10 +505,8 @@ Trimmed and re-encoded with macOS's `/usr/bin/avconvert` (`--preset Preset1280x7
 a stripped build with no H.264 decoder and no MP4 demuxer, so it is useless here; `avconvert` is
 the one encoder present on this machine.
 
-It replaces the long-standing `VIDEO_ID` YouTube placeholder in the homepage video section, as a
-self-hosted `<video controls muted loop playsinline preload="none">` with the poster above — no
-iframe, no third-party cookie, and nothing downloaded until the visitor presses play. `.video__wrapper`'s
-`iframe` rule now also covers `.video__player`.
+It replaced the long-standing `VIDEO_ID` YouTube placeholder in the homepage video section — then
+moved again, see below.
 
 **If a clean export arrives**, drop it at the same path; nothing else needs touching.
 
@@ -519,3 +517,40 @@ Postman and the Web interface!" — flagged by the client as meaningless: it pro
 that do not exist and linked to the contact page. Removed from both homepages rather than
 reworded. This is the one case where the "never reword marketing copy" rule yields: the site
 owner explicitly called the line wrong.
+
+
+## The film moved into the hero, autoplaying (2026-08-10)
+
+Asked for: the film at the very top of the page, playing on its own.
+
+**Full-bleed hero background was tried first and rejected.** The film is a *black* enclosure on a
+*light grey* background, and the page is black. Two dead ends worth recording so nobody retries them:
+- Keying the background out (SVG `feColorMatrix` alpha-from-luma, a real matte, blend modes) is
+  pointless here — the subject is black, so removing the light background leaves black on black.
+  The light backdrop is the only thing making the product readable.
+- Dimming it behind the text (video at `opacity: .38` + a black scrim) does keep relative contrast,
+  but most of the film's 8.7 s is *extreme close-ups*: dimmed, it reads as an abstract grey wedge,
+  not as a product. Screenshotted and discarded.
+
+So the film is the hero's **visual column** instead of its background: `.hero__film`, a 16/9 rounded
+frame with a teal hairline, a soft teal glow and an inset vignette that melts its light edges into
+the black page. It replaces `.hero__image` on both homepages (`qbot-hero.webp` is now unused but kept
+on disk). `autoplay muted loop playsinline` — muted is what makes autoplay legal, and the film is
+silent anyway.
+
+Wired into the existing motion layer rather than bolted on: `.hero__film` joins `.hero__image` in the
+parallax table (amp 34), takes the same `mediaIn` mask entrance, and gets the hero pointer tilt — the
+tilt applies to the *frame*, not the video, since rotating the video inside a clipped rounded frame
+would expose its corners. Module 13's `heroImg` is now `frame.querySelector('img') || frame`.
+
+New module 14 turns autoplay off — pauses, unloops, exposes controls — for `prefers-reduced-motion`
+**and** for `navigator.connection.saveData`: the file is ~2.9 MB and `autoplay` fetches it
+immediately. (`avconvert` has no bitrate control; dropping to 960×540 only saved 22 %, not worth the
+resolution, so the weight stands until a lighter export arrives.)
+
+**Consequence on the section below:** it held the same film, so the player and its video-specific
+header ("Q-Bot en moins d'une minute !" / "Q-Bot in less than a minute!") were removed rather than
+show the same 8.7 s twice. What remains is the "100 % conçu et développé au Luxembourg" block, whose
+`.section-label` was promoted to an `<h2>` (same class, no visual change) so the section's
+`aria-labelledby` still points at a real heading. `.video__wrapper` / `.video__player` CSS is now
+unused by any page — left in place, it is the slot for a future real demo video.

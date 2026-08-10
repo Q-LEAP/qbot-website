@@ -164,13 +164,19 @@
           <a href="contact.html" class="btn btn--outline-white btn--lg">Demander une démo</a>
         </div>
       </div>
-      <div class="hero__image">
-        <img
-          src="assets/img/qbot-hero.webp"
-          alt="Robot Q-BOT — boîtier d'automatisation de la double authentification"
-          width="560" height="442"
-          loading="eager"
-        >
+      <div class="hero__film">
+        <!-- Film produit : muet, bouclé, démarrage automatique dès l'arrivée.
+             Il est tourné sur fond clair — impossible de le détourer (le
+             boîtier est noir, il disparaîtrait sur le noir de la page), il est
+             donc présenté dans son propre cadre plutôt qu'en fond de hero. -->
+        <video
+          class="hero__film-video"
+          src="assets/video/qbot-home.mp4"
+          poster="assets/img/qbot-film-poster.jpg"
+          autoplay muted loop playsinline preload="auto"
+          width="1280" height="720"
+          aria-label="Film produit Q-BOT — robot d'automatisation de la double authentification"
+        ></video>
       </div>
     </div>
   </div>
@@ -316,29 +322,8 @@
 <!-- ======= VIDÉO ======= -->
 <section class="section section--gray" aria-labelledby="video-title">
   <div class="container">
-    <div class="section-header centered">
-      <h2 class="section-title" id="video-title">Q-Bot en moins d'une minute&nbsp;!</h2>
-      <p class="section-subtitle">Automatisez la validation de l'authentification mobile dans vos scénarios de test</p>
-    </div>
-    <div class="video__wrapper">
-      <!-- Vidéo auto-hébergée : ni iframe ni cookie tiers, et rien n'est
-           téléchargé tant que le visiteur n'a pas lancé la lecture
-           (preload="none" + poster). Le film est muet et bouclé. -->
-      <video
-        class="video__player"
-        src="assets/video/qbot-home.mp4"
-        poster="assets/img/qbot-video-poster.jpg"
-        controls
-        muted
-        loop
-        playsinline
-        preload="none"
-        width="1280" height="720"
-        aria-label="Film produit Q-BOT — robot d'automatisation de la double authentification"
-      ></video>
-    </div>
-    <div style="text-align:center; margin-top:32px;">
-      <span class="section-label">Un produit 100&nbsp;% conçu et développé au Luxembourg</span>
+    <div style="text-align:center;">
+      <h2 class="section-label" id="video-title">Un produit 100&nbsp;% conçu et développé au Luxembourg</h2>
       <p style="max-width:680px; margin:16px auto 0;">
         Q-Bot est le fruit du savoir-faire de l'équipe Q-Leap. Imaginée et développée dans nos locaux par des experts passionnés du test logiciel, cette solution est née d'un besoin concret rencontré sur le terrain — le nôtre, mais aussi celui de nos clients.
       </p>

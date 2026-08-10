@@ -155,13 +155,19 @@
           <a href="contact.html" class="btn btn--outline-white btn--lg">Request a demo</a>
         </div>
       </div>
-      <div class="hero__image">
-        <img
-          src="../assets/img/qbot-hero.webp"
-          alt="Q-BOT Robot — two-factor authentication automation device"
-          width="560" height="442"
-          loading="eager"
-        >
+      <div class="hero__film">
+        <!-- Film produit : muet, bouclé, démarrage automatique dès l'arrivée.
+             Il est tourné sur fond clair — impossible de le détourer (le
+             boîtier est noir, il disparaîtrait sur le noir de la page), il est
+             donc présenté dans son propre cadre plutôt qu'en fond de hero. -->
+        <video
+          class="hero__film-video"
+          src="../assets/video/qbot-home.mp4"
+          poster="../assets/img/qbot-film-poster.jpg"
+          autoplay muted loop playsinline preload="auto"
+          width="1280" height="720"
+          aria-label="Q-BOT product film — two-factor authentication automation robot"
+        ></video>
       </div>
     </div>
   </div>
@@ -293,29 +299,8 @@
 <!-- ======= VIDEO ======= -->
 <section class="section section--gray" aria-labelledby="video-title">
   <div class="container">
-    <div class="section-header centered">
-      <h2 class="section-title" id="video-title">Q-Bot in less than a minute!</h2>
-      <p class="section-subtitle">Automate mobile authentication validation in your test scenarios</p>
-    </div>
-    <div class="video__wrapper">
-      <!-- Self-hosted video: no iframe, no third-party cookie, and nothing is
-           downloaded until the visitor presses play (preload="none" + poster).
-           The film is silent and loops. -->
-      <video
-        class="video__player"
-        src="../assets/video/qbot-home.mp4"
-        poster="../assets/img/qbot-video-poster.jpg"
-        controls
-        muted
-        loop
-        playsinline
-        preload="none"
-        width="1280" height="720"
-        aria-label="Q-BOT product film — two-factor authentication automation robot"
-      ></video>
-    </div>
-    <div style="text-align:center; margin-top:32px;">
-      <span class="section-label">A product 100&nbsp;% designed and developed in Luxembourg</span>
+    <div style="text-align:center;">
+      <h2 class="section-label" id="video-title">A product 100&nbsp;% designed and developed in Luxembourg</h2>
       <p style="max-width:680px; margin:16px auto 0;">
         Q-Bot is the result of the Q-Leap team's expertise. Imagined and developed in-house by software testing experts, this solution was born from a real need encountered in the field — our own, but also our clients'.
       </p>
