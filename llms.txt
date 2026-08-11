@@ -39,6 +39,8 @@ Site available in French (default, root paths) and English (`/en/`).
 
 ## Blog (software testing & 2FA automation guides)
 
+- [Blog index (FR)](https://q-bot.eu/blog.html) / [EN](https://q-bot.eu/en/blog.html)
+
 - [Selenium & two-factor authentication guide (FR)](https://q-bot.eu/blog/selenium-double-authentification.html) / [EN](https://q-bot.eu/en/blog/selenium-2fa-guide.html)
 - [How to automate 2FA tests (FR)](https://q-bot.eu/blog/automatiser-2fa-tests.html) / [EN](https://q-bot.eu/en/blog/automate-2fa.html)
 - [5 signs your test coverage is incomplete (FR)](https://q-bot.eu/blog/5-signes-tests-incomplets.html) / [EN](https://q-bot.eu/en/blog/5-signs-incomplete-testing.html)
@@ -47,3 +49,7 @@ Site available in French (default, root paths) and English (`/en/`).
 
 - [Terms of sale (FR)](https://q-bot.eu/conditions-vente/) / [EN](https://q-bot.eu/en/terms-and-conditions-of-sale/)
 - [Privacy policy (FR)](https://q-bot.eu/confidentialite/) / [EN](https://q-bot.eu/en/privacy/)
+
+---
+
+Last updated: 2026-08-11.

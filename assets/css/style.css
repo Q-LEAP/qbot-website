@@ -635,18 +635,21 @@ p { color: var(--gray); }
 }
 
 /* ---- Newsletter ---- */
-/* Bande newsletter — volontairement compacte : une accroche d'une ligne, le
+/* Le teal de marque est une couleur CLAIRE : du blanc dessus plafonne à
+   1,8:1, très en dessous du minimum AA de 4,5:1 — c'est le noir de charte qui
+   va sur le teal (≈ 11:1), pas l'inverse. Vaut pour toute surface teal pleine.
+   Bande newsletter — volontairement compacte : une accroche d'une ligne, le
    champ, puis le consentement et la mention légale sur deux lignes fines.
    La version longue (trois paragraphes empilés) occupait presque un écran
    entier pour un simple champ email. */
 .newsletter {
   background: var(--teal);
-  color: var(--white);
+  color: #001A18;
   padding: 52px 0;
   text-align: center;
 }
-.newsletter h2 { color: var(--white); margin-bottom: 8px; }
-.newsletter p { color: rgba(255,255,255,0.85); margin-bottom: 22px; }
+.newsletter h2 { color: #001A18; margin-bottom: 8px; }
+.newsletter p { color: rgba(0,26,24,0.86); margin-bottom: 22px; }
 
 .newsletter__consent {
   max-width: 560px;
@@ -660,14 +663,14 @@ p { color: var(--gray); }
   cursor: pointer;
   font-size: 0.8125rem;
   line-height: 1.5;
-  color: rgba(255,255,255,0.82);
+  color: rgba(0,26,24,0.86);
   text-align: left;
 }
 .newsletter__consent input[type="checkbox"] {
   width: auto;
   margin-top: 2px;
   flex-shrink: 0;
-  accent-color: var(--white);
+  accent-color: #001A18;
 }
 .newsletter__consent a { text-decoration: underline; }
 /* Sélecteur doublé : .newsletter p (couleur + margin-bottom) est plus
@@ -675,7 +678,7 @@ p { color: var(--gray); }
 .newsletter .newsletter__legal {
   font-size: 0.75rem;
   line-height: 1.5;
-  color: rgba(255,255,255,0.62);
+  color: rgba(0,26,24,0.72);
   margin: 8px 0 0;
 }
 
@@ -698,15 +701,15 @@ p { color: var(--gray); }
 .newsletter__form input[type="email"]:focus { box-shadow: 0 0 0 2px var(--teal-dark); }
 
 .newsletter__form .btn {
-  background: var(--white);
-  color: #00857D;
-  border-color: var(--white);
+  background: #001A18;
+  color: var(--teal);
+  border-color: #001A18;
   white-space: nowrap;
 }
 .newsletter__form .btn:hover {
-  background: var(--teal-dark);
-  color: var(--white);
-  border-color: var(--teal-dark);
+  background: var(--white);
+  color: #00544E;
+  border-color: var(--white);
 }
 
 /* ---- Page hero (sous-pages) ---- */
@@ -859,7 +862,7 @@ p { color: var(--gray); }
 }
 .contact-info__icon svg { width: 20px; height: 20px; color: var(--teal); }
 
-.contact-info__item h4 { margin-bottom: 4px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.contact-info__item h3 { margin-bottom: 4px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .contact-info__item a, .contact-info__item p { font-size: 0.9375rem; color: var(--dark); font-weight: 500; }
 .contact-info__item a:hover { color: var(--teal-text); }
 
@@ -944,25 +947,25 @@ p { color: var(--gray); }
   align-items: center;
   gap: 6px;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.68);
+  border: 1px solid rgba(255,255,255,0.16);
   border-radius: 20px;
   padding: 5px 12px;
 }
 
-.footer__col h4 {
+.footer__col h3 {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.66);
   margin-bottom: 20px;
 }
 
 .footer__col ul { display: flex; flex-direction: column; gap: 12px; }
 .footer__col ul li a {
   font-size: 0.875rem;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.72);
   transition: color var(--transition);
 }
 .footer__col ul li a:hover { color: var(--teal); }
@@ -971,7 +974,7 @@ p { color: var(--gray); }
   margin-top: 20px;
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,255,255,0.66);
 }
 
 .footer__bottom {
@@ -982,7 +985,7 @@ p { color: var(--gray); }
   flex-wrap: wrap;
 }
 
-.footer__copy { font-size: 0.8125rem; color: rgba(255,255,255,0.35); }
+.footer__copy { font-size: 0.8125rem; color: rgba(255,255,255,0.64); }
 
 .footer__legal {
   display: flex;
@@ -991,7 +994,7 @@ p { color: var(--gray); }
 }
 .footer__legal a {
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.64);
   transition: color var(--transition);
   text-decoration: none;
 }
@@ -1793,7 +1796,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .order-hero-price {
   display: inline-block;
   background: var(--teal);
-  color: var(--white);
+  color: #001A18;   /* cf. la note sur le teal : le blanc n'y passe pas AA */
   font-size: 2.5rem;
   font-weight: 700;
   padding: 12px 32px;
@@ -1801,7 +1804,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   margin: 16px 0 8px;
   line-height: 1.2;
 }
-.order-hero-price span { font-size: 1.125rem; font-weight: 500; opacity: .8; }
+.order-hero-price span { font-size: 1.125rem; font-weight: 500; opacity: .72; }
 .order-process {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2210,7 +2213,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 [data-theme="dark"] {
   --black:      #E6E7E8;
   --gray:       #A7A9AC;
-  --muted:      #6D6E71;
+  --muted:      #949699;   /* 4,6:1 sur #0A0A0A — #6D6E71 plafonnait à 3,3 */
   --border:     #2B2B2B;
   --light:      #121212;
   --teal-light: rgba(0, 203, 190, 0.1);
@@ -2386,7 +2389,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   border: 1px solid rgba(255,255,255,0.14);
   border-radius: 5px;
   background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.42);
+  color: rgba(255,255,255,0.66);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
   font-family: var(--font);
@@ -2998,7 +3001,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   vertical-align: -0.14em;
 }
 .badge-lux__ico  { color: var(--teal-text); }
-.footer__badge-ico { color: rgba(255,255,255,0.45); }
+.footer__badge-ico { color: rgba(255,255,255,0.68); }
 .blog-card__meta span {
   display: inline-flex;
   align-items: center;
@@ -3009,4 +3012,16 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .blog-banner__ico { color: rgba(255,255,255,0.9); }
 .blog-card__banner .blog-banner__ico,
 .blog-color-banner .blog-banner__ico { filter: drop-shadow(0 2px 10px rgba(0,0,0,0.25)); }
+
+/* ══════════════════════════════════════════════
+   CIBLES TACTILES
+   WCAG 2.2 (2.5.8) impose 24x24 CSS px minimum ; au doigt on vise 44.
+   Mesuré à 390 px : le hamburger faisait 32x24, la case de consentement
+   13x13, le bouton « retour en haut » 35x35.
+   ══════════════════════════════════════════════ */
+.nav__toggle { width: 44px; height: 44px; justify-content: center; align-items: center; }
+.newsletter__consent input[type="checkbox"] { width: 18px; height: 18px; }
+/* La zone cliquable utile est le label entier, on lui donne de la hauteur. */
+.newsletter__consent label { padding: 6px 0; }
+.nav__lang a { padding: 6px 8px; margin: -6px 0; }
 

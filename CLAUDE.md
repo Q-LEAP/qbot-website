@@ -622,3 +622,55 @@ le disque).
   **Ce n'est pas une capture du produit** : c'est un schéma, à remplacer dès qu'une vraie capture
   existe. Dessinée à la taille réelle d'affichage (600 px) puis capturée en DPR 2 — une première
   version dessinée en 1080 px se retrouvait réduite de moitié dans sa colonne, texte à 6 px.
+
+
+## Audit UX/UI + SEO/GEO (2026-08-11)
+
+Passe mesurée, pas à l'œil : crawl instrumenté des 23 pages (Playwright/Chrome) — métadonnées,
+structure de titres, hreflang, données structurées, contraste WCAG calculé sur le fond réellement
+composité, cibles tactiles à 390 px, focus clavier, liens internes, poids transféré.
+
+### Corrigé
+
+- **Contraste : 16 défauts, le pire à 1,51:1 → plus aucun.** Le fond était la cause principale :
+  **le teal de marque est une couleur claire**, du blanc dessus plafonne à 1,8:1. Toute la bande
+  newsletter (titre, texte, consentement, mention légale, lien) et le prix `900€` de la page
+  commande étaient en blanc sur teal. C'est le **noir de charte** qui va sur le teal (≈ 11:1) —
+  règle notée dans la feuille de style. Le reste : blancs translucides du pied de page (badge 2,46,
+  copyright 3,01, adresse et titres de colonnes 3,66) et le token `--muted` du thème sombre
+  (`#6D6E71`, 3,3:1) remonté à `#949699`.
+- **hreflang invalide sur 14 pages.** Chacune déclarait l'autre langue + `x-default`, **jamais
+  elle-même**. Un cluster hreflang sans auto-référence est ignoré en bloc par Google — les paires
+  FR/EN ne comptaient donc pas. Ajout du `hreflang` auto-référent partout.
+- **Deux `<h1>` identiques et visibles** sur les 4 pages d'article longues : une fois dans le
+  page-hero, une fois 500 px plus bas dans l'en-tête d'article. Le doublon est supprimé, l'`id`
+  déplacé sur le titre conservé pour ne pas casser `aria-labelledby` (vérifié : plus aucune
+  référence aria orpheline sur le site).
+- **7 titres > 62 c et 6 descriptions > 158 c** (tronqués en SERP) raccourcis sans reformuler le
+  message — on coupe le suffixe de marque ou la dernière proposition.
+- **`og:image:width` / `height` / `alt`** ajoutés sur 22 pages (aperçus sociaux rendus sans
+  attendre le téléchargement de l'image).
+- **Sauts de niveau de titre** `h2 → h4` (colonnes de pied de page, blocs de contact) → `h3`.
+- **Poids** : `device-photo.jpg` faisait 3,3 Mo en 3024 px pour 573 px affichés, `products-lineup.jpg`
+  822 Ko en 1920 px pour 594 px, et le logo était servi en 900 px pour 84-89 px, deux fois par page.
+  Résultat sur `en/about.html` : **4359 Ko → 216 Ko**.
+- **Cibles tactiles** (WCAG 2.2 – 2.5.8, mesurées à 390 px) : hamburger 32×24 → 44×44, case de
+  consentement 13×13 → 18×18 avec un label cliquable plus haut, sélecteur de langue élargi.
+  Faux positif écarté : `.back-to-top` mesurait 35×35 à cause du `scale(0.8)` de son état masqué.
+- `sitemap.xml` : `lastmod` figé au 2026-07-09 → date réelle du dernier commit par fichier.
+- `llms.txt` : index de blog ajoutés + date de mise à jour.
+
+### Vérifié sain
+
+Focus clavier visible partout (contour teal 2 px), lien d'évitement fonctionnel, aucun lien interne
+cassé (23 URL), aucun lien sans intitulé, tous les `alt` présents, `Organization` + `BreadcrumbList`
++ `Product`/`BlogPosting`/`FAQPage` valides, `robots.txt` couvrant les agents IA (GEO).
+
+### Laissé ouvert — décision client
+
+1. **Le formulaire de contact est en `action="#"`** : il ne transmet rien. Sur une page dont le seul
+   but est de générer des leads, c'est le point le plus coûteux du site. Il faut un endpoint
+   (Brevo, Formspree…) — même remarque pour la newsletter.
+2. **Homepage à ~2,9 Mo** à cause du film en lecture automatique. Voir la section dédiée.
+3. Le visuel « Interface & API » est une **maquette**, pas une capture du produit.
+4. `Product.offers` annonce 900 €/mois sur toutes les pages : à confirmer côté client.
