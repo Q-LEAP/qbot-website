@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- Page de rendu hors-ligne : à copier à la racine du dépôt sous _render.html
+     le temps d'une session de rendu (cf. README). `animation-name` est
+     indispensable, sans lui currentTime ne fait rien. -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
+<style>
+  html, body { margin: 0; background: transparent; }
+  model-viewer { width: 1400px; height: 1100px; background-color: transparent; --poster-color: transparent; }
+</style>
+</head>
+<body>
+<model-viewer id="mv" src="/assets/models/qbot.glb" alt="Q-BOT"
+  environment-image="neutral" shadow-intensity="0" exposure="1.1"
+  camera-target="0m 0.073m 0m" camera-orbit="0deg 75deg 105%" field-of-view="28deg"
+  interaction-prompt="none" disable-zoom animation-name="Explode" autoplay></model-viewer>
+<script>
+  const mv = document.getElementById('mv');
+  window.__ready = false;
+  mv.addEventListener('load', () => { mv.pause(); mv.currentTime = 0; window.__ready = true; });
+  window.setup = async (o) => {
+    if (o.src && mv.getAttribute('src') !== o.src) {
+      window.__ready = false;
+      mv.setAttribute('src', o.src);
+      await new Promise(r => { const h = () => { mv.removeEventListener('load', h); r(); }; mv.addEventListener('load', h); });
+      mv.pause();
+    }
+    if (o.env      !== undefined) mv.environmentImage = o.env;
+    if (o.exposure !== undefined) mv.exposure = o.exposure;
+    if (o.shadow   !== undefined) mv.shadowIntensity = o.shadow;
+    if (o.orbit) mv.cameraOrbit = o.orbit;
+    if (o.fov)   mv.fieldOfView = o.fov;
+    if (o.target) mv.cameraTarget = o.target;
+    mv.pause();
+    if (o.time !== undefined) mv.currentTime = o.time;
+    await new Promise(r => setTimeout(r, 1400));
+    await mv.updateComplete;
+  };
+</script>
+</body>
+</html>

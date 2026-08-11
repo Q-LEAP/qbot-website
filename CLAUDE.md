@@ -63,6 +63,14 @@ open('assets/models/qbot.glb.data.js', 'w').write(
 - `--font: 'Roboto'`, `--font-heading: 'Roboto'` — Google Fonts
 - `--container: 1180px`, `--section-py: 96px`
 
+**No emoji anywhere on the site — corporate icons only.** Client rule, not a preference:
+every pictogram is an inline stroke SVG (24×24 viewBox, `fill="none"`, `stroke="currentColor"`),
+the same language as the icons already in the markup. This covers badges, guarantee tiles, blog
+banners, article meta and tool tags — and it covers what `admin/index.html` *publishes*, not just
+the static pages. Watch for two disguises: HTML entities (`&#128272;` is a padlock, it slips past
+a plain text search for emoji) and JS string fallbacks (`a.thumbnail || '📝'`). Tool tags carry no
+icon at all now — the tool's name is the label.
+
 **Single theme (dark).** There is no light mode and no theme toggle — `data-theme="dark"`
 is written directly into the `<html>` tag of every page (and of the page template inside
 `admin/index.html`). See the "night mode removed" section below.
@@ -592,3 +600,25 @@ pas touché) :
 Le viewer interactif de `modele-3d.html` continue d'utiliser `assets/models/qbot.glb` inchangé.
 `qbot-v3-luxtrust.png` et `qbot-v3-solution.png` ne sont plus référencés (fichiers laissés sur
 le disque).
+
+
+## Passe emoji + visuels de `caracteristiques` (2026-08-11)
+
+- **Q-Digital retiré** de `a-propos.html` et `en/about.html`. Il avait été ajouté côté FR pour
+  aligner les deux langues ; il part des deux, pour la même raison.
+- **Zéro emoji** (voir la règle en tête de fichier). 24 fichiers touchés : drapeau du badge
+  footer et du `badge-lux` → pictogramme « lieu » ; icônes des `guarantee-item` → SVG au trait en
+  teal ; bannières de blog → SVG blanc translucide ; méta d'article (date / durée / auteur) → SVG
+  alignés sur le texte ; `tool-tag` → plus d'icône du tout. Côté back-office : les vignettes
+  d'amorçage passent à vide (repli sur une icône), et l'habillage propre à l'outil est nettoyé.
+  Un emoji restait caché en **entité HTML** (`&#128272;`) dans `en/blog/selenium-2fa-guide.html` —
+  invisible à une recherche de caractères, trouvé en testant `document.body.innerText` dans le
+  navigateur. C'est ce contrôle-là qu'il faut refaire, pas un grep.
+- **Vue éclatée remplacée** : `caracteristiques.html` / `en/technical-specs.html` montrent
+  désormais `qbot-specs.jpg`, un plan produit dans le même style que la homepage.
+- **« Interface & API »** montrait `interface-screenshot.png`, une coupe CAO des entrailles du
+  proto — aucun rapport avec une interface. Remplacée par `qbot-interface.jpg` (+ `-en`), une
+  **maquette** construite en HTML/CSS puis capturée (`tools/render/interface-mockup.html`).
+  **Ce n'est pas une capture du produit** : c'est un schéma, à remplacer dès qu'une vraie capture
+  existe. Dessinée à la taille réelle d'affichage (600 px) puis capturée en DPR 2 — une première
+  version dessinée en 1080 px se retrouvait réduite de moitié dans sa colonne, texte à 6 px.
