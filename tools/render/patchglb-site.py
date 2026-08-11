@@ -109,6 +109,61 @@ for mi, me in enumerate(g.meshes):
         pr.attributes.TEXCOORD_0 = add_acc(uv,'VEC2')
         print(f"  mesh {mi} mat {pr.material}: UV sur {len(pos)} sommets (géométrie intacte)")
 
+# ── 1bis. Vitre ramenée à la taille de son ouverture ──────────────────────
+# La plaque de verre d'origine fait 86 x 96 mm alors que l'ouverture pratiquée
+# dans la coque n'en montre que 44 x 59 : les deux tiers sont cachés dans le
+# boîtier. Invisible à l'assemblage, mais en vue éclatée on voyait s'envoler une
+# plaque presque aussi large que le produit.
+# L'ouverture n'est pas codée en dur : on la mesure en rastérisant, dans le plan
+# de la vitre, tout ce qui la masque (tous les rayons de vue sont parallèles à
+# sa normale, une projection suffit). Deux méthodes indépendantes — cette
+# rastérisation et un double rendu caméra fixe avec/sans coque — donnent le même
+# résultat à 1 mm près.
+from PIL import Image, ImageDraw
+LIP = 0.002          # 2 mm de recouvrement pour que la vitre ferme bien le trou
+
+pr_g = g.meshes[4].primitives[0]
+Wv = read_acc(pr_g.attributes.POSITION).astype(np.float64)
+Wi = read_acc(pr_g.indices).astype(np.int64).ravel().reshape(-1,3)
+Wt = Wv[Wi]
+wn = np.cross(Wt[:,1]-Wt[:,0], Wt[:,2]-Wt[:,0])
+wa = 0.5*np.linalg.norm(wn,axis=1); wn /= (np.linalg.norm(wn,axis=1,keepdims=True)+1e-12)
+big = wn[np.argsort(-wa)[:4]]
+dn = big[np.argmax(big[:,2])]; dn /= np.linalg.norm(dn)      # normale extérieure
+rt = np.array([1.0,0,0]); upv = np.cross(dn,rt); upv /= np.linalg.norm(upv)
+BAS = np.stack([rt,upv,dn])
+Wl = Wv@BAS.T
+umin,vmin,_ = Wl.min(0); umax,vmax,dmax = Wl.max(0)
+
+RES = 700
+mask = Image.new('1',(RES,RES),0); drw = ImageDraw.Draw(mask)
+def to_px(uv):
+    x=(uv[:,0]-umin)/(umax-umin)*(RES-1)
+    y=(1-(uv[:,1]-vmin)/(vmax-vmin))*(RES-1)
+    return np.stack([x,y],1)
+for mi_ in (0,1,2,3):
+    Vv = read_acc(g.meshes[mi_].primitives[0].attributes.POSITION).astype(np.float64)
+    Fi = read_acc(g.meshes[mi_].primitives[0].indices).astype(np.int64).ravel().reshape(-1,3)
+    Tl = (Vv@BAS.T)[Fi]
+    keep = (Tl[:,:,2].max(1) > dmax+1e-5)
+    keep &= (Tl[:,:,0].max(1)>umin)&(Tl[:,:,0].min(1)<umax)
+    keep &= (Tl[:,:,1].max(1)>vmin)&(Tl[:,:,1].min(1)<vmax)
+    for t in Tl[keep]:
+        drw.polygon([tuple(q) for q in to_px(t[:,:2])], fill=1)
+op = ~np.asarray(mask)
+ys,xs = np.where(op)
+au0 = umin+(xs.min()/(RES-1))*(umax-umin); au1 = umin+(xs.max()/(RES-1))*(umax-umin)
+av0 = vmin+(1-ys.max()/(RES-1))*(vmax-vmin); av1 = vmin+(1-ys.min()/(RES-1))*(vmax-vmin)
+cu, cv = (au0+au1)/2, (av0+av1)/2
+su = (au1-au0+2*LIP)/(umax-umin)
+sv = (av1-av0+2*LIP)/(vmax-vmin)
+Wl[:,0] = cu + (Wl[:,0]-cu)*su
+Wl[:,1] = cv + (Wl[:,1]-cv)*sv
+pr_g.attributes.POSITION = add_acc((Wl@BAS).astype('<f4'),'VEC3')
+print(f"  vitre : ouverture mesurée {1000*(au1-au0):.1f} x {1000*(av1-av0):.1f} mm "
+      f"-> plaque {1000*(umax-umin):.1f} x {1000*(vmax-vmin):.1f} ramenée à "
+      f"{1000*(au1-au0+2*LIP):.1f} x {1000*(av1-av0+2*LIP):.1f}")
+
 # ── 2. Écran du smartphone : primitive dédiée (UV d'origine dégénérées) ───
 TEX_SCR = add_png(TEX_SCREEN)
 me = g.meshes[5]; pr = me.primitives[0]

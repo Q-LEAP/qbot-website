@@ -706,6 +706,24 @@ sont tout l'intérêt du fichier séparé :
 Le hublot est un `alphaMode: BLEND` à alpha 0,42, pas une transmission KHR — suffisant pour l'effet
 demandé (« légèrement transparente ») et sans coût de rendu supplémentaire.
 
+**La vitre a aussi été redimensionnée.** La plaque d'origine fait 86 × 96 mm alors que l'ouverture
+pratiquée dans la coque n'en montre que 44 × 59 : les deux tiers sont enfouis dans le boîtier.
+Invisible à l'assemblage — mais en vue éclatée on voyait s'envoler une plaque presque aussi large
+que le produit. Elle est ramenée à l'ouverture + 2 mm de recouvrement.
+
+L'ouverture n'est pas codée en dur : le script la **mesure**, en rastérisant dans le plan de la
+vitre tout ce qui la masque (tous les rayons de vue étant parallèles à sa normale, une projection
+suffit — pas besoin de lancer de rayons, et `rtree` n'est pas installé de toute façon). Le résultat
+a été recoupé par une seconde méthode indépendante : deux rendus à **caméra fixe en absolu**, l'un
+avec la coque l'autre avec la seule vitre, dont le rapport des boîtes englobantes donne l'ouverture
+sans aucun calcul de projection. Les deux concordent à 1 mm près. Attention si on refait cette
+mesure par rendu : model-viewer **recadre automatiquement sur les bornes du modèle**, donc un rayon
+de caméra en pourcentage donne deux cadrages différents entre les deux passes et le rapport est
+faux — il faut un rayon en mètres et un `camera-target` explicite.
+
+Ce redimensionnement n'existe que dans `patchglb-site.py`, pas dans `patchglb.py` : les visuels
+hors-ligne montrent le produit assemblé, où la taille de la plaque cachée n'a aucun effet.
+
 Conséquences à ne pas oublier :
 
 - **`NIGHT_EXPOSURE` est passé de 0,5 à 0,8** (`main.js` + l'attribut `exposure` des deux pages 3D) :
