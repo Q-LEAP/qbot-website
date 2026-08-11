@@ -16,3 +16,10 @@
 # pas partie du site déployé. Supprimez cette ligne si vous voulez le versionner
 # (les rendus PNG de référence du même dossier, eux, sont bien suivis).
 Screen modèle 3D/*.mov
+
+# ── Intermédiaires de la chaîne de rendu (tools/render) ───────────────
+# Générés à la racine le temps d'un rendu, jamais livrés.
+_env.png
+_envcal.png
+_render.html
+_qbot-render.glb

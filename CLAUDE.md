@@ -556,3 +556,39 @@ show the same 8.7 s twice. What remains is the "100 % conçu et développé au L
 `.section-label` was promoted to an `<h2>` (same class, no visual change) so the section's
 `aria-labelledby` still points at a real heading. `.video__wrapper` / `.video__player` CSS is now
 unused by any page — left in place, it is the slot for a future real demo video.
+
+
+## Refonte des visuels produit — matériaux, texture, éclairage (2026-08-11)
+
+Demande : que l'image de la section LuxTrust atteigne le niveau de celle de « La solution »
+(un des renders IA retouchés), et que la carte « Génération actuelle » reste détourée mais
+« un peu plus texturée ». Les deux visuels étaient des rendus gris plats du GLB.
+
+Tout est régénéré **depuis `assets/models/qbot.glb`**, donc depuis la géométrie authentique —
+pas d'image générée de l'extérieur. La chaîne est versionnée dans **`tools/render/`** (voir son
+README, qui liste les pièges) ; elle produit :
+
+- `qbot-luxtrust.jpg` — scène complète : fond nuit, halo teal, arcs de sol, reflet, bloom.
+  Remplace le rendu gris dans la section LuxTrust (FR+EN) et dans `commandez`/`order`.
+- `qbot-gen-actuelle.webp` — le même boîtier détouré, sur transparence, pour la carte évolution.
+
+Ce qui a changé sur le modèle de rendu (`patchglb.py`, copie hors-ligne, le GLB du site n'est
+pas touché) :
+
+- **Matériaux** : corps quasi noir légèrement métallisé (0.064 / metal 0.30 / rough 0.42) au lieu
+  du gris moyen ; le hublot d'écran du boîtier passe de blanc à du verre sombre.
+- **Micro-texture** : normal map + variation de rugosité tuilables. Le maillage n'ayant aucune UV,
+  elles sont projetées — en **triplanaire par face**, après avoir constaté qu'une projection
+  planaire par pièce étire la texture sur les faces obliques et la transforme en stries franches.
+- **Écran du smartphone** : ses UV d'origine sont dégénérées (4 texels de palette, un par face),
+  donc rien n'y était peignable. Les faces de la dalle sont isolées dans une primitive dédiée
+  avec de vraies UV et un matériau émissif, qui affiche une validation d'authentification.
+  Volontairement iconographique — anneau, coche, barres muettes : **ce n'est pas une reproduction
+  de l'interface LuxTrust**, et il ne faut pas la transformer en une.
+- **Éclairage** : environnement équirectangulaire maison (key light large + rim teal en
+  contre-jour + rim froid) au lieu du preset `neutral`. L'orientation n'est pas devinée : sonde à
+  quatre couleurs → `u = 0.75 − θ/360`, donc le contre-jour se place à `u_caméra + 0.5`.
+
+Le viewer interactif de `modele-3d.html` continue d'utiliser `assets/models/qbot.glb` inchangé.
+`qbot-v3-luxtrust.png` et `qbot-v3-solution.png` ne sont plus référencés (fichiers laissés sur
+le disque).
