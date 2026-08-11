@@ -538,10 +538,12 @@ the black page. It replaces `.hero__image` on both homepages (`qbot-hero.webp` i
 on disk). `autoplay muted loop playsinline` — muted is what makes autoplay legal, and the film is
 silent anyway.
 
-Wired into the existing motion layer rather than bolted on: `.hero__film` joins `.hero__image` in the
-parallax table (amp 34), takes the same `mediaIn` mask entrance, and gets the hero pointer tilt — the
-tilt applies to the *frame*, not the video, since rotating the video inside a clipped rounded frame
-would expose its corners. Module 13's `heroImg` is now `frame.querySelector('img') || frame`.
+**The frame does not move.** It was first wired into the motion layer like every other media frame —
+parallax (amp 34) plus the hero pointer tilt — and that was wrong: on content that is already moving,
+a drifting/tilting frame does not read as depth, it reads as an unstable frame. Reported as "ça fait
+bizarre que le cadre bouge" and removed: `.hero__film` is out of the parallax table, and the pointer
+tilt is back to `.hero__image` only. The only motion it keeps is the one-shot `mediaIn` mask entrance.
+Keep it that way — the impulse to make it consistent with the other frames is the bug.
 
 New module 14 turns autoplay off — pauses, unloops, exposes controls — for `prefers-reduced-motion`
 **and** for `navigator.connection.saveData`: the file is ~2.9 MB and `autoplay` fetches it

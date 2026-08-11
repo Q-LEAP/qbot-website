@@ -2788,11 +2788,9 @@ a:focus-visible { border-radius: var(--radius-sm); }
   translate: 0 calc(var(--hero-p, 0) * -44px);
 }
 .hero__image { perspective: 1100px; }
-.hero__inner { perspective: 1100px; }
-.hero__film {
-  transform: rotateX(var(--mx-rx, 0deg)) rotateY(var(--mx-ry, 0deg));
-  transition: transform 0.5s var(--ease-soft);
-}
+/* Le cadre du film ne reçoit ni inclinaison au pointeur ni parallaxe : son
+   contenu bouge déjà, un cadre mobile par-dessus se lit comme du flottement.
+   Seule l'entrée par masque (mediaIn) est conservée — elle joue une fois. */
 
 /* Inclinaison au pointeur sur le rendu produit (desktop, souris uniquement).
    L'entrée `mediaIn` est en fill-mode `backwards` — et non `both` — pour ne
@@ -2957,7 +2955,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .mx-parallax { translate: none; }
   .hero__content { opacity: 1; translate: none; }
   .hero__image img { transform: none; }
-  .hero__film { transform: none; }
   /* `.reveal` de base et `.reveal--plain` inclus : sans eux, ces éléments
      restaient à opacity:0 jusqu'à ce que l'observer les atteigne, alors qu'en
      mouvement réduit il n'y a plus d'animation à attendre — autant les

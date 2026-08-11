@@ -459,7 +459,11 @@ backToTop.addEventListener('click', () => {
 
   var LAYERS = [
     /* Cadres — la couche la plus lente */
-    ['.hero__image, .hero__film',                       34],
+    /* .hero__film en est volontairement absent : le cadre du film reste fixe
+       (cf. l'inclinaison au pointeur, plus bas, retirée pour la même raison) —
+       un cadre qui dérive pendant que son contenu bouge déjà se lit comme un
+       flottement parasite, pas comme de la profondeur. */
+    ['.hero__image',                                    34],
     ['.intro__image, .specs__image',                    38],
     /* .specs__image ne reçoit pas de contre-mouvement interne : son image et
        son bouton doivent rester solidaires (cf. style.css). */
@@ -688,12 +692,11 @@ backToTop.addEventListener('click', () => {
      devient une réponse au visiteur plutôt qu'un va-et-vient automatique.
      Le CSS applique --mx-rx / --mx-ry (cf. « MOTION SYSTEM »), le suivi est
      lissé par la transition de 0,5 s posée sur .hero__image img. */
-  /* Le hero porte soit un rendu produit (.hero__image > img), soit le film
-     produit (.hero__film). Dans le premier cas on incline l'image dans son
-     cadre ; dans le second on incline le cadre lui-même — incliner la vidéo à
-     l'intérieur d'un cadre clippé arrondi en découvrirait les bords. */
-  var heroFrame = document.querySelector('.hero__image, .hero__film');
-  var heroImg   = heroFrame && (heroFrame.querySelector('img') || heroFrame);
+  /* Uniquement le rendu produit fixe (.hero__image > img). Le cadre du film
+     ne s'incline pas : sur une image déjà en mouvement, l'inclinaison ne se
+     lit pas comme de la profondeur mais comme un cadre instable. */
+  var heroFrame = document.querySelector('.hero__image');
+  var heroImg   = heroFrame && heroFrame.querySelector('img');
 
   if (heroImg) {
     var MAX_TILT = 6;   // degrés
