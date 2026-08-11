@@ -666,11 +666,18 @@ Focus clavier visible partout (contour teal 2 px), lien d'évitement fonctionnel
 cassé (23 URL), aucun lien sans intitulé, tous les `alt` présents, `Organization` + `BreadcrumbList`
 + `Product`/`BlogPosting`/`FAQPage` valides, `robots.txt` couvrant les agents IA (GEO).
 
-### Laissé ouvert — décision client
+### Laissé ouvert — arbitré par le client le 2026-08-11
 
-1. **Le formulaire de contact est en `action="#"`** : il ne transmet rien. Sur une page dont le seul
-   but est de générer des leads, c'est le point le plus coûteux du site. Il faut un endpoint
-   (Brevo, Formspree…) — même remarque pour la newsletter.
-2. **Homepage à ~2,9 Mo** à cause du film en lecture automatique. Voir la section dédiée.
-3. Le visuel « Interface & API » est une **maquette**, pas une capture du produit.
-4. `Product.offers` annonce 900 €/mois sur toutes les pages : à confirmer côté client.
+1. **Formulaires en `action="#"` — À RAPPELER AVANT LA MISE EN LIGNE.** `contact.html`,
+   `en/contact.html` et les deux formulaires newsletter des homepages n'envoient rien, sans que le
+   visiteur s'en aperçoive. Le client reporte volontairement le sujet et demande **qu'on le lui
+   rappelle au moment de finaliser le site**. Donc : dès qu'il est question de livrer, publier ou
+   faire une dernière relecture, remonter le point sans attendre qu'on le demande — il faut un
+   endpoint (Brevo, Formspree ou équivalent), le client fournira l'embed. Tant que le site n'est
+   pas public le coût est nul ; le jour de la mise en ligne, chaque envoi est un lead perdu.
+2. **Homepage à ~2,9 Mo** (film en lecture automatique) : **accepté tel quel** par le client.
+   Ne pas y revenir sans nouvelle demande.
+3. Le visuel « Interface & API » est une **maquette**, pas une capture du produit — à remplacer
+   dès qu'une vraie capture existe.
+4. `Product.offers` à 900 €/mois : **confirmé exact au 2026-08-11**. Le client préviendra si le
+   tarif change — inutile de le requestionner à chaque passe.
