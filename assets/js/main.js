@@ -758,7 +758,7 @@ backToTop.addEventListener('click', () => {
      preset jour. */
   var DAY_EXPOSURE   = 1.1;
   var DAY_SHADOW     = 1;
-  var NIGHT_EXPOSURE = 0.5;
+  var NIGHT_EXPOSURE = 0.8;   /* relevé avec la matière sombre du modèle texturé */
   var NIGHT_SHADOW   = 1.3;
 
   /* Le clip glTF "Explode" couvre deux segments temporels distincts (pour

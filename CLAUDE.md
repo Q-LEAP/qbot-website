@@ -681,3 +681,39 @@ cassé (23 URL), aucun lien sans intitulé, tous les `alt` présents, `Organizat
    dès qu'une vraie capture existe.
 4. `Product.offers` à 900 €/mois : **confirmé exact au 2026-08-11**. Le client préviendra si le
    tarif change — inutile de le requestionner à chaque passe.
+
+
+## Matière du modèle 3D livré (2026-08-11)
+
+Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en
+vrai a un léger grain au toucher et la petite vitre est légèrement transparente ». `assets/models/qbot.glb`
+porte donc maintenant : **corps charbon à grain fin**, **hublot en verre** et **écran 2FA sur le
+smartphone**. Régénéré par `tools/render/patchglb-site.py`.
+
+Ce script est le jumeau « livré » de `tools/render/patchglb.py` (rendu hors-ligne). Deux écarts, qui
+sont tout l'intérêt du fichier séparé :
+
+- **UV par sommet, pas par face.** Le triplanaire par face impose de dégrouper les sommets : le GLB
+  passe de 3,6 à **15 Mo**, impensable pour un fichier téléchargé par le visiteur. En projetant
+  selon l'axe dominant de la *normale du sommet*, la géométrie reste intacte (+8 octets/sommet) et
+  le fichier tient en **4,7 Mo**. Le compromis est une discontinuité de texture sur les arêtes
+  vives — invisible avec un grain isotrope fin, et une arête moulée en a une de toute façon.
+  Grain en 256² au lieu de 512², et pas de texture métal/rugosité (facteurs constants).
+- **Coque et plateau passent en `doubleSided`.** Sans ça le verre ne sert à rien : sur une coque
+  single-sided, les faces arrière sont éliminées au rendu et on voit *le fond de la page* à travers
+  le hublot au lieu d'une cavité sombre. C'est le double-face qui donne l'intérieur visible.
+
+Le hublot est un `alphaMode: BLEND` à alpha 0,42, pas une transmission KHR — suffisant pour l'effet
+demandé (« légèrement transparente ») et sans coût de rendu supplémentaire.
+
+Conséquences à ne pas oublier :
+
+- **`NIGHT_EXPOSURE` est passé de 0,5 à 0,8** (`main.js` + l'attribut `exposure` des deux pages 3D) :
+  le boîtier était gris moyen, il est charbon — à 0,5 il se noyait dans le fond noir.
+- **Le sidecar base64 a été régénéré** (`qbot.glb.data.js`, ~6,4 Mo). Sans ça le mode `file://`
+  continuerait d'afficher l'ancien modèle. Vérifié : `loaded: true`, animation intacte.
+- **La source non texturée est archivée** dans `Documentations/assets-sources/qbot-untextured.glb`
+  et c'est *elle* que lit le script. Ne jamais le relancer sur le GLB livré : il le patcherait une
+  seconde fois (UV par-dessus UV, matériaux déjà sombres re-assombris).
+- Contrôlé après coup : éclatement, insertion du téléphone, jour/nuit, FR et EN, plus le repli
+  `file://`. Aucune erreur console.
