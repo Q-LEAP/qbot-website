@@ -376,15 +376,34 @@ backToTop.addEventListener('click', () => {
   var minutes   = Math.max(1, Math.round(wordCount / 200));
   var metaEl    = document.querySelector('.article-meta');
   if (metaEl) {
-    var rt = document.createElement('span');
-    rt.className = 'reading-time';
-    rt.innerHTML =
-      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
-      ' stroke-width="2" aria-hidden="true">' +
-        '<circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>' +
-      '</svg>' +
-      (FR ? minutes + ' min de lecture' : minutes + ' min read');
-    metaEl.appendChild(rt);
+    /* Les pages d'article portent DÉJÀ une durée en dur (le back-office aussi,
+       via son champ « rt »). Ce bloc en ajoutait une seconde : on affichait
+       deux durées côte à côte, qui ne concordaient même pas (« 8 min de
+       lecture » suivi de « 7 min de lecture »). On remplace donc le nombre là
+       où il est, et on n'ajoute un badge que s'il n'y en a aucun.
+       Le remplacement ne touche que les chiffres, dans le nœud texte : les
+       trois habillages en place sont préservés (<span> simple, « Durée : » en
+       gras, ou .article-meta__item avec pictogramme), et l'espace insécable
+       qui précède « min » aussi. */
+    var walk = document.createTreeWalker(metaEl, NodeFilter.SHOW_TEXT);
+    var node, replaced = false;
+    while (!replaced && (node = walk.nextNode())) {
+      if (/\d+\s*min/i.test(node.textContent)) {
+        node.textContent = node.textContent.replace(/\d+(?=\s*min)/i, minutes);
+        replaced = true;
+      }
+    }
+    if (!replaced) {
+      var rt = document.createElement('span');
+      rt.className = 'reading-time';
+      rt.innerHTML =
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"' +
+        ' stroke-width="2" aria-hidden="true">' +
+          '<circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>' +
+        '</svg>' +
+        (FR ? minutes + ' min de lecture' : minutes + ' min read');
+      metaEl.appendChild(rt);
+    }
   }
 
   /* ── Barre de progression de lecture ── */
