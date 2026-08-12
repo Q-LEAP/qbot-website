@@ -742,6 +742,24 @@ mesure par rendu : model-viewer **recadre automatiquement sur les bornes du mod�
 de caméra en pourcentage donne deux cadrages différents entre les deux passes et le rapport est
 faux — il faut un rayon en mètres et un `camera-target` explicite.
 
+### Piège de relevé : les blocs masqués du live (2026-08-12)
+
+Deux fois dans la même journée, un relevé automatique du live a produit du faux contenu :
+
+1. **Négociation de langue.** `q-bot.eu/` redirige vers `/en/` selon `Accept-Language`. Un relevé
+   sans en-tête rapporte donc la version anglaise sur les URL françaises. Toujours fixer
+   `locale` + `Accept-Language` par langue.
+2. **Blocs masqués par un ancêtre.** Tester `display`/`visibility`/`opacity` sur l'élément lui-même
+   ne suffit pas : le live garde des sections désactivées dont les enfants ont un style normal.
+   C'est ainsi qu'un **« afficheur OLED à très haut contraste »** a été repris et publié alors
+   qu'il n'est pas affiché sur la page — signalé par le client, retiré du site entier (blocs
+   descriptifs, lignes de fiche technique FR/EN et de la page 3D, métadonnées, et les mentions en
+   prose de `commandez`/`order` et de la homepage EN). **Le seul test fiable est
+   `element.offsetParent !== null` combiné à la présence du texte dans `document.body.innerText`.**
+
+Règle qui en découle : aucune caractéristique technique ne doit figurer sur le site si elle n'est
+pas visible sur le live ou confirmée par le client. En cas de doute, demander plutôt que déduire.
+
 ### Frise datée vs section « évolution » (2026-08-12)
 
 La homepage a porté successivement les deux. La **frise datée du live** (Février 2022 → Décembre
