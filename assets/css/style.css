@@ -222,6 +222,18 @@ p { color: var(--gray); }
   height: 72px;
 }
 
+/* Desktop : logo à gauche, puis menu + actions groupés à droite — l'implantation
+   du site live. Le `space-between` ci-dessus, avec le menu et les actions comme
+   seuls autres enfants, poussait le menu au centre de la barre.
+   Scopé en min-width parce que sous 768px le menu sort du flux (dropdown
+   absolu) : les enfants restants sont le logo, le burger et les actions, et un
+   gap de 40px les ferait déborder à 390px. Le mobile garde donc son
+   space-between d'origine. */
+@media (min-width: 769px) {
+  .nav__inner { justify-content: flex-end; gap: 40px; }
+  .nav__logo { margin-right: auto; }
+}
+
 /* Le nav étant sur fond noir, on sert la version « Negative » du logo de la
    charte (p. 2) : lettrage blanc + accent teal conservé. Surtout pas de
    filter: brightness(0) invert(1) — ça aplatit le logo en blanc uni et
