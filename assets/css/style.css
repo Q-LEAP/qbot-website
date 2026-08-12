@@ -1058,9 +1058,12 @@ p { color: var(--gray); }
 
 /* ---- Évolution du produit ----
    Trois étapes côte à côte (prototype → boîtier actuel → suite), reliées par
-   un rail horizontal dont la portion teal se remplit au scroll (--tl-p, écrit
-   par le moteur de motion, cf. « MOTION SYSTEM »). Remplace la timeline datée
-   de la homepage.
+   un rail horizontal dont la portion teal s'arrête sur le point de la carte
+   « Génération actuelle ». Remplace la timeline datée de la homepage.
+   Le remplissage est FIXE : il dit où en est le produit, pas où en est le
+   scroll. Il était scrubbé par le moteur de motion (--tl-p) et s'allongeait
+   donc au défilement, ce qui le faisait lire comme une barre de progression de
+   lecture et le décollait du point qu'il est censé marquer.
    Le rail et ses pastilles ne sont dessinés qu'en desktop : en colonne unique
    ils relieraient des cartes empilées verticalement, ce qui n'a plus de sens. */
 .evolution__rail {
@@ -1087,7 +1090,13 @@ p { color: var(--gray); }
 .evolution__rail::before { background: var(--border); }
 .evolution__rail::after {
   background: linear-gradient(90deg, var(--teal), var(--teal-dark));
-  transform: scaleX(var(--tl-p, 0));
+  /* 0.5 n'est pas un réglage à l'œil : le rail va d'un centre de colonne
+     extérieure à l'autre (cf. left/right ci-dessus), donc son milieu est
+     exactement le centre de la colonne du milieu — le point de la carte
+     « Génération actuelle ». Si une 4e étape est ajoutée, la valeur devient
+     (index de l'étape courante) / (nombre d'étapes − 1). */
+  --evo-fill: 0.5;
+  transform: scaleX(var(--evo-fill));
   transform-origin: left center;
 }
 

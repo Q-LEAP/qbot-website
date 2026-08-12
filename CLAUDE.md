@@ -434,10 +434,19 @@ The dated "L'innovation continue… / Évolutions" timeline (Feb 2022 → Dec 20
 claimed anywhere in the new copy, deliberately: the only two product states there is evidence
 for are the proto photo and the current FBX.
 
-The three cards hang off a horizontal rail whose teal portion is scrubbed by scroll. That reuses
-the timeline's `--tl-p` mechanism verbatim — `.evolution__rail` was added to `PROGRESS` in the
-motion engine — so `.timeline`'s CSS/JS is now unused by any page but is *not* dead machinery;
-it is the same code path. `.evo-card` was added to the `card` reveal list.
+The three cards hang off a horizontal rail whose teal portion stops on the *Q-BOT today* node.
+`.evo-card` was added to the `card` reveal list.
+
+**The rail's fill is fixed, not scrubbed (changed 2026-08-12).** It was first wired into the motion
+engine's `PROGRESS` table (`--tl-p`, the timeline's mechanism) so it filled as the section scrolled.
+Reported as wrong, and it was: that trait says where the *product* is, not where the *reading* is —
+scrubbed, it grew and shrank under the visitor and no longer touched the node it exists to mark. It
+is now `--evo-fill: 0.5` in CSS. `0.5` is not eyeballed: the rail runs from one outer column centre
+to the other, so its midpoint *is* the middle column's centre. For a 4th step the value becomes
+`(index of the current step) / (number of steps − 1)`. Side effect, an improvement: under
+`prefers-reduced-motion` the teal portion now shows at all (the engine doesn't run there, so
+`--tl-p` stayed 0 and the trait was simply absent). `PROGRESS` no longer matches anything on any
+page — `.timeline` is used by none — but it is kept as the code path for a scrubbed progression.
 
 Two geometry details: the rail's ends sit at `calc((100% - 2 * var(--evo-gap)) / 6)` (the centre
 of the outer columns, gaps included — a flat `16.666%` is off by half a gap), and card images are

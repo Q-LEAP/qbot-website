@@ -509,9 +509,13 @@ backToTop.addEventListener('click', () => {
      coller au scroll, l'inertie y serait perçue comme du retard. */
   var PROGRESS = [
     ['.timeline', '--tl-p'],
-    /* Même mécanique pour le rail horizontal de la section « évolution » :
-       la portion teal du rail se remplit au fil du scroll (scaleX). */
-    ['.evolution__rail', '--tl-p'],
+    /* `.evolution__rail` était ici : son trait teal se remplissait au scroll.
+       Retiré — ce trait indique où en est le PRODUIT (il s'arrête sur le point
+       « Génération actuelle »), pas où en est la lecture ; scrubbé, il
+       s'allongeait et se raccourcissait et ne collait plus à son point. Il est
+       désormais figé en CSS (--evo-fill). Aucune page ne porte plus de
+       `.timeline`, donc ce tableau ne pilote aujourd'hui plus rien : on le
+       garde parce que c'est le chemin de code d'une progression scrubbée. */
   ];
 
   var LERP = 0.14;          // 0 = figé, 1 = suivi immédiat (aucune inertie)
