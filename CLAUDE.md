@@ -742,6 +742,16 @@ mesure par rendu : model-viewer **recadre automatiquement sur les bornes du mod�
 de caméra en pourcentage donne deux cadrages différents entre les deux passes et le rapport est
 faux — il faut un rayon en mètres et un `camera-target` explicite.
 
+### Frise datée vs section « évolution » (2026-08-12)
+
+La homepage a porté successivement les deux. La **frise datée du live** (Février 2022 → Décembre
+2023, `.timeline`) avait été remise le 2026-08-12 dans la passe « texte exact du live », puis
+**retirée le même jour à la demande du client : elle n'est plus à jour.** Ce sont les trois cartes
+`.evolution` qui sont en place (prototype → génération actuelle → roadmap), sans aucune date.
+`.timeline` reste dans la feuille de style et dans `PROGRESS` comme chemin de code, mais aucune
+page ne l'utilise. Ne pas « corriger » cet écart avec le live sans demander : c'est un arbitrage
+client, pas un oubli.
+
 **La bonne taille ne suffit pas, il faut le bon centre (corrigé le 2026-08-12).** La première version
 posait la vitre à 47 × 62 mm — l'ouverture plus 2 mm de recouvrement, donc la bonne taille — mais
 laissait le trou à découvert d'un côté. Deux erreurs cumulées, toutes deux invisibles sur un simple
