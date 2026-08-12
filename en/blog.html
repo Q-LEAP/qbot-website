@@ -165,7 +165,7 @@
         <img src="../assets/img/blog/post-merkur.webp" alt="Q-BOT, the robot automating two-factor authentication" width="768" height="768" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         <div class="blog-card__content">
           <span class="blog-card__tag">Press</span>
-          <h3 class="blog-card__title"><a href="blog/innovation-merkur.html">Selenium &amp; 2FA: Testing Secure Applications</a></h3>
+          <h3 class="blog-card__title"><a href="blog/innovation-merkur.html">A look back at our innovation with Merkur</a></h3>
           <p class="blog-card__excerpt">Article published in Merkur, the magazine of the Chamber of Commerce, looking back at the origins of this innovation and its features.</p>
           <div class="blog-card__meta">
             <span>March 2023</span>
@@ -181,8 +181,8 @@
         <img src="../assets/img/blog/post-2fa.webp" alt="Two-factor authentication on a smartphone" width="768" height="768" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
         <div class="blog-card__content">
           <span class="blog-card__tag">Security</span>
-          <h3 class="blog-card__title"><a href="blog/two-factor-authentication.html">5 Signs Your Test Coverage Is Insufficient</a></h3>
-          <p class="blog-card__excerpt">Think your automated test suite is complete? Here are 5 concrete red flags that reveal blind spots in your QA strategy.</p>
+          <h3 class="blog-card__title"><a href="blog/two-factor-authentication.html">What is two-factor authentication?</a></h3>
+          <p class="blog-card__excerpt">Security on the web matters to everyone. That is why two-factor authentication is the ideal tool for securing logins.</p>
           <div class="blog-card__meta">
             <span>March 2023</span>
             <span>6 min</span>
@@ -288,13 +288,13 @@
     var THUMB_FALLBACK='<svg class="blog-banner__ico" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
     function thumbFeat(a){
       if(a.thumbnail&&(a.thumbnail.startsWith('http')||a.thumbnail.startsWith('data:'))){
-        return '<img src="'+esc(a.thumbnail)+'" alt="" style="width:100%;height:100%;object-fit:cover;">';
+        return '<img src="'+esc(a.thumbnail)+'" alt="" style="width:100%;height:100%;object-fit:cover;" loading="lazy">';
       }
       return '<div style="background:'+(a.thumbColor||'linear-gradient(135deg,#00CBBE,#00A79C)')+';height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;">'+(a.thumbnail||THUMB_FALLBACK)+'</div>';
     }
     function thumbCard(a){
       if(a.thumbnail&&(a.thumbnail.startsWith('http')||a.thumbnail.startsWith('data:'))){
-        return {style:'background:#111;',content:'<img src="'+esc(a.thumbnail)+'" alt="" style="width:100%;height:100%;object-fit:cover;">'};
+        return {style:'background:#111;',content:'<img src="'+esc(a.thumbnail)+'" alt="" style="width:100%;height:100%;object-fit:cover;" loading="lazy">'};
       }
       return {style:'background:'+(a.thumbColor||'linear-gradient(135deg,#00CBBE,#00A79C)')+';',content:(a.thumbnail?esc(a.thumbnail):THUMB_FALLBACK)};
     }

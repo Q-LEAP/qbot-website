@@ -3123,6 +3123,49 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .newsletter__consent input[type="checkbox"] { width: 18px; height: 18px; }
 /* La zone cliquable utile est le label entier, on lui donne de la hauteur. */
 .newsletter__consent label { padding: 6px 0; }
+/* Derniers cas mesurés à 390 px : les liens des cartes produit et des cartes
+   de blog s'arrêtaient à 20-23 px, et la piste du curseur d'éclatement du
+   modèle 3D à 4 px. Les liens en pleine phrase (réponses de FAQ, corps
+   d'article) ne sont pas repris : 2.5.8 les exempte explicitement. */
+.product-card a,
+.blog-card__title a,
+.evo-card__link { display: inline-block; padding: 3px 0; }
+.mv-explode__slider { height: 24px; }
+
+/* Même mesure ailleurs : fil d'Ariane et bloc de coordonnées tombaient aussi
+   sous 24 px de haut. Les cases à cocher des formulaires portent un
+   `width:auto` en ligne, que seul un !important peut reprendre ; leur libellé
+   entier reste de toute façon cliquable, ce qui satisfait déjà 2.5.8. */
+.breadcrumb__list a,
+.contact-info__item a {
+  display: inline-block;
+  padding: 5px 0;
+}
+.newsletter__consent input[type="checkbox"],
+.form-group input[type="checkbox"],
+label > input[type="checkbox"] {
+  width: 20px !important;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Liens du pied de page. Mesurés à 390 px, ils faisaient 16 px de haut — la
+   hauteur de la ligne de texte, sans zone cliquable autour — là où WCAG 2.2
+   (2.5.8) demande 24 px. On ajoute 8 px de padding vertical (-> 32 px) et on
+   retire d'autant l'espacement de la liste, pour que le pied de page garde sa
+   hauteur. Le lien de la mention de consentement du formulaire suit. */
+.footer__col ul { display: grid; gap: 0; }
+.footer__col ul li { margin: 0; }
+.footer__col ul a,
+.footer__legal a,
+.newsletter__consent a,
+.form-consent a,
+.form-group label a {
+  display: inline-block;
+  padding: 8px 0;
+}
+.footer__legal { gap: 8px 24px; }
+
 /* .nav__lang a : le padding 6x8 est désormais déclaré avec le composant
    (section NAV) — hauteur ≈31px, largeur ≈50px, au-delà du minimum de 24. */
 
