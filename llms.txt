@@ -41,9 +41,9 @@ Site available in French (default, root paths) and English (`/en/`).
 
 - [Blog index (FR)](https://q-bot.eu/blog.html) / [EN](https://q-bot.eu/en/blog.html)
 
-- [Selenium & two-factor authentication guide (FR)](https://q-bot.eu/blog/selenium-double-authentification.html) / [EN](https://q-bot.eu/en/blog/selenium-2fa-guide.html)
-- [How to automate 2FA tests (FR)](https://q-bot.eu/blog/automatiser-2fa-tests.html) / [EN](https://q-bot.eu/en/blog/automate-2fa.html)
-- [5 signs your test coverage is incomplete (FR)](https://q-bot.eu/blog/5-signes-tests-incomplets.html) / [EN](https://q-bot.eu/en/blog/5-signs-incomplete-testing.html)
+- [Selenium & two-factor authentication guide (FR)](https://q-bot.eu/blog/innovation-merkur.html) / [EN](https://q-bot.eu/en/blog/selenium-2fa-guide.html)
+- [How to automate 2FA tests (FR)](https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html) / [EN](https://q-bot.eu/en/blog/automate-2fa.html)
+- [5 signs your test coverage is incomplete (FR)](https://q-bot.eu/blog/authentification-deux-facteurs.html) / [EN](https://q-bot.eu/en/blog/5-signs-incomplete-testing.html)
 
 ## Legal
 

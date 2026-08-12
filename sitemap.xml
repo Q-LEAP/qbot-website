@@ -59,25 +59,25 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/blog/selenium-double-authentification.html</loc>
+    <loc>https://q-bot.eu/blog/innovation-merkur.html</loc>
     <lastmod>2026-08-11</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/innovation-merkur.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/innovation-merkur.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/blog/automatiser-2fa-tests.html</loc>
+    <loc>https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html</loc>
     <lastmod>2026-08-11</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/blog/5-signes-tests-incomplets.html</loc>
+    <loc>https://q-bot.eu/blog/authentification-deux-facteurs.html</loc>
     <lastmod>2026-08-11</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/5-signs-incomplete-testing.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
   </url>
 
   <url>
@@ -139,23 +139,23 @@
   <url>
     <loc>https://q-bot.eu/en/blog/selenium-2fa-guide.html</loc>
     <lastmod>2026-08-11</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/innovation-merkur.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/selenium-double-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/innovation-merkur.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/en/blog/automate-2fa.html</loc>
     <lastmod>2026-08-11</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/en/blog/5-signs-incomplete-testing.html</loc>
     <lastmod>2026-08-11</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/5-signs-incomplete-testing.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/5-signes-tests-incomplets.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
   </url>
 
 </urlset>

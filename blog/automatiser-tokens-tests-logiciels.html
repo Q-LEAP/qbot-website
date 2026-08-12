@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automatiser l'utilisation des tokens dans vos tests logiciels</title>
+  <meta name="description" content="Article paru dans IT Nation le 28 février 2023, revenant sur les origines de cette innovation, et ses fonctionnalités.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html">
+
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Automatiser l'utilisation des tokens dans vos tests logiciels">
+  <meta property="og:description" content="Article paru dans IT Nation le 28 février 2023, revenant sur les origines de cette innovation, et ses fonctionnalités.">
+  <meta property="og:url" content="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Le robot Q-BOT, boîtier d'automatisation de la double authentification">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-BOT by Q-Leap">
+  <meta property="article:published_time" content="2025-03-05">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Automatiser l'utilisation des tokens dans vos tests logiciels">
+  <meta name="twitter:description" content="Article paru dans IT Nation le 28 février 2023, revenant sur les origines de cette innovation, et ses fonctionnalités.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
+  <!-- Favicon -->
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-BOT",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://q-bot.eu/blog.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "5 signes de couverture insuffisante",
+      "item": "https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"
+  },
+  "headline": "Automatiser l'utilisation des tokens dans vos tests logiciels",
+  "description": "Article paru dans IT Nation le 28 février 2023, revenant sur les origines de cette innovation, et ses fonctionnalités.",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
+  "datePublished": "2023-03-02",
+  "inLanguage": "fr-FR",
+  "author": {
+    "@type": "Organization",
+    "name": "Q-Leap",
+    "url": "https://q-bot.eu/"
+  },
+  "publisher": {
+    "@id": "https://q-bot.eu/#organization"
+  }
+}
+  </script>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="../index.html" class="nav__logo" aria-label="Q-BOT — Accueil">
+        <img src="../assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="94" height="40">
+      </a>
+
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../a-propos.html" class="nav__link">À propos</a></li>
+        <li><a href="../caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+
+      <div class="nav__actions">
+        <a href="../contact.html" class="btn btn--primary">Demo gratuite</a>
+                <div class="nav__lang">
+          <a href="../en/blog.html" hreflang="en" lang="en" aria-label="Version anglaise de cette page"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<section id="main" class="page-hero" aria-labelledby="article-hero-title">
+  <div class="container">
+    <span class="section-label">QA Best Practices</span>
+    <h1 id="article-hero-title">Automatiser l'utilisation des tokens dans vos tests logiciels</h1>
+    <p>Votre CI tourne chaque nuit — et pourtant des bugs arrivent en production. Ces 5 signaux révèlent des angles morts dans votre stratégie QA.</p>
+  </div>
+</section>
+
+<!-- ======= BREADCRUMB ======= -->
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Fil d'Ariane">
+      <li><a href="../index.html">Accueil</a></li>
+      <li><span aria-hidden="true">›</span></li>
+      <li><a href="../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">›</span></li>
+      <li><span aria-current="page">5 signes de couverture insuffisante</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ======= ARTICLE ======= -->
+<section class="section" aria-label="Article">
+  <div class="container">
+    <div class="article-layout">
+
+      <!-- MAIN CONTENT -->
+      <main class="article-body" id="main-content">
+
+        <header class="article-header">
+          <div class="article-meta">
+            <span>2 mars 2023</span>
+            <span>7 min de lecture</span>
+            <span>Équipe Q-Leap</span>
+          </div>
+          <p>Q-Leap lance officiellement son robot Q-Bot ! Il s’agit d’une solution unique sur le marché dans le domaine de l’automatisation des tests logiciels nécessitant la double authentification via Token Luxtrust.</p>
+          <p>Q-Leap lance officiellement son robot Q-Bot ! Il s’agit d’une solution unique sur le marché dans le domaine de l’automatisation des tests logiciels nécessitant la double authentification via Token Luxtrust. Ce robot permet de récupérer automatiquement la valeur de l’OTP (One Time Password) et de déverrouiller les systèmes ouapplications nécessitant l’authentification à deux facteurs (2FA) afin de permettre aux testeurs d’effectuer leurs cas de tests sans barrière.</p>
+          <h2>Q-Bot, la solution pour automatiser les tests avec tokens luxtrust.</h2>
+          <p>Les experts du test, en particulier ceux en charge d’automatiser les processus de test de bout en bout doivent pouvoir travailler sans aucune barrière. Faire l’impasse sur certaines fonctionnalités comme l’authentification à deux facteurs induit un risque sur la qualité de l’application livrée. Avec Q-Bot, ces fonctionnalités peuvent maintenant être testées en totalité, ce qui a pour conséquence d’augmenter la qualité de l’application livrée.</p>
+          <p>« Joao, l’un de nos collaborateurs est venu me voir. Il était alors en mission chez l’un de nos clients au sein d’une équipe en charge des tests sur une application bancaire. Il m’a fait part d’une problématique, bien connu dans le monde du testing : l’impossibilité de tester de bout en bout une application nécessitant la double authentification avec les tokens de sécurité. Après quelques recherches, et un brainstorming, nous avons conclu qu’aucune solution n’existait. Nous allions donc la créer ! » Sylvain Perez, CEO de Q-Leap et créateur de la solution.</p>
+          <p>Premier schéma de création de Q-Bot réalisé par Sylvain et João en mars 2022.</p>
+          <p>Ce petit boîtier d’à peine 10 cm de côté a donc vu le jour à l’été 2022. Il a été développé en interne dans les bureaux de Q-Leap, société spécialisée dans les tests logiciels. Cette solution, déjà en place dans plusieurs sociétés au Luxembourg, permet d’automatiser les cas de tests, même les plus critiques qui nécessitent une validation avec token.</p>
+          <p>La double authentification, bénéfique et sécuritaire, représente une contrainte dans les cas de tests fonctionnels. « Avec Q-Bot, il devient maintenant possible d’automatiser 100% des tests de fonctionnalités » précise S. Perez.</p>
+          <p>Photo du boîter Q-Bot actuellement opérationnel ! Photo réalisée par Mathilde MAGNE</p>
+          <h2>Les fonctionnalités de Q-Bot</h2>
+          <p>Q-Bot s’utilise sur tout type d’applications Web, Mobile ou Desktop. Les cas d’utilisations sont nombreux : authentifier un utilisateur, créer un compte utilisateur, confirmer une transaction e-commerce, réinitialiser le mot de passe d’un utilisateur, valider un transfert d’argent, signer un document, demander un document officiel…</p>
+          <p>Ce robot prend donc en charge de nombreux projets de développement, de tests, d’intégration ou encore d’automatisation des processus métiers (Robot Process Automation ou RPA) nécessitant une validation par token.</p>
+          <p>Une solution simple, sûre et efficace !</p>
+          <ul>
+            <li>S’utilise avec ses deux types d’accès : Web et API</li>
+            <li>Aucune installation logicielle requise. Une simple connexion au réseau de l’entreprise estdemandée.</li>
+            <li>La récupération de la valeur du token se fait en moins de 10 secondes.</li>
+            <li>Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutionsd’automatisation grâce à son API simple et sécurisée. La première version de Q-Bot a été conçue spécifiquement pour fonctionner avec les tokens de la marque Luxtrust, leader sur le marché de l’authentification au Luxembourg. Dans sa seconde version qui arrivera prochainement, Q-Bot saura également prendre en charge la totalité des tokens « physiques » du marché ainsi que les smartcard. Enfin, une version dédiée à la double authentification via une application mobile sera également développée.</li>
+          </ul>
+          <h2>Remerciements</h2>
+          <p>Merci à toutes les personnes impliquées directement ou indirectement dans la création et l’accompagnement de Q-Bot :</p>
+          <ul>
+            <li>Arnaud Glad pour son soutien et ses discussions sur Javascript async/await. Cédric Malek pour son grand travail d’imagination et de conception de la mallette de Q-Bot</li>
+            <li>Elodie Schlegel pour son soutien et ses discussions sur Javascript async/await</li>
+            <li>Hanane Hichami pour sa grande aide dans le test de l’application web et de l’application de démonstration</li>
+            <li>João Portuquês pour son travail chirurgical sur la connexion au bouton bluetooth et pour l’écran,</li>
+            <li>Julien Desmulier pour son soutien et sa publicité pour Q-Bot lors de toutes ses formations</li>
+            <li>Marc Teusch pour son soutien, son enthousiasme et sa coordination dans la conception de la mallette de Q-Bot.</li>
+            <li>Marie Krust pour son soutien, son enthousiasme et son excellent travail sur le logo et la charte graphique</li>
+            <li>Patrick Welfringer pour sa gentillesse et ses compétences en 3D en concevant la partie la plus complexe de la mallette</li>
+            <li>Siham Youbi pour son soutien et son enthousiasme</li>
+            <li>Sylvain Perez pour le code, le matériel et les efforts incessants pour donner vie à Q-Bot</li>
+            <li>Sven Mertes pour son soutien et son enthousiasme</li>
+            <li>Victor Prêté pour son grand travail sur les animations d’affichage</li>
+            <li>Mathilde Magne pour la qualité des photos réalisées de notre boîtier.</li>
+          </ul>
+          <p>Enfin un remerciement très spécial à Hubert Schumacher pour son soutien inconditionnel et toujours bienveillant. Rien n’aurait été possible sans lui et l’ensemble des collaborateurs !</p>
+        </main>
+
+      <!-- SIDEBAR -->
+      <aside class="article-sidebar" aria-label="Informations complémentaires">
+
+        <div class="sidebar-card reveal">
+          <h4>Qu'est-ce que Q-BOT ?</h4>
+          <p>Q-BOT est la seule solution du marché capable d'automatiser la double authentification (2FA), y compris via des dispositifs physiques comme LuxTrust. Plug &amp; Play, intégrable dans n'importe quel pipeline CI/CD.</p>
+          <a href="../caracteristiques.html" class="btn btn--outline" style="margin-top:16px; display:inline-block;">
+            Voir les caractéristiques
+          </a>
+        </div>
+
+        <div class="sidebar-card reveal">
+          <h4>Voir la démo</h4>
+          <p>Découvrez Q-BOT en moins d'une minute. Un expert Q-Leap vous présente la solution en direct et répond à vos questions.</p>
+          <a href="../contact.html" class="btn btn--primary" style="margin-top:16px; display:inline-block;">
+            Demander une démo
+          </a>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= RELATED ARTICLES ======= -->
+<section class="section section--gray related-articles reveal" aria-labelledby="related-title">
+  <div class="container">
+    <span class="section-label">Pour aller plus loin</span>
+    <h2 class="section-title" id="related-title">Articles liés</h2>
+
+    <div class="blog__grid">
+
+      <article class="blog-card reveal">
+        <div class="blog-card__banner" style="background:linear-gradient(135deg,#00CBBE 0%,#00A79C 100%); display:flex; align-items:center; justify-content:center; font-size:3rem;"><svg class="blog-banner__ico" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Automatisation</span>
+          <h3 class="blog-card__title">
+            <a href="automatiser-tokens-tests-logiciels.html">L'automatisation 2FA : le défi caché des équipes QA</a>
+          </h3>
+          <p class="blog-card__excerpt">La double authentification protège vos utilisateurs — mais elle bloque vos testeurs. Découvrez pourquoi la 2FA est devenue l'un des principaux obstacles à la couverture de test automatisé.</p>
+          <div class="blog-card__meta">
+            <span>Janvier 2025</span>
+            <span>7 min</span>
+          </div>
+          <a href="automatiser-tokens-tests-logiciels.html" class="blog-card__read-more">
+            Lire l'article
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal">
+        <div class="blog-card__banner" style="background:linear-gradient(135deg,#141414 0%,#1F1F1F 100%); display:flex; align-items:center; justify-content:center; font-size:3rem;"><svg class="blog-banner__ico" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 9V3"/><path d="M7.5 15h9"/></svg></div>
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Tutoriel</span>
+          <h3 class="blog-card__title">
+            <a href="innovation-merkur.html">Selenium &amp; double authentification : guide pratique</a>
+          </h3>
+          <p class="blog-card__excerpt">Selenium est l'outil d'automatisation le plus populaire, mais il reste impuissant face à la double authentification physique. Guide pratique avec exemples de code.</p>
+          <div class="blog-card__meta">
+            <span>Février 2025</span>
+            <span>8 min</span>
+          </div>
+          <a href="innovation-merkur.html" class="blog-card__read-more">
+            Lire l'article
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-BOT</h3>
+        <ul role="list">
+          <li><a href="../index.html">Accueil</a></li>
+          <li><a href="../caracteristiques.html">Caractéristiques</a></li>
+          <li><a href="../a-propos.html">À propos</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Produit</h3>
+        <ul role="list">
+          <li><a href="../modele-3d.html">Modèle 3D</a></li>
+          <li><a href="../commandez.html">Commander</a></li>
+          <li><a href="../contact.html">Démo gratuite</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-BOT powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="https://q-bot.eu/conditions-vente/" target="_blank" rel="noopener">Conditions de vente</a>
+        <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
