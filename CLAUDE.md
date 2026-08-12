@@ -721,6 +721,29 @@ mesure par rendu : model-viewer **recadre automatiquement sur les bornes du mod�
 de caméra en pourcentage donne deux cadrages différents entre les deux passes et le rapport est
 faux — il faut un rayon en mètres et un `camera-target` explicite.
 
+**La bonne taille ne suffit pas, il faut le bon centre (corrigé le 2026-08-12).** La première version
+posait la vitre à 47 × 62 mm — l'ouverture plus 2 mm de recouvrement, donc la bonne taille — mais
+laissait le trou à découvert d'un côté. Deux erreurs cumulées, toutes deux invisibles sur un simple
+contrôle des dimensions :
+
+1. **Homothétie de centre l'ouverture au lieu d'un recentrage.** `Wl *= s` autour de `(cu,cv)` ne
+   déplace le centre de la plaque que de `(1-s)` vers l'ouverture. La plaque du FBX étant centrée en
+   `x ≈ 0` alors que la fenêtre est à `x ≈ +12` (décalage réel du modèle, comme le socle du téléphone
+   à `x ≈ +9,5`), il restait 6 mm d'écart en `u` et 5 mm en `v` pour 2 mm de recouvrement. Il faut
+   mettre à l'échelle autour du centre de **la plaque**, puis translater ce centre sur celui de
+   l'ouverture.
+2. **Base locale non orthonormée.** La normale de la vitre n'est pas exactement perpendiculaire à X
+   (`dn_x ≈ 0,018`, soit 1°) ; prendre `rt = X` tel quel donne une base oblique pour laquelle
+   `Wl @ BAS` **n'est pas** l'inverse de `Wv @ BAS.T`. Le retour en coordonnées monde réintroduisait
+   un cisaillement et décalait la vitre de 1,4 mm de plus. `rt` est redressé par Gram-Schmidt, avec
+   une assertion `BAS @ BAS.T == I`.
+
+Le contrôle qui compte n'est donc pas « la vitre mesure-t-elle la bonne taille » mais **le
+recouvrement signé sur les quatre côtés**, exprimé dans la base du script : il doit valoir `LIP`
+partout (2,00 / 2,00 / 2,00 / 2,00 aujourd'hui). Un contrôle qui recalcule la base depuis le fichier
+patché passe à côté de l'erreur 2 — il faut projeter la plaque patchée dans la base issue de **la
+source**.
+
 Ce redimensionnement n'existe que dans `patchglb-site.py`, pas dans `patchglb.py` : les visuels
 hors-ligne montrent le produit assemblé, où la taille de la plaque cachée n'a aucun effet.
 

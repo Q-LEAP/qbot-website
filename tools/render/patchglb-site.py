@@ -130,8 +130,16 @@ wn = np.cross(Wt[:,1]-Wt[:,0], Wt[:,2]-Wt[:,0])
 wa = 0.5*np.linalg.norm(wn,axis=1); wn /= (np.linalg.norm(wn,axis=1,keepdims=True)+1e-12)
 big = wn[np.argsort(-wa)[:4]]
 dn = big[np.argmax(big[:,2])]; dn /= np.linalg.norm(dn)      # normale extérieure
-rt = np.array([1.0,0,0]); upv = np.cross(dn,rt); upv /= np.linalg.norm(upv)
+# Base ORTHONORMÉE, obligatoire : la normale de la plaque n'est pas exactement
+# perpendiculaire à l'axe X (dn_x ≈ 0,018, soit 1°). Prendre rt = X tel quel
+# donnait une base oblique, pour laquelle `Wl@BAS` n'est plus l'inverse de
+# `Wv@BAS.T` : le retour en coordonnées monde réintroduisait un cisaillement,
+# et la vitre ressortait décalée de 1,4 mm en u — de quoi manger la moitié du
+# recouvrement d'un côté. On redresse rt par Gram-Schmidt.
+rt = np.array([1.0,0,0]); rt = rt - dn*(rt@dn); rt /= np.linalg.norm(rt)
+upv = np.cross(dn,rt); upv /= np.linalg.norm(upv)
 BAS = np.stack([rt,upv,dn])
+assert abs(BAS@BAS.T - np.eye(3)).max() < 1e-9, 'base non orthonormée'
 Wl = Wv@BAS.T
 umin,vmin,_ = Wl.min(0); umax,vmax,dmax = Wl.max(0)
 
@@ -154,15 +162,25 @@ op = ~np.asarray(mask)
 ys,xs = np.where(op)
 au0 = umin+(xs.min()/(RES-1))*(umax-umin); au1 = umin+(xs.max()/(RES-1))*(umax-umin)
 av0 = vmin+(1-ys.max()/(RES-1))*(vmax-vmin); av1 = vmin+(1-ys.min()/(RES-1))*(vmax-vmin)
-cu, cv = (au0+au1)/2, (av0+av1)/2
+cu, cv = (au0+au1)/2, (av0+av1)/2          # centre de l'ouverture
+pu, pv = (umin+umax)/2, (vmin+vmax)/2      # centre de la plaque d'origine
 su = (au1-au0+2*LIP)/(umax-umin)
 sv = (av1-av0+2*LIP)/(vmax-vmin)
-Wl[:,0] = cu + (Wl[:,0]-cu)*su
-Wl[:,1] = cv + (Wl[:,1]-cv)*sv
+# On redimensionne autour du centre de la PLAQUE, puis on repose ce centre sur
+# celui de l'ouverture. Une homothétie de centre (cu,cv) ne suffit pas : elle ne
+# rapproche le centre de la plaque de l'ouverture que de (1-s), soit ici 6 mm
+# d'écart résiduel en u et 5 mm en v pour 2 mm de recouvrement — la vitre
+# dépassait d'un côté et découvrait le trou de l'autre. Le décalage est réel,
+# pas une erreur de mesure : la plaque du FBX est centrée en x≈0 alors que la
+# fenêtre de la coque est à x≈+14 (comme le socle du téléphone, à x≈+9,5).
+Wl[:,0] = cu + (Wl[:,0]-pu)*su
+Wl[:,1] = cv + (Wl[:,1]-pv)*sv
 pr_g.attributes.POSITION = add_acc((Wl@BAS).astype('<f4'),'VEC3')
 print(f"  vitre : ouverture mesurée {1000*(au1-au0):.1f} x {1000*(av1-av0):.1f} mm "
-      f"-> plaque {1000*(umax-umin):.1f} x {1000*(vmax-vmin):.1f} ramenée à "
-      f"{1000*(au1-au0+2*LIP):.1f} x {1000*(av1-av0+2*LIP):.1f}")
+      f"centrée sur ({1000*cu:+.1f}, {1000*cv:+.1f})\n"
+      f"          plaque {1000*(umax-umin):.1f} x {1000*(vmax-vmin):.1f} centrée sur "
+      f"({1000*pu:+.1f}, {1000*pv:+.1f}) -> "
+      f"{1000*(au1-au0+2*LIP):.1f} x {1000*(av1-av0+2*LIP):.1f} recentrée sur l'ouverture")
 
 # ── 2. Écran du smartphone : primitive dédiée (UV d'origine dégénérées) ───
 TEX_SCR = add_png(TEX_SCREEN)
