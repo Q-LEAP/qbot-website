@@ -287,31 +287,27 @@ p { color: var(--gray); }
   gap: 12px;
 }
 
-.nav__lang {
-  display: flex;
+/* Un seul lien : la langue vers laquelle on bascule (globe + code), pas les
+   deux codes dont un ne servait qu'à indiquer la page où l'on est déjà —
+   c'était deux fois la largeur pour la même information, et une pastille
+   teal de plus juste à côté du CTA. Style calqué sur .nav__link (pas de
+   pastille, pas de bordure) pour qu'il se lise comme la fin du menu.
+   Le padding porte la cible tactile, cf. section CIBLES TACTILES. */
+.nav__lang { display: flex; align-items: center; }
+.nav__lang a {
+  display: inline-flex;
   align-items: center;
-  gap: 2px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px;
-  padding: 3px;
+  gap: 5px;
+  padding: 6px 8px;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-}
-.nav__lang a {
-  display: block;
-  padding: 4px 10px;
-  border-radius: 14px;
-  color: rgba(255,255,255,0.45);
-  transition: color var(--transition), background var(--transition);
+  color: rgba(255,255,255,0.65);
+  transition: color var(--transition);
 }
 .nav__lang a:hover { color: var(--white); }
-.nav__lang a.active {
-  background: var(--teal);
-  color: var(--white);
-}
-.nav__lang span { display: none; }
+.nav__lang a svg { opacity: 0.8; }
+.nav__lang a:hover svg { opacity: 1; }
 
 .nav__toggle {
   display: none;
@@ -3035,5 +3031,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .newsletter__consent input[type="checkbox"] { width: 18px; height: 18px; }
 /* La zone cliquable utile est le label entier, on lui donne de la hauteur. */
 .newsletter__consent label { padding: 6px 0; }
-.nav__lang a { padding: 6px 8px; margin: -6px 0; }
+/* .nav__lang a : le padding 6x8 est désormais déclaré avec le composant
+   (section NAV) — hauteur ≈31px, largeur ≈50px, au-delà du minimum de 24. */
 
