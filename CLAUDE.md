@@ -448,6 +448,18 @@ to the other, so its midpoint *is* the middle column's centre. For a 4th step th
 `--tl-p` stayed 0 and the trait was simply absent). `PROGRESS` no longer matches anything on any
 page — `.timeline` is used by none — but it is kept as the code path for a scrubbed progression.
 
+**Stacking + entrance (2026-08-12).** The teal trait was painting *over* the nodes: both rail lines
+are pseudo-elements of `.evolution__rail`, and `::after` is its **last** child, so it painted after
+the cards. Made explicit — lines `z-index: 0`, `.evo-card` `z-index: 1` — the same fix the timeline
+needed. The rail also has a **one-shot** entrance: the trait draws itself (`evoRailDraw`, 0.85s) and
+the current node lands on it (`evoNodeLand`, delayed 0.62s so the bounce happens when the trait
+arrives). No loop: the trait states a fact, it has no reason to keep moving. The trigger is the
+`.is-visible` the observer already puts on the current card, read from the parent rail via `:has()`;
+the animation is the **only** thing inside that `:has()` block, so a browser without `:has()` simply
+keeps the static end state (full-length trait, node with its halo). It cannot replay on later scrolls
+— module 4 `unobserve`s after adding `.is-visible`. Under `prefers-reduced-motion` the global
+`animation-duration: 0.01ms` rule snaps both to their end state.
+
 Two geometry details: the rail's ends sit at `calc((100% - 2 * var(--evo-gap)) / 6)` (the centre
 of the outer columns, gaps included — a flat `16.666%` is off by half a gap), and card images are
 `position: absolute; inset: 0; object-fit: contain` rather than `max-height: 88%`, because Chrome

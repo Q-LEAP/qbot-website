@@ -1068,6 +1068,7 @@ p { color: var(--gray); }
    ils relieraient des cartes empilées verticalement, ce qui n'a plus de sens. */
 .evolution__rail {
   --evo-gap: 24px;
+  --evo-fill: 0.5;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--evo-gap);
@@ -1095,10 +1096,15 @@ p { color: var(--gray); }
      exactement le centre de la colonne du milieu — le point de la carte
      « Génération actuelle ». Si une 4e étape est ajoutée, la valeur devient
      (index de l'étape courante) / (nombre d'étapes − 1). */
-  --evo-fill: 0.5;
   transform: scaleX(var(--evo-fill));
   transform-origin: left center;
 }
+/* Les deux traits sont les pseudo-éléments du rail : ::after est son DERNIER
+   enfant, donc il était peint après les cartes et passait par-dessus les
+   pastilles. Ordre rendu explicite — même correctif que pour la timeline. */
+.evolution__rail::before,
+.evolution__rail::after { z-index: 0; }
+.evo-card { z-index: 1; }
 
 .evo-card {
   position: relative;
@@ -1132,6 +1138,33 @@ p { color: var(--gray); }
   box-shadow: 0 0 0 5px rgba(0,203,190,0.16);
 }
 .evo-card--next .evo-card__node { border-style: dashed; }
+
+/* ---- Entrée du rail : le trait se dessine, le point l'accueille ----
+   Un seul passage, à l'arrivée de la section — pas de boucle : le trait
+   indique un état, il n'a aucune raison de s'agiter en permanence.
+   Le déclencheur est le `.is-visible` que l'observer pose déjà sur la carte
+   courante (variante `card` du système de reveal) ; `:has()` permet de le lire
+   depuis le rail, qui est son parent. Si le navigateur ne connaît pas `:has()`,
+   la règle entière est ignorée et l'état statique ci-dessus subsiste : trait à
+   sa longueur définitive et point avec son halo. C'est la dégradation voulue,
+   d'où le choix de ne mettre QUE l'animation dans ce bloc. */
+@keyframes evoRailDraw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(var(--evo-fill)); }
+}
+@keyframes evoNodeLand {
+  0%   { transform: scale(0.4); box-shadow: 0 0 0 0    rgba(0,203,190,0.45); }
+  55%  { transform: scale(1.35); box-shadow: 0 0 0 9px rgba(0,203,190,0.22); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 5px rgba(0,203,190,0.16); }
+}
+.evolution__rail:has(.evo-card--current.is-visible)::after {
+  animation: evoRailDraw 0.85s var(--ease-out) both;
+}
+.evolution__rail:has(.evo-card--current.is-visible) .evo-card--current .evo-card__node {
+  /* Le délai place le rebond au moment où le trait atteint le point, pas
+     avant : 0,85 s de tracé moins le temps de montée de la pastille. */
+  animation: evoNodeLand 0.55s var(--ease-out) 0.62s both;
+}
 
 .evo-card__media {
   position: relative;
