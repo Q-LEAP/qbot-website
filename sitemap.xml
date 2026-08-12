@@ -62,21 +62,21 @@
     <loc>https://q-bot.eu/blog/innovation-merkur.html</loc>
     <lastmod>2026-08-11</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/innovation-merkur.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/innovation-merkur.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/innovation-merkur.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html</loc>
     <lastmod>2026-08-11</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-tokens-software-testing.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/blog/authentification-deux-facteurs.html</loc>
     <lastmod>2026-08-11</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/5-signs-incomplete-testing.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/two-factor-authentication.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
   </url>
 
@@ -137,24 +137,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/en/blog/selenium-2fa-guide.html</loc>
+    <loc>https://q-bot.eu/en/blog/innovation-merkur.html</loc>
     <lastmod>2026-08-11</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/innovation-merkur.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/selenium-2fa-guide.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/innovation-merkur.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/innovation-merkur.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/en/blog/automate-2fa.html</loc>
+    <loc>https://q-bot.eu/en/blog/automate-tokens-software-testing.html</loc>
     <lastmod>2026-08-11</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-tokens-software-testing.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/en/blog/5-signs-incomplete-testing.html</loc>
+    <loc>https://q-bot.eu/en/blog/two-factor-authentication.html</loc>
     <lastmod>2026-08-11</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/5-signs-incomplete-testing.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/two-factor-authentication.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/authentification-deux-facteurs.html"/>
   </url>
 

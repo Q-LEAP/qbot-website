@@ -3087,6 +3087,32 @@ a:focus-visible { border-radius: var(--radius-sm); }
   background: var(--teal);
 }
 
+/* Figures d'article : visuel de couverture et illustrations en cours de texte,
+   reprises du site live. La légende garde le texte du live sous l'image. */
+.article-figure {
+  margin: 32px 0;
+}
+.article-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid #2B2B2B;
+  background: #141414;
+}
+.article-figure figcaption {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-align: center;
+}
+.article-figure--cover {
+  margin: 0 0 36px;
+}
+.article-figure--cover img {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 /* ══════════════════════════════════════════════
    CIBLES TACTILES
    WCAG 2.2 (2.5.8) impose 24x24 CSS px minimum ; au doigt on vise 44.
