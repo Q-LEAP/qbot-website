@@ -41,6 +41,18 @@
     { theta: -26, phi: 66, r: 0.80, zoom: 0.92, t: 0.980 }   // vue éclatée
   ];
   var PHONE_HANDOFF = 1.0;   // keyframe où la coque se réassemble
+  var EXPLODE_STEP  = 4;     // le dernier pas : l'éclatement est SCRUBBÉ, pas joué
+  var EXPLODE_END   = 0.98;  // fin utile du segment coque (jamais le keyframe 1.0)
+  /* Fenêtre de scrub, exprimée en fraction du pas parcourue par le centre du
+     viewport. Elle DÉMARRE à 0.5 : c'est l'instant où ce pas devient le pas
+     centré, donc celui où l'on bascule du segment téléphone au segment coque.
+     Commencer avant reviendrait à ouvrir le boîtier pendant que le texte
+     précédent est encore à l'écran ; commencer après ferait un saut visible.
+     Elle finit à 1.15, soit au-delà du pas : le centre du viewport parcourt
+     0.5 -> 1.5 sur la hauteur d'un écran, donc cette borne étale l'ouverture sur
+     les deux premiers tiers du défilement, puis la maintient ouverte le dernier
+     tiers. Une fenêtre plus courte donnait une ouverture expédiée en 400 px. */
+  var SCRUB_IN = 0.50, SCRUB_OUT = 1.15;
 
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t };
@@ -78,6 +90,17 @@
     return best;
   }
 
+  /* Quelle fraction du pas `i` le centre du viewport a-t-il parcourue ? C'est
+     cette valeur qui sert de tête de lecture pour l'éclatement : elle suit le
+     doigt à l'image près, dans les deux sens. */
+  function fraction(i) {
+    var r = steps[i].getBoundingClientRect();
+    if (!r.height) return 0;
+    var f = (window.innerHeight / 2 - r.top) / r.height;
+    f = (f - SCRUB_IN) / (SCRUB_OUT - SCRUB_IN);
+    return Math.min(1, Math.max(0, f));
+  }
+
   function apply(snap) {
     var p = progress();
     var i = nearest();
@@ -87,11 +110,17 @@
     cur.phi   = lerp(cur.phi,   g.phi,   k);
     cur.r     = lerp(cur.r,     g.r,     k);
     cur.zoom  = lerp(cur.zoom,  g.zoom,  k);
-    /* Le clip a deux segments séparés par le keyframe t=1.0, qui réassemble la
-       coque. Le lissage ne doit jamais le franchir : on saute. */
-    var seg = g.t < PHONE_HANDOFF;
-    if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = g.t;
-    else cur.t = lerp(cur.t, g.t, k);
+    /* Position dans le clip. Sur le pas « L'intérieur », elle est lue
+       directement dans le scroll : le boîtier s'ouvre et se referme au rythme du
+       geste, sans inertie — une tête de lecture qui traîne se perçoit comme du
+       retard, pas comme de la fluidité (même règle que les progressions
+       scrubbées de main.js). Ailleurs, la transition garde son inertie. */
+    var scrub = (i === EXPLODE_STEP);
+    var tTarget = scrub ? fraction(i) * EXPLODE_END : g.t;
+    var seg = tTarget < PHONE_HANDOFF;
+    if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = tTarget;   // on ne franchit jamais t=1.0
+    else if (scrub) cur.t = tTarget;                         // scrub : collé au scroll
+    else cur.t = lerp(cur.t, tTarget, k);
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
     if (cur.t > 0.98 && cur.t < PHONE_HANDOFF) cur.t = 0.98;
 
@@ -111,7 +140,7 @@
     if (hint) hint.style.opacity = p > 0.02 ? '0' : '';
     if (cta) cta.classList.toggle('is-visible', p > 0.04);
 
-    var moving = Math.abs(g.theta - cur.theta) > 0.01 || Math.abs(g.t - cur.t) > 0.001 ||
+    var moving = Math.abs(g.theta - cur.theta) > 0.01 || Math.abs(tTarget - cur.t) > 0.001 ||
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005;
     if (moving) { running = true; requestAnimationFrame(function () { apply(false); }); }
     else running = false;

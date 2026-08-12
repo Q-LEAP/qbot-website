@@ -188,7 +188,12 @@
      Une scène collante, cinq pas de texte. Le scroll ne déclenche pas une
      animation : il en écrit la position, image par image. Cf. assets/js/scrolly.js
      et la section « Scrollytelling » de assets/css/scrolly.css. -->
-<section class="scrolly" aria-labelledby="scrolly-title" style="height: calc(5 * 100svh);">
+<!-- Hauteur = nombre de pas + 1 écran. La course d'un élément collant vaut
+     (hauteur du parent - hauteur de l'élément) : avec 5 écrans pour 5 pas, la
+     scène se décollait pile au début du dernier, et l'ouverture du boîtier se
+     jouait alors qu'il quittait l'image. L'écran supplémentaire maintient la
+     scène épinglée pendant tout le scrub, puis tient la vue éclatée. -->
+<section class="scrolly" aria-labelledby="scrolly-title" style="height: calc(6 * 100svh);">
   <h2 id="scrolly-title" class="visually-hidden">Q-BOT, étape par étape</h2>
 
   <div class="scrolly__stage">
