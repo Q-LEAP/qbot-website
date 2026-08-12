@@ -327,59 +327,49 @@
   </div>
 </section>
 
-<!-- ======= ÉVOLUTION DU PRODUIT ======= -->
-<section class="section evolution" aria-labelledby="evolution-title">
+<!-- ======= ÉVOLUTIONS ======= -->
+<section class="section" aria-labelledby="timeline-title">
   <div class="container">
     <div class="section-header centered">
       <span class="section-label">L'innovation continue...</span>
-      <h2 class="section-title" id="evolution-title">L'évolution de Q-BOT</h2>
-      <p class="section-subtitle">Du portique assemblé dans nos locaux au boîtier compact d'aujourd'hui.</p>
+      <h2 class="section-title" id="timeline-title">Évolutions</h2>
     </div>
-
-    <div class="evolution__rail" role="list">
-      <article class="evo-card" role="listitem">
-        <span class="evo-card__node" aria-hidden="true"></span>
-        <div class="evo-card__media">
-          <img src="assets/img/qbot-proto-gen1.png" alt="Premier prototype Q-BOT — portique motorisé et stylet capacitif" width="360" height="410" loading="lazy">
+    <div class="timeline" role="list">
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-item__dot">1</div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">Février 2022</div>
+          <p>Besoins clients identifiés et début de réalisation d'un prototype.</p>
         </div>
-        <div class="evo-card__body">
-          <span class="evo-card__step">Génération 1</span>
-          <h3>Le premier prototype</h3>
-          <p>Un portique motorisé monté à la main : deux axes, un stylet capacitif, un smartphone posé à plat. Il a prouvé qu'une double authentification pouvait être validée sans personne devant l'écran.</p>
+      </div>
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-item__dot">2</div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">Mai 2022</div>
+          <p>Premier prototype fonctionnel sur la base du token Luxtrust</p>
         </div>
-      </article>
-
-      <article class="evo-card evo-card--current" role="listitem">
-        <span class="evo-card__node" aria-hidden="true"></span>
-        <div class="evo-card__media">
-          <img src="assets/img/qbot-gen-actuelle.webp" alt="Q-BOT — le boîtier de production actuel" width="360" height="349" loading="lazy">
+      </div>
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-item__dot">3</div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">Juin 2022</div>
+          <p>Q-Bot v1 est installé chez nos premiers clients.</p>
         </div>
-        <div class="evo-card__body">
-          <span class="evo-card__step">Génération actuelle</span>
-          <h3>Le Q-BOT d'aujourd'hui</h3>
-          <p>Toute la mécanique tient désormais dans un boîtier fermé, conçu et fabriqué au Luxembourg. Le smartphone vient se placer à l'avant : même principe, une fraction de l'encombrement.</p>
-          <a href="modele-3d.html" class="evo-card__link">
-            Explorer le modèle 3D
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
+      </div>
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-item__dot">4</div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">Décembre 2022</div>
+          <p>Q-Bot v2 pour la prise en charge de tous les types de tokens.</p>
         </div>
-      </article>
-
-      <article class="evo-card evo-card--next" role="listitem">
-        <span class="evo-card__node" aria-hidden="true"></span>
-        <div class="evo-card__media evo-card__media--pending">
-          <span class="evo-pending" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+      <div class="timeline-item" role="listitem">
+        <div class="timeline-item__dot">5</div>
+        <div class="timeline-item__content">
+          <div class="timeline-item__date">Décembre 2023</div>
+          <p>Q-Bot Mobile Pro pour l'automatisation complète sur smartphone.</p>
         </div>
-        <div class="evo-card__body">
-          <span class="evo-card__step">Prochaine étape</span>
-          <h3>La roadmap est en cours de création</h3>
-          <p>La feuille de route de la prochaine génération s'écrit en ce moment, avec les équipes qui utilisent Q-BOT au quotidien. Une évolution vous manque&nbsp;? Dites-le-nous.</p>
-          <a href="contact.html" class="evo-card__link">
-            Proposer une évolution
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </article>
+      </div>
     </div>
   </div>
 </section>
@@ -388,18 +378,19 @@
 <div class="newsletter">
   <div class="container">
     <h2>Newsletter</h2>
-    <p>Les dernières nouveautés de Q-BOT, directement dans votre boîte mail.</p>
+    <p>Si vous souhaitez bénéficier des dernières nouveautés de Q-Bot, inscrivez-vous à notre newsletter.</p>
     <!-- Formulaire Sendinblue/Brevo — remplacer par l'embed Brevo -->
     <form class="newsletter__form" action="#" method="post" aria-label="Inscription newsletter">
-      <input type="email" name="email" placeholder="Votre adresse email" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
+      <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
       <button type="submit" class="btn">S'INSCRIRE</button>
     </form>
     <div class="newsletter__consent">
       <label>
         <input type="checkbox" name="consent">
-        <span>J'accepte de recevoir vos e-mails et j'ai pris connaissance de la <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">politique de confidentialité</a>.</span>
+        <span>J'accepte de recevoir vos e-mails et confirme avoir pris connaissance de votre <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">politique de confidentialité</a> et mentions légales.</span>
       </label>
-      <p class="newsletter__legal">Désinscription en un clic depuis chaque email. Données traitées par Sendinblue, notre plateforme d'emailing.</p>
+      <p class="newsletter__legal">Vous pouvez vous désinscrire à tout moment en cliquant sur le lien présent dans nos emails.</p>
+      <p class="newsletter__legal">Nous utilisons Sendinblue en tant que plateforme marketing. En soumettant ce formulaire, vous reconnaissez que les informations que vous allez fournir seront transmises à Sendinblue en sa qualité de processeur de données&nbsp;; et ce conformément à ses conditions générales d'utilisation.</p>
     </div>
     <!-- Fin formulaire Sendinblue -->
   </div>
