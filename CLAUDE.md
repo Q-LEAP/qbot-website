@@ -760,6 +760,27 @@ Deux fois dans la même journée, un relevé automatique du live a produit du fa
 Règle qui en découle : aucune caractéristique technique ne doit figurer sur le site si elle n'est
 pas visible sur le live ou confirmée par le client. En cas de doute, demander plutôt que déduire.
 
+**Passe systématique faite le 2026-08-12.** Inventaire des sections désactivées sur les 11 pages du
+live. Attention au faux positif qui domine : une réponse de FAQ repliée est invisible au chargement
+mais bien affichée quand le visiteur ouvre l'accordéon — un test naïf sur `innerText` en signale 76,
+dont 70 sont des accordéons. Le tri se fait sur **l'ancêtre qui masque** : ignorer ceux sous
+`.elementor-tab-content` / `.elementor-accordion` / `.elementor-toggle`, ne retenir que les
+`display:none` posés sur une section ou un widget. Restent alors ~5 sections par page, dont
+« Copyright @2022 » (ancien pied de page) et une feuille `@font-face` Sendinblue, qui sont du bruit.
+
+Ce qui était désactivé sur le live et présent chez nous, donc supprimé : le hublot OLED (cf.
+ci-dessus), la ligne « Une solution fabriquée sur demande, directement dans les locaux de Q-Leap au
+Luxembourg. » (et sa traduction) et le tagline « do what you love » de la page À propos. Le reste du
+contenu désactivé n'était pas repris chez nous : équipe fictive Colabrio, Lorem Ipsum, « Meet the
+Professionals », et la frise datée « L'innovation continue… / Évolutions » — désactivée sur le live
+elle aussi, ce qui confirme après coup l'arbitrage du client de garder les cartes `.evolution`.
+
+Deux cas volontairement **conservés** malgré leur désactivation sur le live, parce que le contenu est
+publié ailleurs sur le site officiel : la phrase « Compatible avec Selenium, Katalon, Robot
+Framework… » (visible dans l'article de blog live) et la section « Q-Bot pour tous les professionnels
+de l'IT / Tous types de projets IT » (désactivée sur `/en/`, mais bien affichée sur la homepage FR,
+qui fait référence).
+
 ### Frise datée vs section « évolution » (2026-08-12)
 
 La homepage a porté successivement les deux. La **frise datée du live** (Février 2022 → Décembre
