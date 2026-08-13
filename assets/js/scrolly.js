@@ -60,6 +60,17 @@
      tiers. Une fenêtre plus courte donnait une ouverture expédiée en 400 px. */
   var SCRUB_IN = 0.50, SCRUB_OUT = 1.15;
 
+  /* ── Dérive au repos ──────────────────────────────────────────────────────
+     Quand le visiteur cesse de défiler, l'objet dérive très lentement : il se
+     lit alors comme une scène vivante et non comme une image. Trois garde-fous,
+     parce que le mouvement gratuit a déjà été écarté deux fois sur ce site (le
+     cadre du film, puis le trait de progression) : l'amplitude reste sous 4°,
+     elle porte sur LE SUJET et non sur son cadre ni sur un indicateur, et elle
+     s'efface dès le moindre défilement. Pour la désactiver : passer `on` à
+     false — c'est la seule ligne à toucher. */
+  var IDLE = { on: true, delay: 1800, amp: 3.2, periodMs: 9000 };
+  var lastScrollAt = 0, idleK = 0;
+
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t };
   var loaded = false, running = false, lastP = -1;
@@ -130,8 +141,16 @@
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
     if (cur.t > 0.98 && cur.t < PHONE_HANDOFF) cur.t = 0.98;
 
+    /* La dérive s'ajoute à l'orbite calculée, elle ne la remplace pas : le
+       scrub garde donc la main, et `idleK` fait le fondu dans les deux sens pour
+       qu'aucune reprise ne se voie. */
+    var now = performance.now();
+    var idle = IDLE.on && !reduced && (now - lastScrollAt > IDLE.delay);
+    idleK = lerp(idleK, idle ? 1 : 0, idle ? 0.02 : 0.12);
+    var drift = Math.sin(now / IDLE.periodMs * Math.PI * 2) * IDLE.amp * idleK;
+
     if (viewer && loaded) {
-      viewer.cameraOrbit = cur.theta.toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
+      viewer.cameraOrbit = (cur.theta + drift).toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
       viewer.currentTime = cur.t;
     }
     stage.style.setProperty('--sc-zoom', cur.zoom.toFixed(4));
@@ -153,12 +172,15 @@
     if (cta) cta.classList.toggle('is-visible', p > 0.04);
 
     var moving = Math.abs(g.theta - cur.theta) > 0.01 || Math.abs(tTarget - cur.t) > 0.001 ||
-                 Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005;
+                 Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
+                 /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
+                    c'est-à-dire précisément quand elle doit jouer. */
+                 idle || idleK > 0.002;
     if (moving) { running = true; requestAnimationFrame(function () { apply(false); }); }
     else running = false;
   }
 
-  function kick() { if (!running) { running = true; requestAnimationFrame(function () { apply(false); }); } }
+  function kick() { lastScrollAt = performance.now(); if (!running) { running = true; requestAnimationFrame(function () { apply(false); }); } }
 
   if (reduced) {
     /* Mise en scène neutralisée : on pose une seule fois un cadrage lisible et
