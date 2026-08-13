@@ -509,9 +509,9 @@ main .section-label::before {
   width: 46px; height: 1px;
   background: linear-gradient(90deg, rgba(0,203,190,0.55), transparent);
 }
-.prop__tag--act { left: 54%; top: 62%; }
+.prop__tag--act { left: 50%; top: 66%; }
 .prop__tag--act i { right: 100%; transform: scaleX(-1); }
-.prop__tag--cam { left: 62%; top: 30%; }
+.prop__tag--cam { left: 56%; top: 26%; }
 .prop__tag--cam i { right: 100%; transform: scaleX(-1); }
 .scrolly[data-step="1"] .prop--annot { opacity: 1; }
 
@@ -558,8 +558,8 @@ main .section-label::before {
    texte au lieu d'être sous le boîtier. */
 @media (min-width: 1200px) {
   .prop--desk, .prop--a3 { left: 68%; }
-  .prop__tag--act { left: 74%; }
-  .prop__tag--cam { left: 80%; }
+  .prop__tag--act { left: 70%; }
+  .prop__tag--cam { left: 76%; }
 }
 
 @media (max-width: 900px) {

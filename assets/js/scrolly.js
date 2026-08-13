@@ -61,17 +61,18 @@
      cadrage différent d'une scène à l'autre. `t` est la position dans le clip
      (0 = assemblé, 0.98 = éclaté, 1→2 = insertion du téléphone). */
   var SCENES = [
-    /* Rotation sur UN SEUL AXE, monotone : l'azimut ne fait que DÉCROÎTRE, un tour
-       complet réparti sur les quatre pas, élévation fixe à 70°. Le sens a été
-       inversé en même temps que l'ordre des pas : l'ouverture du boîtier arrive
-       maintenant au 3e pas, et elle doit se jouer de FACE — les pièces qui
-       s'écartent seraient masquées par la coque si on la regardait de dos.
-       -332° équivaut à +28°, donc trois-quarts avant. Le dernier pas poursuit la
-       rotation jusqu'au profil, angle inédit pour le plan large. */
-    { theta:  -28, phi: 70, r: 0.62, zoom: 1.00, t: 0 },  // trois-quarts avant gauche
-    { theta: -160, phi: 70, r: 0.52, zoom: 1.16, t: 0 },  // l'objet se détourne, plan serré
-    { theta: -332, phi: 70, r: 0.82, zoom: 0.92, t: 0 },  // de face : vue éclatée (t scrubbé)
-    { theta: -450, phi: 70, r: 0.66, zoom: 1.04, t: 0 }   // profil : plan large, l'encombrement
+    /* Rotation sur un seul axe, azimut croissant, élévation fixe à 70°.
+       L'amplitude a été RÉDUITE volontairement : les trois premiers pas doivent
+       montrer la FACE AVANT, parce que c'est là que se trouvent les organes dont
+       ils parlent — l'actionneur, la caméra, le hublot — et que l'ouverture doit
+       se jouer de face pour que les pièces qui s'écartent restent visibles. Un
+       tour complet réparti sur quatre pas plaçait le 2e de dos : on y annotait
+       « actionneur » et « caméra » sur une paroi arrière, incompréhensible.
+       Seul le dernier pas, qui n'a rien à désigner, part vers le profil. */
+    { theta:  -46, phi: 70, r: 0.62, zoom: 1.00, t: 0 },  // trois-quarts avant gauche
+    { theta:  -14, phi: 70, r: 0.52, zoom: 1.16, t: 0 },  // face avant, serré : organes visibles
+    { theta:   18, phi: 70, r: 0.82, zoom: 0.92, t: 0 },  // face avant : vue éclatée (t scrubbé)
+    { theta:  150, phi: 70, r: 0.66, zoom: 1.04, t: 0 }   // profil arrière : plan large
   ];
   /* Le clip contient aussi l'insertion du smartphone, sur [1s, 2s]. La séquence
      n'y va JAMAIS : le téléphone du GLB est un volume générique, moins soigné que
