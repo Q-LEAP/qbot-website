@@ -142,26 +142,43 @@
   transform: scaleY(var(--sc-p, 0));
   transform-origin: top center;
 }
+/* Les pastilles sont des CASES DE SAISIE DE CODE. C'est le signe que tout le
+   monde reconnaît comme 2FA, et il tombe juste : quatre cases qui se remplissent
+   à mesure qu'on avance, comme on saisit un code. Le repère de progression
+   devient la métaphore du produit au lieu d'être un simple indicateur. */
 .scrolly__dot {
   position: relative;
-  width: 26px; height: 26px;         /* cible tactile : 26 > 24 px (WCAG 2.5.8) */
+  width: 26px; height: 30px;          /* cible tactile : 26 x 30 > 24 (WCAG 2.5.8) */
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
 }
-.scrolly__dot::after {
-  content: '';
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.28);
-  transition: background var(--transition), transform var(--transition);
+.scrolly__dot b {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.32);
+  transition: color var(--transition);
 }
-.scrolly__dot:hover::after { background: rgba(255, 255, 255, 0.6); transform: scale(1.2); }
-.scrolly__dot[aria-current="step"]::after {
+.scrolly__dot:hover { border-color: rgba(255, 255, 255, 0.42); }
+.scrolly__dot:hover b { color: rgba(255, 255, 255, 0.7); }
+/* Case déjà saisie : remplie, mais en retrait — le regard reste sur la courante. */
+.scrolly__dot[data-done] {
+  border-color: rgba(0, 203, 190, 0.45);
+  background: rgba(0, 203, 190, 0.14);
+}
+.scrolly__dot[data-done] b { color: var(--teal); }
+/* Case en cours de saisie : pleine, avec le halo du champ actif. */
+.scrolly__dot[aria-current="step"] {
+  border-color: var(--teal);
   background: var(--teal);
-  transform: scale(1.5);
-  box-shadow: 0 0 0 4px rgba(0, 203, 190, 0.18);
+  transform: scale(1.08);
+  box-shadow: 0 0 0 4px rgba(0, 203, 190, 0.16);
 }
+.scrolly__dot[aria-current="step"] b { color: var(--dark); }
 
 /* Numéro du pas courant, sous la barre : un repère de lecture, pas une
    pagination cliquable. */
@@ -362,4 +379,32 @@
     border-radius: 0;
   }
   .scrolly__title { font-size: clamp(1.75rem, 2.9vw, 2.625rem); }
+}
+
+/* ── Déverrouillage du CTA au dernier pas ─────────────────────────────────
+   Le bouton mène aux caractéristiques pendant la description, puis se
+   « déverrouille » en demande de démo quand le boîtier s'ouvre. Le cadenas
+   pivote et cède la place à une coche : le visiteur a authentifié sa lecture en
+   défilant. Une seule transition, déclenchée par le parcours — pas une boucle. */
+.scrolly__cta { position: fixed; }
+.scrolly__cta-ico {
+  grid-area: 1 / 1;
+  transition: opacity 0.3s var(--ease-out), transform 0.45s var(--ease-out);
+}
+.scrolly__cta { display: inline-flex; align-items: center; gap: 9px; }
+.scrolly__cta-ico--lock,
+.scrolly__cta-ico--check {
+  display: inline-grid;
+  place-items: center;
+  width: 15px; height: 15px;
+}
+.scrolly__cta-ico--check { opacity: 0; transform: scale(0.5) rotate(-25deg); margin-left: -15px; }
+.scrolly__cta.is-unlocked .scrolly__cta-ico--lock { opacity: 0; transform: scale(0.5) rotate(25deg); }
+.scrolly__cta.is-unlocked .scrolly__cta-ico--check { opacity: 1; transform: none; }
+.scrolly__cta-label { transition: transform 0.35s var(--ease-out); }
+.scrolly__cta.is-unlocked .scrolly__cta-label { transform: translateX(1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scrolly__cta-ico, .scrolly__cta-label { transition: none; }
+  .scrolly__dot { transition: none; }
 }

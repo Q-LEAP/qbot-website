@@ -202,6 +202,10 @@
       for (var q = 0; q < dots.length; q++) {
         if (q === i) dots[q].setAttribute('aria-current', 'step');
         else dots[q].removeAttribute('aria-current');
+        /* `data-done` marque les cases déjà saisies : le code se remplit derrière
+           le pas courant, il ne se vide pas quand on revient en arrière au-delà. */
+        if (q < i) dots[q].setAttribute('data-done', '');
+        else dots[q].removeAttribute('data-done');
       }
     }
     if (hint) hint.style.opacity = p > 0.02 ? '0' : '';
@@ -219,6 +223,7 @@
         var label = cta.querySelector('.scrolly__cta-label');
         if (label && label.textContent !== parts[0]) label.textContent = parts[0];
         if (cta.getAttribute('href') !== parts[1]) cta.setAttribute('href', parts[1]);
+        cta.classList.toggle('is-unlocked', i === steps.length - 1);
       }
     }
 
