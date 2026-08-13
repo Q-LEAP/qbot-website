@@ -27,7 +27,27 @@
    la navigation (masqué au repos, pastille teal à la prise de focus). Seule sa
    position change : il se place sous la barre de navigation pour ne pas la
    recouvrir quand les deux sont traversés à la suite. */
-.skip-nav--sequence:focus { top: 84px; }
+/* Il était posé à 84px du haut, sur la gauche : à largeur tablette il tombait
+   pile sur le badge du hero, et le texte de ce badge le traversait — la pastille
+   du lien d'évitement héritait d'un z-index plus faible que le contenu du hero.
+   Deux corrections : un placement centré, où aucun contenu ne l'attend, et un
+   empilement au-dessus de tout. Le fond opaque et l'ombre le détachent de ce qui
+   se trouve derrière, quel que soit l'écran. */
+.skip-nav--sequence:focus {
+  left: 50%;
+  right: auto;
+  top: calc(72px + 14px);
+  transform: translateX(-50%);
+  z-index: 2147483000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+/* Sous 900px le hero passe en une colonne et son contenu remonte : on décale le
+   lien juste sous la barre, où il ne recouvre plus rien. */
+@media (max-width: 900px) {
+  .skip-nav--sequence:focus { top: calc(72px + 8px); font-size: .875rem; padding: 9px 16px; }
+}
 
 .scrolly {
   position: relative;
