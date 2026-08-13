@@ -206,6 +206,21 @@
     }
     if (hint) hint.style.opacity = p > 0.02 ? '0' : '';
     if (cta) cta.classList.toggle('is-visible', p > 0.04);
+    /* CTA contextuel. Le même bouton affichait « Demander une démo » du premier au
+       dernier pas, en doublon de celui de la barre de navigation — les deux
+       étaient visibles en même temps. Il accompagne maintenant le propos : il mène
+       aux caractéristiques pendant qu'on décrit le produit, et ne demande la démo
+       qu'au dernier pas, quand le boîtier s'ouvre, au moment où l'intérêt est le
+       plus haut. */
+    if (cta) {
+      var spec = cta.getAttribute(i === steps.length - 1 ? 'data-cta-last' : 'data-cta-default');
+      if (spec) {
+        var parts = spec.split('|');
+        var label = cta.querySelector('.scrolly__cta-label');
+        if (label && label.textContent !== parts[0]) label.textContent = parts[0];
+        if (cta.getAttribute('href') !== parts[1]) cta.setAttribute('href', parts[1]);
+      }
+    }
 
     var moving = Math.abs(g.theta - cur.theta) > 0.01 || Math.abs(tTarget - cur.t) > 0.001 ||
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
