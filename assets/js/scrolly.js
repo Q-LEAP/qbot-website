@@ -61,40 +61,35 @@
      cadrage différent d'une scène à l'autre. `t` est la position dans le clip
      (0 = assemblé, 0.98 = éclaté, 1→2 = insertion du téléphone). */
   var SCENES = [
-    /* Rotation sur UN SEUL AXE. L'azimut ne fait que croître — -28°, +26°, +152°,
-       +332°, soit un tour complet réparti sur les quatre pas — et l'élévation
-       reste fixe à 70°. Une version précédente montait la caméra sur le pas
-       « encombrement » pour faire lire l'emprise au sol : le double mouvement se
-       remarquait plus que l'argument. À élévation constante, le tour se lit comme
-       un plateau tournant, et seul le cadrage (rayon, zoom) change avec le
-       propos. */
+    /* Rotation sur UN SEUL AXE, monotone : l'azimut ne fait que DÉCROÎTRE, un tour
+       complet réparti sur les quatre pas, élévation fixe à 70°. Le sens a été
+       inversé en même temps que l'ordre des pas : l'ouverture du boîtier arrive
+       maintenant au 3e pas, et elle doit se jouer de FACE — les pièces qui
+       s'écartent seraient masquées par la coque si on la regardait de dos.
+       -332° équivaut à +28°, donc trois-quarts avant. Le dernier pas poursuit la
+       rotation jusqu'au profil, angle inédit pour le plan large. */
     { theta:  -28, phi: 70, r: 0.62, zoom: 1.00, t: 0 },  // trois-quarts avant gauche
-    { theta:   26, phi: 70, r: 0.52, zoom: 1.16, t: 0 },  // trois-quarts avant droit, serré
-    { theta:  152, phi: 70, r: 0.66, zoom: 1.04, t: 0 },  // arrière : découvre le panneau de
-                                                          // connecteurs. Rayon resserré de 0,78 à
-                                                          // 0,66 — à 0,78 le boîtier était trop
-                                                          // petit pour porter l'argument.
-    { theta:  332, phi: 70, r: 0.82, zoom: 0.92, t: 0 }   // le tour est fermé, on revient de
-                                                          // face : le boîtier s'ouvre vers le
-                                                          // visiteur (t est scrubbé)
+    { theta: -160, phi: 70, r: 0.52, zoom: 1.16, t: 0 },  // l'objet se détourne, plan serré
+    { theta: -332, phi: 70, r: 0.82, zoom: 0.92, t: 0 },  // de face : vue éclatée (t scrubbé)
+    { theta: -450, phi: 70, r: 0.66, zoom: 1.04, t: 0 }   // profil : plan large, l'encombrement
   ];
   /* Le clip contient aussi l'insertion du smartphone, sur [1s, 2s]. La séquence
      n'y va JAMAIS : le téléphone du GLB est un volume générique, moins soigné que
      le boîtier lui-même. En restant sous t=1.0 il garde son échelle 0, donc il
      est simplement absent — rien à masquer, c'est le clip qui s'en charge. */
   var PHONE_HANDOFF = 1.0;
-  var EXPLODE_STEP  = 3;     // le dernier pas : l'éclatement est SCRUBBÉ, pas joué
+  var EXPLODE_STEP  = 2;   // 3e pas : « Ouvrez-le »     // le dernier pas : l'éclatement est SCRUBBÉ, pas joué
   var EXPLODE_END   = 0.98;  // fin utile du segment coque (jamais le keyframe 1.0)
   /* Fenêtre de scrub, exprimée en fraction du pas parcourue par le centre du
      viewport. Elle DÉMARRE à 0.5 : c'est l'instant où ce pas devient le pas
      centré, donc celui où l'on bascule du segment téléphone au segment coque.
      Commencer avant reviendrait à ouvrir le boîtier pendant que le texte
      précédent est encore à l'écran ; commencer après ferait un saut visible.
-     Elle finit à 1.15, soit au-delà du pas : le centre du viewport parcourt
-     0.5 -> 1.5 sur la hauteur d'un écran, donc cette borne étale l'ouverture sur
-     les deux premiers tiers du défilement, puis la maintient ouverte le dernier
-     tiers. Une fenêtre plus courte donnait une ouverture expédiée en 400 px. */
-  var SCRUB_IN = 0.50, SCRUB_OUT = 1.15;
+     Elle finit à 1.00 : le boîtier est entièrement ouvert quand le pas se termine.
+     Ce n'est plus le dernier pas — le suivant le montre refermé, en plan large —
+     donc l'ouverture doit être complète AVANT la sortie de l'écran, sinon elle
+     s'inverserait à mi-course. */
+  var SCRUB_IN = 0.06, SCRUB_OUT = 0.84;
 
   /* ── Dérive au repos ──────────────────────────────────────────────────────
      Quand le visiteur cesse de défiler, l'objet dérive très lentement : il se
