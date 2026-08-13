@@ -38,7 +38,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=6">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=7">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -183,6 +183,12 @@
   </div>
 </section>
 
+<!-- Lien d'évitement de la séquence. Quatre écrans épinglés, c'est quatre
+     hauteurs de fenêtre à traverser : à la souris on ne le sent pas, au clavier
+     ou au lecteur d'écran c'est un couloir. Masqué au repos, révélé à la prise
+     de focus, comme le lien d'évitement de la barre de navigation. -->
+<a href="#apres-sequence" class="skip-nav skip-nav--sequence">Passer la séquence de présentation</a>
+
 <!-- ======= SÉQUENCE 3D AU SCROLL (variante Q-BOTAlt) =======
      Une scène collante, cinq pas de texte. Le scroll ne déclenche pas une
      animation : il en écrit la position, image par image. Cf. assets/js/scrolly.js
@@ -275,7 +281,7 @@
 </a>
 
 <!-- ======= INTRO 1 ======= -->
-<section class="section section--gray" aria-labelledby="intro-title">
+<section class="section section--gray" id="apres-sequence" aria-labelledby="intro-title">
   <div class="container">
     <div class="intro__grid">
       <div>
@@ -623,6 +629,6 @@
 </footer>
 
 <script src="assets/js/main.js" defer></script>
-<script src="assets/js/scrolly.js?v=6" defer></script>
+<script src="assets/js/scrolly.js?v=7" defer></script>
 </body>
 </html>

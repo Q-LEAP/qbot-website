@@ -23,6 +23,12 @@
   border: 0;
 }
 
+/* Le lien d'évitement de la séquence réutilise entièrement le style de celui de
+   la navigation (masqué au repos, pastille teal à la prise de focus). Seule sa
+   position change : il se place sous la barre de navigation pour ne pas la
+   recouvrir quand les deux sont traversés à la suite. */
+.skip-nav--sequence:focus { top: 84px; }
+
 .scrolly {
   position: relative;
   /* Une hauteur par pas. 100vh par pas donne une lecture d'un écran = une
