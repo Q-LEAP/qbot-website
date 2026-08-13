@@ -314,7 +314,12 @@
        au-dessus de la carte de texte, qui occupe le bas de l'écran ; le décalage
        horizontal ne coupe QU'UN bord — un premier essai à 22vw ne laissait qu'un
        éclat de boîtier derrière la carte. */
-    transform: translate(11vw, -9vh) scale(var(--sc-zoom, 1));
+    /* -18vh et non -9vh : les deux variantes ont été rendues et comparées.
+       Remonter l'objet le rend plus grand et plus haut dans l'écran ; ancrer le
+       canevas en haut avec une hauteur réduite le laissait plus bas et plus
+       petit, avec autant de vide. Le canevas dépasse de 19 px par le haut, ce qui
+       ne coupe rien de visible. */
+    transform: translate(11vw, -18vh) scale(var(--sc-zoom, 1));
   }
   /* Le texte passe sous le produit : superposé, il masquerait le boîtier sur
      une largeur de téléphone. */
