@@ -487,34 +487,6 @@ main .section-label::before {
 }
 .scrolly[data-step="0"] .prop--desk { opacity: 1; transform: translate(-50%, 0); }
 
-/* ── Pas 2 : les deux organes en jeu ─────────────────────────────────────── */
-.prop--annot { inset: 0; }
-.prop__tag {
-  position: absolute;
-  display: inline-block;
-  padding: 5px 11px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--teal);
-  background: #141414;
-  border: 1px solid rgba(0,203,190,0.4);
-  border-radius: 999px;
-  white-space: nowrap;
-}
-/* Amorce : un trait fin part de l'étiquette vers l'objet. */
-.prop__tag i {
-  position: absolute;
-  top: 50%;
-  width: 46px; height: 1px;
-  background: linear-gradient(90deg, rgba(0,203,190,0.55), transparent);
-}
-.prop__tag--act { left: 50%; top: 66%; }
-.prop__tag--act i { right: 100%; transform: scaleX(-1); }
-.prop__tag--cam { left: 56%; top: 26%; }
-.prop__tag--cam i { right: 100%; transform: scaleX(-1); }
-.scrolly[data-step="1"] .prop--annot { opacity: 1; }
-
 /* ── Pas 4 : la feuille A3 comme référence ───────────────────────────────── */
 .prop--a3 { left: 50%; bottom: 16%; width: min(74vw, 760px); transform: translate(-50%, 16px); }
 .scrolly[data-step="3"] .prop--a3 { opacity: 1; transform: translate(-50%, 0); }
@@ -558,16 +530,10 @@ main .section-label::before {
    texte au lieu d'être sous le boîtier. */
 @media (min-width: 1200px) {
   .prop--desk, .prop--a3 { left: 68%; }
-  .prop__tag--act { left: 70%; }
-  .prop__tag--cam { left: 76%; }
 }
 
 @media (max-width: 900px) {
-  /* Sur téléphone l'objet est coupé par le bord : les étiquettes se replient à
-     gauche pour ne pas sortir de l'écran, et la feuille se réduit. */
-  .prop__tag--act { left: 8%; top: 58%; }
-  .prop__tag--cam { left: 8%; top: 26%; }
-  .prop__tag i { left: 100%; right: auto; transform: none; width: 30px; }
+  /* Sur téléphone l'objet est coupé par le bord : la feuille se réduit. */
   .prop__sheet { width: 62vw; }
   .prop--desk { width: 86vw; bottom: 30%; }
 }
