@@ -38,7 +38,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=24">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=29">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -232,6 +232,25 @@
     <img class="scrolly__fallback" src="assets/img/qbot-gen-actuelle.webp"
          alt="Le robot Q-BOT, boîtier d'automatisation de la double authentification"
          width="900" height="900" loading="lazy" hidden>
+
+    <!-- Accessoires de scène, un par pas. Ils sont purement décoratifs (2D, en
+         CSS/SVG) : la 3D reste le modèle authentique, ils ne font qu'ancrer le
+         propos — un plan de travail, les deux organes en jeu, une feuille A3 de
+         référence. `aria-hidden` : le texte du pas dit déjà tout. -->
+    <div class="scrolly__props" aria-hidden="true">
+      <div class="prop prop--desk"></div>
+
+      <div class="prop prop--annot">
+        <span class="prop__tag prop__tag--act">Actionneur<i></i></span>
+        <span class="prop__tag prop__tag--cam">Caméra<i></i></span>
+      </div>
+
+      <div class="prop prop--a3">
+        <div class="prop__sheet"><span>Feuille A3</span></div>
+        <div class="prop__dim prop__dim--w"><span>40 cm</span></div>
+        <div class="prop__dim prop__dim--h"><span>24 cm</span></div>
+      </div>
+    </div>
 
     <nav class="scrolly__nav" aria-label="Étapes de la séquence">
       <span class="scrolly__nav-rail" aria-hidden="true"></span>
@@ -635,6 +654,6 @@
 </footer>
 
 <script src="assets/js/main.js" defer></script>
-<script src="assets/js/scrolly.js?v=27" defer></script>
+<script src="assets/js/scrolly.js?v=28" defer></script>
 </body>
 </html>

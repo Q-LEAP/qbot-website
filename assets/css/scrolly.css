@@ -452,3 +452,125 @@ main .section-label::before {
 }
 /* Centré quand le libellé l'est. */
 .section-header.centered .section-label { justify-content: center; }
+
+/* ══ Accessoires de scène ═════════════════════════════════════════════════
+   Un accessoire par pas, en 2D, apparaissant avec le texte qu'il illustre. Le
+   modèle 3D reste inchangé : ces éléments ne font qu'ancrer le propos — sans eux
+   le boîtier flotte dans le noir et « posé sur le bureau » ou « une feuille A3 »
+   restent des affirmations. Pilotés par `data-step` sur la section, écrit par le
+   script : aucun couplage entre le CSS et l'ordre des pas dans le HTML. */
+.scrolly__props {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;                 /* au-dessus du halo, sous les cases et le texte */
+}
+.prop {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+/* ── Pas 1 : le plan de travail ──────────────────────────────────────────── */
+.prop--desk {
+  left: 50%; bottom: 22%;
+  width: min(70vw, 720px); height: 1px;
+  transform: translate(-50%, 14px);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22) 22%, rgba(255,255,255,0.22) 78%, transparent);
+}
+/* Reflet court sous la ligne : suffit à faire lire une surface. */
+.prop--desk::after {
+  content: '';
+  position: absolute;
+  left: 12%; right: 12%; top: 0; height: 90px;
+  background: linear-gradient(180deg, rgba(0,203,190,0.09), transparent 70%);
+}
+.scrolly[data-step="0"] .prop--desk { opacity: 1; transform: translate(-50%, 0); }
+
+/* ── Pas 2 : les deux organes en jeu ─────────────────────────────────────── */
+.prop--annot { inset: 0; }
+.prop__tag {
+  position: absolute;
+  display: inline-block;
+  padding: 5px 11px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--teal);
+  background: #141414;
+  border: 1px solid rgba(0,203,190,0.4);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+/* Amorce : un trait fin part de l'étiquette vers l'objet. */
+.prop__tag i {
+  position: absolute;
+  top: 50%;
+  width: 46px; height: 1px;
+  background: linear-gradient(90deg, rgba(0,203,190,0.55), transparent);
+}
+.prop__tag--act { left: 54%; top: 62%; }
+.prop__tag--act i { right: 100%; transform: scaleX(-1); }
+.prop__tag--cam { left: 62%; top: 30%; }
+.prop__tag--cam i { right: 100%; transform: scaleX(-1); }
+.scrolly[data-step="1"] .prop--annot { opacity: 1; }
+
+/* ── Pas 4 : la feuille A3 comme référence ───────────────────────────────── */
+.prop--a3 { left: 50%; bottom: 16%; width: min(74vw, 760px); transform: translate(-50%, 16px); }
+.scrolly[data-step="3"] .prop--a3 { opacity: 1; transform: translate(-50%, 0); }
+/* Rapport 42 / 29,7 respecté, posé à plat par une inclinaison. */
+.prop__sheet {
+  position: relative;
+  width: min(42vw, 420px);
+  aspect-ratio: 42 / 29.7;
+  margin: 0 auto;
+  border: 1px dashed rgba(255,255,255,0.28);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.02);
+  transform: perspective(900px) rotateX(64deg);
+}
+.prop__sheet span {
+  position: absolute;
+  left: 50%; bottom: 8px;
+  transform: translateX(-50%);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.prop__dim { position: absolute; color: var(--teal); font-size: 0.75rem; font-weight: 700; }
+.prop__dim span { background: #141414; padding: 2px 7px; border-radius: 4px; }
+.prop__dim--w { left: 50%; bottom: -8px; transform: translateX(-50%); }
+.prop__dim--w::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: min(40vw, 400px); height: 1px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,203,190,0.35);
+  z-index: -1;
+}
+.prop__dim--h { right: 4%; top: 30%; }
+
+/* Au-delà de 1200 px la scène est calée à droite (colonne de texte à gauche) :
+   les accessoires doivent suivre l'objet, sinon la feuille A3 se retrouve sous le
+   texte au lieu d'être sous le boîtier. */
+@media (min-width: 1200px) {
+  .prop--desk, .prop--a3 { left: 68%; }
+  .prop__tag--act { left: 74%; }
+  .prop__tag--cam { left: 80%; }
+}
+
+@media (max-width: 900px) {
+  /* Sur téléphone l'objet est coupé par le bord : les étiquettes se replient à
+     gauche pour ne pas sortir de l'écran, et la feuille se réduit. */
+  .prop__tag--act { left: 8%; top: 58%; }
+  .prop__tag--cam { left: 8%; top: 26%; }
+  .prop__tag i { left: 100%; right: auto; transform: none; width: 30px; }
+  .prop__sheet { width: 62vw; }
+  .prop--desk { width: 86vw; bottom: 30%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prop { transition: none; }
+}

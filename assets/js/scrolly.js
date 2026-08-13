@@ -204,6 +204,9 @@
     if (i !== lastP) {
       lastP = i;
       for (var j = 0; j < steps.length; j++) steps[j].classList.toggle('is-active', j === i);
+      /* Le pas courant est exposé sur la section : les accessoires de scène sont
+         alors purement déclaratifs en CSS, sans connaître l'ordre du HTML. */
+      root.setAttribute('data-step', String(i));
       if (count) count.innerHTML = '<b>' + String(i + 1).padStart(2, '0') + '</b> / ' + String(steps.length).padStart(2, '0');
       /* `aria-current="step"` plutôt qu'une classe : l'état est alors annoncé,
          pas seulement colorié. */
