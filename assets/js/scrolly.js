@@ -70,8 +70,10 @@
        propos. */
     { theta:  -28, phi: 70, r: 0.62, zoom: 1.00, t: 0 },  // trois-quarts avant gauche
     { theta:   26, phi: 70, r: 0.52, zoom: 1.16, t: 0 },  // trois-quarts avant droit, serré
-    { theta:  152, phi: 70, r: 0.78, zoom: 0.94, t: 0 },  // arrière : découvre le panneau
-                                                          // de connecteurs, plan large
+    { theta:  152, phi: 70, r: 0.66, zoom: 1.04, t: 0 },  // arrière : découvre le panneau de
+                                                          // connecteurs. Rayon resserré de 0,78 à
+                                                          // 0,66 — à 0,78 le boîtier était trop
+                                                          // petit pour porter l'argument.
     { theta:  332, phi: 70, r: 0.82, zoom: 0.92, t: 0 }   // le tour est fermé, on revient de
                                                           // face : le boîtier s'ouvre vers le
                                                           // visiteur (t est scrubbé)
