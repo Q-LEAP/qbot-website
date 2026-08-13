@@ -104,7 +104,7 @@
 
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t };
-  var loaded = false, running = false, lastP = -1;
+  var loaded = false, running = false, lastP = -1, wasScrub = false;
 
   if (viewer) {
     viewer.addEventListener('load', function () {
@@ -166,9 +166,15 @@
     var scrub = (i === EXPLODE_STEP);
     var tTarget = scrub ? fraction(i) * EXPLODE_END : g.t;
     var seg = tTarget < PHONE_HANDOFF;
+    /* Deux états, jamais d'entre-deux animé : pendant le pas d'ouverture la
+       position colle au scroll ; en dehors elle vaut 0. À l'instant où l'on entre
+       ou sort de ce pas, on SAUTE — un lissage produisait un réassemblage d'une
+       seconde pendant que la caméra pivotait de 118°, ce qui se lisait comme un
+       mouvement parasite en fin de séquence. */
     if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = tTarget;   // on ne franchit jamais t=1.0
-    else if (scrub) cur.t = tTarget;                         // scrub : collé au scroll
+    else if (scrub || scrub !== wasScrub) cur.t = tTarget;
     else cur.t = lerp(cur.t, tTarget, k);
+    wasScrub = scrub;
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
     if (cur.t > 0.98 && cur.t < PHONE_HANDOFF) cur.t = 0.98;
 
