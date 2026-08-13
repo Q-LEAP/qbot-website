@@ -61,12 +61,24 @@
      cadrage différent d'une scène à l'autre. `t` est la position dans le clip
      (0 = assemblé, 0.98 = éclaté, 1→2 = insertion du téléphone). */
   var SCENES = [
-    { theta: -28, phi: 74, r: 0.62, zoom: 1.00, t: 0 },  // le boîtier, posé
-    { theta: -19, phi: 67, r: 0.52, zoom: 1.16, t: 0 },  // trois-quarts serré sur la face avant
-                                                          // (perpendiculaire, le boîtier se lit comme une plaque
-                                                          //  plate : c'est l'angle qui donne le volume, pas le zoom)
-    { theta: -34, phi: 78, r: 0.74, zoom: 0.94, t: 0 },  // recul : l'encombrement
-    { theta: -26, phi: 66, r: 0.80, zoom: 0.92, t: 0 }   // vue éclatée (t est scrubbé)
+    /* L'azimut ne fait que CROÎTRE : l'objet tourne dans un seul sens du premier
+       au dernier pas, un tour complet, 360°. Avant, les quatre plans tenaient
+       entre -19° et -34° — on ne voyait qu'une face, et l'interpolation revenait
+       toujours au même endroit. Une rotation continue donne l'angle inédit à
+       chaque pas, sans jamais de retour en arrière qui se lirait comme une
+       hésitation. */
+    { theta:  -28, phi: 74, r: 0.62, zoom: 1.00, t: 0 },  // trois-quarts avant gauche
+    { theta:   26, phi: 67, r: 0.52, zoom: 1.16, t: 0 },  // trois-quarts avant droit, serré
+                                                          // (perpendiculaire, le boîtier se lit
+                                                          //  comme une plaque plate)
+    { theta:  152, phi: 54, r: 0.78, zoom: 0.94, t: 0 },  // arrière, caméra haute : c'est cette
+                                                          // vue plongeante qui fait lire
+                                                          // l'emprise au sol, l'argument du pas
+    { theta:  332, phi: 68, r: 0.82, zoom: 0.92, t: 0 }   // vue éclatée (t est scrubbé) :
+                                                          // 332° ferme un tour complet et revient de
+                                                          // face. Le boîtier s'ouvre donc face au
+                                                          // visiteur — de dos, les pièces qui
+                                                          // s'écartent seraient masquées par la coque.
   ];
   /* Le clip contient aussi l'insertion du smartphone, sur [1s, 2s]. La séquence
      n'y va JAMAIS : le téléphone du GLB est un volume générique, moins soigné que
