@@ -54,7 +54,6 @@
   /* Une hauteur par pas. 100vh par pas donne une lecture d'un écran = une
      idée, sans jamais figer le défilement. */
   --scrolly-steps: 5;
-  background: var(--bg);
 }
 
 /* ── La scène : elle reste, le texte passe ─────────────────────────────── */
@@ -157,7 +156,11 @@
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 5px;
-  background: var(--bg);
+  /* Couleur explicite, pas un token : `--bg` n'existe pas dans la charte, la
+     déclaration était donc invalide et le fond restait transparent — le trait de
+     progression continuait de traverser les cases. #141414 est la surface des
+     cartes du thème sombre. */
+  background: #141414;
   z-index: 1;
   transition: border-color var(--transition), background var(--transition), transform var(--transition);
 }
@@ -173,7 +176,9 @@
 /* Case déjà saisie : remplie, mais en retrait — le regard reste sur la courante. */
 .scrolly__dot[data-done] {
   border-color: rgba(0, 203, 190, 0.45);
-  background: rgba(0, 203, 190, 0.14);
+  /* La teinte est superposée à un fond OPAQUE : un simple rgba laissait le trait
+     de progression visible à travers les cases déjà remplies. */
+  background: linear-gradient(rgba(0, 203, 190, 0.16), rgba(0, 203, 190, 0.16)), #141414;
 }
 .scrolly__dot[data-done] b { color: var(--teal); }
 /* Case en cours de saisie : pleine, avec le halo du champ actif. */
