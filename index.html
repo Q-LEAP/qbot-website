@@ -38,7 +38,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=7">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=9">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -223,8 +223,15 @@
       disable-pan
       disable-tap
       touch-action="pan-y"
-      loading="eager"
+      loading="lazy"
     ></model-viewer>
+
+    <!-- Repli pour appareil faible ou sans WebGL (cf. scrolly.js). Il conserve le
+         langage visuel et le chemin de conversion : même cadre, même récit, 110 Ko
+         au lieu de 2,7 Mo. Masqué tant que la scène 3D tient. -->
+    <img class="scrolly__fallback" src="assets/img/qbot-gen-actuelle.webp"
+         alt="Le robot Q-BOT, boîtier d'automatisation de la double authentification"
+         width="900" height="900" loading="lazy" hidden>
 
     <nav class="scrolly__nav" aria-label="Étapes de la séquence">
       <span class="scrolly__nav-rail" aria-hidden="true"></span>
@@ -629,6 +636,6 @@
 </footer>
 
 <script src="assets/js/main.js" defer></script>
-<script src="assets/js/scrolly.js?v=8" defer></script>
+<script src="assets/js/scrolly.js?v=9" defer></script>
 </body>
 </html>

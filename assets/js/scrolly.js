@@ -19,7 +19,7 @@
   if (!root) return;
 
   var stage    = root.querySelector('.scrolly__stage');
-  var viewer   = root.querySelector('model-viewer');
+  var viewer   = root.querySelector('model-viewer');   // mis à null si repli
   var steps    = [].slice.call(root.querySelectorAll('.scrolly__step'));
   var bar      = root.querySelector('.scrolly__nav-rail');
   var dots     = [].slice.call(root.querySelectorAll('.scrolly__dot'));
@@ -29,6 +29,32 @@
   if (!steps.length) return;
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Repli pour appareil faible ou sans WebGL ────────────────────────────
+     Pratique recommandée pour le scroll 3D : décider AVANT de charger la scène,
+     et servir un visuel fixe qui conserve le langage et le chemin de conversion.
+     Trois signaux : pas de contexte WebGL, mode économiseur de données, ou moins
+     de trois cœurs logiques. On retire alors le modèle du DOM — le laisser
+     seulement masqué déclencherait quand même son téléchargement. */
+  function tooWeak() {
+    try {
+      var c = document.createElement('canvas');
+      if (!(c.getContext('webgl2') || c.getContext('webgl'))) return 'sans WebGL';
+    } catch (e) { return 'sans WebGL'; }
+    var cn = navigator.connection || {};
+    if (cn.saveData) return 'economiseur de donnees';
+    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 3) return 'peu de coeurs';
+    return null;
+  }
+
+  var weak = tooWeak();
+  var fallback = root.querySelector('.scrolly__fallback');
+  if (weak) {
+    if (viewer) viewer.parentNode.removeChild(viewer);
+    viewer = null;
+    if (fallback) fallback.hidden = false;
+    root.setAttribute('data-fallback', weak);
+  }
 
   /* Un état par pas. `orbit` est en degrés/mètres absolus : model-viewer
      recadre sur les bornes du modèle, donc un rayon en pourcentage donnerait un

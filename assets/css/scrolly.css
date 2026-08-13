@@ -71,6 +71,20 @@
   transition: transform 0.1s linear;
 }
 
+/* Repli statique : il occupe exactement la place de la scène 3D, avec le même
+   zoom piloté par le scroll, pour que la séquence garde son rythme même sans
+   WebGL. */
+.scrolly__fallback {
+  width: min(88vw, 900px);
+  height: auto;
+  max-height: min(76vh, 700px);
+  object-fit: contain;
+  transform: scale(var(--sc-zoom, 1));
+  transition: transform 0.1s linear;
+}
+@media (min-width: 1200px) { .scrolly__fallback { width: min(56vw, 800px); } }
+@media (max-width: 900px)  { .scrolly__fallback { width: 94vw; max-height: min(56vh, 460px); } }
+
 /* Navigation des étapes. Ce n'était qu'un repère passif ; c'est maintenant un
    moyen de circuler. Chaque pastille est une ancre vers l'id du pas : le
    navigateur amène le haut du pas en haut du viewport, donc son centre tombe
