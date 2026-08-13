@@ -128,6 +128,10 @@
 }
 .scrolly__nav-rail {
   position: absolute;
+  /* Derrière les cases. Le fond des cases était translucide (3 % de blanc) : le
+     trait se voyait AU TRAVERS et barrait les chiffres. Un fond opaque et un
+     empilement explicite règlent les deux. */
+  z-index: 0;
   top: 6px; bottom: 6px;
   width: 2px;
   background: rgba(255, 255, 255, 0.14);
@@ -153,7 +157,8 @@
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg);
+  z-index: 1;
   transition: border-color var(--transition), background var(--transition), transform var(--transition);
 }
 .scrolly__dot b {
@@ -198,6 +203,10 @@
 .scrolly__steps {
   position: relative;
   z-index: 2;
+  /* Le conteneur des pas couvre toute la scène : sans ça il interceptait les
+     clics destinés aux cases de navigation, qui sont dessous. Seules les cartes
+     de texte reprennent les événements (règle sur .scrolly__step > *). */
+  pointer-events: none;
   /* On remonte les pas par-dessus la scène collante. */
   margin-top: -100vh;
   margin-top: -100svh;
@@ -408,3 +417,33 @@
   .scrolly__cta-ico, .scrolly__cta-label { transition: none; }
   .scrolly__dot { transition: none; }
 }
+
+/* ── Fil conducteur : les libellés de section portent un numéro en case ────
+   Même vocabulaire que les cases de saisie de la séquence, appliqué à toute la
+   page : chaque libellé de section est précédé de son index dans une petite case
+   au trait. Le compteur est CSS, donc la numérotation se réajuste seule si une
+   section est ajoutée ou retirée — rien à maintenir à la main.
+   Le badge du hero (.hero__label) en est exclu : il n'est pas une section. */
+main { counter-reset: qsec; }
+main .section-label {
+  counter-increment: qsec;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+main .section-label::before {
+  content: counter(qsec, decimal-leading-zero);
+  display: inline-grid;
+  place-items: center;
+  width: 22px; height: 24px;
+  border: 1px solid rgba(0, 203, 190, 0.42);
+  border-radius: 5px;
+  background: rgba(0, 203, 190, 0.1);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: var(--teal);
+}
+/* Centré quand le libellé l'est. */
+.section-header.centered .section-label { justify-content: center; }
