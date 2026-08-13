@@ -74,6 +74,12 @@
 /* Repli statique : il occupe exactement la place de la scène 3D, avec le même
    zoom piloté par le scroll, pour que la séquence garde son rythme même sans
    WebGL. */
+/* `hidden` seul ne suffit pas : la feuille principale déclare `img { display:
+   block }`, et une règle d'auteur l'emporte sur le `[hidden] { display: none }`
+   du navigateur — l'image du repli s'affichait donc EN PLUS de la scène 3D.
+   Il faut une règle d'auteur explicite. */
+.scrolly__fallback[hidden] { display: none; }
+
 .scrolly__fallback {
   width: min(88vw, 900px);
   height: auto;
