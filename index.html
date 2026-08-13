@@ -38,7 +38,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=5">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=6">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -166,19 +166,18 @@
           <a href="contact.html" class="btn btn--outline-white btn--lg">Demander une démo</a>
         </div>
       </div>
-      <div class="hero__film">
-        <!-- Film produit : muet, bouclé, démarrage automatique dès l'arrivée.
-             Il est tourné sur fond clair — impossible de le détourer (le
-             boîtier est noir, il disparaîtrait sur le noir de la page), il est
-             donc présenté dans son propre cadre plutôt qu'en fond de hero. -->
-        <video
-          class="hero__film-video"
-          src="assets/video/qbot-home.mp4"
-          poster="assets/img/qbot-film-poster.jpg"
-          autoplay muted loop playsinline preload="auto"
-          width="1280" height="720"
-          aria-label="Film produit Q-BOT — robot d'automatisation de la double authentification"
-        ></video>
+      <!-- Variante Q-BOTAlt — le film de 2,9 Mo est retiré de cette branche.
+           La page montrait le produit deux fois de suite en mouvement : le film
+           ici, puis la séquence 3D juste dessous. Le hero garde un visuel fixe
+           et léger (49 Ko), la mise en scène est portée par la séquence, qui est
+           elle contrôlée par le visiteur. Sur `main`, le film reste en place. -->
+      <div class="hero__image">
+        <img
+          src="assets/img/qbot-hero.webp"
+          alt="Le robot Q-BOT, boîtier d'automatisation de la double authentification"
+          width="900" height="900"
+          fetchpriority="high"
+        >
       </div>
     </div>
   </div>
@@ -624,6 +623,6 @@
 </footer>
 
 <script src="assets/js/main.js" defer></script>
-<script src="assets/js/scrolly.js?v=5" defer></script>
+<script src="assets/js/scrolly.js?v=6" defer></script>
 </body>
 </html>
