@@ -34,14 +34,19 @@
      cadrage différent d'une scène à l'autre. `t` est la position dans le clip
      (0 = assemblé, 0.98 = éclaté, 1→2 = insertion du téléphone). */
   var SCENES = [
-    { theta: -28, phi: 74, r: 0.62, zoom: 1.00, t: 0.000 },  // le boîtier, posé
-    { theta: -12, phi: 72, r: 0.56, zoom: 1.06, t: 1.980 },  // le téléphone se pose
-    { theta:   2, phi: 62, r: 0.42, zoom: 1.22, t: 1.980 },  // gros plan sur la face avant
-    { theta: -34, phi: 78, r: 0.74, zoom: 0.94, t: 1.980 },  // recul : l'encombrement
-    { theta: -26, phi: 66, r: 0.80, zoom: 0.92, t: 0.980 }   // vue éclatée
+    { theta: -28, phi: 74, r: 0.62, zoom: 1.00, t: 0 },  // le boîtier, posé
+    { theta: -19, phi: 67, r: 0.52, zoom: 1.16, t: 0 },  // trois-quarts serré sur la face avant
+                                                          // (perpendiculaire, le boîtier se lit comme une plaque
+                                                          //  plate : c'est l'angle qui donne le volume, pas le zoom)
+    { theta: -34, phi: 78, r: 0.74, zoom: 0.94, t: 0 },  // recul : l'encombrement
+    { theta: -26, phi: 66, r: 0.80, zoom: 0.92, t: 0 }   // vue éclatée (t est scrubbé)
   ];
-  var PHONE_HANDOFF = 1.0;   // keyframe où la coque se réassemble
-  var EXPLODE_STEP  = 4;     // le dernier pas : l'éclatement est SCRUBBÉ, pas joué
+  /* Le clip contient aussi l'insertion du smartphone, sur [1s, 2s]. La séquence
+     n'y va JAMAIS : le téléphone du GLB est un volume générique, moins soigné que
+     le boîtier lui-même. En restant sous t=1.0 il garde son échelle 0, donc il
+     est simplement absent — rien à masquer, c'est le clip qui s'en charge. */
+  var PHONE_HANDOFF = 1.0;
+  var EXPLODE_STEP  = 3;     // le dernier pas : l'éclatement est SCRUBBÉ, pas joué
   var EXPLODE_END   = 0.98;  // fin utile du segment coque (jamais le keyframe 1.0)
   /* Fenêtre de scrub, exprimée en fraction du pas parcourue par le centre du
      viewport. Elle DÉMARRE à 0.5 : c'est l'instant où ce pas devient le pas
@@ -156,7 +161,7 @@
     if (viewer) viewer.addEventListener('load', function () {
       viewer.pause();
       viewer.cameraOrbit = '-28deg 74deg 0.62m';
-      viewer.currentTime = 1.98;
+      viewer.currentTime = 0;
     });
     return;
   }
