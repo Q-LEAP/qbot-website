@@ -79,7 +79,14 @@
      est simplement absent — rien à masquer, c'est le clip qui s'en charge. */
   var PHONE_HANDOFF = 1.0;
   var EXPLODE_STEP  = 2;   // 3e pas : « Ouvrez-le »     // le dernier pas : l'éclatement est SCRUBBÉ, pas joué
-  var EXPLODE_END   = 0.98;  // fin utile du segment coque (jamais le keyframe 1.0)
+  /* 0.92 et non 0.98. Le clip porte un keyframe de RÉASSEMBLAGE à t=1.0 (il
+     existe pour que les pièces ne restent pas éclatées quand on passe au segment
+     du téléphone). En s'approchant de 0.98, l'interpolation vers ce keyframe tire
+     déjà les pièces vers leur position fermée : le mouvement s'inverse
+     légèrement juste avant la fin — le « bump » signalé. S'arrêter à 0.92 laisse
+     une marge suffisante pour rester hors de cette zone d'influence, sans perte
+     visible d'amplitude : à 0.92 le boîtier est ouvert à 94 % de sa course. */
+  var EXPLODE_END   = 0.92;
   /* Fenêtre de scrub, exprimée en fraction du pas parcourue par le centre du
      viewport. Elle DÉMARRE à 0.5 : c'est l'instant où ce pas devient le pas
      centré, donc celui où l'on bascule du segment téléphone au segment coque.
