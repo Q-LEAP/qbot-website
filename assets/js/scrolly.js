@@ -21,7 +21,8 @@
   var stage    = root.querySelector('.scrolly__stage');
   var viewer   = root.querySelector('model-viewer');
   var steps    = [].slice.call(root.querySelectorAll('.scrolly__step'));
-  var bar      = root.querySelector('.scrolly__progress');
+  var bar      = root.querySelector('.scrolly__nav-rail');
+  var dots     = [].slice.call(root.querySelectorAll('.scrolly__dot'));
   var count    = root.querySelector('.scrolly__count');
   var hint     = root.querySelector('.scrolly__hint');
   var cta      = document.querySelector('.scrolly__cta');
@@ -141,6 +142,12 @@
       lastP = i;
       for (var j = 0; j < steps.length; j++) steps[j].classList.toggle('is-active', j === i);
       if (count) count.innerHTML = '<b>' + String(i + 1).padStart(2, '0') + '</b> / ' + String(steps.length).padStart(2, '0');
+      /* `aria-current="step"` plutôt qu'une classe : l'état est alors annoncé,
+         pas seulement colorié. */
+      for (var q = 0; q < dots.length; q++) {
+        if (q === i) dots[q].setAttribute('aria-current', 'step');
+        else dots[q].removeAttribute('aria-current');
+      }
     }
     if (hint) hint.style.opacity = p > 0.02 ? '0' : '';
     if (cta) cta.classList.toggle('is-visible', p > 0.04);
@@ -157,6 +164,7 @@
     /* Mise en scène neutralisée : on pose une seule fois un cadrage lisible et
        on marque tous les pas actifs. Le contenu reste entier. */
     steps.forEach(function (s) { s.classList.add('is-active'); });
+    if (dots.length) dots[0].setAttribute('aria-current', 'step');
     if (cta) cta.classList.add('is-visible');
     if (viewer) viewer.addEventListener('load', function () {
       viewer.pause();

@@ -65,21 +65,29 @@
   transition: transform 0.1s linear;
 }
 
-/* Repère de progression : une barre fine, à gauche, qui se remplit. C'est le
-   retour visuel qui rend le contrôle perceptible — l'utilisateur voit que
-   c'est son geste qui avance l'histoire. */
-.scrolly__progress {
+/* Navigation des étapes. Ce n'était qu'un repère passif ; c'est maintenant un
+   moyen de circuler. Chaque pastille est une ancre vers l'id du pas : le
+   navigateur amène le haut du pas en haut du viewport, donc son centre tombe
+   pile au centre de l'écran — le bon pas devient actif sans une ligne de JS,
+   et le lien reste fonctionnel si le script ne tourne pas. */
+.scrolly__nav {
   position: absolute;
   left: clamp(14px, 3vw, 40px);
   top: 50%;
   transform: translateY(-50%);
-  width: 2px;
-  height: min(46vh, 380px);
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 2px;
-  overflow: hidden;
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  z-index: 3;
 }
-.scrolly__progress::after {
+.scrolly__nav-rail {
+  position: absolute;
+  top: 6px; bottom: 6px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+}
+.scrolly__nav-rail::after {
   content: '';
   position: absolute;
   inset: 0 0 auto 0;
@@ -88,13 +96,33 @@
   transform: scaleY(var(--sc-p, 0));
   transform-origin: top center;
 }
+.scrolly__dot {
+  position: relative;
+  width: 26px; height: 26px;         /* cible tactile : 26 > 24 px (WCAG 2.5.8) */
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.scrolly__dot::after {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  transition: background var(--transition), transform var(--transition);
+}
+.scrolly__dot:hover::after { background: rgba(255, 255, 255, 0.6); transform: scale(1.2); }
+.scrolly__dot[aria-current="step"]::after {
+  background: var(--teal);
+  transform: scale(1.5);
+  box-shadow: 0 0 0 4px rgba(0, 203, 190, 0.18);
+}
 
 /* Numéro du pas courant, sous la barre : un repère de lecture, pas une
    pagination cliquable. */
 .scrolly__count {
   position: absolute;
   left: clamp(14px, 3vw, 40px);
-  top: calc(50% + min(23vh, 190px) + 16px);
+  top: calc(50% + 90px);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -228,7 +256,7 @@
      une largeur de téléphone. */
   .scrolly__step { align-content: end; padding-bottom: 8vh; max-width: none; }
 
-  .scrolly__progress, .scrolly__count { display: none; }
+  .scrolly__nav, .scrolly__count { display: none; }
 }
 @media (max-width: 520px) {
   .scrolly__step-inner { padding: 20px 22px 22px; }
@@ -244,8 +272,25 @@
   .scrolly__steps { margin-top: 0; }
   .scrolly__step { min-height: 0; padding: 32px clamp(24px, 7vw, 96px); }
   .scrolly__step-inner { opacity: 1; transform: none; transition: none; }
-  .scrolly__hint, .scrolly__progress, .scrolly__count { display: none; }
+  .scrolly__hint, .scrolly__nav, .scrolly__count { display: none; }
   .scrolly__model { transform: none; }
   .scrolly__cta { opacity: 1; transform: none; pointer-events: auto; }
   .scrolly__hint svg { animation: none; }
+}
+
+/* ── Au-delà de 1200 px : deux colonnes, plus de superposition ────────────
+   La carte flottait sur le modèle avec un dégradé pour rester lisible — d'où
+   deux corrections successives quand elle recouvrait le produit. Quand la place
+   existe, on sépare franchement : le texte à gauche, la scène à droite. Le
+   dégradé disparaît, il n'a plus rien à masquer. */
+@media (min-width: 1200px) {
+  .scrolly__stage { place-items: center end; padding-right: 4vw; }
+  .scrolly__model { width: min(56vw, 800px); }
+  .scrolly__step { max-width: 44vw; padding-left: clamp(72px, 7vw, 120px); }
+  .scrolly__step-inner {
+    background: none;
+    padding: 0 0 0 26px;
+    border-radius: 0;
+  }
+  .scrolly__title { font-size: clamp(1.75rem, 2.9vw, 2.625rem); }
 }
