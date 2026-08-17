@@ -1,5 +1,13 @@
 ﻿/* ======================================
    Q-BOT — Site statique
+
+   MISE EN CACHE — à ne pas oublier : cette feuille et assets/js/main.js sont
+   appelées avec un paramètre de version (`?v=2026-08-17`) sur les 23 pages. Elles
+   n'en avaient aucun, contrairement à scrolly.css/scrolly.js : après une
+   modification, le navigateur continuait de servir l'ancienne version, et un
+   style.css périmé face à un HTML à jour donne une page qui paraît cassée.
+   Quand on modifie l'une des deux, bumper la date dans les 23 pages :
+     grep -rl 'style.css?v=' --include='*.html' . | xargs sed -i '' 's/v=ANCIENNE/v=NOUVELLE/g'
    Charte (Documentations/Q-BOT BrandGuidelines.pdf) :
      • Couleur primaire   : #00CBBE
      • Couleur secondaire : #000000
@@ -2249,31 +2257,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 .mv-ar-btn:hover { background: rgba(0,203,190,0.28); border-color: var(--teal); }
 
-/* Jour/nuit : un bouton de la barre comme les autres. Il était en pastille teal
-   flottante en haut à gauche du cadre (`.mv-top-left` / `.mv-quality-btn`, restes
-   du bouton HD supprimé en 2026-07) — deux styles de commande pour une seule
-   boîte à outils. Seul le pictogramme bascule : soleil quand on est en nuit, donc
-   quand l'action proposée est de passer au jour. */
-/* Le jour/nuit ne prend PAS la teinte d'état enclenché : c'est une bascule entre
-   deux modes, pas une commande active ou inactive, et deux pastilles teal côte à
-   côte dans la barre faisaient deux accents pour une seule idée. Le pictogramme
-   suffit à dire où l'on est. */
-.mv-ctrl--lighting[aria-pressed="true"] {
-  background: none;
-  color: rgba(255, 255, 255, 0.75);
-  box-shadow: none;
-}
-.mv-ctrl--lighting[aria-pressed="true"]:hover {
-  background: rgba(255, 255, 255, 0.09);
-  color: var(--white);
-}
-.mv-ctrl--lighting .mv-icon-sun  { display: none; }
-.mv-ctrl--lighting .mv-icon-moon { display: block; }
-.mv-ctrl--lighting[aria-pressed="true"] .mv-icon-sun  { display: block; }
-.mv-ctrl--lighting[aria-pressed="true"] .mv-icon-moon { display: none; }
-.model-viewer-frame.is-night {
-  background: linear-gradient(160deg, #000000 0%, #0D0D0D 100%);
-}
 
 /* Vue éclatée — désormais un segment compact DANS .mv-controls (même pill
    que les autres boutons), plutôt qu'une carte séparée : reste visible et

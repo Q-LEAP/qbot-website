@@ -770,7 +770,6 @@ backToTop.addEventListener('click', () => {
   var fullscreenBtn  = frame?.querySelector('[data-mv-action="fullscreen"]');
   var zoomInBtn      = frame?.querySelector('[data-mv-action="zoom-in"]');
   var zoomOutBtn     = frame?.querySelector('[data-mv-action="zoom-out"]');
-  var lightingBtn    = frame?.querySelector('[data-mv-action="lighting"]');
   var slider         = document.querySelector('[data-mv-action="explode-slider"]');
   var sliderValueEl  = document.querySelector('[data-mv-explode-value]');
   var reduceMotion   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -781,14 +780,6 @@ backToTop.addEventListener('click', () => {
   var DEFAULT_TARGET = viewer.getAttribute('camera-target') || 'auto auto auto';
   var STANDARD_SRC  = viewer.getAttribute('src');
 
-  /* Presets d'éclairage — valeurs en dur : le viewer démarre en nuit (ses
-     attributs exposure/shadow-intensity portent donc déjà le preset nuit
-     pour le premier rendu), on ne peut plus les relire pour en déduire le
-     preset jour. */
-  var DAY_EXPOSURE   = 1.1;
-  var DAY_SHADOW     = 1;
-  var NIGHT_EXPOSURE = 0.8;   /* relevé avec la matière sombre du modèle texturé */
-  var NIGHT_SHADOW   = 1.3;
 
   /* Le clip glTF "Explode" couvre deux segments : [0 .. 1.0] pour les pièces de
      la coque, [1.0 .. 2.0] pour l'insertion du smartphone.
@@ -949,18 +940,6 @@ backToTop.addEventListener('click', () => {
 
 
 
-  /* Jour/nuit — bascule l'exposition/l'intensité des ombres de model-viewer
-     et assombrit le fond du cadre, sans toucher au modèle ni à l'animation. */
-  lightingBtn?.addEventListener('click', function () {
-    var toNight = lightingBtn.getAttribute('aria-pressed') !== 'true';
-    lightingBtn.setAttribute('aria-pressed', String(toNight));
-    lightingBtn.setAttribute('aria-label', toNight
-      ? (FR ? 'Passer en éclairage jour' : 'Switch to day lighting')
-      : (FR ? 'Passer en éclairage nuit' : 'Switch to night lighting'));
-    viewer.exposure = toNight ? NIGHT_EXPOSURE : DAY_EXPOSURE;
-    viewer.shadowIntensity = toNight ? NIGHT_SHADOW : DAY_SHADOW;
-    frame?.classList.toggle('is-night', toNight);
-  });
 }());
 
 /* ════════════════════════════════════════
