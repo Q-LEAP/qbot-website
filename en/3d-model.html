@@ -210,7 +210,7 @@
             auto-rotate
             auto-rotate-delay="0"
             rotation-per-second="16deg"
-            camera-orbit="0deg 75deg 105%"
+            camera-orbit="0deg 75deg 92%"
             camera-target="0m 0.073m 0m"
             field-of-view="30deg"
             min-camera-orbit="auto 20deg 35%"
@@ -234,12 +234,6 @@
             </button>
           </model-viewer>
 
-          <div class="mv-top-left">
-            <button class="mv-quality-btn mv-lighting-btn" type="button" data-mv-action="lighting" aria-pressed="true" aria-label="Switch to day lighting">
-              <svg class="mv-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-              <svg class="mv-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            </button>
-          </div>
 
           <!-- Inside .model-viewer-frame: stays visible/interactive in fullscreen
                (requestFullscreen() only targets this container, anything outside
@@ -250,24 +244,27 @@
             <button class="mv-ctrl" type="button" data-mv-action="zoom-out" aria-label="Wide view (zoom out)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>
             </button>
+            <button class="mv-ctrl" type="button" data-mv-action="zoom-in" aria-label="Close view (zoom in)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+            </button>
+            <span class="mv-controls__sep" aria-hidden="true"></span>
             <button class="mv-ctrl" type="button" data-mv-action="rotate" aria-pressed="true" aria-label="Pause automatic rotation">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg>
             </button>
             <button class="mv-ctrl" type="button" data-mv-action="reset" aria-label="Reset view">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
             </button>
-            <button class="mv-ctrl" type="button" data-mv-action="zoom-in" aria-label="Close view (zoom in)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>
+            <span class="mv-controls__sep" aria-hidden="true"></span>
+            <button class="mv-ctrl mv-ctrl--lighting" type="button" data-mv-action="lighting" aria-pressed="true" aria-label="Switch to day lighting">
+              <svg class="mv-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+              <svg class="mv-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </button>
             <button class="mv-ctrl" type="button" data-mv-action="fullscreen" aria-pressed="false" aria-label="Full screen">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M8 21H5a2 2 0 0 1-2-2v-3m18 0v3a2 2 0 0 1-2 2h-3"/></svg>
             </button>
-            <button class="mv-ctrl" type="button" data-mv-action="phone" aria-pressed="false" aria-label="Insert a smartphone">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="2" width="8" height="20" rx="2"/><path d="M12 17h.01"/></svg>
-            </button>
             <span class="mv-controls__sep" aria-hidden="true"></span>
             <div class="mv-explode">
-              <svg class="mv-explode__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M10.5 8.5l2 2M8.5 10.5l2 2" stroke-dasharray="1.6 1.6"/></svg>
+              <span class="mv-explode__label" aria-hidden="true">Exploded</span>
               <label for="qbot-explode-slider" class="sr-only">Model explode amount</label>
               <input type="range" id="qbot-explode-slider" class="mv-explode__slider" data-mv-action="explode-slider" min="0" max="100" value="0" step="1" aria-label="Model explode amount">
               <span class="mv-explode__value" data-mv-explode-value>0%</span>
@@ -283,10 +280,10 @@
         </div>
 
         <p class="mv-hint">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11"/><path d="M12 11V4.5a1.5 1.5 0 0 1 3 0V11"/><path d="M15 11V6.5a1.5 1.5 0 0 1 3 0V13a6 6 0 0 1-6 6h-1.5a5.5 5.5 0 0 1-4.4-2.2L6 14.5a1.6 1.6 0 0 1 2.6-1.9L9 13V11"/></svg>
           <!-- One wording per input mode — cf. modele-3d.html. -->
-          <span class="mv-hint__pointer">Click and drag to orbit · scroll or buttons to zoom · drag the slider to explode the model · insert a smartphone</span>
-          <span class="mv-hint__touch">Drag the device to turn it · pinch to zoom · the slider opens it · the button docks a smartphone</span>
+          <span class="mv-hint__pointer">Click and drag to orbit · scroll or buttons to zoom · drag the slider to open the enclosure</span>
+          <span class="mv-hint__touch">Drag the device to turn it · pinch to zoom · the slider opens it</span>
         </p>
       </div>
 

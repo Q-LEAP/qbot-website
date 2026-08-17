@@ -1982,6 +1982,9 @@ a:focus-visible { border-radius: var(--radius-sm); }
   box-shadow: var(--shadow-sm);
 }
 .sidebar-card h4 { font-size: 1rem; color: var(--dark); margin-bottom: 12px; }
+/* Le titre de la carte « Aperçu rapide » est un h3, pas un h4 : il ne recevait donc
+   aucune marge et collait à la première ligne de la fiche. */
+.sidebar-card h3 { margin-bottom: 18px; }
 .sidebar-card p { font-size: .9375rem; }
 .sidebar-card .btn { width: 100%; justify-content: center; margin-top: 16px; }
 .related-articles { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); }
@@ -2105,8 +2108,21 @@ a:focus-visible { border-radius: var(--radius-sm); }
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  background: linear-gradient(160deg, var(--dark) 0%, #141414 100%);
+  /* Un plateau, pas une boîte : une lueur teal montant du bas pose l'objet sur
+     quelque chose, et la vignette en creux resserre le regard au centre. Les deux
+     sont DERRIÈRE le canevas (l'une est un calque de `background`, l'autre une
+     ombre interne) : le rendu 3D est sur fond transparent, elles se voient donc
+     autour du produit sans jamais le voiler. */
+  background:
+    radial-gradient(60% 44% at 50% 92%, rgba(255, 255, 255, 0.055), transparent 70%),
+    radial-gradient(46% 30% at 50% 84%, rgba(0, 203, 190, 0.1), transparent 70%),
+    linear-gradient(160deg, var(--dark) 0%, #141414 100%);
+  /* La vignette est posée PAR-DESSUS les calques de fond : à 0,42 d'opacité elle
+     éteignait la lueur de sol qu'elle est censée encadrer — mesuré à 6/255 au lieu
+     des ~16 visés. Le gris neutre porte l'essentiel du plateau, le teal n'est
+     qu'une teinte : c'est une lumière de studio, pas un néon. */
+  box-shadow: var(--shadow-lg), inset 0 0 90px 10px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   aspect-ratio: 4 / 3;
   min-height: 420px;
 }
@@ -2141,19 +2157,27 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .model-viewer-frame.is-loaded .mv-loading { opacity: 0; pointer-events: none; }
 
 /* Contrôles personnalisés */
+/* ── Boîte à outils ───────────────────────────────────────────────────────
+   Un seul endroit pour toutes les commandes. Le jour/nuit flottait seul en haut
+   à gauche, en pastille teal pleine : c'était la seule commande hors de la barre,
+   et la plus voyante alors qu'elle est secondaire. Les commandes sont maintenant
+   groupées par fonction — cadrage, vue, scène — séparées par des filets, puis
+   l'instrument d'éclatement. */
 .mv-controls {
   position: absolute;
   bottom: 16px; left: 50%;
   transform: translateX(-50%);
   z-index: 2;
   display: flex;
-  gap: 6px;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.12);
+  align-items: center;
+  gap: 2px;
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-pill);
-  padding: 6px;
+  padding: 6px 8px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
 }
 .mv-ctrl {
   width: 38px; height: 38px;
@@ -2164,9 +2188,44 @@ a:focus-visible { border-radius: var(--radius-sm); }
   color: rgba(255,255,255,0.75);
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1);
 }
-.mv-ctrl:hover { background: rgba(0,203,190,0.2); color: var(--teal); transform: translateY(-1px); }
-.mv-ctrl[aria-pressed="true"] { background: var(--teal); color: var(--dark); }
+.mv-ctrl { position: relative; }
+.mv-ctrl:hover { background: rgba(255, 255, 255, 0.09); color: var(--white); }
+/* État enclenché en teinte, pas en aplat : la pastille teal pleine sur le bouton
+   de rotation en faisait l'action principale de la barre, ce qu'elle n'est pas. */
+.mv-ctrl[aria-pressed="true"] {
+  background: rgba(0, 203, 190, 0.14);
+  color: var(--teal);
+  box-shadow: inset 0 0 0 1px rgba(0, 203, 190, 0.4);
+}
 .mv-ctrl svg { width: 18px; height: 18px; }
+
+/* Infobulle : elle reprend `aria-label`, donc l'intitulé lu par un lecteur
+   d'écran EST celui qu'on voit — une seule source, rien à maintenir en double.
+   Cinq pictogrammes sans mot demandaient de devenir devin, en particulier pour
+   « réinitialiser la vue ». Désactivée au doigt : sans survol, elle resterait
+   collée après un appui. */
+.mv-ctrl::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s var(--ease-soft), transform 0.18s var(--ease-soft);
+}
+.mv-ctrl:hover::after,
+.mv-ctrl:focus-visible::after { opacity: 1; transform: translateX(-50%); }
+@media (hover: none) { .mv-ctrl::after { display: none; } }
 
 /* Bouton AR (slot="ar-button" — masqué automatiquement si non supporté) */
 .mv-ar-btn {
@@ -2190,48 +2249,28 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 .mv-ar-btn:hover { background: rgba(0,203,190,0.28); border-color: var(--teal); }
 
-/* Bouton qualité HD + toggle jour/nuit — pills groupées en haut à gauche,
-   miroir du bouton AR */
-.mv-top-left {
-  position: absolute;
-  top: 16px; left: 16px;
-  z-index: 2;
-  display: flex;
-  gap: 8px;
+/* Jour/nuit : un bouton de la barre comme les autres. Il était en pastille teal
+   flottante en haut à gauche du cadre (`.mv-top-left` / `.mv-quality-btn`, restes
+   du bouton HD supprimé en 2026-07) — deux styles de commande pour une seule
+   boîte à outils. Seul le pictogramme bascule : soleil quand on est en nuit, donc
+   quand l'action proposée est de passer au jour. */
+/* Le jour/nuit ne prend PAS la teinte d'état enclenché : c'est une bascule entre
+   deux modes, pas une commande active ou inactive, et deux pastilles teal côte à
+   côte dans la barre faisaient deux accents pour une seule idée. Le pictogramme
+   suffit à dire où l'on est. */
+.mv-ctrl--lighting[aria-pressed="true"] {
+  background: none;
+  color: rgba(255, 255, 255, 0.75);
+  box-shadow: none;
 }
-.mv-quality-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.16);
-  color: rgba(255,255,255,0.75);
-  font-family: var(--font);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 7px 13px;
-  border-radius: var(--radius-pill);
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+.mv-ctrl--lighting[aria-pressed="true"]:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--white);
 }
-.mv-quality-btn:hover { border-color: rgba(0,203,190,0.5); color: var(--white); }
-.mv-quality-btn[aria-pressed="true"] {
-  background: var(--teal);
-  border-color: var(--teal);
-  color: var(--dark);
-}
-
-/* Toggle jour/nuit — pill soleil/lune : on affiche l'icône du mode vers
-   lequel on va basculer. Le viewer démarre en éclairage nuit (le site n'a
-   plus qu'un thème sombre) ; le bouton sert à rallumer la lumière du jour
-   pour mieux lire les détails du boîtier. */
-.mv-lighting-btn { padding: 7px 9px; }
-.mv-lighting-btn .mv-icon-sun  { display: none; }
-.mv-lighting-btn .mv-icon-moon { display: block; }
-.mv-lighting-btn[aria-pressed="true"] .mv-icon-sun  { display: block; }
-.mv-lighting-btn[aria-pressed="true"] .mv-icon-moon { display: none; }
+.mv-ctrl--lighting .mv-icon-sun  { display: none; }
+.mv-ctrl--lighting .mv-icon-moon { display: block; }
+.mv-ctrl--lighting[aria-pressed="true"] .mv-icon-sun  { display: block; }
+.mv-ctrl--lighting[aria-pressed="true"] .mv-icon-moon { display: none; }
 .model-viewer-frame.is-night {
   background: linear-gradient(160deg, #000000 0%, #0D0D0D 100%);
 }
@@ -2244,16 +2283,25 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .mv-controls__sep {
   width: 1px;
   align-self: stretch;
-  margin: 4px 2px;
-  background: rgba(255,255,255,0.16);
+  margin: 7px 5px;
+  background: rgba(255, 255, 255, 0.13);
+}
+/* L'instrument d'éclatement : libellé, course, valeur. Il n'avait qu'un
+   pictogramme énigmatique et un pourcentage ; le mot dit ce que la course fait. */
+.mv-explode__label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
 }
 .mv-explode {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 10px 0 4px;
+  gap: 9px;
+  padding: 0 8px 0 6px;
 }
-.mv-explode__icon { flex-shrink: 0; color: rgba(255,255,255,0.6); }
 .mv-explode__value {
   font-size: 0.6875rem;
   font-weight: 700;
@@ -2265,7 +2313,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .mv-explode__slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 84px;
+  width: 96px;
   height: 4px;
   border-radius: var(--radius-pill);
   background: linear-gradient(90deg, var(--teal) 0%, var(--teal) var(--mv-explode-pct, 0%), rgba(255,255,255,0.25) var(--mv-explode-pct, 0%), rgba(255,255,255,0.25) 100%);
@@ -2335,8 +2383,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .model-viewer-frame__fallback p { color: rgba(255,255,255,0.7); font-size: 0.9375rem; max-width: 320px; }
 .model-viewer-frame.has-error .model-viewer-frame__fallback { display: flex; }
 .model-viewer-frame.has-error .mv-controls,
-.model-viewer-frame.has-error .mv-ar-btn,
-.model-viewer-frame.has-error .mv-top-left { display: none; }
+.model-viewer-frame.has-error .mv-ar-btn { display: none; }
 
 [data-theme="dark"] .mv-loading__label { color: rgba(255,255,255,0.5); }
 
@@ -2397,9 +2444,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .mv-ctrl { width: 40px; height: 40px; }
   .mv-ctrl svg { width: 20px; height: 20px; }
   .mv-ar-btn { top: 12px; right: 12px; padding: 7px 14px; font-size: 0.75rem; }
-  .mv-top-left { top: 20px; left: 20px; gap: 6px; }
-  .mv-quality-btn { padding: 8px 12px; font-size: 0.6875rem; }
-  .mv-lighting-btn { padding: 8px 10px; }
   .mv-controls__sep { display: none; }
   /* Le curseur d'éclatement prend toute la largeur de la barre : c'est la
      commande la plus fine à manipuler au doigt, elle mérite la course la plus
