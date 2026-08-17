@@ -353,31 +353,31 @@
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  /* Sur téléphone, un boîtier entier dans un cadre étroit devient un petit objet
-     posé au milieu du vide, et le texte doit se serrer sous lui. On inverse la
-     logique : le canevas déborde largement de l'écran et l'objet est COUPÉ par le
-     bord droit. On n'en voit qu'une moitié, mais en grand — c'est le procédé des
-     pages produit d'Apple et de Ray-Ban. Le texte récupère toute la largeur
-     utile, et le hors-champ suggère la suite au lieu de la montrer. */
-  .scrolly__stage { place-items: center start; }
+  /* ── Deux zones : l'objet en haut, le texte en bas ────────────────────────
+     La version précédente débordait le canevas à 132vw et le décalait pour que
+     l'objet soit COUPÉ par le bord droit — on n'en voyait qu'une moitié, mais en
+     grand. Deux défauts, vérifiés à l'écran : sur téléphone le visiteur ne voyait
+     jamais le produit en entier, et au pas « encombrement » les cotes sortaient du
+     cadre (il fallait borner « 40 cm » de force pour la garder dans la fenêtre).
+
+     Relevé sur le scrollytelling de la Superleggera V4 Centenario, qui procède
+     autrement : le canevas reste plein écran, jamais rogné ni décalé ; c'est la
+     CAMÉRA qui cadre l'objet dans la moitié haute, et le texte occupe le tiers
+     bas, jamais par-dessus. L'objet est plus petit, mais entier et lisible, et le
+     texte a sa zone à lui.
+
+     Transposé ici : le canevas prend la largeur de l'écran, se pose sous la barre
+     de navigation, et occupe 44 % de la hauteur ; la carte de texte garde le bas.
+     Les cotes tiennent alors dans la fenêtre par construction. */
+  .scrolly__stage { place-items: start center; padding-top: 84px; }
   .scrolly__scene {
-    width: 132vw;
-    height: min(66vh, 560px);
+    width: 100vw;
+    height: 44svh;
     max-height: none;
-    /* Décalage puis échelle, dans cet ordre : l'inverse ferait varier le
-       décalage avec le zoom du scroll. Le décalage vertical remonte l'objet
-       au-dessus de la carte de texte, qui occupe le bas de l'écran ; le décalage
-       horizontal ne coupe QU'UN bord — un premier essai à 22vw ne laissait qu'un
-       éclat de boîtier derrière la carte. */
-    /* -18vh et non -9vh : les deux variantes ont été rendues et comparées.
-       Remonter l'objet le rend plus grand et plus haut dans l'écran ; ancrer le
-       canevas en haut avec une hauteur réduite le laissait plus bas et plus
-       petit, avec autant de vide. Le canevas dépasse de 19 px par le haut, ce qui
-       ne coupe rien de visible. */
-    transform: translate(11vw, -18vh) scale(var(--sc-zoom, 1));
+    transform: scale(var(--sc-zoom, 1));
   }
-  /* Le texte passe sous le produit : superposé, il masquerait le boîtier sur
-     une largeur de téléphone. */
+  /* Le texte occupe le bas de l'écran, sous l'objet : superposé, il masquerait le
+     boîtier sur une largeur de téléphone. */
   .scrolly__step { align-content: end; padding-bottom: 8vh; max-width: none; }
 
   /* ── Repère de progression ────────────────────────────────────────────────

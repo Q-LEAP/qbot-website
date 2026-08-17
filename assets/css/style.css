@@ -659,6 +659,30 @@ p { color: var(--gray); }
   font-size: 0.9375rem;
 }
 
+/* ---- Bloc d'appel à l'action de fin de page ---- */
+/* Aligné à gauche sur la gouttière du conteneur, comme l'en-tête de page et tout
+   le contenu : ces blocs étaient centrés par un `style="text-align:center"` posé
+   sur le conteneur, donc hors d'atteinte de toute feuille de style. Les dix blocs
+   du site partagent maintenant cette classe — libellé, titre, sous-titre et
+   boutons partent du même bord que le logo. */
+.cta-block .section-subtitle { margin-left: 0; margin-right: 0; }
+.cta-block__actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+/* Sous 520 px les boutons prennent toute la largeur, comme ceux des hero : c'est
+   la même règle, pour la même raison — une cible à la largeur du pouce et une
+   hiérarchie qui se lit. */
+@media (max-width: 520px) {
+  .cta-block__actions { flex-direction: column; align-items: stretch; }
+  /* Le sélecteur couvre aussi le bouton seul, sans rangée autour de lui : la
+     moitié des blocs n'en a qu'un, et sans ça le même bloc changeait d'allure
+     selon qu'il portait un bouton ou deux. */
+  .cta-block__actions .btn,
+  .cta-block > .btn { width: 100%; justify-content: center; }
+}
+
 /* ---- Deux colonnes égales ---- */
 /* Cette classe existe parce que le motif était écrit en style INLINE dans
    `commandez.html` / `en/order.html` : `display:grid; grid-template-columns:1fr 1fr`.
