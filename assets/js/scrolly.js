@@ -127,7 +127,7 @@
 
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t };
-  var loaded = false, running = false, lastP = -1, wasScrub = false;
+  var loaded = false, running = false, lastP = -1, wasScrub = false, onScreen = false;
 
   if (viewer) {
     viewer.addEventListener('load', function () {
@@ -528,9 +528,14 @@
     return { draw: draw };
   })();
 
-  /* Progression 0→1 du bloc, et interpolation entre les deux scènes encadrantes. */
+  /* Progression 0→1 du bloc, et interpolation entre les deux scènes encadrantes.
+     `onScreen` dit si la séquence est bien ce que le visiteur regarde : la
+     section coupe-t-elle le milieu du viewport ? C'est le test qui manquait au
+     CTA flottant (voir plus bas). */
   function progress() {
     var box = root.getBoundingClientRect();
+    var mid = window.innerHeight / 2;
+    onScreen = box.top < mid && box.bottom > mid;
     var travel = box.height - window.innerHeight;
     if (travel <= 0) return 0;
     return Math.min(1, Math.max(0, -box.top / travel));
@@ -634,7 +639,15 @@
       }
     }
     if (hint) hint.style.opacity = p > 0.02 ? '0' : '';
-    if (cta) cta.classList.toggle('is-visible', p > 0.04);
+    /* Le CTA n'accompagne QUE la séquence. `progress()` étant borné à 1, la
+       condition « p > 0.04 » restait vraie une fois la section franchie : le
+       bouton restait donc épinglé sur tout le reste de la page, où il recouvrait
+       le lien « Proposer une évolution » de la dernière carte d'évolution et, en
+       bas de page, les deux liens légaux du pied de page — tout en faisant doublon
+       avec le « Prendre rendez-vous » de la section finale. Il faut les deux
+       tests : la progression pour ne pas l'afficher au tout premier pixel, et la
+       présence à l'écran pour le retirer à la sortie. */
+    if (cta) cta.classList.toggle('is-visible', onScreen && p > 0.04);
     /* CTA contextuel. Le même bouton affichait « Demander une démo » du premier au
        dernier pas, en doublon de celui de la barre de navigation — les deux
        étaient visibles en même temps. Il accompagne maintenant le propos : il mène

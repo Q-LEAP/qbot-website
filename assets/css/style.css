@@ -245,6 +245,10 @@ p { color: var(--gray); }
   --logo-h: 38px;
   display: inline-flex;
   align-items: center;
+  /* Le lockup ne se comprime jamais : c'est un élément flex, et à 320 px il se
+     faisait écraser de 87 à 61 px de large — le logo était donc déformé, ce que
+     la charte interdit. C'est au reste de la barre de céder, pas à la marque. */
+  flex-shrink: 0;
   padding: calc(var(--logo-h) * var(--logo-clear-y)) calc(var(--logo-h) * var(--logo-clear-x));
   margin-left: calc(-1 * var(--logo-h) * var(--logo-clear-x));
 }
@@ -360,14 +364,27 @@ p { color: var(--gray); }
   background: rgba(0,203,190,0.15);
   border: 1px solid rgba(0,203,190,0.35);
   color: var(--teal);
-  font-size: 0.8125rem;
+  /* 12 px / 0,06 em, et non 13 / 0,08 : le libellé français fait 58 caractères
+     (« Authentification à deux facteurs (2FA) plus simple que jamais ! ») et
+     dépassait de quelques pixels la colonne du hero à 1440 px. Il passait donc
+     sur deux lignes dans une pastille à rayon 100 px, avec le pictogramme centré
+     entre les deux — pour une trentaine de pixels de trop. À cette taille il
+     tient sur une ligne dès 1280 px ; en dessous il se replie proprement, d'où
+     la hauteur de ligne et le padding vertical un peu plus généreux. */
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
   text-transform: uppercase;
-  padding: 6px 14px;
+  padding: 7px 15px;
   border-radius: 100px;
   margin-bottom: 24px;
+  max-width: 100%;
 }
+/* Le pictogramme ne se comprime pas et reste sur la première ligne quand le
+   libellé se replie : centré verticalement sur deux lignes, il flottait au
+   milieu du texte. */
+.hero__label svg { flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
 
 .hero__title {
   color: var(--white);
@@ -642,6 +659,25 @@ p { color: var(--gray); }
   font-size: 0.9375rem;
 }
 
+/* ---- Deux colonnes égales ---- */
+/* Cette classe existe parce que le motif était écrit en style INLINE dans
+   `commandez.html` / `en/order.html` : `display:grid; grid-template-columns:1fr 1fr`.
+   Aucune media query ne peut atteindre un attribut `style`, si bien qu'à 390 px les
+   deux colonnes restaient forcées : le contenu ne pouvait pas se réduire davantage
+   et la page débordait de 42 px — elle défilait horizontalement, sur toute sa
+   hauteur. C'est le genre de bogue qu'un style inline rend impossible à corriger
+   ailleurs que dans le HTML. */
+.split-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin-top: 48px;
+}
+@media (max-width: 768px) {
+  .split-2 { grid-template-columns: 1fr; gap: 32px; }
+}
+
 /* ---- Newsletter ---- */
 /* Le teal de marque est une couleur CLAIRE : du blanc dessus plafonne à
    1,8:1, très en dessous du minimum AA de 4,5:1 — c'est le noir de charte qui
@@ -687,13 +723,20 @@ p { color: var(--gray); }
   font-size: 0.75rem;
   line-height: 1.5;
   color: rgba(0,26,24,0.72);
-  margin: 8px 0 0;
+  /* Même mesure que la ligne de consentement juste au-dessus (560 px, héritée du
+     conteneur) : les deux blocs de petit texte s'alignent au lieu de former deux
+     largeurs différentes. */
+  margin: 12px auto 0;
 }
 
 .newsletter__form {
   display: flex;
   gap: 12px;
-  max-width: 500px;
+  /* 640 et non 500 : le placeholder fait 58 caractères (« Veuillez renseigner
+     votre adresse email pour vous inscrire ») et se retrouvait coupé en plein
+     mot dans un champ de 350 px — sur un formulaire, un libellé tronqué est ce
+     que le visiteur lit en premier. */
+  max-width: 640px;
   margin: 0 auto;
 }
 
@@ -1354,6 +1397,40 @@ p { color: var(--gray); }
   .nav__menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: flex-start; padding: 16px 24px 24px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; }
+
+  /* Barre de navigation en petite largeur. Trois défauts se cumulaient à 390 px :
+     le libellé « Demo gratuite » passait sur DEUX lignes, ce qui donnait une
+     pastille de 72 px de haut débordant d'une barre qui en fait 72 ; le bouton
+     hamburger se retrouvait collé au logo au lieu d'être au bord droit (trois
+     enfants en `space-between`, le bouton large poussant celui du milieu) ; et le
+     logo à 38 px ne laissait pas la place au reste.
+     Correctif : on ordonne — logo à gauche, actions puis hamburger à droite — et
+     on compacte le bouton (`nowrap` : c'est le retour à la ligne qui cassait la
+     hauteur de la barre, pas la largeur du texte). Le CTA n'est PAS masqué : il
+     est le chemin de conversion, et il tient une fois compacté. */
+  .nav__inner { gap: 8px; }
+  .nav__logo { --logo-h: 32px; }
+  .nav__actions { margin-left: auto; gap: 4px; }
+  .nav__actions .btn {
+    padding: 9px 14px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .nav__toggle { order: 4; }
+
+  /* Sous 400 px il n'y a plus la place pour les quatre éléments : le logo passe à
+     28 px, le bouton se resserre, et le sélecteur de langue ne garde que son
+     globe. `font-size: 0` masque le code « FR » sans toucher au SVG, qui porte
+     ses propres dimensions — l'alternative demandait d'envelopper ce texte dans
+     un span sur les 23 pages. L'intitulé accessible du lien reste complet. */
+  @media (max-width: 400px) {
+    .nav__logo { --logo-h: 28px; }
+    .nav__actions .btn { padding: 8px 11px; font-size: 0.75rem; }
+    /* Le padding porte la cible tactile : sans le code de langue, le lien se
+       réduisait au globe de 14 px et tombait à 22 px de large, sous le minimum
+       de 24 px de la WCAG 2.5.8. */
+    .nav__lang a { font-size: 0; gap: 0; padding: 9px 7px; }
+  }
 
   .hero__inner { grid-template-columns: 1fr; text-align: center; gap: 48px; }
   .hero__desc { margin: 0 auto 40px; }

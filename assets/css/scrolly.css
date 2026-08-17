@@ -51,9 +51,8 @@
 
 .scrolly {
   position: relative;
-  /* Une hauteur par pas. 100vh par pas donne une lecture d'un écran = une
-     idée, sans jamais figer le défilement. */
-  --scrolly-steps: 5;
+  /* La hauteur est déclarée dans le HTML, au plus près du nombre de pas
+     (cf. le commentaire de la section) : un écran par pas plus un demi. */
 }
 
 /* ── La scène : elle reste, le texte passe ─────────────────────────────── */
@@ -653,10 +652,31 @@ main .section-label::before {
   vector-effect: non-scaling-stroke;
 }
 
-/* Sous 900 px la scène déborde de l'écran (l'objet est coupé par le bord) : les
-   étiquettes tomberaient dans le hors-champ ou sur la carte de texte. On garde
-   les tracés — qui restent solidaires de l'objet — et on retire les mots. */
-@media (max-width: 900px) {
+/* Deux cas où les MOTS des annotations gênent, alors que les tracés, eux, restent
+   justes puisqu'ils sont solidaires de l'objet :
+   - sous 900 px la scène déborde volontairement de l'écran (objet coupé par le
+     bord droit) et les étiquettes tomberaient dans le hors-champ ;
+   - entre 901 et 939 px la carte de texte est encore superposée au modèle (les
+     deux colonnes ne démarrent qu'à 940), donc les étiquettes lui passeraient
+     dessus.
+   Au-delà, la carte est à gauche et la scène à droite : plus de collision. */
+@media (max-width: 939px) {
   .hud-lab { display: none; }
+}
+@media (max-width: 900px) {
   .hud-val { font-size: 11px; }
+}
+
+/* ── Pas de CTA flottant sur téléphone ────────────────────────────────────
+   Sous 900 px la carte de texte occupe le bas de l'écran (l'objet est au-dessus,
+   coupé par le bord) — exactement là où se pose le bouton flottant, qui
+   recouvrait alors le titre du pas : « Un actionneur appuie, une caméra lit »
+   était illisible. Le chemin de conversion reste ouvert, le bouton de la barre
+   de navigation étant collant et visible en permanence.
+   Cette règle est en FIN de fichier à dessein : `.scrolly__cta` est redéclaré
+   plus haut avec `display: inline-flex` (section « déverrouillage »), et à
+   spécificité égale c'est la dernière déclaration qui gagne — placée dans le bloc
+   responsive, elle était écrasée. */
+@media (max-width: 900px) {
+  .scrolly__cta { display: none; }
 }
