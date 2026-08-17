@@ -377,7 +377,45 @@
      une largeur de téléphone. */
   .scrolly__step { align-content: end; padding-bottom: 8vh; max-width: none; }
 
-  .scrolly__nav, .scrolly__count { display: none; }
+  /* ── Repère de progression ────────────────────────────────────────────────
+     Les quatre cases de saisie sont retirées (quatre cibles de plus par-dessus le
+     produit sur un écran de 390 px, et le clavier de la métaphore 2FA n'a pas la
+     place de se lire), mais le visiteur se retrouvait alors à traverser quatre
+     écrans épinglés SANS aucune indication : rien ne disait qu'une séquence était
+     en cours ni combien il en restait. On garde donc la même information, sous la
+     forme qui convient à un téléphone — un trait fin au ras du bas de l'écran et
+     le numéro du pas. Aucune donnée nouvelle, aucun JS de plus : le trait réutilise
+     `--sc-p`, déjà écrit à chaque image, et le compteur son propre texte.
+     Le bas de l'écran est libre : la carte de texte s'arrête à 8vh du bord. */
+  .scrolly__nav {
+    display: block;
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    top: auto;
+    transform: none;
+    z-index: 3;
+  }
+  .scrolly__dot { display: none; }
+  .scrolly__nav-rail {
+    top: auto; bottom: 0; left: 0; right: 0;
+    width: auto; height: 2px;
+    border-radius: 0;
+  }
+  /* Le trait passe de vertical à horizontal : c'est la même progression, tournée
+     d'un quart de tour. */
+  .scrolly__nav-rail::after {
+    inset: 0;
+    height: 100%;
+    transform: scaleX(var(--sc-p, 0));
+    transform-origin: left center;
+  }
+  .scrolly__count {
+    display: block;
+    left: auto; right: 18px;
+    top: auto; bottom: 14px;
+    z-index: 3;
+    font-size: 0.6875rem;
+  }
 }
 @media (max-width: 520px) {
   .scrolly__step-inner { padding: 20px 22px 22px; }

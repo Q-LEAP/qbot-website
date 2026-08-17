@@ -1082,13 +1082,26 @@ function generateArticleHTML(a) {
   const base  = fr ? '../assets/' : '../../assets/';
   const nav0  = fr ? '../' : '../';
 
+  // Les quatre dernières entrées (`nav__more`) n'apparaissent que dans le panneau
+  // hamburger, sous 768 px : sur téléphone ce panneau est la seule navigation, et
+  // sans elles Modèle 3D, Commander, FAQ et Blog ne seraient atteignables qu'en
+  // descendant jusqu'au pied de page. Le menu du bureau reste à trois entrées.
+  // À garder aligné sur la nav des pages du site.
   const navLinks = fr
     ? `<li><a href="${nav0}a-propos.html" class="nav__link">À propos</a></li>
        <li><a href="${nav0}caracteristiques.html" class="nav__link">Caractéristiques</a></li>
-       <li><a href="${nav0}contact.html" class="nav__link">Contact</a></li>`
+       <li><a href="${nav0}contact.html" class="nav__link">Contact</a></li>
+       <li class="nav__more"><a href="${nav0}modele-3d.html" class="nav__link nav__link--more nav__link--more-first">Modèle 3D</a></li>
+       <li class="nav__more"><a href="${nav0}commandez.html" class="nav__link nav__link--more">Commander</a></li>
+       <li class="nav__more"><a href="${nav0}faq.html" class="nav__link nav__link--more">FAQ</a></li>
+       <li class="nav__more"><a href="${nav0}blog.html" class="nav__link nav__link--more">Blog</a></li>`
     : `<li><a href="${nav0}about.html" class="nav__link">About</a></li>
        <li><a href="${nav0}technical-specs.html" class="nav__link">Technical Specs</a></li>
-       <li><a href="${nav0}contact.html" class="nav__link">Contact</a></li>`;
+       <li><a href="${nav0}contact.html" class="nav__link">Contact</a></li>
+       <li class="nav__more"><a href="${nav0}3d-model.html" class="nav__link nav__link--more nav__link--more-first">3D Model</a></li>
+       <li class="nav__more"><a href="${nav0}order.html" class="nav__link nav__link--more">Order</a></li>
+       <li class="nav__more"><a href="${nav0}faq.html" class="nav__link nav__link--more">FAQ</a></li>
+       <li class="nav__more"><a href="${nav0}blog.html" class="nav__link nav__link--more">Blog</a></li>`;
 
   // Un seul lien vers l'autre langue (globe + code), comme dans la nav du site.
   // Le href reste un placeholder : la page traduite n'existe pas à la génération.

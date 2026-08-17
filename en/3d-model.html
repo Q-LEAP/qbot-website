@@ -127,7 +127,16 @@
         <li><a href="about.html" class="nav__link">About</a></li>
         <li><a href="technical-specs.html" class="nav__link">Technical Specs</a></li>
         <li><a href="contact.html" class="nav__link">Contact</a></li>
-        </ul>
+          <!-- Destinations supplémentaires, visibles uniquement dans le panneau
+             hamburger (sous 768 px) : sur téléphone ce panneau est la SEULE
+             navigation, et Modèle 3D, Commander, FAQ et Blog n'étaient
+             atteignables qu'en descendant jusqu'au pied de page. La barre du
+             bureau, elle, reste à trois entrées. -->
+        <li class="nav__more"><a href="3d-model.html" class="nav__link nav__link--more nav__link--more-first">3D Model</a></li>
+        <li class="nav__more"><a href="order.html" class="nav__link nav__link--more">Order</a></li>
+        <li class="nav__more"><a href="faq.html" class="nav__link nav__link--more">FAQ</a></li>
+        <li class="nav__more"><a href="blog.html" class="nav__link nav__link--more">Blog</a></li>
+      </ul>
       <div class="nav__actions">
         <a href="contact.html" class="btn btn--primary">Free Demo</a>
                 <div class="nav__lang">
@@ -284,7 +293,9 @@
 
         <p class="mv-hint">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg>
-          Click and drag to orbit · scroll or buttons to zoom · drag the slider to explode the model · insert a smartphone
+          <!-- One wording per input mode — cf. modele-3d.html. -->
+          <span class="mv-hint__pointer">Click and drag to orbit · scroll or buttons to zoom · drag the slider to explode the model · insert a smartphone</span>
+          <span class="mv-hint__touch">Drag the device to turn it · pinch to zoom · the slider opens it · the button docks a smartphone</span>
         </p>
       </div>
 

@@ -31,6 +31,13 @@ window.addEventListener('scroll', () => {
 
     const delta = y - lastY;
 
+    /* Seuil de 6 px avant de masquer la barre. Sans lui, UN pixel vers le bas
+       suffisait : au doigt, l'inertie du défilement mobile produit sans arrêt de
+       micro-variations, et la barre — donc le bouton de démo, seul CTA permanent
+       du téléphone — clignotait à chaque hésitation. La révélation, elle, reste
+       immédiate : on ne fait jamais attendre quelqu'un qui remonte. */
+    if (delta > 0 && delta < 6) { lastY = y; ticking = false; return; }
+
     if (!navMenu?.classList.contains('open')) {
       if (delta > 0 && y > navH) {
         // Scrolle vers le bas → masquer

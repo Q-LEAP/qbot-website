@@ -132,6 +132,15 @@
         <li><a href="a-propos.html" class="nav__link">À propos</a></li>
         <li><a href="caracteristiques.html" class="nav__link">Caractéristiques</a></li>
         <li><a href="contact.html" class="nav__link">Contact</a></li>
+        <!-- Destinations supplémentaires, visibles uniquement dans le panneau
+             hamburger (sous 768 px) : sur téléphone ce panneau est la SEULE
+             navigation, et Modèle 3D, Commander, FAQ et Blog n'étaient
+             atteignables qu'en descendant jusqu'au pied de page. La barre du
+             bureau, elle, reste à trois entrées. -->
+        <li class="nav__more"><a href="modele-3d.html" class="nav__link nav__link--more nav__link--more-first">Modèle 3D</a></li>
+        <li class="nav__more"><a href="commandez.html" class="nav__link nav__link--more">Commander</a></li>
+        <li class="nav__more"><a href="faq.html" class="nav__link nav__link--more">FAQ</a></li>
+        <li class="nav__more"><a href="blog.html" class="nav__link nav__link--more">Blog</a></li>
       </ul>
       <div class="nav__actions">
         <a href="contact.html" class="btn btn--primary">Demo gratuite</a>
@@ -299,7 +308,13 @@
 
         <p class="mv-hint">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 6v4"/></svg>
-          Cliquez-glissez pour orbiter · molette ou boutons pour zoomer · glissez le curseur pour éclater le modèle · insérez un smartphone
+          <!-- Deux formulations, une par mode de saisie. Celle de la souris parlait
+               de clic, de molette et de curseur à un visiteur sur téléphone, qui
+               n'a rien de tout cela : la consigne décrivait des gestes
+               impossibles. Le tri se fait sur `hover`, pas sur la largeur — une
+               tablette large est tactile, un portable étroit ne l'est pas. -->
+          <span class="mv-hint__pointer">Cliquez-glissez pour orbiter · molette ou boutons pour zoomer · glissez le curseur pour éclater le modèle · insérez un smartphone</span>
+          <span class="mv-hint__touch">Glissez sur le boîtier pour le faire tourner · pincez pour zoomer · le curseur l'ouvre · le bouton y pose un smartphone</span>
         </p>
       </div>
 

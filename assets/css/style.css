@@ -264,6 +264,10 @@ p { color: var(--gray); }
   align-items: center;
   gap: 36px;
 }
+/* Entrées réservées au panneau hamburger : la barre du bureau garde ses trois
+   liens, identiques à ceux du site de référence. Elles ne sont montrées que par
+   la media query du menu mobile. */
+.nav__more { display: none; }
 
 .nav__link {
   font-size: 0.9375rem;
@@ -1409,9 +1413,49 @@ p { color: var(--gray); }
 @media (max-width: 768px) {
   :root { --section-py: 56px; }
 
-  .nav__menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: flex-start; padding: 16px 24px 24px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .nav__menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: stretch; padding: 8px 24px 16px; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; }
+
+  /* Le panneau hamburger est la seule navigation du téléphone : ses entrées sont
+     des lignes pleine largeur, pas des mots posés dans le vide. Les liens ne
+     faisaient que 18 px de haut (la hauteur du texte) : la zone de frappe était
+     plus petite que le doigt, et il fallait viser le mot. Ici chaque entrée fait
+     48 px et couvre toute la largeur du panneau. */
+  .nav__menu li { display: flex; }
+  .nav__menu .nav__link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+  /* Le soulignement animé est conçu pour une barre horizontale ; sur une liste
+     verticale pleine largeur il tirait un trait sous toute la ligne. */
+  .nav__menu .nav__link::after { display: none; }
+
+  /* Les destinations secondaires : même liste, mais détachées par un filet et un
+     ton plus discret — on lit d'abord les trois entrées du menu principal. */
+  .nav__more { display: flex; }
+  .nav__link--more { color: rgba(255,255,255,0.55); }
+  .nav__link--more-first {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+
+  /* 16 px sur tous les champs de saisie, et pas 15. En dessous de 16 px, Safari
+     iOS ZOOME la page à la prise de focus pour rendre le texte lisible, puis ne
+     dézoome pas : le visiteur se retrouve dans un formulaire recadré, décalé
+     horizontalement, et doit pincer pour revenir. C'est le défaut d'ergonomie
+     mobile le plus courant sur un formulaire de contact, et il ne coûte qu'un
+     point de taille. */
+  .form-group input,
+  .form-group textarea,
+  .form-group select,
+  .newsletter__form input[type="email"] {
+    font-size: 1rem;
+  }
 
   /* Barre de navigation en petite largeur. Trois défauts se cumulaient à 390 px :
      le libellé « Demo gratuite » passait sur DEUX lignes, ce qui donnait une
@@ -1438,7 +1482,26 @@ p { color: var(--gray); }
      globe. `font-size: 0` masque le code « FR » sans toucher au SVG, qui porte
      ses propres dimensions — l'alternative demandait d'envelopper ce texte dans
      un span sur les 23 pages. L'intitulé accessible du lien reste complet. */
-  @media (max-width: 400px) {
+    /* Les boutons des deux hero (accueil et commande) prennent toute la largeur
+     sous 520 px. Ils gardaient la largeur de leur texte, centrés : deux pastilles
+     de tailles différentes, empilées, dont on devait viser le milieu. Pleine
+     largeur, la hiérarchie se lit (le teal d'abord, le contour ensuite) et la
+     cible fait la largeur du pouce. Cela ne vaut que pour les hero : ce sont les
+     seuls endroits où le bouton EST l'action de l'écran. */
+  @media (max-width: 520px) {
+    .hero__actions,
+    .order-hero__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .hero__actions .btn,
+    .order-hero__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+@media (max-width: 400px) {
     .nav__logo { --logo-h: 28px; }
     .nav__actions .btn { padding: 8px 11px; font-size: 0.75rem; }
     /* Le padding porte la cible tactile : sans le code de langue, le lien se
@@ -2247,6 +2310,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
   margin-top: 16px;
 }
 .mv-hint svg { flex-shrink: 0; color: var(--teal); }
+/* Consigne d'usage : une formulation par mode de saisie. Le critère est `hover`
+   et non la largeur d'écran — une tablette large est tactile, une petite fenêtre
+   de portable ne l'est pas. Par défaut on montre la version pointeur : si le
+   navigateur ne connaît pas la requête, c'est celle-là qui reste. */
+.mv-hint__touch { display: none; }
+@media (hover: none) {
+  .mv-hint__pointer { display: none; }
+  .mv-hint__touch { display: inline; }
+}
 
 /* État d'erreur — modèle indisponible (repli gracieux) */
 .model-viewer-frame__fallback {
@@ -2289,15 +2361,59 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .pricing-highlight__price { font-size: 3rem; }
   .order-process { grid-template-columns: 1fr 1fr; }
 
-  .model-viewer-frame { min-height: 320px; aspect-ratio: 1 / 1; }
-  .mv-ctrl { width: 34px; height: 34px; }
+  /* ── Visionneuse 3D sur téléphone : la barre d'outils sort du plateau ──────
+     Elle était en `position: absolute` au centre-bas du cadre. Sur un écran de
+     390 px le cadre fait 342 px de haut, et la barre — qui se replie alors sur
+     trois rangées (boutons, boutons, curseur d'éclatement) — en occupait 122 :
+     elle couvrait le produit, c'est-à-dire précisément ce qu'on est venu voir, et
+     toute tentative de faire pivoter le modèle en glissant dans cette zone
+     tombait sur les boutons.
+     Le cadre devient une colonne : le canevas garde son format carré, la barre se
+     pose DESSOUS, en flux. Elle reste un enfant de `.model-viewer-frame` — c'est
+     lui qui passe en plein écran, et tout ce qui est à l'extérieur y disparaît. */
+  .model-viewer-frame {
+    min-height: 0;
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 10px;
+  }
+  .model-viewer-frame model-viewer {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .mv-controls {
+    position: static;
+    transform: none;
+    margin-top: 10px;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,0.05);
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 6px;
+    max-width: none;
+  }
+  /* Les cibles reviennent à 40 px : hors du plateau, la place ne manque plus, et
+     34 px sous le doigt restaient petits pour une commande qu'on tâtonne. */
+  .mv-ctrl { width: 40px; height: 40px; }
+  .mv-ctrl svg { width: 20px; height: 20px; }
   .mv-ar-btn { top: 12px; right: 12px; padding: 7px 14px; font-size: 0.75rem; }
-  .mv-top-left { top: 12px; left: 12px; gap: 6px; }
-  .mv-quality-btn { padding: 6px 11px; font-size: 0.6875rem; }
-  .mv-lighting-btn { padding: 6px 8px; }
-  .mv-controls { flex-wrap: wrap; justify-content: center; row-gap: 6px; max-width: calc(100% - 24px); }
+  .mv-top-left { top: 20px; left: 20px; gap: 6px; }
+  .mv-quality-btn { padding: 8px 12px; font-size: 0.6875rem; }
+  .mv-lighting-btn { padding: 8px 10px; }
   .mv-controls__sep { display: none; }
-  .mv-explode { flex-basis: 100%; justify-content: center; padding: 4px 0 0; }
+  /* Le curseur d'éclatement prend toute la largeur de la barre : c'est la
+     commande la plus fine à manipuler au doigt, elle mérite la course la plus
+     longue possible. */
+  .mv-explode { flex-basis: 100%; justify-content: center; padding: 6px 4px 2px; }
+  .mv-explode__slider { flex: 1; }
+
+  /* En plein écran, le cadre occupe l'écran entier : le canevas doit alors
+     prendre toute la hauteur restante au lieu de garder son carré. */
+  .model-viewer-frame:fullscreen { padding: 0; justify-content: center; }
+  .model-viewer-frame:fullscreen model-viewer { aspect-ratio: auto; flex: 1; }
+  .model-viewer-frame:fullscreen .mv-controls { margin: 0 10px 10px; }
 }
 
 /* ── prefers-reduced-motion ── */
