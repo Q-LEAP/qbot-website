@@ -78,16 +78,26 @@
   pointer-events: none;
 }
 
-.scrolly__model {
+/* La scène = le canevas 3D + le calque d'annotations, superposés et solidaires.
+   Le zoom de « caméra » est appliqué ICI, à l'ensemble : model-viewer recadre
+   automatiquement sur les bornes du modèle, donc un changement de rayon seul
+   produit un cadrage instable d'une scène à l'autre. Le porter sur le conteneur
+   garantit aussi que les cotes ne peuvent pas glisser par rapport au produit —
+   elles subissent la même transformation, au pixel près. */
+.scrolly__scene {
+  position: relative;
   width: min(88vw, 900px);
   height: min(76vh, 700px);
-  background: transparent;
-  --poster-color: transparent;
-  /* Le zoom de « caméra » est appliqué au conteneur : model-viewer recadre
-     automatiquement sur les bornes du modèle, donc un changement de rayon seul
-     produit un cadrage instable d'une scène à l'autre. */
   transform: scale(var(--sc-zoom, 1));
   transition: transform 0.1s linear;
+}
+.scrolly__model {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  --poster-color: transparent;
 }
 
 /* Repli statique : il occupe exactement la place de la scène 3D, avec le même
@@ -100,15 +110,12 @@
 .scrolly__fallback[hidden] { display: none; }
 
 .scrolly__fallback {
-  width: min(88vw, 900px);
-  height: auto;
-  max-height: min(76vh, 700px);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  transform: scale(var(--sc-zoom, 1));
-  transition: transform 0.1s linear;
 }
-@media (min-width: 1200px) { .scrolly__fallback { width: min(56vw, 800px); } }
-@media (max-width: 900px)  { .scrolly__fallback { width: 94vw; max-height: min(56vh, 460px); } }
 
 /* Navigation des étapes. Ce n'était qu'un repère passif ; c'est maintenant un
    moyen de circuler. Chaque pastille est une ancre vers l'id du pas : le
@@ -247,6 +254,22 @@
 }
 .scrolly__step.is-active .scrolly__step-inner { opacity: 1; transform: none; }
 
+/* Les lignes de la carte arrivent en cascade — libellé, titre, texte, chiffre —
+   et non toutes ensemble. C'est la règle déjà appliquée aux en-têtes de section
+   du site (`group` dans main.js) : un fondu de bloc fait atterrir les trois au
+   même instant, ce qui se lit plat. 70 ms d'écart suffisent à donner un ordre de
+   lecture sans donner l'impression d'attendre. */
+.scrolly__step-inner > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.scrolly__step-inner > *:nth-child(2) { --i: 1; }
+.scrolly__step-inner > *:nth-child(3) { --i: 2; }
+.scrolly__step-inner > *:nth-child(4) { --i: 3; }
+.scrolly__step.is-active .scrolly__step-inner > * { opacity: 1; transform: none; }
+
 .scrolly__label {
   display: block;
   font-size: 0.75rem;
@@ -335,8 +358,7 @@
      pages produit d'Apple et de Ray-Ban. Le texte récupère toute la largeur
      utile, et le hors-champ suggère la suite au lieu de la montrer. */
   .scrolly__stage { place-items: center start; }
-  .scrolly__model,
-  .scrolly__fallback {
+  .scrolly__scene {
     width: 132vw;
     height: min(66vh, 560px);
     max-height: none;
@@ -371,21 +393,32 @@
   .scrolly__stage { position: relative; height: auto; padding: 40px 0; }
   .scrolly__steps { margin-top: 0; }
   .scrolly__step { min-height: 0; padding: 32px clamp(24px, 7vw, 96px); }
-  .scrolly__step-inner { opacity: 1; transform: none; transition: none; }
+  .scrolly__step-inner,
+  .scrolly__step-inner > * { opacity: 1; transform: none; transition: none; }
   .scrolly__hint, .scrolly__nav, .scrolly__count { display: none; }
-  .scrolly__model { transform: none; }
+  .scrolly__scene { transform: none; }
+  /* Le calque d'annotations suppose une caméra pilotée par le défilement ; ici
+     elle ne bouge plus et le récit est porté par le texte seul. */
+  .scrolly__hud { display: none; }
   .scrolly__cta { opacity: 1; transform: none; pointer-events: auto; }
   .scrolly__hint svg { animation: none; }
 }
 
-/* ── Au-delà de 1200 px : deux colonnes, plus de superposition ────────────
+/* ── Au-delà de 940 px : deux colonnes, plus de superposition ─────────────
    La carte flottait sur le modèle avec un dégradé pour rester lisible — d'où
    deux corrections successives quand elle recouvrait le produit. Quand la place
    existe, on sépare franchement : le texte à gauche, la scène à droite. Le
-   dégradé disparaît, il n'a plus rien à masquer. */
-@media (min-width: 1200px) {
+   dégradé disparaît, il n'a plus rien à masquer.
+
+   Le seuil était à 1200 px. Il descend à 940 : depuis que les cotes entourent
+   l'objet au lieu d'être posées sous lui, une carte qui le recouvre ne masque
+   plus seulement le produit, elle passe au milieu des traits de cote et du
+   libellé de la feuille — c'était illisible entre 900 et 1200 px. En dessous de
+   940 px c'est l'autre mise en page qui prend le relais (objet coupé par le bord,
+   texte en bas), donc plus aucune largeur ne superpose les deux. */
+@media (min-width: 940px) {
   .scrolly__stage { place-items: center end; padding-right: 4vw; }
-  .scrolly__model { width: min(56vw, 800px); }
+  .scrolly__scene { width: min(56vw, 800px); }
   .scrolly__step { max-width: 44vw; padding-left: clamp(72px, 7vw, 120px); }
   .scrolly__step-inner {
     background: none;
@@ -453,90 +486,177 @@ main .section-label::before {
 /* Centré quand le libellé l'est. */
 .section-header.centered .section-label { justify-content: center; }
 
-/* ══ Accessoires de scène ═════════════════════════════════════════════════
-   Un accessoire par pas, en 2D, apparaissant avec le texte qu'il illustre. Le
-   modèle 3D reste inchangé : ces éléments ne font qu'ancrer le propos — sans eux
-   le boîtier flotte dans le noir et « posé sur le bureau » ou « une feuille A3 »
-   restent des affirmations. Pilotés par `data-step` sur la section, écrit par le
-   script : aucun couplage entre le CSS et l'ordre des pas dans le HTML. */
-.scrolly__props {
+/* ══ Calque d'annotations projetées ═══════════════════════════════════════
+   Ce qui suit ne décrit QUE l'apparence. Aucune coordonnée n'est écrite ici :
+   la géométrie de chaque tracé est recalculée à chaque image par scrolly.js, à
+   partir de la caméra réelle du rendu 3D. C'est la différence entre une cote et
+   un autocollant — la première tourne avec l'objet, la seconde glisse dessus.
+   La version précédente posait des rectangles en CSS par-dessus le canevas : la
+   « feuille A3 » traversait le boîtier et les cotes flottaient à côté de rien.
+
+   Le trait fait tout ici : `vector-effect: non-scaling-stroke` est systématique
+   pour que l'épaisseur reste à 1 px quel que soit le zoom de la scène (0,92 à
+   1,16 selon le pas). Sans lui les hairlines grossissent et perdent leur
+   finesse, qui est précisément ce qui les rend techniques plutôt que décoratives. */
+.scrolly__hud {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;          /* les cotes débordent volontairement de l'objet */
   pointer-events: none;
   z-index: 1;                 /* au-dessus du halo, sous les cases et le texte */
 }
-.prop {
-  position: absolute;
-  opacity: 0;
-  transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
-}
+/* Sans WebGL il n'y a pas de caméra à suivre : le repli est une image fixe. */
+.scrolly[data-fallback] .scrolly__hud { display: none; }
 
-/* ── Pas 1 : le plan de travail ──────────────────────────────────────────── */
-.prop--desk {
-  left: 50%; bottom: 22%;
-  width: min(70vw, 720px); height: 1px;
-  transform: translate(-50%, 14px);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22) 22%, rgba(255,255,255,0.22) 78%, transparent);
-}
-/* Reflet court sous la ligne : suffit à faire lire une surface. */
-.prop--desk::after {
-  content: '';
-  position: absolute;
-  left: 12%; right: 12%; top: 0; height: 90px;
-  background: linear-gradient(180deg, rgba(0,203,190,0.09), transparent 70%);
-}
-.scrolly[data-step="0"] .prop--desk { opacity: 1; transform: translate(-50%, 0); }
+/* Un calque par pas. L'opacité est la seule chose qui dépende du pas — pilotée
+   par `data-step`, donc le CSS ignore l'ordre du HTML. */
+.hud-l { opacity: 0; transition: opacity 0.55s var(--ease-out); }
+.hud-floor { opacity: 1; }
+.scrolly[data-step="1"] .hud-dock  { opacity: 1; }
+.scrolly[data-step="2"] .hud-burst { opacity: 1; }
+.scrolly[data-step="3"] .hud-size  { opacity: 1; }
 
-/* ── Pas 4 : la feuille A3 comme référence ───────────────────────────────── */
-.prop--a3 { left: 50%; bottom: 16%; width: min(74vw, 760px); transform: translate(-50%, 16px); }
-.scrolly[data-step="3"] .prop--a3 { opacity: 1; transform: translate(-50%, 0); }
-/* Rapport 42 / 29,7 respecté, posé à plat par une inclinaison. */
-.prop__sheet {
-  position: relative;
-  width: min(42vw, 420px);
-  aspect-ratio: 42 / 29.7;
-  margin: 0 auto;
-  border: 1px dashed rgba(255,255,255,0.28);
-  border-radius: 3px;
-  background: rgba(255,255,255,0.02);
-  transform: perspective(900px) rotateX(64deg);
+/* ── Le sol ──────────────────────────────────────────────────────────────
+   Il est présent aux quatre pas : c'est lui qui fait « posé sur un bureau »
+   plutôt que « flottant dans le noir », et le garder d'un pas à l'autre donne
+   une scène unique au lieu de quatre décors. Il s'efface là où il gênerait :
+   sous la vue éclatée (les pièces s'envolent, le sol n'a plus de sens) et sous
+   la feuille A3 (deux trames au sol se parasitent). */
+.hud-pool { fill: url(#hudPool); stroke: none; }
+.hud-grid { transition: opacity 0.55s var(--ease-out); }
+.hud-grid path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.075);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
-.prop__sheet span {
-  position: absolute;
-  left: 50%; bottom: 8px;
-  transform: translateX(-50%);
-  font-size: 0.6875rem;
+/* Les deux lignes passant par l'origine sont teintées : elles donnent au
+   quadrillage un centre, donc une raison d'être là. */
+.hud-grid path[data-axis] { stroke: rgba(0, 203, 190, 0.2); }
+.scrolly[data-step="1"] .hud-grid { opacity: 0.5; }
+.scrolly[data-step="2"] .hud-grid { opacity: 0.2; }
+.scrolly[data-step="3"] .hud-grid { opacity: 0.3; }
+.scrolly[data-step="2"] .hud-pool { opacity: 0.45; }
+
+/* ── Typographie d'annotation ────────────────────────────────────────────
+   Le contour noir (`paint-order: stroke`) remplace une pastille de fond : une
+   étiquette posée sur un aplat se voit comme un badge collé, un texte détouré
+   se lit comme une annotation. Il tient sur le noir de la scène comme sur le
+   produit, sans avoir à mesurer quoi que ce soit. */
+.hud-lab, .hud-val {
+  font-family: var(--font);
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.82);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+  dominant-baseline: middle;
 }
-.prop__dim { position: absolute; color: var(--teal); font-size: 0.75rem; font-weight: 700; }
-.prop__dim span { background: #141414; padding: 2px 7px; border-radius: 4px; }
-.prop__dim--w { left: 50%; bottom: -8px; transform: translateX(-50%); }
-.prop__dim--w::before {
-  content: '';
-  position: absolute;
-  left: 50%; top: 50%;
-  width: min(40vw, 400px); height: 1px;
-  transform: translate(-50%, -50%);
-  background: rgba(0,203,190,0.35);
-  z-index: -1;
+.hud-lab {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  fill: rgba(255, 255, 255, 0.66);
 }
-.prop__dim--h { right: 4%; top: 30%; }
-
-/* Au-delà de 1200 px la scène est calée à droite (colonne de texte à gauche) :
-   les accessoires doivent suivre l'objet, sinon la feuille A3 se retrouve sous le
-   texte au lieu d'être sous le boîtier. */
-@media (min-width: 1200px) {
-  .prop--desk, .prop--a3 { left: 68%; }
+.hud-val {
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  fill: var(--teal);
 }
 
+/* ── Pas 2 : l'emplacement du smartphone ─────────────────────────────────
+   Un contour, pas un volume. Le modèle 3D contient bien un téléphone, mais
+   c'est un volume générique moins soigné que le boîtier : la séquence ne
+   l'affiche jamais (cf. scrolly.js). Le tracer en fil de fer dit la même chose
+   — « il se pose là » — sans montrer une pièce qui n'est pas au niveau. */
+.hud-ghost {
+  fill: rgba(0, 203, 190, 0.05);
+  stroke: rgba(0, 203, 190, 0.5);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* Le liseré de dalle, en retrait du contour : deux traits suffisent à faire
+   reconnaître un téléphone, là où un rectangle seul se lisait comme un aplat
+   peint sur la face avant du boîtier. */
+.hud-ghost-screen {
+  fill: rgba(0, 203, 190, 0.06);
+  stroke: rgba(0, 203, 190, 0.22);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-ghost-notch {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.45);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.hud-lead {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.45);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-node { fill: var(--teal); }
+
+/* ── Pas 3 : les repères d'assemblage ────────────────────────────────────
+   Chaque pièce qui s'écarte reste reliée à son logement par un trait pointillé,
+   comme sur une planche d'atelier : l'éclatement se lit alors comme un montage
+   et non comme une explosion. Le tracé suit l'ouverture image par image. */
+.hud-burst path {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.hud-burst circle {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ── Pas 4 : l'encombrement ──────────────────────────────────────────────
+   La feuille est tracée DANS le plan du sol, avec la même caméra que le rendu,
+   et l'enveloppe du boîtier est retirée du calque : elle passe donc derrière le
+   produit. Les cotes partent des arêtes réelles de l'objet. */
+.hud-sheet {
+  fill: rgba(255, 255, 255, 0.045);
+  stroke: rgba(255, 255, 255, 0.34);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-sheet-marks {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  opacity: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+.hud-dim-line {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.8);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-dim-ext {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.26);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Sous 900 px la scène déborde de l'écran (l'objet est coupé par le bord) : les
+   étiquettes tomberaient dans le hors-champ ou sur la carte de texte. On garde
+   les tracés — qui restent solidaires de l'objet — et on retire les mots. */
 @media (max-width: 900px) {
-  /* Sur téléphone l'objet est coupé par le bord : la feuille se réduit. */
-  .prop__sheet { width: 62vw; }
-  .prop--desk { width: 86vw; bottom: 30%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .prop { transition: none; }
+  .hud-lab { display: none; }
+  .hud-val { font-size: 11px; }
 }
