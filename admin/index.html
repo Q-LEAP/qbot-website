@@ -1075,6 +1075,9 @@ async function writeToFolder(slug, lang, htmlContent) {
 }
 
 // ── HTML Generation + Export ─────────────────────────────
+// Aucun bloc de texte centré dans les pages générées : sur ce site un bloc de
+// texte est aligné à gauche sur la gouttière du conteneur, ou à droite, jamais au
+// centre. Valait pour l'encart d'appel à l'action et les légendes de figures.
 function generateArticleHTML(a) {
 
   const fr = a.lang === 'fr';
@@ -1209,7 +1212,7 @@ function generateArticleHTML(a) {
         </div>
         <div class="article-body">
           ${a.content}
-          <div class="article-cta" style="margin-top:48px;padding:32px;background:linear-gradient(135deg,rgba(8,184,178,.08),transparent);border:1px solid rgba(8,184,178,.18);border-radius:12px;text-align:center;">
+          <div class="article-cta" style="margin-top:48px;padding:32px;background:linear-gradient(135deg,rgba(8,184,178,.08),transparent);border:1px solid rgba(8,184,178,.18);border-radius:12px;">
             ${ctaBtn}
           </div>
         </div>
@@ -1347,7 +1350,7 @@ function insertImg() {
 
   function doInsert(src) {
     const capH = cap
-      ? '<figcaption style="text-align:center;color:rgba(255,255,255,.5);font-size:.85rem;margin-top:6px;">' + cap + '</figcaption>'
+      ? '<figcaption style="color:rgba(255,255,255,.5);font-size:.85rem;margin-top:6px;">' + cap + '</figcaption>'
       : '';
     _insertAtCursor('<figure style="margin:24px 0;"><img src="' + src + '" alt="' + alt + '" style="max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;">' + capH + '</figure><p><br></p>');
     closeMD('md-img');
@@ -1398,7 +1401,7 @@ function insertCarousel() {
   ).join('');
 
   const capH = cap
-    ? '<p style="text-align:center;color:rgba(255,255,255,.5);font-size:.85rem;margin-top:8px;">' + cap + '</p>'
+    ? '<p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-top:8px;">' + cap + '</p>'
     : '';
 
   _insertAtCursor(

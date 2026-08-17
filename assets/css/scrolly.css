@@ -523,8 +523,7 @@ main .section-label::before {
   letter-spacing: 0;
   color: var(--teal);
 }
-/* Centré quand le libellé l'est. */
-.section-header.centered .section-label { justify-content: center; }
+
 
 /* ══ Calque d'annotations projetées ═══════════════════════════════════════
    Ce qui suit ne décrit QUE l'apparence. Aucune coordonnée n'est écrite ici :
