@@ -303,6 +303,9 @@
   color: var(--teal);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  /* Le chiffre ne se coupe jamais : sur la carte étroite du téléphone, « Pi 5 »
+     tombait sur deux lignes, « Pi » puis « 5 ». */
+  white-space: nowrap;
 }
 .scrolly__fig span {
   font-size: 0.9375rem;

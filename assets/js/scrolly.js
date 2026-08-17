@@ -114,6 +114,60 @@
      l'écran, sinon elle s'inverserait à mi-course. */
   var SCRUB_IN = 0.04, SCRUB_OUT = 0.60;
 
+  /* ── Radiographie de la coque ─────────────────────────────────────────────
+     Sur le pas « Ouvrez-le », la coque devient d'abord du verre : on voit la
+     mécanique à l'intérieur, puis les pièces s'écartent. Deux temps dans un seul
+     geste de défilement, la coque restant transparente pendant l'éclatement —
+     le montage se défait donc à vue.
+
+     Ce n'est PAS dans le GLB : une animation glTF ne sait piloter que des
+     translations, rotations, échelles et poids de morph — jamais une propriété de
+     matériau. L'opacité est donc écrite à l'exécution, via l'API Material de
+     model-viewer, exactement comme `currentTime` : le défilement en donne la
+     valeur, image par image. Surcoût mesuré : 0,2 ms par image (le rendu du
+     modèle lui-même en coûte 14 dans un navigateur sans GPU).
+
+     Deux conditions étaient déjà remplies, sans quoi l'effet ne tiendrait pas :
+     - il y a quelque chose à montrer — le plateau porte le rail et l'actionneur ;
+     - la coque et le plateau sont en `doubleSided` (fait pour le hublot, cf.
+       CLAUDE.md), donc les faces arrière ne sont pas éliminées et l'intérieur se
+       lit vraiment au lieu de laisser voir le fond de la page.
+
+     Le matériau est repéré par son index, faute de nom dans le fichier, mais
+     l'index seul serait fragile si le GLB était réexporté : sa couleur de base est
+     donc vérifiée. En cas d'écart, l'effet se désactive et la séquence continue
+     sans lui — jamais de coque à moitié transparente sur un modèle inattendu. */
+  var XRAY_ALPHA = 0.26;   // opacité de la coque « en verre »
+  var XRAY_END   = 0.35;   // part du pas consacrée à la dissolution
+  var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
+  var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
+  var shellMat = null, shellRGB = null, shellBlend = false;
+
+  function resolveShell() {
+    try {
+      var mats = viewer.model && viewer.model.materials;
+      if (!mats || mats.length <= SHELL_MAT) return null;
+      var m = mats[SHELL_MAT];
+      var c = m.pbrMetallicRoughness.baseColorFactor;
+      for (var i = 0; i < 3; i++) if (Math.abs(c[i] - SHELL_BASE[i]) > 0.02) return null;
+      shellRGB = [c[0], c[1], c[2]];
+      return m;
+    } catch (e) { return null; }
+  }
+
+  /* Le mode alpha ne change qu'au franchissement du seuil : le basculer à chaque
+     image recompilerait le shader de la coque soixante fois par seconde. */
+  function setShellAlpha(a) {
+    if (!shellMat) return;
+    var blend = a < 0.99;
+    if (blend !== shellBlend) {
+      shellMat.setAlphaMode(blend ? 'BLEND' : 'OPAQUE');
+      shellBlend = blend;
+    }
+    shellMat.pbrMetallicRoughness.setBaseColorFactor(
+      [shellRGB[0], shellRGB[1], shellRGB[2], blend ? a : 1]);
+  }
+
   /* ── Dérive au repos ──────────────────────────────────────────────────────
      Quand le visiteur cesse de défiler, l'objet dérive très lentement : il se
      lit alors comme une scène vivante et non comme une image. Trois garde-fous,
@@ -126,13 +180,14 @@
   var lastScrollAt = 0, idleK = 0;
 
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
-              zoom: SCENES[0].zoom, t: SCENES[0].t };
+              zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1 };
   var loaded = false, running = false, lastP = -1, wasScrub = false, onScreen = false;
 
   if (viewer) {
     viewer.addEventListener('load', function () {
       loaded = true;
       viewer.pause();          // sinon l'horloge interne écrase nos écritures
+      shellMat = resolveShell();
       apply(true);
     });
   }
@@ -580,8 +635,21 @@
        geste, sans inertie — une tête de lecture qui traîne se perçoit comme du
        retard, pas comme de la fluidité (même règle que les progressions
        scrubbées de main.js). Ailleurs, la transition garde son inertie. */
+    /* Le pas « Ouvrez-le » se lit en deux temps sur la même course de
+       défilement : jusqu'à XRAY_END la coque se dissout, au-delà les pièces
+       s'écartent. La coque, elle, RESTE en verre pendant l'éclatement — c'est ce
+       qui donne le montage qui se défait à vue plutôt qu'une boîte qui s'ouvre. */
     var scrub = (i === EXPLODE_STEP);
-    var tTarget = scrub ? fraction(i) * EXPLODE_END : g.t;
+    var f = scrub ? fraction(i) : 0;
+    var xrayK  = scrub ? Math.min(1, f / XRAY_END) : 0;
+    var burstK = scrub ? Math.max(0, (f - XRAY_END) / (1 - XRAY_END)) : 0;
+    var tTarget = scrub ? burstK * EXPLODE_END : g.t;
+    /* Pendant le pas, l'opacité colle au doigt comme la tête de lecture ; en
+       sortant, elle revient à l'opaque avec l'inertie de la scène — un retour sec
+       se verrait comme un clignotement au moment où la caméra pivote. */
+    var aTarget = 1 - (1 - XRAY_ALPHA) * xrayK;
+    if (scrub) cur.alpha = aTarget;
+    else cur.alpha = lerp(cur.alpha, 1, k);
     var seg = tTarget < PHONE_HANDOFF;
     /* Deux états, jamais d'entre-deux animé : pendant le pas d'ouverture la
        position colle au scroll ; en dehors elle vaut 0. À l'instant où l'on entre
@@ -613,6 +681,7 @@
       var goal = cur.theta + drift;
       viewer.cameraOrbit = goal.toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
       viewer.currentTime = cur.t;
+      setShellAlpha(cur.alpha);
       var shown = HUD.draw(cur.t);
       camLag = Math.abs(shown * 180 / Math.PI - goal) > 0.02;
     }
@@ -669,6 +738,7 @@
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
                  /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
                     c'est-à-dire précisément quand elle doit jouer. */
+                 Math.abs(cur.alpha - (scrub ? aTarget : 1)) > 0.002 ||
                  idle || idleK > 0.002 || camLag;
     if (moving) { running = true; requestAnimationFrame(function () { apply(false); }); }
     else running = false;
