@@ -29,6 +29,9 @@
   if (!steps.length) return;
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Langue de la page : le compteur annoncé est la seule chaîne que ce script
+     écrive à l'écran, mais elle doit se dire dans la langue du document. */
+  var FR = (document.documentElement.lang || 'fr').toLowerCase().indexOf('en') !== 0;
 
   /* ── Repli pour appareil faible ou sans WebGL ────────────────────────────
      Pratique recommandée pour le scroll 3D : décider AVANT de charger la scène,
@@ -43,6 +46,14 @@
     } catch (e) { return 'sans WebGL'; }
     var cn = navigator.connection || {};
     if (cn.saveData) return 'economiseur de donnees';
+    /* Connexion lente : le modèle est petit (571 Ko compressé en Draco) mais
+       model-viewer et son décodeur pèsent encore quelques centaines de kilo-octets,
+       et sur une liaison 2G/3G la séquence resterait figée sur son affiche le temps
+       que tout arrive — le visiteur traverserait quatre écrans sans qu'il ne se
+       passe rien. Le repli statique raconte la même chose en 110 Ko. Ce signal
+       manquait : seul `saveData` était testé, or il est rarement activé. */
+    if (cn.effectiveType && /(^|-)2g$/.test(cn.effectiveType)) return 'connexion lente';
+    if (cn.effectiveType === '3g' && cn.downlink && cn.downlink < 1.2) return 'connexion lente';
     if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 3) return 'peu de coeurs';
     return null;
   }
@@ -855,7 +866,19 @@
       /* Le pas courant est exposé sur la section : les accessoires de scène sont
          alors purement déclaratifs en CSS, sans connaître l'ordre du HTML. */
       root.setAttribute('data-step', String(i));
-      if (count) count.innerHTML = '<b>' + String(i + 1).padStart(2, '0') + '</b> / ' + String(steps.length).padStart(2, '0');
+      if (count) {
+        /* Deux écritures pour une seule information. Le compteur était entièrement
+           `aria-hidden` et les pastilles — les seules à porter `aria-current` —
+           sont masquées sous 900 px : sur téléphone, un lecteur d'écran ne savait
+           donc NI qu'une séquence de quatre pas était en cours, NI où elle en
+           était. La forme chiffrée « 03 / 04 » reste pour l'œil, une phrase la
+           double pour l'oreille, et le `role="status"` de l'élément la fait
+           annoncer au changement de pas — quatre fois au total, pas de bavardage. */
+        var num = String(i + 1).padStart(2, '0') + ' / ' + String(steps.length).padStart(2, '0');
+        count.innerHTML = '<span aria-hidden="true"><b>' + num.slice(0, 2) + '</b>' + num.slice(2) + '</span>' +
+          '<span class="visually-hidden">' + (FR ? 'Étape ' + (i + 1) + ' sur ' + steps.length
+                                                : 'Step ' + (i + 1) + ' of ' + steps.length) + '</span>';
+      }
       /* `aria-current="step"` plutôt qu'une classe : l'état est alors annoncé,
          pas seulement colorié. */
       for (var q = 0; q < dots.length; q++) {
@@ -877,6 +900,12 @@
        tests : la progression pour ne pas l'afficher au tout premier pixel, et la
        présence à l'écran pour le retirer à la sortie. */
     if (cta) cta.classList.toggle('is-visible', onScreen && p > 0.04);
+    /* Le CSS ne peut pas savoir seul que la séquence est à l'écran, et deux
+       éléments en dépendent sur téléphone : le bouton « retour en haut », qui
+       recouvrait le compteur d'étapes (mesuré : boutons en collision sur 35 × 5 px),
+       et le lien pour sortir de la séquence, qui n'existait qu'au focus clavier —
+       donc pas du tout sur un téléphone. Un seul drapeau les gouverne. */
+    document.body.classList.toggle('is-scrolly', onScreen);
     /* CTA contextuel. Le même bouton affichait « Demander une démo » du premier au
        dernier pas, en doublon de celui de la barre de navigation — les deux
        étaient visibles en même temps. Il accompagne maintenant le propos : il mène
@@ -903,6 +932,70 @@
     else running = false;
   }
 
+  /* ── Hauteur réservée au texte, relevée sur les cartes elles-mêmes ────────
+     Sur téléphone la scène occupe ce que la carte ne prend pas. Encore faut-il
+     savoir ce que la carte prend : ses quatre variantes vont de 209 à 344 px
+     selon le pas, la largeur de l'écran et la longueur du texte, et toute
+     constante écrite à la main retombe fausse au premier mot ajouté — c'est
+     comme ça que le recouvrement mesuré au départ (16 px sur iPhone SE) est
+     réapparu deux fois pendant la correction. On relève donc la plus haute des
+     cartes, une fois au chargement et à chaque redimensionnement, et le CSS en
+     déduit la place de la scène.
+     Rien n'est circulaire : la hauteur d'une carte ne dépend pas de la scène,
+     seulement de sa propre largeur et de son contenu.
+     La mise en page en deux colonnes du paysage n'a, elle, aucune zone à
+     réserver : on retire alors la propriété pour laisser la feuille de style
+     décider (un style en ligne l'emporterait sur elle). */
+  /* ── Indicateur de chargement ─────────────────────────────────────────────
+     Tant que le modèle n'est pas là, model-viewer affiche son affiche : une image
+     figée, impossible à distinguer d'une séquence en panne. On expose donc la
+     progression réelle du téléchargement, et on la retire dès que le modèle est
+     prêt. `aria-hidden` : c'est une information d'attente, pas de contenu, et le
+     texte du pas est déjà lisible pendant ce temps. */
+  var loader = root.querySelector('.scrolly__loading');
+  if (viewer && loader) {
+    var pct = loader.querySelector('b');
+    loader.hidden = false;
+    viewer.addEventListener('progress', function (e) {
+      var v = Math.round((e.detail && e.detail.totalProgress || 0) * 100);
+      if (pct) pct.textContent = v + ' %';
+      if (v >= 100) loader.hidden = true;
+    });
+    viewer.addEventListener('load', function () { loader.hidden = true; });
+    /* FILET DE SÉCURITÉ. Le modèle est compressé en Draco, et model-viewer va
+       chercher le décodeur correspondant sur www.gstatic.com — le même domaine que
+       les polices du site, donc pas une dépendance d'un genre nouveau, mais une
+       dépendance de plus. Vérifié en la bloquant : le modèle ne charge pas du tout,
+       et la séquence reste alors sur son affiche sans jamais rien dire. Plutôt que
+       de parier sur la disponibilité d'un tiers, on borne l'attente : passé le
+       délai, le repli statique prend la place, et la séquence garde son récit.
+       Le même filet couvre n'importe quelle autre panne — CDN indisponible,
+       fichier corrompu, WebGL qui échoue après coup. */
+    var giveUp = setTimeout(function () {
+      if (viewer.model) return;
+      loader.hidden = true;
+      if (fallback) {
+        fallback.hidden = false;
+        viewer.style.display = 'none';
+        root.setAttribute('data-fallback', 'modele indisponible');
+      }
+    }, 12000);
+    viewer.addEventListener('load', function () { clearTimeout(giveUp); });
+  }
+
+  var STACKED = window.matchMedia('(max-width: 900px) and (not ((orientation: landscape) and (max-height: 520px)))');
+  function measureCards() {
+    if (!STACKED.matches) { root.style.removeProperty('--sc-card-zone'); return; }
+    var max = 0;
+    for (var i = 0; i < steps.length; i++) {
+      var inner = steps[i].querySelector('.scrolly__step-inner');
+      if (inner) max = Math.max(max, inner.getBoundingClientRect().height);
+    }
+    if (!max) return;
+    var pad = parseFloat(getComputedStyle(steps[0]).paddingBottom) || 0;
+    root.style.setProperty('--sc-card-zone', Math.ceil(max + pad) + 'px');
+  }
+
   function kick() { lastScrollAt = performance.now(); if (!running) { running = true; requestAnimationFrame(function () { apply(false); }); } }
 
   if (reduced) {
@@ -920,7 +1013,12 @@
   }
 
   window.addEventListener('scroll', kick, { passive: true });
-  window.addEventListener('resize', function () { apply(true); });
-  window.addEventListener('load', function () { apply(true); });
+  window.addEventListener('resize', function () { measureCards(); apply(true); });
+  window.addEventListener('load', function () { measureCards(); apply(true); });
+  /* Les polices changent la hauteur du texte : on remesure quand elles arrivent. */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { measureCards(); apply(true); });
+  }
+  measureCards();
   apply(true);
 })();

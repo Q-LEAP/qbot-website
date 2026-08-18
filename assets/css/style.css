@@ -1588,6 +1588,16 @@ p { color: var(--gray); }
   .tools__grid,
   .about-section__grid { grid-template-columns: 1fr; gap: 40px; }
   .about-section__grid.reverse { direction: ltr; }
+  /* EN UNE COLONNE, L'IMAGE SUIT TOUJOURS SON TEXTE.
+     Sur deux colonnes, alterner les côtés d'une section à l'autre donne le rythme ;
+     en une colonne, cette alternance met deux images bout à bout. Relevé à 390 px
+     sur la page d'accueil : « La solution » se lit texte → image et la section
+     LuxTrust juste après image → texte, donc la suite était « t I I t » — deux
+     visuels d'affilée, sans un mot entre eux. Toutes les autres grilles du site
+     sont déjà en texte → image ; cette règle aligne la dernière exception plutôt
+     que d'inventer un ordre nouveau. */
+  .intro__grid > .intro__image,
+  .about-section__grid > .intro__image { order: 2; }
 
   .features__grid { grid-template-columns: 1fr; }
   .stats__grid { grid-template-columns: 1fr; gap: 24px; }

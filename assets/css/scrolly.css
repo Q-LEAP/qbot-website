@@ -51,8 +51,15 @@
 
 .scrolly {
   position: relative;
-  /* La hauteur est déclarée dans le HTML, au plus près du nombre de pas
-     (cf. le commentaire de la section) : un écran par pas plus un demi. */
+  /* HAUTEUR : un écran par pas, plus une marge pour que la scène reste épinglée
+     jusqu'à ce que la dernière carte soit centrée. Elle était écrite en STYLE EN
+     LIGNE dans le HTML — donc hors d'atteinte de toute requête média, et le bloc
+     « mouvement réduit » ne pouvait pas la reprendre : la section gardait 4,5
+     écrans alors que son contenu retombait à 1 917 px, soit 1 881 px de vide
+     mesurés à 390 px. C'est le troisième piège du même genre sur ce site (cf. les
+     fonds en ligne de `.spec-item` et les centrages de `commandez`) : une valeur
+     qui doit varier selon le contexte n'a rien à faire dans un attribut `style`. */
+  height: calc(var(--scrolly-screens, 4.5) * 100svh);
 }
 
 /* ── La scène : elle reste, le texte passe ─────────────────────────────── */
@@ -253,6 +260,36 @@
 }
 .scrolly__step.is-active .scrolly__step-inner { opacity: 1; transform: none; }
 
+/* Appel à l'action posé dans la carte du dernier pas. Il ne sert QUE sur
+   téléphone, où le bouton flottant est retiré ; au-dessus de 900 px c'est ce
+   dernier qui accompagne la séquence, et deux boutons feraient doublon. */
+.scrolly__step-cta { display: none; }
+
+/* Indicateur de chargement du modèle. Posé au centre de la scène, il occupe la
+   place de l'affiche : c'est le seul moment où quelque chose doit s'y écrire. */
+.scrolly__loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 16px;
+  border-radius: 100px;
+  background: rgba(20, 20, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+}
+.scrolly__loading[hidden] { display: none; }
+.scrolly__loading b { color: var(--teal); font-variant-numeric: tabular-nums; }
+
 /* Les lignes de la carte arrivent en cascade — libellé, titre, texte, chiffre —
    et non toutes ensemble. C'est la règle déjà appliquée aux en-têtes de section
    du site (`group` dans main.js) : un fondu de bloc fait atterrir les trois au
@@ -369,16 +406,66 @@
      Transposé ici : le canevas prend la largeur de l'écran, se pose sous la barre
      de navigation, et occupe 44 % de la hauteur ; la carte de texte garde le bas.
      Les cotes tiennent alors dans la fenêtre par construction. */
-  .scrolly__stage { place-items: start center; padding-top: 84px; }
+  /* UNE ZONE RÉSERVÉE AU TEXTE, ET LA SCÈNE PREND LE RESTE.
+     La scène (44svh sous une barre de 84 px) et la carte (calée en bas, hauteur
+     dictée par son contenu) étaient posées INDÉPENDAMMENT : rien ne garantissait
+     qu'elles ne se croisent pas, et elles se croisaient. Mesuré sur iPhone SE
+     (375 × 667) : la scène finissait à 377 px, la carte commençait à 361 px —
+     16 px de recouvrement, et à l'écran le bas du boîtier passait sous la carte
+     au pas 2, la cote « 24 cm » au pas 4.
+     Désormais une seule grandeur gouverne les deux : la hauteur réservée au texte.
+     La carte ne monte jamais au-dessus, la scène s'arrête exactement dessus. Le
+     recouvrement devient impossible par construction, à toute hauteur d'écran.
+     Le plancher de 300 px est la carte la plus haute mesurée (252 px) plus sa
+     marge basse ; le plafond de 356 px évite qu'un grand téléphone donne au texte
+     plus de place qu'il n'en demande. Effet secondaire souhaitable : sur iPhone 14
+     la scène passe de 371 à 447 px — l'objet gagne un cinquième. */
+  .scrolly {
+    /* 44 px et non la hauteur de la barre (72) : la barre se masque au défilement
+       vers le bas, donc la séquence se parcourt le plus souvent sans elle, et lui
+       réserver sa place en permanence coûtait 32 px d'objet sur des écrans qui en
+       manquent. Quand elle réapparaît (défilement vers le haut) elle recouvre le
+       haut de la scène, où il n'y a que du fond : le modèle est centré dans sa
+       zone, il ne monte jamais jusque-là. */
+    --sc-top: 44px;
+    /* LA ZONE RÉSERVÉE EST MESURÉE, PAS DEVINÉE. scrolly.js relève la hauteur de la
+       plus haute des quatre cartes (elles vont de 209 à 344 px selon le pas et la
+       largeur) et l'écrit ici. Deux valeurs codées en dur ont été essayées avant :
+       un pourcentage de la hauteur d'écran, qui donne trop peu sur un petit
+       téléphone — donc le recouvrement qu'on corrige — et trop sur un grand ; puis
+       une constante, qui retombe faux dès qu'un texte est plus long d'une ligne.
+       La valeur ci-dessous n'est qu'un repli pour l'instant avant le premier
+       relevé, ou si le script ne tourne pas. */
+    --sc-card-zone: 384px;
+    --sc-free: calc(100svh - var(--sc-top) - var(--sc-card-zone));
+    /* Le zoom de caméra est un `scale()` porté par la scène ; sur téléphone son
+       amplitude est ramenée à la moitié (1,16 → 1,08). À pleine amplitude et sur
+       une scène large de 100vw, le pas 2 donnait 452 px pour un écran de 390 :
+       31 px rognés de chaque côté, donc un cadrage « serré » qui coupait l'objet
+       au lieu de s'en approcher. */
+    --sc-zoom-max: 1.08;
+    /* Un pas de moins à parcourir : après le dernier texte il restait 422 px de
+       défilement où le modèle dérivait seul (mesuré à 390 px). */
+    --scrolly-screens: 4.2;
+  }
+  /* Une rangée de grille exactement égale à la place libre, la scène centrée
+     dedans : au zoom maximum la boîte transformée coïncide avec la rangée, donc
+     elle ne peut ni passer sous la carte ni sortir par le haut. */
+  .scrolly__stage {
+    place-items: center center;
+    padding-top: var(--sc-top);
+    grid-template-rows: var(--sc-free);
+  }
   .scrolly__scene {
-    width: 100vw;
-    height: 44svh;
+    width: calc(86vw / var(--sc-zoom-max));
+    height: calc(var(--sc-free) / var(--sc-zoom-max));
     max-height: none;
-    transform: scale(var(--sc-zoom, 1));
+    transform: scale(calc(1 + (var(--sc-zoom, 1) - 1) * 0.5));
   }
   /* Le texte occupe le bas de l'écran, sous l'objet : superposé, il masquerait le
      boîtier sur une largeur de téléphone. */
-  .scrolly__step { align-content: end; padding-bottom: 8vh; max-width: none; }
+  .scrolly__step { align-content: end; padding-bottom: 5svh; max-width: none; }
+
 
   /* ── Repère de progression ────────────────────────────────────────────────
      Les quatre cases de saisie sont retirées (quatre cibles de plus par-dessus le
@@ -421,8 +508,12 @@
   }
 }
 @media (max-width: 520px) {
-  .scrolly__step-inner { padding: 20px 22px 22px; }
-  .scrolly__text { font-size: 1rem; }
+  .scrolly__step-inner { padding: 18px 20px 20px; }
+  /* 15 px au lieu de 16, interligne 1,55 au lieu de 1,7 : la carte perd une
+     vingtaine de pixels de haut, qui reviennent à l'objet. La mesure de lecture y
+     gagne aussi — elle passe de 31 à 36 caractères par ligne, la fourchette
+     confortable commençant vers 35. */
+  .scrolly__text { font-size: 0.9375rem; line-height: 1.55; }
 }
 
 /* ── Mouvement réduit ─────────────────────────────────────────────────── */
@@ -430,6 +521,9 @@
    colle plus, chaque pas devient un bloc normal, le modèle reste sur son
    cadrage par défaut. L'information reste intégralement lisible. */
 @media (prefers-reduced-motion: reduce) {
+  /* La mise en scène tombe, la hauteur doit tomber avec : sinon la section garde
+     ses 4,5 écrans pour un contenu qui n'en occupe plus que deux. */
+  .scrolly { height: auto; }
   .scrolly__stage { position: relative; height: auto; padding: 40px 0; }
   .scrolly__steps { margin-top: 0; }
   .scrolly__step { min-height: 0; padding: 32px clamp(24px, 7vw, 96px); }
@@ -704,7 +798,10 @@ main .section-label::before {
   .hud-lab { display: none; }
 }
 @media (max-width: 900px) {
-  .hud-val { font-size: 11px; }
+  /* 11 px mesurés à l'écran, sous le plancher de lisibilité, pour des chiffres
+     qui sont l'information du pas (« 40 cm »). La scène ayant reculé à 86vw, la
+     marge existe désormais pour les agrandir sans les envoyer hors cadre. */
+  .hud-val { font-size: 13px; }
 }
 
 /* ── Pas de CTA flottant sur téléphone ────────────────────────────────────
@@ -719,4 +816,131 @@ main .section-label::before {
    responsive, elle était écrasée. */
 @media (max-width: 900px) {
   .scrolly__cta { display: none; }
+
+  /* ── Mais le chemin de conversion revient, DANS la carte ─────────────────
+     Le bouton flottant part (il recouvrait le titre du pas), et il ne restait
+     alors plus aucun appel à l'action dans toute la séquence sur téléphone —
+     4,2 écrans de défilement, le moment d'intérêt le plus haut de la page, et
+     rien au bout. Le renvoi à la barre de navigation ne suffit pas : son bouton
+     est le même sur toute la page, il ne dit rien de ce qui vient d'être montré.
+     Il est donc posé dans la carte du DERNIER pas, où il ne peut par construction
+     recouvrir personne, et il reprend mot pour mot le libellé que le bouton
+     flottant affiche à ce pas sur grand écran (`data-cta-last`). */
+  .scrolly__step-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 11px 20px;
+    border-radius: var(--radius-pill, 100px);
+    background: var(--teal);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+  .scrolly__step-cta svg { flex-shrink: 0; }
+
+  /* ── Le bouton « retour en haut » sort de la séquence ────────────────────
+     Mesuré à 390 px : il occupait [322, 772, 44 × 44] et le compteur d'étapes
+     [331, 811, 41 × 19] — deux éléments d'interface dans le même coin, l'un sur
+     l'autre. Pendant la séquence, la progression est déjà donnée par le trait au
+     ras du bas et par le compteur ; le bouton n'a rien à y ajouter. */
+  body.is-scrolly .back-to-top {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px) scale(0.8);
+  }
+
+  /* ── Sortir de la séquence : un lien visible, pas seulement au clavier ───
+     `.skip-nav--sequence` existe depuis le début, mais comme tous les liens
+     d'évitement il mesure 1 × 1 px hors focus : sur un téléphone, où il n'y a pas
+     de focus clavier, il n'existe pas. Le visiteur n'avait donc AUCUN moyen de
+     sauter 4,2 écrans épinglés. Le même élément — même cible, même intitulé —
+     devient une pastille discrète tant que la séquence traverse l'écran. */
+  body.is-scrolly .skip-nav--sequence,
+  body.is-scrolly .skip-nav--sequence:focus {
+    position: fixed;
+    top: calc(72px + 10px);
+    right: 12px;
+    left: auto;
+    transform: none;
+    width: auto;
+    height: auto;
+    min-height: 44px;
+    max-width: 44vw;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 6;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 100px;
+    background: rgba(20, 20, 20, 0.82);
+    color: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    text-decoration: none;
+  }
+  /* L'intitulé complet fait 180 px : dans une pastille il débordait de l'écran.
+     Seul le premier mot reste visible ; le reste est masqué à l'œil mais toujours
+     lu par un lecteur d'écran, donc le nom accessible du lien ne change pas —
+     c'est ce qui distingue ce procédé d'un simple raccourcissement du texte. */
+  body.is-scrolly .skip-nav--sequence .skip-nav__rest {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  body.is-scrolly .skip-nav--sequence:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+/* ── Téléphone en paysage : deux colonnes, comme sur grand écran ───────────
+   Mesuré à 844 × 390 : la scène tombait à 172 px de haut et la carte la
+   recouvrait sur 89 px — l'empilement vertical n'a pas de sens quand la hauteur
+   est la ressource rare et la largeur abondante. C'est exactement la situation
+   du bureau, où le texte est à gauche et la scène à droite ; on reprend cette
+   mise en page plutôt que d'en inventer une troisième. */
+@media (max-width: 939px) and (orientation: landscape) and (max-height: 520px) {
+  .scrolly {
+    --scrolly-screens: 4.2;
+    /* Plus d'empilement, donc plus de zone à réserver en bas : la rangée de
+       grille et la réserve de la mise en page verticale doivent être annulées,
+       sinon `--sc-free` devient négatif et la scène part hors de l'écran
+       (mesuré : −164 px). */
+    --sc-card-zone: 0px;
+  }
+  .scrolly__stage {
+    place-items: center end;
+    padding: 0 3vw 0 0;
+    grid-template-rows: none;
+  }
+  .scrolly__scene {
+    /* 50vw, et la carte à 40vw : à 52/46 les deux boîtes se croisaient de 8 px
+       (mesuré à 844 × 390). Les deux dimensions sont divisées par le zoom maximum
+       pour la même raison qu'en portrait : la boîte agrandie doit tenir dans le
+       cadre, sinon le pas 2 en sort (mesuré : 9 px à droite, 26 px en hauteur). */
+    width: calc(50vw / var(--sc-zoom-max));
+    height: calc(84svh / var(--sc-zoom-max));
+  }
+  .scrolly__step {
+    align-content: center;
+    max-width: 40vw;
+    padding: 0 0 0 4vw;
+  }
+  .scrolly__step-cta { margin-top: 14px; min-height: 42px; }
+  /* Les cotes reviennent : la scène est assez large pour les porter. */
+  .hud-lab { display: block; font-size: 9px; }
 }

@@ -35,8 +35,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=2026-08-18">
-  <link rel="stylesheet" href="../assets/css/scrolly.css?v=44">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026-08-19">
+  <link rel="stylesheet" href="../assets/css/scrolly.css?v=50">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -183,21 +183,18 @@
      hauteurs de fenêtre à traverser : à la souris on ne le sent pas, au clavier
      ou au lecteur d'écran c'est un couloir. Masqué au repos, révélé à la prise
      de focus, comme le lien d'évitement de la barre de navigation. -->
-<a href="#after-sequence" class="skip-nav skip-nav--sequence">Skip the product sequence</a>
+<a href="#after-sequence" class="skip-nav skip-nav--sequence">Skip<span class="skip-nav__rest"> the product sequence</span></a>
 
 <!-- ======= SÉQUENCE 3D AU SCROLL (variante Q-BOTAlt) =======
      Une scène collante, cinq pas de texte. Le scroll ne déclenche pas une
      animation : il en écrit la position, image par image. Cf. assets/js/scrolly.js
      et la section « Scrollytelling » de assets/css/scrolly.css. -->
-<!-- Hauteur = 4 pas + un demi-écran. La course d'un élément collant vaut
-     (hauteur du parent − hauteur de l'élément) : il faut donc au moins
-     1 + (position du centre du dernier pas) = 1 + 3,5 écrans pour que la scène
-     reste épinglée jusqu'à ce que la dernière carte soit centrée.
-     C'était 5 écrans, un de trop : après le dernier pas, le visiteur traversait
-     un écran entier où le boîtier dérivait seul, sans texte, avant la section
-     suivante — un temps mort. À 4,5, la scène se décolle pile quand la dernière
-     carte est centrée, puis la carte et le modèle sortent ENSEMBLE. -->
-<section class="scrolly" aria-labelledby="scrolly-title" style="height: calc(4.5 * 100svh);">
+<!-- Hauteur : elle est dans assets/css/scrolly.css (`--scrolly-screens`), et
+     surtout PAS ici. Écrite en style en ligne, aucune requête média ne pouvait la
+     reprendre : sous « mouvement réduit » la section gardait 4,5 écrans pour un
+     contenu qui n'en occupait plus que deux, et le mobile ne pouvait pas la
+     raccourcir. La règle vaut pour toute valeur qui dépend du contexte. -->
+<section class="scrolly" aria-labelledby="scrolly-title">
   <h2 id="scrolly-title" class="visually-hidden">Q-Bot, step by step</h2>
 
   <div class="scrolly__stage">
@@ -228,6 +225,12 @@
       touch-action="pan-y"
       loading="lazy"
     ></model-viewer>
+
+    <!-- Le modèle pèse 571 Ko et son décodeur autant : sur une liaison lente il
+         s'écoulait jusqu'à quinze secondes pendant lesquelles la séquence montrait
+         une affiche immobile, sans rien dire. Une ligne suffit à faire la
+         différence entre « ça charge » et « c'est cassé ». -->
+    <p class="scrolly__loading" aria-hidden="true" hidden>Loading the model<b>0 %</b></p>
 
     <!-- Repli pour appareil faible ou sans WebGL (cf. scrolly.js). Il conserve le
          langage visuel et le chemin de conversion : même cadre, même récit, 110 Ko
@@ -317,7 +320,7 @@
       <a href="#qbot-step-3" class="scrolly__dot" data-dot="2"><b aria-hidden="true">3</b><span class="visually-hidden">Go to step 3: Inside</span></a>
       <a href="#qbot-step-4" class="scrolly__dot" data-dot="3"><b aria-hidden="true">4</b><span class="visually-hidden">Go to step 4: The footprint</span></a>
     </nav>
-    <p class="scrolly__count" aria-hidden="true"><b>01</b> / 04</p>
+    <p class="scrolly__count" role="status"><span aria-hidden="true"><b>01</b> / 04</span><span class="visually-hidden">Step 1 of 4</span></p>
     <p class="scrolly__hint" aria-hidden="true">
       Scroll
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
@@ -354,6 +357,8 @@
           <h2 class="scrolly__title">It all fits on an A3 sheet</h2>
           <p class="scrolly__text">40 × 24 × 15 cm, designed and manufactured at Q-Leap's headquarters in Bertrange. The format is meant not to clutter a desk.</p>
           <p class="scrolly__fig"><b>A3</b> <span>29.7 × 42 cm footprint</span></p>
+        
+          <a class="scrolly__step-cta" href="contact.html">Book a demo<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
       </div>
   </div>
@@ -698,6 +703,6 @@
 </footer>
 
 <script src="../assets/js/main.js?v=2026-08-18" defer></script>
-<script src="../assets/js/scrolly.js?v=53" defer></script>
+<script src="../assets/js/scrolly.js?v=57" defer></script>
 </body>
 </html>
