@@ -1108,6 +1108,16 @@ p { color: var(--gray); }
   transition: color var(--transition);
 }
 .footer__col ul li a:hover { color: var(--teal); }
+/* La page courante n'est plus un lien vers elle-même dans la liste du pied de
+   page. Elle reste ÉCRITE — retirer la ligne rendrait le plan du site incomplet,
+   et différemment sur chaque page — mais elle est marquée « vous êtes ici » en
+   blanc, le même langage que le lien actif de la barre de navigation. */
+.footer__col ul li [aria-current="page"] {
+  font-size: 0.875rem;
+  color: var(--white);
+  font-weight: 500;
+  cursor: default;
+}
 
 .footer__address {
   margin-top: 20px;
@@ -1428,7 +1438,14 @@ p { color: var(--gray); }
 .breadcrumb__list a { color: var(--muted); }
 .breadcrumb__list a:hover { color: var(--teal-text); }
 .breadcrumb__list span { color: var(--muted); }
-.breadcrumb__list li:last-child a { color: var(--black); font-weight: 500; pointer-events: none; }
+/* Le dernier élément du fil d'Ariane EST la page courante : ce n'était pas un
+   raccourci utile mais un lien vers soi-même, déjà désamorcé à la souris par un
+   `pointer-events: none` — donc encore focalisable au clavier et annoncé comme
+   lien par un lecteur d'écran. C'est désormais un `<span aria-current="page">`,
+   comme le veut le motif ARIA du fil d'Ariane. Le sélecteur sur `a` est conservé
+   pour un gabarit qui en porterait encore un. */
+.breadcrumb__list li:last-child a,
+.breadcrumb__list [aria-current="page"] { color: var(--black); font-weight: 500; pointer-events: none; }
 
 /* ---- Made in Luxembourg badge ---- */
 .badge-lux {
@@ -2646,7 +2663,8 @@ a:focus-visible { border-radius: var(--radius-sm); }
 
 /* ── Breadcrumb ── */
 [data-theme="dark"] .breadcrumb { border-bottom-color: #2B2B2B; }
-[data-theme="dark"] .breadcrumb__list li:last-child a { color: #E6E7E8; }
+[data-theme="dark"] .breadcrumb__list li:last-child a,
+[data-theme="dark"] .breadcrumb__list [aria-current="page"] { color: #E6E7E8; }
 
 /* ── Section label shimmer — surfaces sombres en dark mode : plein éclat ── */
 @supports (-webkit-background-clip: text) or (background-clip: text) {
@@ -3420,6 +3438,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
    `width:auto` en ligne, que seul un !important peut reprendre ; leur libellé
    entier reste de toute façon cliquable, ce qui satisfait déjà 2.5.8. */
 .breadcrumb__list a,
+.breadcrumb__list [aria-current="page"],
 .contact-info__item a {
   display: inline-block;
   padding: 5px 0;
@@ -3440,6 +3459,7 @@ label > input[type="checkbox"] {
 .footer__col ul { display: grid; gap: 0; }
 .footer__col ul li { margin: 0; }
 .footer__col ul a,
+.footer__col ul [aria-current="page"],
 .footer__legal a,
 .newsletter__consent a,
 .form-consent a,

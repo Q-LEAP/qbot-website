@@ -103,7 +103,14 @@ document.addEventListener('keydown', (e) => {
   document.querySelectorAll('.nav__link').forEach(link => {
     const href     = link.getAttribute('href') || '';
     const linkFile = href.split('/').pop() || 'index.html';
-    if (linkFile === currentFile) link.classList.add('active');
+    if (linkFile === currentFile) {
+      link.classList.add('active');
+      /* La classe coloriait, elle n'annonçait rien : le lien de la page courante
+         était un lien ordinaire pour un lecteur d'écran. `aria-current` le dit.
+         Il reste un lien — c'est le motif attendu d'une navigation persistante,
+         contrairement au fil d'Ariane où le dernier élément est la page. */
+      link.setAttribute('aria-current', 'page');
+    }
   });
 }
 
