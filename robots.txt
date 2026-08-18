@@ -1,38 +1,63 @@
 # https://q-bot.eu/robots.txt
 
-User-agent: *
-Allow: /
-Disallow: /admin/
+# ══════════════════════════════════════════════════════════════════════════
+# PRÉ-LANCEMENT — le site entier est fermé aux robots le temps de la mise au
+# point. Le pendant de ce fichier est la balise
+# <meta name="robots" content="noindex, nofollow"> présente sur les 23 pages.
+#
+# LE JOUR DE LA MISE EN LIGNE : remplacer tout ce qui suit par le contenu
+# d'ouverture (voir le bas de ce fichier, en commentaire), et retirer la balise
+# meta des 23 pages. Chercher « PRÉ-LANCEMENT » dans le dépôt pour tout
+# retrouver d'un coup.
+# ══════════════════════════════════════════════════════════════════════════
 
-# ── Moteurs de réponse IA / assistants (GEO) ──
+User-agent: *
+Disallow: /
+
+# Moteurs de réponse IA / assistants : fermés aussi, sinon ils continueraient
+# de lire llms.txt et les pages malgré la règle générale.
 User-agent: GPTBot
-Allow: /
+Disallow: /
 
 User-agent: ChatGPT-User
-Allow: /
+Disallow: /
 
 User-agent: OAI-SearchBot
-Allow: /
+Disallow: /
 
 User-agent: ClaudeBot
-Allow: /
+Disallow: /
 
 User-agent: Claude-User
-Allow: /
+Disallow: /
 
 User-agent: anthropic-ai
-Allow: /
+Disallow: /
 
 User-agent: PerplexityBot
-Allow: /
+Disallow: /
 
 User-agent: Perplexity-User
-Allow: /
+Disallow: /
 
 User-agent: Google-Extended
-Allow: /
+Disallow: /
 
 User-agent: Applebot-Extended
-Allow: /
+Disallow: /
 
-Sitemap: https://q-bot.eu/sitemap.xml
+# Pas de ligne « Sitemap: » tant que le site est fermé : l'annoncer alors qu'on
+# interdit l'exploration n'a aucun sens. sitemap.xml reste dans le dépôt, à jour,
+# prêt pour l'ouverture.
+
+# ── Contenu d'OUVERTURE, à restaurer le jour J ────────────────────────────
+# User-agent: *
+# Allow: /
+# Disallow: /admin/
+#
+# User-agent: GPTBot
+# Allow: /
+# (idem pour ChatGPT-User, OAI-SearchBot, ClaudeBot, Claude-User, anthropic-ai,
+#  PerplexityBot, Perplexity-User, Google-Extended, Applebot-Extended)
+#
+# Sitemap: https://q-bot.eu/sitemap.xml

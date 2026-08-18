@@ -667,6 +667,49 @@ p { color: var(--gray); }
   font-size: 0.9375rem;
 }
 
+/* ---- Message d'état des formulaires ---- */
+/* Les six formulaires ne signalaient RIEN : la page se rechargeait et la saisie
+   disparaissait. Cette ligne est la réponse visible à l'envoi — succès, échec, ou
+   « votre client courrier vient de s'ouvrir ». Alignée à gauche comme le reste. */
+.form-status {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+.form-status[data-state="ok"] {
+  color: var(--teal-text);
+  background: rgba(0, 203, 190, 0.1);
+  border-color: rgba(0, 203, 190, 0.35);
+}
+.form-status[data-state="info"] {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+/* L'échec ne prend pas de rouge : la charte n'a que le teal et le noir, et un
+   rouge inventé jurerait. Le contraste du cadre suffit à marquer l'anomalie. */
+.form-status[data-state="error"] {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+}
+/* Le formulaire newsletter est une rangée flex : sans ces deux lignes, le message
+   se plaçait À CÔTÉ du bouton et rétrécissait le champ de saisie de 490 à 256 px.
+   Il prend maintenant toute la largeur, sous la rangée. */
+.newsletter__form { flex-wrap: wrap; }
+.newsletter__form .form-status { flex-basis: 100%; margin-top: 4px; }
+/* Sur la bande newsletter, fond teal : le texte repasse au noir de charte. */
+.newsletter .form-status {
+  color: #001A18;
+  background: rgba(0, 26, 24, 0.08);
+  border-color: rgba(0, 26, 24, 0.25);
+}
+.newsletter .form-status[data-state="ok"] { border-color: rgba(0, 26, 24, 0.5); font-weight: 500; }
+
 /* ---- Bloc d'appel à l'action de fin de page ---- */
 /* Aligné à gauche sur la gouttière du conteneur, comme l'en-tête de page et tout
    le contenu : ces blocs étaient centrés par un `style="text-align:center"` posé

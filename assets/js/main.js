@@ -996,3 +996,110 @@ backToTop.addEventListener('click', () => {
   film.currentTime = 0;
 }());
 
+
+/* ════════════════════════════════════════
+   15. FORMULAIRES — plus jamais d'envoi qui disparaît
+   Les six formulaires du site (contact FR/EN, newsletter des deux homepages et
+   des deux index de blog) étaient en `action="#"` : le visiteur remplissait,
+   cliquait, la page se rechargeait, sa saisie était perdue — et rien n'indiquait
+   l'échec. C'est le pire des trois cas possibles, parce qu'il est invisible.
+
+   UN SEUL POINT DE CONFIGURATION : l'attribut `data-endpoint` du <form>.
+     data-endpoint=""                     → repli courrier (l'état actuel)
+     data-endpoint="https://…/f/xxxx"     → envoi HTTP, sans toucher au reste
+   Brevo, Formspree et compagnie exposent tous une URL de ce genre qui accepte un
+   POST multipart ; il suffira de la coller là, dans les six pages.
+
+   Sans endpoint, on n'invente pas un envoi : on ouvre le client courrier du
+   visiteur avec un message déjà rédigé. Ce n'est pas idéal — il faut qu'il
+   appuie sur « envoyer » — mais rien n'est perdu et il le SAIT.
+════════════════════════════════════════ */
+(function () {
+  var forms = document.querySelectorAll('form[data-form]');
+  if (!forms.length) return;
+
+  var FR = (document.documentElement.lang || 'fr').slice(0, 2) !== 'en';
+  var MAIL = 'bot@q-leap.eu';
+  var T = FR ? {
+    envoi:   'Envoi en cours…',
+    ok:      'Merci, votre message est parti. Nous revenons vers vous rapidement.',
+    okNews:  'Merci, votre inscription est enregistrée.',
+    erreur:  'L’envoi a échoué. Écrivez-nous à ' + MAIL + ', nous répondrons.',
+    manque:  'Merci de compléter les champs obligatoires.',
+    courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ».',
+    sujetC:  'Demande via le site Q-Bot',
+    sujetN:  'Inscription à la newsletter Q-Bot'
+  } : {
+    envoi:   'Sending…',
+    ok:      'Thank you, your message is on its way. We will get back to you shortly.',
+    okNews:  'Thank you, your subscription is registered.',
+    erreur:  'Sending failed. Write to us at ' + MAIL + ' and we will answer.',
+    manque:  'Please fill in the required fields.',
+    courrier:'Your mail application just opened with the message prefilled — all that is left is to hit send.',
+    sujetC:  'Enquiry from the Q-Bot website',
+    sujetN:  'Q-Bot newsletter subscription'
+  };
+
+  function dire(form, texte, type) {
+    var el = form.querySelector('.form-status');
+    if (!el) return;
+    el.textContent = texte;
+    el.hidden = false;
+    el.setAttribute('data-state', type);
+  }
+
+  /* Corps du courrier : « Libellé : valeur », un champ par ligne. On prend le
+     <label> associé quand il existe, sinon le nom du champ — le destinataire lit
+     ainsi le message dans les mots du formulaire. */
+  function corps(form) {
+    var lignes = [];
+    Array.prototype.forEach.call(form.elements, function (el) {
+      if (!el.name || el.type === 'submit' || el.type === 'button') return;
+      var v = el.type === 'checkbox' ? (el.checked ? (FR ? 'oui' : 'yes') : (FR ? 'non' : 'no')) : el.value;
+      if (!v) return;
+      var lab = form.querySelector('label[for="' + el.id + '"]');
+      var nom = (lab ? lab.textContent : el.name).replace(/\s*\*\s*$/, '').trim();
+      lignes.push(nom + ' : ' + v);
+    });
+    return lignes.join('\n');
+  }
+
+  Array.prototype.forEach.call(forms, function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var news = form.getAttribute('data-form') === 'newsletter';
+
+      /* `novalidate` est posé sur le formulaire de contact pour maîtriser
+         l'affichage : la validation reste à faire, à la main. */
+      if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+        dire(form, T.manque, 'error');
+        var premier = form.querySelector(':invalid');
+        if (premier) premier.focus();
+        return;
+      }
+
+      var url = (form.getAttribute('data-endpoint') || '').trim();
+
+      if (!url) {                                   // repli courrier
+        var sujet = news ? T.sujetN : T.sujetC;
+        window.location.href = 'mailto:' + MAIL
+          + '?subject=' + encodeURIComponent(sujet)
+          + '&body=' + encodeURIComponent(corps(form));
+        dire(form, T.courrier, 'info');
+        return;
+      }
+
+      dire(form, T.envoi, 'info');
+      var bouton = form.querySelector('[type="submit"]');
+      if (bouton) bouton.disabled = true;
+      fetch(url, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          form.reset();
+          dire(form, news ? T.okNews : T.ok, 'ok');
+        })
+        .catch(function () { dire(form, T.erreur, 'error'); })
+        .then(function () { if (bouton) bouton.disabled = false; });
+    });
+  });
+}());
