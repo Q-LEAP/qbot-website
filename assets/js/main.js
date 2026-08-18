@@ -521,8 +521,15 @@ backToTop.addEventListener('click', () => {
      l'élément traverse le viewport, le CSS en fait ce qu'il veut (ici le trait
      de la timeline qui se remplit). Sans interpolation : une progression doit
      coller au scroll, l'inertie y serait perçue comme du retard. */
+  /* Troisième champ facultatif : un nombre d'états. Quand il est là, on écrit AUSSI
+     `data-panel` sur l'élément — l'index de l'état courant, déduit de la même
+     progression. C'est le strict minimum pour qu'une section épinglée puisse
+     changer de contenu : le CSS ne sait pas comparer un nombre, il sait faire
+     `[data-panel="1"]`. Le principe du module tient : le JS ne décide pas de
+     l'allure, il dit seulement où l'on en est. */
   var PROGRESS = [
     ['.timeline', '--tl-p'],
+    ['.pin-modes', '--pin-p', 3],
     /* `.evolution__rail` était ici : son trait teal se remplissait au scroll.
        Retiré — ce trait indique où en est le PRODUIT (il s'arrête sur le point
        « Génération actuelle »), pas où en est la lecture ; scrubbé, il
@@ -558,7 +565,7 @@ backToTop.addEventListener('click', () => {
   var progressEls = [];
   PROGRESS.forEach(function (entry) {
     document.querySelectorAll(entry[0]).forEach(function (el) {
-      progressEls.push({ el: el, name: entry[1] });
+      progressEls.push({ el: el, name: entry[1], states: entry[2] || 0, panel: -1 });
     });
   });
 
@@ -625,10 +632,28 @@ backToTop.addEventListener('click', () => {
       var pe = progressEls[k];
       var pr = pe.el.getBoundingClientRect();
       if (pr.height > 0) {
-        pe.el.style.setProperty(
-          pe.name,
-          clamp((vh * READ_LINE - pr.top) / pr.height, 0, 1).toFixed(4)
-        );
+        /* Deux formules, parce qu'il y a deux objets. Un bloc qui TRAVERSE le
+           viewport se mesure à la ligne de lecture — c'est le cas de `.timeline`.
+           Un rail ÉPINGLÉ, lui, ne se mesure qu'à sa course de collage : sa scène
+           reste collée pendant `hauteur − viewport`, et au-delà la progression n'a
+           plus rien à piloter. Mesuré avec la première formule sur un rail de
+           2 700 px : le dernier panneau était atteint à mi-course et tenait toute
+           la seconde moitié. La présence d'un nombre d'états signale un rail. */
+        var prog = pe.states
+          ? clamp(-pr.top / Math.max(1, pr.height - vh), 0, 1)
+          : clamp((vh * READ_LINE - pr.top) / pr.height, 0, 1);
+        pe.el.style.setProperty(pe.name, prog.toFixed(4));
+        if (pe.states) {
+          /* Les bornes sont resserrées d'un dixième de part et d'autre : le premier
+             état tient pendant que la section arrive et le dernier pendant qu'elle
+             sort, sinon le premier panneau ne se voit jamais posé. */
+          var q = clamp((prog - 0.1) / 0.8, 0, 0.9999);
+          var idx = Math.floor(q * pe.states);
+          if (idx !== pe.panel) {
+            pe.panel = idx;
+            pe.el.setAttribute('data-panel', String(idx));
+          }
+        }
       }
     }
 

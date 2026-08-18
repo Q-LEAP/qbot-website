@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-20b">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-21e">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -267,7 +267,15 @@
 </section>
 
 <!-- ======= INTERFACE & API ======= -->
-<section class="section section--gray" aria-labelledby="interface-title">
+<section class="section section--gray pin-modes" aria-labelledby="interface-title"
+         data-panel="0">
+  <!-- Rail d'épinglage : sur grand écran la section tient trois écrans et son
+       contenu reste collé pendant qu'on les traverse ; le texte ne bouge pas,
+       c'est le cadrage de la maquette qui change. Sous 900 px le rail retombe
+       à sa hauteur naturelle (cf. scrolly.css : sur téléphone on raccourcit,
+       on n'épingle pas). -->
+  <div class="pin-modes__track">
+   <div class="pin-modes__stage">
   <div class="container">
     <div class="about-section__grid reverse">
       <div class="about-section__content">
@@ -277,21 +285,21 @@
           Q-Bot offre deux modes d'utilisation complémentaires pour s'adapter à tous les workflows de test.
         </p>
         <div style="margin-top:28px; display:flex; flex-direction:column; gap:20px;">
-          <div class="spec-item spec-item--card">
+          <div class="spec-item spec-item--card pin-modes__card" data-mode="0">
             <span class="spec-item__label">Interface Web</span>
             <span class="spec-item__value">Créez vos scénarios d'authentification via une interface intuitive, accessible depuis n'importe quel navigateur sur votre réseau.</span>
           </div>
-          <div class="spec-item spec-item--card">
+          <div class="spec-item spec-item--card pin-modes__card" data-mode="1">
             <span class="spec-item__label">API REST</span>
             <span class="spec-item__value">Déclenchez Q-Bot directement depuis vos scripts de test : Selenium, Cypress, Appium, Playwright, Robot Framework et bien d'autres.</span>
           </div>
-          <div class="spec-item spec-item--card">
+          <div class="spec-item spec-item--card pin-modes__card" data-mode="2">
             <span class="spec-item__label">Notification mobile</span>
             <span class="spec-item__value">Déclenchez manuellement via notification mobile pour les cas de test semi-automatisés.</span>
           </div>
         </div>
       </div>
-      <div class="specs__image">
+      <div class="specs__image pin-modes__zoom">
         <img
           src="assets/img/qbot-interface.jpg"
           alt="Schéma de l'interface web Q-Bot : scénario d'authentification et appel API"
@@ -300,6 +308,8 @@
         >
       </div>
     </div>
+   </div>
+   </div>
   </div>
 </section>
 
@@ -453,6 +463,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2026-08-20" defer></script>
+<script src="assets/js/main.js?v=2026-08-21b" defer></script>
 </body>
 </html>

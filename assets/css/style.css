@@ -3557,3 +3557,121 @@ label > input[type="checkbox"] {
 /* .nav__lang a : le padding 6x8 est désormais déclaré avec le composant
    (section NAV) — hauteur ≈31px, largeur ≈50px, au-delà du minimum de 24. */
 
+
+/* ══ ACTE ÉPINGLÉ « INTERFACE & API » ══════════════════════════════════════
+   Proposition B de la revue : le procédé n°2 de linearity.io, où le texte reste
+   en place et c'est le visuel qui change. Ici les trois modes de pilotage —
+   interface web, API REST, notification mobile — se lisaient comme trois cartes
+   empilées qu'on parcourt d'un œil. Ils deviennent trois temps : la carte
+   courante s'éclaire, et la maquette se recadre sur la partie qui la concerne.
+
+   RIEN N'EST INVENTÉ. La maquette contient déjà les trois choses : la liste des
+   étapes du scénario, l'étape « notification envoyée sur le mobile », et l'appel
+   `POST /api/v1/authenticate` en pied. On ne fabrique pas deux écrans de plus —
+   ce serait deux fictions supplémentaires sur un visuel déjà signalé comme une
+   maquette — on montre de plus près ce qui y est.
+
+   LES TROIS CADRAGES SONT MESURÉS, pas réglés à l'œil : les boîtes de `.steps`,
+   du 3e `.step` et du bloc `.api` ont été relevées dans
+   tools/render/interface-mockup.html et rapportées à la taille de la capture.
+   Si la maquette est refaite, il faut refaire ce relevé.
+
+   Le recadrage est une transformation composée (translate + scale) sur l'image,
+   avec `transform-origin: 0 0`, ce qui donne une arithmétique simple : pour
+   amener le point (cx, cy) de l'image au centre du cadre à l'échelle s, il faut
+   translater de (0,5 − cx·s) et (0,5 − cy·s) en pourcentage de la boîte. Une
+   transformation se composite, contrairement à un `left`/`top`. */
+.pin-modes__track { position: relative; }
+/* `align-self: start` n'est pas cosmétique : dans la grille, la colonne image
+   s'étirait à la hauteur de la colonne texte, donc la boîte du cadre était plus
+   haute que celle de l'image. Or les pourcentages d'un `translate` se rapportent
+   à la boîte de l'ÉLÉMENT TRANSLATÉ — l'image — et non à celle du cadre : le
+   centrage vertical était donc décalé de la différence, avec une bande noire en
+   bas et le texte coupé en haut. Cadre et image ont désormais la même boîte.
+   Le sélecteur est plus spécifique que `.specs__image:hover img`, qui posait un
+   `scale(1.04)` et écrasait le recadrage au survol. */
+.pin-modes__zoom { overflow: hidden; align-self: start; }
+.pin-modes .pin-modes__zoom img {
+  transform-origin: 0 0;
+  transform:
+    translate(calc((0.5 - var(--zcx, 0.5) * var(--zs, 1)) * 100%),
+              calc((0.5 - var(--zcy, 0.5) * var(--zs, 1)) * 100%))
+    scale(var(--zs, 1));
+  transition: transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+/* Une carte inactive s'efface, elle ne disparaît pas : les trois restent
+   lisibles, c'est la hiérarchie qui bouge.
+   L'estompe porte sur le CONTENU de la carte, pas sur la carte : celle-ci est
+   déjà une cible du système de révélation (`.reveal--card`), dont la règle
+   `.is-visible { opacity: 1 }` est plus spécifique et gagnait — mesuré, la carte
+   restait à 1. Viser les enfants évite le conflit au lieu de surenchérir en
+   spécificité. */
+.pin-modes__card > * {
+  opacity: 0.45;
+  transition: opacity 0.45s var(--ease-out, ease);
+}
+.pin-modes__card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--teal);
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.45s var(--ease-out, ease);
+}
+.pin-modes .spec-item--card { position: relative; }
+
+@media (min-width: 901px) {
+  /* Trois écrans de course : un par mode, plus la marge d'arrivée et de sortie
+     que ménagent les bornes resserrées du module 9. */
+  .pin-modes { padding: 0; }
+  .pin-modes__track { height: 300svh; }
+  .pin-modes__stage {
+    position: sticky;
+    top: 0;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: var(--section-py) 0;
+  }
+  .pin-modes[data-panel="0"] .pin-modes__card[data-mode="0"] > *,
+  .pin-modes[data-panel="1"] .pin-modes__card[data-mode="1"] > *,
+  .pin-modes[data-panel="2"] .pin-modes__card[data-mode="2"] > * { opacity: 1; }
+  .pin-modes[data-panel="0"] .pin-modes__card[data-mode="0"]::before,
+  .pin-modes[data-panel="1"] .pin-modes__card[data-mode="1"]::before,
+  .pin-modes[data-panel="2"] .pin-modes__card[data-mode="2"]::before { transform: scaleY(1); }
+
+  /* Les trois cadrages. Le premier est l'identité : la maquette entière. */
+  /* Les échelles sont modestes à dessein : les régions visées occupent déjà 56 à
+     82 % de la largeur de la maquette, un grossissement de 2 les débordait des
+     deux côtés et coupait les mots. À 1,55 il reste du contexte autour de la
+     ligne qu'on désigne. */
+  .pin-modes[data-panel="0"] .pin-modes__zoom { --zs: 1;    --zcx: 0.500; --zcy: 0.500; }
+  .pin-modes[data-panel="1"] .pin-modes__zoom { --zs: 1.55; --zcx: 0.400; --zcy: 0.790; }
+  /* La liste des étapes occupe 82 % de la largeur : au-delà de 1,22 elle est
+     coupée des deux côtés et les libellés perdent leur premier mot. La borne
+     est donc calculée, pas choisie — largeur visible = 1 / échelle. */
+  .pin-modes[data-panel="2"] .pin-modes__zoom { --zs: 1.45; --zcx: 0.420; --zcy: 0.532; }
+  /* Le centre est décalé à 0,42 et non 0,50 : la contrainte est que le bord
+     gauche de la liste (à 0,090) reste dans le champ, soit cx − 0,5/échelle
+     ≤ 0,090. À 1,45 cela impose cx ≤ 0,435. Centré, le premier mot de chaque
+     étape sortait du cadre. */
+}
+
+/* Sous 900 px : aucun épinglage, aucun recadrage. La leçon de la passe mobile
+   tient — sur téléphone on raccourcit, on n'ajoute pas trois écrans épinglés à
+   une page qui en fait déjà six — et les trois cartes se lisent l'une après
+   l'autre, ce qui est exactement leur ordre naturel. */
+@media (max-width: 900px) {
+  .pin-modes__card > * { opacity: 1; }
+  .pin-modes__card::before { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-modes__track { height: auto; }
+  .pin-modes__stage { position: static; min-height: 0; }
+  .pin-modes__card > * { opacity: 1; }
+  .pin-modes__card::before { display: none; }
+  .pin-modes .pin-modes__zoom img { transition: none; transform: none; }
+}
