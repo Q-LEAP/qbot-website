@@ -3675,3 +3675,98 @@ label > input[type="checkbox"] {
   .pin-modes__card::before { display: none; }
   .pin-modes .pin-modes__zoom img { transition: none; transform: none; }
 }
+
+/* ══ INDEX COLLANT DE LA FAQ ═══════════════════════════════════════════════
+   Proposition C de la revue. La FAQ était la page la plus dense du site — 1 420
+   mots, seize questions — et la plus nue : aucune image, aucun mouvement de fond,
+   et surtout aucun moyen de savoir ce qu'elle contient sans la parcourir en
+   entier. L'index règle d'abord ce problème-là ; le mouvement (le trait qui se
+   remplit, l'entrée courante qui s'allume) n'est que la lecture de la position.
+
+   AUCUN THÈME N'EST INVENTÉ. La page n'a pas de groupes, et en fabriquer
+   demanderait d'écrire des intitulés — donc du texte que le client n'a pas
+   validé. Les entrées de l'index sont exactement les questions.
+
+   Au-delà de 1024 px seulement : sur un écran de téléphone, seize entrées
+   au-dessus de seize questions repliées n'aident personne, elles doublent la
+   longueur de la page. C'est la même règle que partout ailleurs — sur mobile on
+   raccourcit. */
+.faq-layout { display: block; }
+.faq-index { display: none; }
+
+@media (min-width: 1025px) {
+  /* L'INDEX EST À DROITE, LES QUESTIONS GARDENT LA GOUTTIÈRE. Première version
+     avec l'index à gauche : les questions commençaient 345 px plus à droite que le
+     titre de la page et que le fil d'Ariane, ce qui cassait le bord gauche sur
+     lequel tout le site s'aligne. L'index passe donc en seconde colonne — c'est
+     aussi la place d'un sommaire — mais il reste AVANT la liste dans le HTML, pour
+     qu'au clavier on tombe dessus d'abord : il sert précisément à ne pas parcourir
+     les seize questions. */
+  .faq-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 250px);
+    gap: clamp(32px, 4vw, 64px);
+    align-items: start;
+  }
+  .faq-index {
+    display: block;
+    order: 2;
+    position: sticky;
+    top: 104px;              /* barre de navigation (72) + respiration */
+    padding-left: 18px;
+  }
+  /* Le trait de progression est la même grammaire que le rail de la séquence 3D :
+     une ligne discrète, une portion teal qui suit la lecture. La valeur vient du
+     module 9, écrite sur `.faq-layout` — donc sur un ancêtre commun, faute de quoi
+     le rail ne pourrait pas lire une variable posée sur la liste, qui est sa sœur. */
+  .faq-index__rail {
+    position: absolute;
+    left: 0; top: 4px; bottom: 4px;
+    width: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .faq-index__rail::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+    transform: scaleY(var(--faq-p, 0));
+    transform-origin: top center;
+  }
+  .faq-index__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: calc(100svh - 180px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .faq-index__list a {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 8px;
+    padding: 5px 6px 5px 0;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.25s var(--ease-out);
+  }
+  .faq-index__num { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.7; }
+  .faq-index__list a:hover { color: var(--black); }
+  .faq-index__list a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 3px; }
+  /* L'entrée courante : c'est un état de lecture, pas un lien actif — d'où
+     `aria-current="location"` et non "page". */
+  .faq-index__list a[aria-current] { color: var(--black); font-weight: 500; }
+  .faq-index__list a[aria-current] .faq-index__num { color: var(--teal-text); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-index__rail::after { transform: scaleY(1); }
+  .faq-index__list a { transition: none; }
+}

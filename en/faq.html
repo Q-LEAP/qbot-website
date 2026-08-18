@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=2026-08-21e">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026-08-22b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -262,9 +262,35 @@
 
 <section class="section">
   <div class="container">
+    <div class="faq-layout">
+    <!-- Index des questions : les libellés sont EXACTEMENT ceux des questions,
+         rien n'est reformulé et aucun thème n'est inventé — la page n'en a pas.
+         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, seize entrées de
+         plus au-dessus de seize questions repliées n'aident personne. -->
+    <nav class="faq-index" aria-label="Question index">
+      <span class="faq-index__rail" aria-hidden="true"></span>
+      <ol class="faq-index__list">
+        <li><a href="#faq-q1"><span class="faq-index__num" aria-hidden="true">01</span><span class="faq-index__txt">What is Q-Bot?</span></a></li>
+        <li><a href="#faq-q2"><span class="faq-index__num" aria-hidden="true">02</span><span class="faq-index__txt">What is Test Automation?</span></a></li>
+        <li><a href="#faq-q3"><span class="faq-index__num" aria-hidden="true">03</span><span class="faq-index__txt">What are the benefits of test automation?</span></a></li>
+        <li><a href="#faq-q4"><span class="faq-index__num" aria-hidden="true">04</span><span class="faq-index__txt">What problem does Q-Bot answer?</span></a></li>
+        <li><a href="#faq-q5"><span class="faq-index__num" aria-hidden="true">05</span><span class="faq-index__txt">Why Q-Bot is the perfect ally for testers?</span></a></li>
+        <li><a href="#faq-q6"><span class="faq-index__num" aria-hidden="true">06</span><span class="faq-index__txt">How to get a free Q-Bot presentation?</span></a></li>
+        <li><a href="#faq-q7"><span class="faq-index__num" aria-hidden="true">07</span><span class="faq-index__txt">Who is this automated authentication device for?</span></a></li>
+        <li><a href="#faq-q8"><span class="faq-index__num" aria-hidden="true">08</span><span class="faq-index__txt">What type of token does Q-Bot work with?</span></a></li>
+        <li><a href="#faq-q9"><span class="faq-index__num" aria-hidden="true">09</span><span class="faq-index__txt">How much does Q-Bot cost?</span></a></li>
+        <li><a href="#faq-q10"><span class="faq-index__num" aria-hidden="true">10</span><span class="faq-index__txt">I would like to acquire Q-Bot, how can I do it?</span></a></li>
+        <li><a href="#faq-q11"><span class="faq-index__num" aria-hidden="true">11</span><span class="faq-index__txt">Can I get technical support?</span></a></li>
+        <li><a href="#faq-q12"><span class="faq-index__num" aria-hidden="true">12</span><span class="faq-index__txt">What are the warranty conditions of Q-Bot?</span></a></li>
+        <li><a href="#faq-q13"><span class="faq-index__num" aria-hidden="true">13</span><span class="faq-index__txt">How does Q-Bot work?</span></a></li>
+        <li><a href="#faq-q14"><span class="faq-index__num" aria-hidden="true">14</span><span class="faq-index__txt">What data is kept by Q-Bot and for what purpose?</span></a></li>
+        <li><a href="#faq-q15"><span class="faq-index__num" aria-hidden="true">15</span><span class="faq-index__txt">What to do in case of Q-Bot malfunction?</span></a></li>
+        <li><a href="#faq-q16"><span class="faq-index__num" aria-hidden="true">16</span><span class="faq-index__txt">How is my personal information handled?</span></a></li>
+      </ol>
+    </nav>
     <div class="faq__list">
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q1">
         <button class="faq-item__question" aria-expanded="false">What is Q-Bot?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Q-Bot is a unique robot whose goal is to <strong>automate the double authentication (2FA) by retrieving the value of authentication tokens</strong>.</p>
@@ -274,7 +300,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q2">
         <button class="faq-item__question" aria-expanded="false">What is Test Automation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Test <em>Automation</em> is the execution of test cases that were previously executed manually, but automatically, without any concrete action by a human.</p>
@@ -283,7 +309,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q3">
         <button class="faq-item__question" aria-expanded="false">What are the benefits of test automation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Test automation allows to gain in productivity because the test cases are no longer executed by a person but by a machine. The test cases can therefore be executed as often as desired. In the case of agile projects, one of the characteristics of which is to deliver often, test automation makes it possible to guarantee a certain level of quality in a minimum of time and to avoid regressions.</p>
@@ -293,7 +319,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q4">
         <button class="faq-item__question" aria-expanded="false">What problem does Q-Bot answer?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Q-Bot allows <strong>to automate the execution of the most critical test cases</strong> that until now could not be executed because of the physical constraint of authentication tokens.</p>
@@ -303,7 +329,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q5">
         <button class="faq-item__question" aria-expanded="false">Why Q-Bot is the perfect ally for testers?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>The testers’ objectives are to validate that the applications comply with the requirements defined upstream.</p>
@@ -320,7 +346,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q6">
         <button class="faq-item__question" aria-expanded="false">How to get a free Q-Bot presentation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>You can take an appointment with Sylvain Perez, creator of Q-Bot and CEO of Q-Leap by following the Calendly link below. You will participate in a demo and be able to ask all the questions you want.</p>
@@ -332,7 +358,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q7">
         <button class="faq-item__question" aria-expanded="false">Who is this automated authentication device for?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Q-Bot is for all IT professionals who want to significantly increase the quality of their applications by automating the most critical feature test cases that until now have been either manually tested or ignored.</p>
@@ -341,7 +367,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q8">
         <button class="faq-item__question" aria-expanded="false">What type of token does Q-Bot work with?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>The first version of Q-Bot was designed to work with the tokens of the Luxtrust brand, leader on the authentication market in Luxembourg. In its second version, Q-Bot supports the vast majority of physical tokens on the market.</p>
@@ -350,28 +376,28 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q9">
         <button class="faq-item__question" aria-expanded="false">How much does Q-Bot cost?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p><strong>Q-Bot</strong> is offered through a <strong>rental contract</strong> at a rate of <strong>900&nbsp;€</strong> per month all inclusive. This price includes <strong>technical assistance</strong> and <strong>replacement of the robot in case of failure</strong>.</p>
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q10">
         <button class="faq-item__question" aria-expanded="false">I would like to acquire Q-Bot, how can I do it?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>It’s very simple, contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us by phone at <a href="tel:+352202117">+352 20 21 17 </a>and ask for <strong>Sylvain Perez</strong>.</p>
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q11">
         <button class="faq-item__question" aria-expanded="false">Can I get technical support?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Yes, technical support is included with Q-Bot.</p>
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q12">
         <button class="faq-item__question" aria-expanded="false">What are the warranty conditions of Q-Bot?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Once Q-Bot is connected to the corporate network and accessible by the testers’ machines, the recovery of the token value can be tested immediately from the web interface.</p>
@@ -379,7 +405,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q13">
         <button class="faq-item__question" aria-expanded="false">How does Q-Bot work?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Q-Bot works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates all the processing required to recover the value of the token</strong>.</p>
@@ -396,14 +422,14 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q14">
         <button class="faq-item__question" aria-expanded="false">What data is kept by Q-Bot and for what purpose?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Q-Bot requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. Q-Bot takes a picture of the token with the OTP value and with the help of a Computer Vision type image processing, recovers the OTP value. Before returning this value to the test case, the photo is deleted from the Q-Bot. This way, no files or information are stored on Q-Bot.</p>
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q15">
         <button class="faq-item__question" aria-expanded="false">What to do in case of Q-Bot malfunction?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>Contact Q-Bot support by email: <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us at <a href="tel:+352202117">+352 20 21 17</a>.</p>
@@ -411,7 +437,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q16">
         <button class="faq-item__question" aria-expanded="false">How is my personal information handled?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
           <p>As a person interested in Q-Bot, we keep your <strong>email address, name and surname in our database for</strong> <strong>future</strong> <strong>business contacts</strong>.</p>
@@ -420,6 +446,7 @@
         </div>
       </div>
 
+    </div>
     </div>
   </div>
 </section>
@@ -496,6 +523,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=2026-08-21b" defer></script>
+<script src="../assets/js/main.js?v=2026-08-22" defer></script>
 </body>
 </html>

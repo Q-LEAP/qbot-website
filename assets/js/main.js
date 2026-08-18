@@ -530,6 +530,7 @@ backToTop.addEventListener('click', () => {
   var PROGRESS = [
     ['.timeline', '--tl-p'],
     ['.pin-modes', '--pin-p', 3],
+    ['.faq-layout', '--faq-p'],
     /* `.evolution__rail` était ici : son trait teal se remplissait au scroll.
        Retiré — ce trait indique où en est le PRODUIT (il s'arrête sur le point
        « Génération actuelle »), pas où en est la lecture ; scrubbé, il
@@ -1149,5 +1150,66 @@ backToTop.addEventListener('click', () => {
         .catch(function () { dire(form, T.erreur, 'error'); })
         .then(function () { if (bouton) bouton.disabled = false; });
     });
+  });
+}());
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   16. INDEX DE LA FAQ — l'entrée courante, et l'ouverture au clic
+   ══════════════════════════════════════════════════════════════════════════
+   Deux services, aucun écouteur de défilement : le module 9 reste le seul du
+   site à en avoir un.
+
+   1. Marquer l'entrée qui correspond à la question la plus haute encore visible.
+      Un IntersectionObserver suffit, et il ne se déclenche qu'aux franchissements
+      — pas à chaque image.
+   2. Ouvrir la question au clic sur son entrée. On ne réimplémente pas
+      l'accordéon : on clique son bouton, ce qui repasse par le module 3 et sa
+      mesure de `scrollHeight`. Une seconde implémentation finirait par diverger.
+
+   `aria-current="location"` et non `"page"` : l'entrée ne désigne pas la page
+   courante mais un endroit dans la page. C'est la valeur prévue pour ça.        */
+(function () {
+  var index = document.querySelector('.faq-index');
+  if (!index) return;
+  var liens = [].slice.call(index.querySelectorAll('a[href^="#faq-q"]'));
+  if (!liens.length) return;
+
+  var parId = {};
+  liens.forEach(function (a) { parId[a.getAttribute('href').slice(1)] = a; });
+
+  /* Ouverture au clic. On laisse le navigateur faire le défilement (l'ancre est
+     un vrai lien, il fonctionne sans script), on ne fait qu'ouvrir. */
+  liens.forEach(function (a) {
+    a.addEventListener('click', function () {
+      var item = document.getElementById(a.getAttribute('href').slice(1));
+      if (!item) return;
+      var bouton = item.querySelector('.faq-item__question');
+      if (bouton && bouton.getAttribute('aria-expanded') !== 'true') bouton.click();
+    });
+  });
+
+  if (!('IntersectionObserver' in window)) return;
+  var vus = {};
+  var io = new IntersectionObserver(function (entrees) {
+    entrees.forEach(function (e) { vus[e.target.id] = e.isIntersecting ? e.boundingClientRect.top : null; });
+    /* La question courante est la plus haute de celles qui touchent l'écran :
+       c'est celle qu'on est en train de lire, pas la première de la liste. */
+    var courant = null, meilleur = Infinity;
+    for (var id in vus) {
+      if (vus[id] === null) continue;
+      var d = Math.abs(vus[id] - window.innerHeight * 0.25);
+      if (d < meilleur) { meilleur = d; courant = id; }
+    }
+    liens.forEach(function (a) {
+      var actif = a.getAttribute('href').slice(1) === courant;
+      if (actif) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
+  }, { rootMargin: '-10% 0px -55% 0px' });
+
+  liens.forEach(function (a) {
+    var item = document.getElementById(a.getAttribute('href').slice(1));
+    if (item) io.observe(item);
   });
 }());

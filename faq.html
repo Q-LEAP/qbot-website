@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-21e">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-22b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -278,9 +278,35 @@
 <section class="section" aria-labelledby="faq-full-title">
   <div class="container">
     <h2 class="sr-only" id="faq-full-title">Toutes les questions fréquentes</h2>
+    <div class="faq-layout">
+    <!-- Index des questions : les libellés sont EXACTEMENT ceux des questions,
+         rien n'est reformulé et aucun thème n'est inventé — la page n'en a pas.
+         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, seize entrées de
+         plus au-dessus de seize questions repliées n'aident personne. -->
+    <nav class="faq-index" aria-label="Index des questions">
+      <span class="faq-index__rail" aria-hidden="true"></span>
+      <ol class="faq-index__list">
+        <li><a href="#faq-q1"><span class="faq-index__num" aria-hidden="true">01</span><span class="faq-index__txt">Qu'est-ce que Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q2"><span class="faq-index__num" aria-hidden="true">02</span><span class="faq-index__txt">Qu'est-ce que l'automatisation des tests&nbsp;?</span></a></li>
+        <li><a href="#faq-q3"><span class="faq-index__num" aria-hidden="true">03</span><span class="faq-index__txt">Quels sont les bénéfices de l'automatisation des tests&nbsp;?</span></a></li>
+        <li><a href="#faq-q4"><span class="faq-index__num" aria-hidden="true">04</span><span class="faq-index__txt">À quelle problématique répond Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q5"><span class="faq-index__num" aria-hidden="true">05</span><span class="faq-index__txt">Pourquoi Q-Bot est le parfait allié des testeurs&nbsp;?</span></a></li>
+        <li><a href="#faq-q6"><span class="faq-index__num" aria-hidden="true">06</span><span class="faq-index__txt">À qui s'adresse ce dispositif d'authentification automatisée&nbsp;?</span></a></li>
+        <li><a href="#faq-q7"><span class="faq-index__num" aria-hidden="true">07</span><span class="faq-index__txt">Comment bénéficier gratuitement d'une présentation de Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q8"><span class="faq-index__num" aria-hidden="true">08</span><span class="faq-index__txt">Avec quels types de dispositifs d'authentification Q-Bot est-il compatible&nbsp;?</span></a></li>
+        <li><a href="#faq-q9"><span class="faq-index__num" aria-hidden="true">09</span><span class="faq-index__txt">Combien coûte Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q10"><span class="faq-index__num" aria-hidden="true">10</span><span class="faq-index__txt">Comment acquérir Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q11"><span class="faq-index__num" aria-hidden="true">11</span><span class="faq-index__txt">Puis-je bénéficier d'une assistance technique&nbsp;?</span></a></li>
+        <li><a href="#faq-q12"><span class="faq-index__num" aria-hidden="true">12</span><span class="faq-index__txt">Comment utiliser Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q13"><span class="faq-index__num" aria-hidden="true">13</span><span class="faq-index__txt">Comment Q-Bot fonctionne-t-il&nbsp;?</span></a></li>
+        <li><a href="#faq-q14"><span class="faq-index__num" aria-hidden="true">14</span><span class="faq-index__txt">Quelles sont les données conservées par Q-Bot et pour quel usage&nbsp;?</span></a></li>
+        <li><a href="#faq-q15"><span class="faq-index__num" aria-hidden="true">15</span><span class="faq-index__txt">Que faire en cas de dysfonctionnement de Q-Bot&nbsp;?</span></a></li>
+        <li><a href="#faq-q16"><span class="faq-index__num" aria-hidden="true">16</span><span class="faq-index__txt">Comment mes informations personnelles sont-elles traitées&nbsp;?</span></a></li>
+      </ol>
+    </nav>
     <div class="faq__list">
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q1">
         <button class="faq-item__question" aria-expanded="false">
           Qu'est-ce que Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -293,7 +319,7 @@
           <p style="margin-top:12px;">Grâce à Q-Bot, qui authentifie automatiquement vos accès, il devient possible d'automatiser des processus de test jusque-là difficilement accessibles, notamment ceux nécessitant une validation 2FA.</p>
         </div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q2">
         <button class="faq-item__question" aria-expanded="false">
           Qu'est-ce que l'automatisation des tests&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -306,7 +332,7 @@
           <p><strong>Découvrez Q-Bot et ses fonctionnalités&nbsp;:</strong> <a href="index.html">q-bot.eu</a></p>
         </div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q3">
         <button class="faq-item__question" aria-expanded="false">
           Quels sont les bénéfices de l'automatisation des tests&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -321,7 +347,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q4">
         <button class="faq-item__question" aria-expanded="false">
           À quelle problématique répond Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -335,7 +361,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q5">
         <button class="faq-item__question" aria-expanded="false">
           Pourquoi Q-Bot est le parfait allié des testeurs&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -355,7 +381,7 @@
           </ul>
         </div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q6">
         <button class="faq-item__question" aria-expanded="false">
           À qui s'adresse ce dispositif d'authentification automatisée&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -369,7 +395,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q7">
         <button class="faq-item__question" aria-expanded="false">
           Comment bénéficier gratuitement d'une présentation de Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -385,7 +411,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q8">
         <button class="faq-item__question" aria-expanded="false">
           Avec quels types de dispositifs d'authentification Q-Bot est-il compatible&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -398,7 +424,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q9">
         <button class="faq-item__question" aria-expanded="false">
           Combien coûte Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -410,7 +436,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q10">
         <button class="faq-item__question" aria-expanded="false">
           Comment acquérir Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -422,7 +448,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q11">
         <button class="faq-item__question" aria-expanded="false">
           Puis-je bénéficier d'une assistance technique&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -434,7 +460,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q12">
         <button class="faq-item__question" aria-expanded="false">
           Comment utiliser Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -446,7 +472,7 @@
           <p style="margin-top:12px;">Dans un second temps, il convient de déclencher l'exécution du scénario d'authentification. Le déclenchement du scénario peut être automatiquement déclenché lorsque l'app d'authentification reçoit une notification grâce à l'app Q-Bot à installer sur le mobile. Une alternative consiste à déclencher le scénario en appelant l'API de Q-Bot depuis vos scénarios de tests automatisés. Toutes les principales technologies d'automatisation — telles que Selenium, WebdriverIO, Cypress, Appium, Robot Framework, Cucumber, etc. — permettent d'appeler des APIs.</p>
         </div>
       </div>
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q13">
         <button class="faq-item__question" aria-expanded="false">
           Comment Q-Bot fonctionne-t-il&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -468,7 +494,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q14">
         <button class="faq-item__question" aria-expanded="false">
           Quelles sont les données conservées par Q-Bot et pour quel usage&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -480,7 +506,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q15">
         <button class="faq-item__question" aria-expanded="false">
           Que faire en cas de dysfonctionnement de Q-Bot&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -493,7 +519,7 @@
         </div>
       </div>
 
-      <div class="faq-item">
+      <div class="faq-item" id="faq-q16">
         <button class="faq-item__question" aria-expanded="false">
           Comment mes informations personnelles sont-elles traitées&nbsp;?
           <span class="faq-item__icon" aria-hidden="true">
@@ -507,6 +533,7 @@
         </div>
       </div>
 
+    </div>
     </div>
   </div>
 </section>
@@ -583,6 +610,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2026-08-21b" defer></script>
+<script src="assets/js/main.js?v=2026-08-22" defer></script>
 </body>
 </html>
