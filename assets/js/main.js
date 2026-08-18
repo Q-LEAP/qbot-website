@@ -562,7 +562,13 @@ backToTop.addEventListener('click', () => {
     });
   });
 
-  if (!items.length && !progressEls.length && !hero) return;
+  /* Le garde-fou d'origine coupait le moteur quand la page n'avait ni parallaxe,
+     ni progression, ni hero — c'est-à-dire sur la FAQ, les pages de contact et
+     les six articles. Il ne peut plus : le CALQUE AMBIANT est sur `body::before`,
+     donc présent sur les 22 pages, et c'est ce moteur qui écrit sa variable.
+     Le coût est nul là où il n'y a rien d'autre à animer : `moving` reste faux, la
+     boucle s'arrête donc après une seule image, et il n'y a qu'une écriture par
+     salve de défilement. */
 
   var vh = window.innerHeight;
 
@@ -591,6 +597,16 @@ backToTop.addEventListener('click', () => {
     /* Orbes de fond — pilotées par le scroll absolu (elles sont ancrées au
        hero, pas traversées par le viewport). */
     root.style.setProperty('--orb-y', (sy * 0.1).toFixed(1) + 'px');
+
+    /* Progression dans la page entière, bornée à [0,1]. C'est la seule grandeur
+       dont a besoin le calque ambiant (cf. « CALQUE AMBIANT » dans style.css) :
+       le CSS en déduit la position des halos et leur intensité. Bornée, et non
+       proportionnelle au scroll absolu comme `--orb-y`, parce qu'un halo qui
+       traverse toute la page doit arriver au bout en même temps que le lecteur,
+       quelle que soit la longueur de la page — 2 écrans sur `contact`, 12 sur
+       l'accueil. */
+    var span = document.documentElement.scrollHeight - window.innerHeight;
+    root.style.setProperty('--amb-p', span > 0 ? clamp(sy / span, 0, 1).toFixed(4) : '0');
 
     /* Sortie du hero : 0 en haut de page, 1 quand il a entièrement défilé. */
     if (hero) {

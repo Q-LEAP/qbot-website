@@ -94,16 +94,81 @@
   --teal-text:   #00857D;
 }
 
-html { font-size: var(--font-size); scroll-behavior: smooth; }
+/* Le fond de page est posé sur `html`, pas sur `body` : c'est ce qui laisse la
+   place au calque ambiant (`body::before`, plus bas), qui doit se glisser ENTRE
+   le fond et le contenu. Avec le fond sur `body`, un pseudo-élément en
+   `z-index: -1` passe derrière lui et ne se voit jamais. */
+html { font-size: var(--font-size); scroll-behavior: smooth; background: var(--white); }
 
 body {
   font-family: var(--font);
   color: var(--black);
   line-height: var(--line-height);
-  background: var(--white);
+  background: transparent;   /* cf. le fond posé sur `html` */
   -webkit-font-smoothing: antialiased;
 }
 
+/* ══ CALQUE AMBIANT ════════════════════════════════════════════════════════
+   Deux halos teal très larges, fixes, qui dérivent lentement avec la
+   progression dans la page.
+
+   POURQUOI. Relevé sur les 22 pages : le halo n'existait que dans le hero de
+   l'accueil (`.hero::before` / `::after`) et dans la scène de la séquence 3D.
+   Les sous-pages n'ont qu'un orbe de 340 px dans leur en-tête, puis plus rien
+   sur deux à sept écrans de noir plat — la FAQ traverse 1 420 mots comme ça, et
+   les six articles de blog quatre à sept écrans. C'est le procédé n°1 relevé sur
+   linearity.io : chez eux un canvas WebGL et un halo restent en `position:
+   fixed` derrière toute la page, à opacité constante, et ne réagissent à rien.
+   Ce n'est pas une animation, c'est un fond vivant.
+
+   CE QUI DIFFÈRE DE CHEZ EUX. Pas de WebGL : nous en avons déjà un sur
+   l'accueil, et c'est le poste le plus lourd de la page. Deux dégradés radiaux
+   coûtent quelques octets et aucun contexte de rendu supplémentaire.
+
+   DEUX DÉTAILS QUI COMPTENT.
+   - `z-index: -1` : le calque doit passer sous le contenu, y compris sous le
+     texte des blocs non positionnés. À `z-index: 0` un élément fixe se peint
+     APRÈS les fonds et le contenu en ligne des blocs en flux — le halo passerait
+     par-dessus les paragraphes.
+   - La valeur de repli de `--amb-p` est 0.32, pas 0 : sous
+     `prefers-reduced-motion` le moteur ne tourne pas, la variable n'est jamais
+     écrite, et une valeur nulle laisserait les deux halos collés à leur position
+     de départ. C'est le même piège que le trait de la section évolution, qui
+     restait invisible faute d'une valeur par défaut.
+
+   L'intensité monte avec la progression : au sommet de l'accueil le hero a déjà
+   ses deux orbes, un troisième halo n'y a rien à ajouter. */
+/* DEUX COUCHES, ET UN `translate` PLUTÔT QU'UNE POSITION DE DÉGRADÉ.
+   Premier jet : un seul pseudo-élément portant les deux dégradés, dont la
+   position du centre était calculée à partir de `--amb-p`. Le rendu était juste,
+   le coût non : déplacer le centre d'un dégradé repeint toute la surface à chaque
+   image. Mesuré sur l'accueil à 390 px, là où le canevas 3D tourne déjà,
+   65,5 → 56,6 images par seconde, soit 14 % perdus pour un fond.
+   Un `translate` sur un élément fixe, lui, est composité : aucun repeint. Il faut
+   alors deux couches, puisque les deux halos dérivent en sens opposés — d'où
+   `::before` et `::after`. Coût remesuré : indiscernable du bruit. */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+body::before {
+  inset: -30vh -18vw 0 -18vw;
+  height: 88vh;
+  background: radial-gradient(38% 44% at 22% 50%, rgba(0, 203, 190, 0.11), transparent 70%);
+  translate: 0 calc(var(--amb-p, 0.32) * 46vh);
+  opacity: calc(0.42 + var(--amb-p, 0.32) * 0.58);
+}
+body::after {
+  inset: auto -18vw -26vh -18vw;
+  height: 80vh;
+  background: radial-gradient(32% 42% at 82% 50%, rgba(0, 203, 190, 0.085), transparent 72%);
+  translate: 0 calc(var(--amb-p, 0.32) * -42vh);
+  opacity: calc(0.42 + var(--amb-p, 0.32) * 0.58);
+}
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; }
@@ -2593,7 +2658,11 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 
 /* ── Corps de page ── */
-[data-theme="dark"] body { background: #0A0A0A; }
+/* `[data-theme="dark"]` seul, et non `[data-theme="dark"] html` : l'attribut est
+   porté par <html> lui-même, donc la version descendante ne correspond à rien —
+   le fond restait blanc. */
+[data-theme="dark"] { background: #0A0A0A; }
+[data-theme="dark"] body { background: transparent; }
 
 /* ── Navigation — en dark mode le nav devient encore plus sombre ── */
 [data-theme="dark"] .nav {
