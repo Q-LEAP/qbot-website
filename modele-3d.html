@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-23c">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-24c">
   <!-- Google model-viewer — web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -169,7 +169,14 @@
 </div>
 
 <!-- ======= VIEWER 3D ======= -->
-<section class="section" aria-labelledby="viewer-title">
+<section class="section pin-3d" aria-labelledby="viewer-title">
+  <!-- Acte court : trois poses du modèle, une par ligne de la carte « Aperçu
+       rapide », puis la main est rendue au visiteur. Les trois lignes existaient
+       déjà (dimensions, processeur, fabrication) : le modèle montre ce qu'elles
+       disent, aucun texte n'est ajouté. Sous 900 px, pas d'épinglage — le viewer
+       reste interactif d'emblée. -->
+  <div class="pin-3d__track">
+   <div class="pin-3d__stage">
   <div class="container">
     <div class="article-layout">
       <div>
@@ -309,15 +316,15 @@
         <div class="sidebar-card">
           <h3>Aperçu rapide</h3>
           <div class="specs__list" role="list" aria-label="Spécifications">
-            <div class="spec-item">
+            <div class="spec-item pin-3d__beat" data-beat="0">
               <span class="spec-item__label">Dimensions</span>
               <span class="spec-item__value">40 × 24 × 15 cm</span>
             </div>
-            <div class="spec-item">
+            <div class="spec-item pin-3d__beat" data-beat="1">
               <span class="spec-item__label">Processeur</span>
               <span class="spec-item__value">Raspberry Pi 5</span>
             </div>
-            <div class="spec-item">
+            <div class="spec-item pin-3d__beat" data-beat="2">
               <span class="spec-item__label">Fabrication</span>
               <span class="spec-item__value">Made in Luxembourg</span>
             </div>
@@ -333,6 +340,8 @@
         </div>
       </aside>
     </div>
+   </div>
+   </div>
   </div>
 </section>
 
@@ -399,6 +408,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2026-08-23" defer></script>
+<script src="assets/js/main.js?v=2026-08-24c" defer></script>
 </body>
 </html>

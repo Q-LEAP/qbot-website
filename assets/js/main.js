@@ -548,6 +548,7 @@ backToTop.addEventListener('click', () => {
     ['.timeline', '--tl-p'],
     ['.pin-modes', '--pin-p', 3],
     ['.faq-layout', '--faq-p'],
+    ['.pin-3d', '--pin3-p', 3],
     /* `.evolution__rail` était ici : son trait teal se remplissait au scroll.
        Retiré — ce trait indique où en est le PRODUIT (il s'arrête sur le point
        « Génération actuelle »), pas où en est la lecture ; scrubbé, il
@@ -1229,4 +1230,115 @@ backToTop.addEventListener('click', () => {
     var item = document.getElementById(a.getAttribute('href').slice(1));
     if (item) io.observe(item);
   });
+}());
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   17. PAGE 3D — trois poses, puis la main au visiteur
+   ══════════════════════════════════════════════════════════════════════════
+   La page du modèle faisait deux écrans : on y arrivait, un boîtier tournait sur
+   lui-même, une barre d'outils attendait. Le visiteur qui ne saisit pas l'objet
+   n'en voyait qu'une rotation.
+
+   L'acte montre ce que la carte « Aperçu rapide » dit déjà : ses trois lignes —
+   dimensions, processeur, fabrication — deviennent trois poses. AUCUN TEXTE N'EST
+   AJOUTÉ : les trois libellés existent, le modèle se contente de les illustrer.
+
+     dimensions   → trois-quarts arrière en plongée, l'emprise au sol se lit
+     processeur   → vue éclatée, on voit l'intérieur
+     fabrication  → trois-quarts avant, produit assemblé
+
+   L'ordre finit sur le produit refermé : c'est l'état dans lequel le visiteur
+   récupère la main, et non une carcasse ouverte.
+
+   TROIS PRÉCAUTIONS, chacune pour une raison précise :
+   - `camera-controls` et `auto-rotate` sont RETIRÉS pendant l'acte. Sans cela, la
+     rotation automatique incrémente l'azimut pendant qu'on l'écrit, et le résultat
+     tremble ; et un glissé du visiteur lutterait contre le défilement.
+   - Ils sont RENDUS à la fin de l'acte, la rotation seulement si son bouton est
+     encore enclenché — module 12 en garde l'état, il ne faut pas le contredire.
+   - Le module ne fait rien sous 900 px ni sans épinglage : `data-panel` n'est
+     écrit que par le module 9, qui ne tourne pas en mouvement réduit. La page
+     reste alors ce qu'elle était, interactive d'emblée.                        */
+(function () {
+  var rail = document.querySelector('.pin-3d');
+  var viewer = document.querySelector('#qbot-viewer');
+  if (!rail || !viewer) return;
+  /* Pas d'acte en mouvement réduit — et donc surtout pas de retrait des contrôles.
+     Sans ce garde-fou le module retirait `camera-controls` sur la foi d'un
+     `data-panel` qui, là, ne bouge jamais : le visiteur héritait d'un viewer mort. */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var GRAND = window.matchMedia('(min-width: 901px)');
+  /* L'éclatement est exprimé en POURCENTAGE DU CURSEUR, pas en position dans le
+     clip, et il est appliqué en pilotant le curseur lui-même. Sans cela le modèle
+     s'ouvrirait pendant que la barre d'outils continue d'afficher « 0 % » — c'est
+     exactement le défaut qui avait été corrigé sur la séquence de l'accueil, où le
+     curseur restait figé sur une valeur que le modèle ne montrait plus. Un seul
+     propriétaire de l'état d'éclatement : le module 12.
+     Le dernier rayon est à 100 % et non 92 % (la valeur par défaut de la page) :
+     à 92 % le boîtier touche le bas du cadre et passe sous la barre d'outils. */
+  var POSES = [
+    { orbit: '-124deg 55deg 104%', ex: 0 },
+    { orbit: '-42deg 66deg 108%',  ex: 94 },
+    { orbit: '24deg 72deg 100%',   ex: 0 }
+  ];
+  var slider = document.querySelector('[data-mv-action="explode-slider"]');
+  function poser(pose) {
+    viewer.cameraOrbit = pose.orbit;
+    if (slider) {
+      if (+slider.value !== pose.ex) {
+        slider.value = String(pose.ex);
+        slider.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    } else {
+      viewer.currentTime = pose.ex / 100 * 0.98;
+    }
+  }
+  var rotateBtn = document.querySelector('[data-mv-action="rotate"]');
+  var etatRendu = false;
+  var dernier = -1;
+
+  function prendreLaMain() {
+    if (etatRendu) return;
+    viewer.removeAttribute('camera-controls');
+    viewer.removeAttribute('auto-rotate');
+    etatRendu = true;
+  }
+  function rendreLaMain() {
+    if (!etatRendu) return;
+    viewer.setAttribute('camera-controls', '');
+    if (!rotateBtn || rotateBtn.getAttribute('aria-pressed') === 'true') {
+      viewer.setAttribute('auto-rotate', '');
+    }
+    etatRendu = false;
+  }
+
+  function appliquer() {
+    if (!GRAND.matches || !viewer.model) { rendreLaMain(); return; }
+    var i = parseInt(rail.getAttribute('data-panel') || '-1', 10);
+    if (isNaN(i) || i < 0) return;
+    /* Le dernier temps rend la main : l'acte est une présentation, pas une prise
+       d'otage. On garde sa pose, on rebranche seulement les contrôles. */
+    if (i >= POSES.length - 1) {
+      if (dernier !== i) {
+        dernier = i;
+        prendreLaMain();
+        poser(POSES[i]);
+      }
+      rendreLaMain();
+      return;
+    }
+    prendreLaMain();
+    if (dernier === i) return;
+    dernier = i;
+    poser(POSES[i]);
+  }
+
+  /* `data-panel` change au franchissement, pas à chaque image : un
+     MutationObserver suffit et ne coûte rien entre deux changements. */
+  new MutationObserver(appliquer).observe(rail, { attributes: true, attributeFilter: ['data-panel'] });
+  viewer.addEventListener('load', appliquer);
+  GRAND.addEventListener('change', function () { dernier = -1; appliquer(); });
+  appliquer();
 }());
