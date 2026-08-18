@@ -54,3 +54,47 @@ versionnés.
 - Les halos se calculent sur un calque **de la taille de la toile**, jamais de
   l'image produit : sinon le flou est coupé net à son bord et laisse un halo
   carré, très visible sur fond sombre.
+
+## `hue-to-brand.py` — ramener un visuel fourni sur la teinte de la charte
+
+Les visuels livrés par le client arrivent **bleus** (mesuré : teinte médiane 226° et
+190° en HSV, quand la charte n'admet que le teal `#00CBBE`, soit 174°). Ce script
+tourne la teinte sans toucher à la clarté perçue ni au grain de l'image.
+
+```
+python3 tools/render/hue-to-brand.py <master.png> <sortie.jpg> [largeur]
+```
+
+Quatre pièges, tous rencontrés et tous mesurés :
+
+- **Ne pas utiliser `hue-rotate` (CSS/SVG) ni une rotation HSV.** Le premier est une
+  approximation linéaire en YIQ : il décale la luminance et ternit les couleurs vives.
+  Le second conserve V, qui n'est pas la clarté perçue — l'image s'éclaircit
+  visiblement en passant du bleu au cyan. La rotation se fait donc **en Oklch**, où L
+  et C sont conservés à l'identique.
+- **L'ancre est l'accent lumineux, pas la teinte médiane.** Calée sur la médiane, la
+  rotation était juste au sens de la mesure et fausse à l'œil : sur le rendu Q-Bot, la
+  médiane est tirée à 208° par le fond sombre alors que les anneaux étaient déjà à
+  193°, à 6° de la charte. Les aligner par la médiane les envoyait à 165°, du vert.
+  L'ancre est le décile le plus clair des pixels colorés, pondéré par le chroma.
+- **Resserrer l'étendue, pas seulement translater.** Une translation conserve les 30°
+  d'écart entre le fond et les accents, ce qui envoie forcément l'un des deux hors du
+  teal. Les écarts à l'ancre sont multipliés par 0,6 : l'étendue tombe à une dizaine de
+  degrés, comme sur les visuels déjà en place.
+- **Le test de gamme doit porter sur le linéaire NON écrêté.** `lin_to_srgb` écrête les
+  négatifs (obligatoire : puissance fractionnaire d'un négatif = NaN), donc un test
+  fait après conversion ne voit jamais un canal négatif. Premier jet : 0,01 % de pixels
+  détectés hors gamme, alors qu'il y en avait 79 % — les aplats vifs passaient par
+  l'écrêtage muet du canal rouge et perdaient les deux tiers de leur chroma (0,180 →
+  0,069 sur la pastille du visuel produits). Corrigé, la remise en gamme se fait par
+  réduction de chroma à L et h constants (méthode de CSS Color 4). Contrôle qui compte :
+  après coup, 100 % des pixels sont dans la gamme et **41 % en sortiraient si on
+  augmentait le chroma de 3 %** — le résultat est donc collé au bord, c'est le teal le
+  plus vif que sRGB autorise à ces clartés.
+
+**Limite physique à connaître.** Un bleu sombre et très saturé n'a pas d'équivalent teal
+aussi chromatique : la gamme sRGB est nettement plus étroite du côté cyan à clarté
+basse. Un aplat `#4a53cc` (L 0,53 / C 0,18) devient au mieux `#037b79` (C 0,093). Le
+teal de charte, lui, est **clair** (L 0,76). Pour qu'un aplat lise comme `#00CBBE` il
+faudrait donc aussi le rééclairer, ce qui n'est plus une correction de teinte mais une
+réexposition du rendu : à demander au client, pas à décider ici.
