@@ -151,12 +151,24 @@
      animation autonome, avec ses propres bornes et sa propre inertie, alors qu'elle
      n'est qu'une lecture de l'état d'ouverture.
 
-     L'éclatement occupe donc toute la première moitié de la fenêtre de scrub (0 à
-     0.60, soit ~410 px), et le fondu avec lui : c'est quatre crans de molette pour
-     la course complète, contre moins de deux quand le fondu avait ses propres
-     bornes. Le boîtier est ouvert et en verre au centre du pas, là où le texte se
-     lit ; il le reste jusqu'à la sortie. */
-  var BURST_FULL = 0.60;
+     L'ouverture occupe la première moitié de la fenêtre de scrub (0 à 0.60, soit
+     ~410 px), et le fondu avec elle : quatre crans de molette pour la course
+     complète, contre moins de deux quand le fondu avait ses propres bornes. Le
+     boîtier est ouvert et en verre au centre du pas, là où le texte se lit.
+
+     PUIS IL SE REFERME, scrubbé lui aussi. C'était un saut sec à la bascule vers le
+     pas 4 : le choix se défendait tant que seule la géométrie était concernée — le
+     mouvement de la caméra masquait la coupe — mais il ne tient plus depuis que
+     l'opacité suit l'ouverture, puisqu'un saut de géométrie devient un saut de
+     fondu. La refermeture emprunte donc la même rampe que l'ouverture, sur la
+     MOITIÉ de la course : 0.70 à 1.00 contre 0 à 0.60, soit deux fois plus vite par
+     pixel parcouru. Elle se termine à 0.80 du pas, alors que la bascule vers le pas
+     suivant n'a lieu qu'à 1.00 : le boîtier est donc refermé ET opaque, immobile,
+     180 px avant que la caméra ne bouge. Les trois exigences — refermeture douce,
+     opacité liée à l'ouverture, opaque avant la rotation — se satisfont ensemble
+     dès lors que c'est le défilement qui gouverne, et non une inertie. */
+  var BURST_FULL = 0.60;   // ouverture complète
+  var BURST_HOLD = 0.70;   // fin de la tenue, début de la refermeture
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
   var shellMat = null, shellRGB = null, shellBlend = false;
@@ -661,7 +673,10 @@
        atteinte dans le clip. */
     var scrub = (i === EXPLODE_STEP);
     var f = scrub ? fraction(i) : 0;
-    var burstK = scrub ? Math.min(1, f / BURST_FULL) : 0;
+    var burstK = !scrub                ? 0
+               : f <= BURST_FULL       ? f / BURST_FULL
+               : f <= BURST_HOLD       ? 1
+               : 1 - (f - BURST_HOLD) / (1 - BURST_HOLD);
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
     var seg = tTarget < PHONE_HANDOFF;
     /* À l'instant où l'on entre ou sort du pas, on SAUTE : un lissage produisait un
