@@ -137,28 +137,26 @@
      donc vérifiée. En cas d'écart, l'effet se désactive et la séquence continue
      sans lui — jamais de coque à moitié transparente sur un modèle inattendu. */
   var XRAY_ALPHA = 0.26;   // opacité de la coque « en verre »
-  /* QUATRE temps, en fraction de la fenêtre de scrub (0.76 du pas, soit ~684 px) :
+  /* L'OPACITÉ N'EST PAS UNE PHASE : C'EST UNE FONCTION DE L'ÉCLATEMENT.
+     Boîtier fermé → opaque. Boîtier ouvert → verre. Et tout ce qui se trouve entre
+     les deux, dans un sens comme dans l'autre. Une seule ligne la calcule, à partir
+     de la position réelle dans le clip, ce qui rend impossibles par construction les
+     trois défauts qu'ont produits mes tentatives précédentes :
+       — plus de coque translucide sur un boîtier fermé, ni l'inverse ;
+       — plus de verre qui subsiste pendant la rotation vers le pas suivant, puisque
+         l'éclatement y est remis à zéro et que l'opacité suit le même instant ;
+       — plus de superposition verre + éclatement à mi-course, puisque les deux ne
+         font plus qu'un seul mouvement.
+     Ces défauts venaient tous de la même erreur : avoir traité l'opacité comme une
+     animation autonome, avec ses propres bornes et sa propre inertie, alors qu'elle
+     n'est qu'une lecture de l'état d'ouverture.
 
-       0.00 ─── 0.36   la coque se dissout            (~246 px)
-       0.30 ─── 0.60   les pièces s'écartent          (~205 px)
-       0.60 ─── 0.72   on tient l'image               (~82 px)
-       0.72 ─── 1.00   la coque redevient opaque      (~192 px)
-
-     Le centre du pas tombe à 0.605 de la fenêtre : le verre y est complet et
-     l'ouverture terminée, c'est l'image que le visiteur voit quand le texte est
-     lisible. Les deux premiers temps se chevauchent légèrement, ce qui les lie au
-     lieu de les mettre bout à bout.
-
-     LE QUATRIÈME TEMPS EST LE POINT IMPORTANT. Le retour à l'opaque était laissé à
-     l'inertie temporelle : la coque finissait donc de se resolidifier PENDANT que la
-     caméra amorçait sa rotation de 86° vers le pas 4, et un boîtier en verre qui
-     pivote se lit très mal. Il est désormais piloté par le défilement et terminé à
-     0.80 du pas, alors que la bascule vers le pas suivant n'a lieu qu'à 1.00 : il
-     reste 180 px de marge pendant lesquels l'objet est opaque et immobile. */
-  var XRAY_END    = 0.36;
-  var BURST_START = 0.30;
-  var BURST_FULL  = 0.60;
-  var SOLID_START = 0.72;
+     L'éclatement occupe donc toute la première moitié de la fenêtre de scrub (0 à
+     0.60, soit ~410 px), et le fondu avec lui : c'est quatre crans de molette pour
+     la course complète, contre moins de deux quand le fondu avait ses propres
+     bornes. Le boîtier est ouvert et en verre au centre du pas, là où le texte se
+     lit ; il le reste jusqu'à la sortie. */
+  var BURST_FULL = 0.60;
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
   var shellMat = null, shellRGB = null, shellBlend = false;
@@ -215,14 +213,7 @@
   function lerp(a, b, k) { return a + (b - a) * k; }
   /* Courbe en S de Hermite : plate aux deux bouts, la plus économique qui soit. */
   function smooth(x) { return x * x * (3 - 2 * x); }
-  /* Part de « verre » à la position f dans la fenêtre : 0 = opaque, 1 = translucide.
-     Monte, se maintient, puis redescend — c'est la descente qui doit être finie
-     avant que la caméra ne pivote. */
-  function verre(f) {
-    if (f <= XRAY_END)    return smooth(f / XRAY_END);
-    if (f <  SOLID_START) return 1;
-    return smooth(1 - (f - SOLID_START) / (1 - SOLID_START));
-  }
+
 
   /* ══ CALQUE D'ANNOTATIONS PROJETÉES ═══════════════════════════════════════
      Le décor de la séquence était en CSS : un trait pour le bureau, un rectangle
@@ -665,47 +656,40 @@
        geste, sans inertie — une tête de lecture qui traîne se perçoit comme du
        retard, pas comme de la fluidité (même règle que les progressions
        scrubbées de main.js). Ailleurs, la transition garde son inertie. */
-    /* Le pas « Ouvrez-le » se lit en deux temps sur la même course de
-       défilement : jusqu'à XRAY_END la coque se dissout, au-delà les pièces
-       s'écartent. La coque, elle, RESTE en verre pendant l'éclatement — c'est ce
-       qui donne le montage qui se défait à vue plutôt qu'une boîte qui s'ouvre. */
+    /* Le pas « Ouvrez-le » n'a plus qu'un seul mouvement : le boîtier s'ouvre. Son
+       opacité en est la conséquence, calculée plus bas à partir de la position
+       atteinte dans le clip. */
     var scrub = (i === EXPLODE_STEP);
     var f = scrub ? fraction(i) : 0;
-    /* Courbe en S sur la dissolution : une rampe linéaire d'opacité démarre trop
-       franchement — l'œil est bien plus sensible aux premiers pourcents de
-       transparence qu'aux derniers. */
-    var xrayK  = scrub ? verre(f) : 0;
-    var burstK = scrub ? Math.max(0, Math.min(1, (f - BURST_START) / (BURST_FULL - BURST_START))) : 0;
+    var burstK = scrub ? Math.min(1, f / BURST_FULL) : 0;
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
-    /* L'opacité est LISSÉE, à la différence de la tête de lecture de l'éclatement.
-       C'est un écart assumé avec la règle « une tête de lecture qui traîne se perçoit
-       comme du retard » : elle vaut pour un déplacement de pièces, où le décalage se
-       voit, pas pour une opacité, où deux dixièmes de seconde d'inertie sont
-       imperceptibles comme retard et décisifs comme fluidité. C'est ce lissage qui
-       transforme les crans de la molette en glissement continu.
-       0,11 et non 0,16 : les deux ont été mesurés sur un défilement à la molette.
-       À 0,16 le plus grand saut d'une image à l'autre valait 0,088 ; à 0,11 il tombe
-       à 0,051, pour un temps d'établissement d'environ 400 ms — imperceptible sur une
-       opacité. En dessous, le fondu commence à traîner derrière le doigt.
-       L'inertie est ASYMÉTRIQUE. En descendant vers le verre, il faut de la douceur :
-       c'est là que les crans de la molette se voyaient. En remontant vers l'opaque,
-       il faut de la franchise : tout retard mange la marge qui sépare la fin du
-       fondu du début de la rotation. 0,11 dans un sens, 0,30 dans l'autre. */
-    var aTarget = scrub ? 1 - (1 - XRAY_ALPHA) * xrayK : 1;
-    cur.alpha = snap ? aTarget
-                     : lerp(cur.alpha, aTarget, aTarget > cur.alpha ? 0.30 : 0.11);
     var seg = tTarget < PHONE_HANDOFF;
-    /* Deux états, jamais d'entre-deux animé : pendant le pas d'ouverture la
-       position colle au scroll ; en dehors elle vaut 0. À l'instant où l'on entre
-       ou sort de ce pas, on SAUTE — un lissage produisait un réassemblage d'une
-       seconde pendant que la caméra pivotait de 118°, ce qui se lisait comme un
-       mouvement parasite en fin de séquence. */
+    /* À l'instant où l'on entre ou sort du pas, on SAUTE : un lissage produisait un
+       réassemblage d'une seconde pendant que la caméra pivotait de 86°, ce qui se
+       lisait comme un mouvement parasite en fin de séquence. Et comme l'opacité est
+       une lecture de cette position, elle saute avec — c'est ce qui garantit qu'on ne
+       pivote jamais en verre.
+       PENDANT le pas, en revanche, la position est légèrement lissée. Elle était
+       collée au défilement brut, ce qui allait tant qu'elle ne pilotait que de la
+       géométrie : un cran de molette déplaçait les pièces d'un coup, et un
+       déplacement franc se lit très bien. Depuis que l'OPACITÉ en découle, le même
+       cran fait sauter le fondu de 0,18 — et là ça se voit. Un lissage à 0,22
+       (~250 ms) transforme les crans en glissement pour les deux à la fois, sans
+       jamais rompre leur corrélation : c'est le même nombre qui les gouverne. */
     if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = tTarget;   // on ne franchit jamais t=1.0
-    else if (scrub || scrub !== wasScrub) cur.t = tTarget;
+    else if (scrub !== wasScrub) cur.t = tTarget;           // entrée ou sortie du pas
+    else if (scrub) cur.t = lerp(cur.t, tTarget, 0.22);     // pendant le pas
     else cur.t = lerp(cur.t, tTarget, k);
     wasScrub = scrub;
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
     if (cur.t > 0.98 && cur.t < PHONE_HANDOFF) cur.t = 0.98;
+
+    /* L'opacité, lue sur la position RÉELLE dans le clip — donc après toutes les
+       corrections ci-dessus, saut de segment compris. Aucune inertie propre : elle
+       ne peut ni prendre du retard sur l'ouverture, ni la devancer. La courbe en S
+       reste utile, l'œil étant plus sensible aux premiers pourcents de transparence
+       qu'aux derniers. */
+    cur.alpha = 1 - (1 - XRAY_ALPHA) * smooth(Math.min(1, cur.t / EXPLODE_END));
 
     /* La dérive s'ajoute à l'orbite calculée, elle ne la remplace pas : le
        scrub garde donc la main, et `idleK` fait le fondu dans les deux sens pour
@@ -782,7 +766,6 @@
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
                  /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
                     c'est-à-dire précisément quand elle doit jouer. */
-                 Math.abs(cur.alpha - aTarget) > 0.002 ||
                  idle || idleK > 0.002 || camLag;
     if (moving) { running = true; requestAnimationFrame(function () { apply(false); }); }
     else running = false;
