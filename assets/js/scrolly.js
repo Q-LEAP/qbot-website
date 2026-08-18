@@ -137,38 +137,28 @@
      donc vérifiée. En cas d'écart, l'effet se désactive et la séquence continue
      sans lui — jamais de coque à moitié transparente sur un modèle inattendu. */
   var XRAY_ALPHA = 0.26;   // opacité de la coque « en verre »
-  /* CINQ temps, en fraction de la fenêtre de scrub (0.76 du pas, soit ~684 px) :
+  /* QUATRE temps, en fraction de la fenêtre de scrub (0.76 du pas, soit ~684 px) :
 
-       0.00 ─── 0.20   la coque se dissout          (~137 px)
-       0.20 ─── 0.30   on tient le verre            (~68 px)   ← le moment
-       0.30 ─── 0.44   la coque redevient opaque    (~96 px)
-       0.47 ─── 0.60   les pièces s'écartent        (~89 px)
-       0.60 ─── 1.00   on tient la vue éclatée      (~274 px)
+       0.00 ─── 0.36   la coque se dissout            (~246 px)
+       0.30 ─── 0.60   les pièces s'écartent          (~205 px)
+       0.60 ─── 0.72   on tient l'image               (~82 px)
+       0.72 ─── 1.00   la coque redevient opaque      (~192 px)
 
-     LA RÈGLE QUI COMPTE : le verre et l'éclatement ne se superposent JAMAIS. La
-     version précédente tenait la coque translucide pendant toute l'ouverture, et
-     c'était illisible — le plateau sorti passait derrière une coque en verre, ses
-     surfaces texturées se superposaient à celles de la coque et aux traits
-     d'annotation, et rien ne se lisait plus. Ce n'était pas un défaut de rendu (à
-     opacité 1 le mode BLEND est à 2,5/255 de l'opaque, imperceptible) mais de
-     composition : trop de plans translucides l'un derrière l'autre.
-     Chaque temps ne montre donc plus qu'une chose. On regarde À TRAVERS un boîtier
-     fermé, puis on ouvre un boîtier opaque : deux démonstrations, jamais mélangées.
+     Le centre du pas tombe à 0.605 de la fenêtre : le verre y est complet et
+     l'ouverture terminée, c'est l'image que le visiteur voit quand le texte est
+     lisible. Les deux premiers temps se chevauchent légèrement, ce qui les lie au
+     lieu de les mettre bout à bout.
 
-     Le centre du pas tombe à 0.605 de la fenêtre : l'ouverture y est terminée et la
-     coque opaque, ce qui reste l'image à voir quand le texte est lisible. Et la
-     coque est redevenue opaque dès 0.44, bien avant la bascule vers le pas 4 à 1.00 :
-     elle ne pivote donc jamais en verre. */
-  var XRAY_END    = 0.20;   // dissolution terminée
-  var XRAY_HOLD   = 0.30;   // fin de la tenue du verre
-  var SOLID_END   = 0.44;   // opaque de nouveau
-  /* 0.47 et non 0.44 : l'opacité est lissée alors que la tête de lecture de
-     l'éclatement colle au défilement. Démarrer l'ouverture pile à la fin de la
-     resolidification laissait, sur un défilement rapide, deux images où la coque
-     encore un peu translucide s'ouvrait déjà. Ces 3 % de fenêtre — une vingtaine de
-     pixels — donnent au lissage le temps d'arriver. */
-  var BURST_START = 0.47;
+     LE QUATRIÈME TEMPS EST LE POINT IMPORTANT. Le retour à l'opaque était laissé à
+     l'inertie temporelle : la coque finissait donc de se resolidifier PENDANT que la
+     caméra amorçait sa rotation de 86° vers le pas 4, et un boîtier en verre qui
+     pivote se lit très mal. Il est désormais piloté par le défilement et terminé à
+     0.80 du pas, alors que la bascule vers le pas suivant n'a lieu qu'à 1.00 : il
+     reste 180 px de marge pendant lesquels l'objet est opaque et immobile. */
+  var XRAY_END    = 0.36;
+  var BURST_START = 0.30;
   var BURST_FULL  = 0.60;
+  var SOLID_START = 0.72;
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
   var shellMat = null, shellRGB = null, shellBlend = false;
@@ -229,10 +219,9 @@
      Monte, se maintient, puis redescend — c'est la descente qui doit être finie
      avant que la caméra ne pivote. */
   function verre(f) {
-    if (f <= XRAY_END)  return smooth(f / XRAY_END);
-    if (f <= XRAY_HOLD) return 1;
-    if (f <  SOLID_END) return smooth(1 - (f - XRAY_HOLD) / (SOLID_END - XRAY_HOLD));
-    return 0;
+    if (f <= XRAY_END)    return smooth(f / XRAY_END);
+    if (f <  SOLID_START) return 1;
+    return smooth(1 - (f - SOLID_START) / (1 - SOLID_START));
   }
 
   /* ══ CALQUE D'ANNOTATIONS PROJETÉES ═══════════════════════════════════════
@@ -688,13 +677,6 @@
     var xrayK  = scrub ? verre(f) : 0;
     var burstK = scrub ? Math.max(0, Math.min(1, (f - BURST_START) / (BURST_FULL - BURST_START))) : 0;
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
-    /* L'ouverture attend que la coque soit RÉELLEMENT redevenue opaque, et pas
-       seulement que le défilement l'ait demandé. L'opacité est lissée, la tête de
-       lecture ne l'est pas : sur un geste rapide, un cran de molette (~0,15 de
-       fenêtre) dépasse d'un coup la zone de resolidification, et deux images
-       montraient alors une coque encore translucide déjà en train de s'ouvrir. On
-       ne freine que l'ouverture — la refermeture, elle, n'a rien à attendre. */
-    if (scrub && cur.alpha < 0.97 && tTarget > cur.t) tTarget = cur.t;
     /* L'opacité est LISSÉE, à la différence de la tête de lecture de l'éclatement.
        C'est un écart assumé avec la règle « une tête de lecture qui traîne se perçoit
        comme du retard » : elle vaut pour un déplacement de pièces, où le décalage se
