@@ -3,26 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About — Q-BOT by Q-Leap Luxembourg</title>
-  <meta name="description" content="Q-Leap is a Luxembourg-based software testing expert company for over 10 years. Discover the team behind Q-BOT, the 2FA automation solution.">
+  <title>About — Q-Bot by Q-Leap Luxembourg</title>
+  <meta name="description" content="Q-Leap is a Luxembourg-based software testing expert company for over 10 years. Discover the team behind Q-Bot, the 2FA automation solution.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://q-bot.eu/en/about.html">
   <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/about.html">
   <link rel="alternate" hreflang="fr" href="https://q-bot.eu/a-propos.html">
   <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/a-propos.html">
   <!-- Open Graph & Twitter Card -->
-  <meta property="og:title" content="About — Q-BOT by Q-Leap Luxembourg">
-  <meta property="og:description" content="Q-Leap is a Luxembourg-based software testing expert company for over 10 years. Discover the team behind Q-BOT, the 2FA automation solution.">
+  <meta property="og:title" content="About — Q-Bot by Q-Leap Luxembourg">
+  <meta property="og:description" content="Q-Leap is a Luxembourg-based software testing expert company for over 10 years. Discover the team behind Q-Bot, the 2FA automation solution.">
   <meta property="og:url" content="https://q-bot.eu/en/about.html">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Q-BOT robot, two-factor authentication automation device">
+  <meta property="og:image:alt" content="The Q-Bot robot, two-factor authentication automation device">
   <meta property="og:locale" content="en_US">
-  <meta property="og:site_name" content="Q-BOT by Q-Leap">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="About — Q-BOT by Q-Leap Luxembourg">
-  <meta name="twitter:description" content="Q-Leap is a Luxembourg-based software testing expert company for over 10 years. Discover the team behind Q-BOT, the 2FA automation solution.">
+  <meta name="twitter:title" content="About — Q-Bot by Q-Leap Luxembourg">
+  <meta name="twitter:description" content="Q-Leap is a Luxembourg-based software testing expert company for over 10 years. Discover the team behind Q-Bot, the 2FA automation solution.">
   <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
@@ -31,14 +35,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026-08-19">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": "https://q-bot.eu/#organization",
     "name": "Q-Leap",
-    "alternateName": "Q-BOT",
+    "alternateName": "Q-Bot",
     "url": "https://q-bot.eu/",
     "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
     "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
@@ -90,13 +94,13 @@
 <header class="nav" role="banner">
   <div class="container">
     <nav class="nav__inner" aria-label="Main navigation">
-      <a href="index.html" class="nav__logo"><img src="../assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="94" height="40"></a>
+      <a href="index.html" class="nav__logo"><img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40"></a>
       <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu"><span></span><span></span><span></span></button>
       <ul class="nav__menu" id="main-menu" role="list">
         <li><a href="about.html" class="nav__link active">About</a></li>
         <li><a href="technical-specs.html" class="nav__link">Technical Specs</a></li>
         <li><a href="contact.html" class="nav__link">Contact</a></li>
-        </ul>
+      </ul>
       <div class="nav__actions">
         <a href="contact.html" class="btn btn--primary">Free Demo</a>
                 <div class="nav__lang">
@@ -118,7 +122,7 @@
 
 <div class="breadcrumb"><div class="container">
   <ol class="breadcrumb__list">
-    <li><a href="index.html">Home</a></li><li><span>›</span></li><li><a href="about.html" aria-current="page">About</a></li>
+    <li><a href="index.html">Home</a></li><li><span>›</span></li><li><span aria-current="page">About</span></li>
   </ol>
 </div></div>
 
@@ -136,7 +140,10 @@
         </a>
       </div>
       <div class="intro__image">
-        <img src="../assets/img/device-photo.jpg" alt="Q-BOT prototype in development at Q-Leap" width="560" height="400" loading="lazy">
+        <!-- 1200×1600 : le fichier est en PORTRAIT. Il était déclaré 560×400, donc en
+             paysage : la page réservait une boîte de mauvaise proportion et se
+             remettait en page au chargement de l'image. -->
+        <img src="../assets/img/device-photo.jpg" alt="Q-Bot prototype in development at Q-Leap" width="1200" height="1600" loading="lazy">
       </div>
     </div>
   </div>
@@ -181,7 +188,7 @@
       <div class="intro__image">
         <img
           src="../assets/img/products-lineup.jpg"
-          alt="Q-Leap product range"
+          alt="Smartphone showing a transaction approval next to a laptop"
           width="560" height="373"
           loading="lazy"
         >
@@ -192,10 +199,10 @@
 
 
 <section class="section section--dark" aria-labelledby="cta-about-title">
-  <div class="container" style="text-align:center;">
+  <div class="container cta-block">
     <h2 class="section-title" id="cta-about-title" style="color:var(--white); margin-bottom:16px;">Would you like to know more?</h2>
     <h3 style="font-size:1.5rem; font-weight:600; margin-bottom:32px; color:var(--teal);">Book a demo</h3>
-    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+    <div class="cta-block__actions">
       <a href="contact.html" class="btn btn--primary btn--lg">Make an appointment</a>
     </div>
   </div>
@@ -208,7 +215,7 @@
     <div class="footer__grid">
       <div>
         <div class="footer__logo">
-          <img src="../assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="84" height="36">
+          <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
         </div>
         <p class="footer__desc">
           The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap.
@@ -223,11 +230,11 @@
         </div>
       </div>
       <div class="footer__col">
-        <h3>Q-BOT</h3>
+        <h3>Q-Bot</h3>
         <ul role="list">
           <li><a href="index.html">Home</a></li>
           <li><a href="technical-specs.html">Technical Specs</a></li>
-          <li><a href="about.html">About</a></li>
+          <li><span aria-current="page">About</span></li>
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="blog.html">Blog</a></li>
         </ul>
@@ -235,8 +242,8 @@
       <div class="footer__col">
         <h3>Product</h3>
         <ul role="list">
-          <li><a href="../modele-3d.html">3D Model</a></li>
-          <li><a href="order.html">Order Q-BOT</a></li>
+          <li><a href="3d-model.html">3D Model</a></li>
+          <li><a href="order.html">Order Q-Bot</a></li>
           <li><a href="contact.html">Free Demo</a></li>
         </ul>
       </div>
@@ -254,7 +261,7 @@
       </div>
     </div>
     <div class="footer__bottom">
-      <p class="footer__copy">Copyright &copy;2026 Q-BOT powered by Q-Leap</p>
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Legal links">
         <a href="https://q-bot.eu/en/terms-and-conditions-of-sale/" target="_blank" rel="noopener">Terms of Sale</a>
         <a href="https://q-bot.eu/en/privacy/" target="_blank" rel="noopener">Privacy</a>
@@ -263,6 +270,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js" defer></script>
+<script src="../assets/js/main.js?v=2026-08-18" defer></script>
 </body>
 </html>

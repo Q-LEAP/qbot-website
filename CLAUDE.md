@@ -828,3 +828,104 @@ Conséquences à ne pas oublier :
   seconde fois (UV par-dessus UV, matériaux déjà sombres re-assombris).
 - Contrôlé après coup : éclatement, insertion du téléphone, jour/nuit, FR et EN, plus le repli
   `file://`. Aucune erreur console.
+
+## Passe mobile du scrollytelling + modèle compressé (2026-08-19)
+
+Audit mesuré (Playwright, 375×667 / 360×740 / 390×844 / 414×896 / 844×390 en paysage)
+puis correction. Rien de tout cela ne se voyait à l'œil sur un écran de bureau.
+
+### Géométrie : une seule grandeur gouverne les deux zones
+
+La scène (`44svh` sous une barre de 84 px) et la carte de texte (calée en bas) étaient
+posées **indépendamment** : rien ne garantissait qu'elles ne se croisent pas, et elles se
+croisaient — 16 px de recouvrement sur iPhone SE, 89 px en paysage, avec le bas du
+boîtier passant sous la carte au pas 2 et la cote « 24 cm » au pas 4.
+
+Désormais `--sc-card-zone` réserve la hauteur du texte et la scène prend le reste
+(`--sc-free`). **Cette hauteur est mesurée, pas devinée** : `scrolly.js` relève la plus
+haute des quatre cartes au chargement, au redimensionnement et à l'arrivée des polices.
+Deux constantes ont été essayées avant et sont retombées fausses (un pourcentage de la
+hauteur d'écran donne trop peu sur un petit téléphone, trop sur un grand ; une valeur
+fixe casse au premier mot ajouté au texte). Résultat : **zéro recouvrement** sur les
+quatre tailles portrait, aux quatre pas, et la scène passe de 371 à 420 px sur iPhone 14.
+
+Trois autres pièges de la même famille, tous mesurés :
+- **Le zoom de caméra est un `scale()` CSS** porté par la scène. Sur `100vw` à 1,16 il
+  donnait 452 px pour un écran de 390 : 31 px rognés de chaque côté. Sur mobile
+  l'amplitude est ramenée de moitié et les dimensions sont divisées par
+  `--sc-zoom-max`, si bien que la boîte agrandie coïncide exactement avec sa rangée.
+- **`--sc-top: 44px`** et non la hauteur de la barre (72) : la barre se masque au
+  défilement vers le bas, lui réserver sa place en permanence coûtait 32 px d'objet.
+- **Le paysage doit annuler l'empilement** (`--sc-card-zone: 0`, `grid-template-rows:
+  none`), sinon `--sc-free` devient négatif et la scène part à −164 px. Sous 520 px de
+  haut la séquence reprend la mise en page deux colonnes du bureau.
+
+### Ce que le mobile avait perdu
+
+- **Aucun moyen de sortir** de 4,2 écrans épinglés : le lien d'évitement mesure 1×1 px
+  hors focus, donc n'existe pas sans clavier. Le **même élément** devient une pastille
+  visible tant que `body.is-scrolly` est posé. L'intitulé complet fait 180 px et
+  débordait : seul le premier mot est visible, le reste masqué visuellement — le nom
+  accessible du lien ne change pas.
+- **Aucune progression annoncée** : les pastilles (les seules à porter `aria-current`)
+  sont masquées sous 900 px et le compteur était `aria-hidden`. Il est maintenant
+  `role="status"` avec une phrase (« Étape 2 sur 4 ») doublant la forme chiffrée.
+- **Aucun appel à l'action** : le bouton flottant est retiré sous 900 px. Il revient
+  **dans la carte du dernier pas** (`.scrolly__step-cta`), où il ne peut recouvrir
+  personne, avec le libellé exact de `data-cta-last`.
+- **Le bouton « retour en haut » recouvrait le compteur** ([322,772,44×44] contre
+  [331,811,41×19]) : masqué pendant la séquence.
+- **422 px de défilement à vide** après le dernier texte : `--scrolly-screens: 4.2`.
+- Cotes projetées à 11 px → 13 px (la scène à 86vw laisse la marge pour les agrandir).
+
+### `--scrolly-screens` : la hauteur quitte le style en ligne
+
+`<section class="scrolly" style="height: calc(4.5 * 100svh)">` était **inatteignable par
+toute requête média**. Sous `prefers-reduced-motion` la section gardait donc 4,5 écrans
+pour 1 917 px de contenu : **1 881 px de vide**, mesurés. La hauteur est passée en
+variable CSS, remise à `auto` en mouvement réduit (vide : 0 px). Troisième occurrence du
+même piège sur ce site (cf. `.spec-item`, les centrages de `commandez`).
+
+### Le modèle passe en Draco : 2 622 → 571 Ko
+
+`gltf-transform draco` (npx, sans installation). **Aucune décimation** — la géométrie,
+les 6 matériaux, leurs couleurs de base (que `scrolly.js` vérifie pour identifier la
+coque) et le clip « Explode » sont identiques. Contrôle : écart pixel moyen de
+0,000 à 0,073/255 sur les quatre pas, **aucun pixel au-delà de 8/255**.
+
+- à 1,5 Mbit/s le modèle est prêt en **4,3 s au lieu de 14,7 s**, page de **1,71 Mo au
+  lieu de 3,58 Mo** ;
+- `EXT_meshopt_compression` a été essayé d'abord (631 Ko, encore mieux) et **écarté** :
+  model-viewer 4.3.1 ne l'accepte pas — `THREE.GLTFLoader: setMeshoptDecoder must be
+  called before loading`, et le composant n'expose aucun moyen d'injecter le décodeur ;
+- Draco, lui, est décodé nativement, mais **model-viewer va chercher son décodeur sur
+  `www.gstatic.com`** (`draco_wasm_wrapper.js` + `draco_decoder.wasm`). Même famille de
+  domaine que les polices du site, mais une dépendance de plus : bloquée, le modèle ne
+  charge **pas du tout**. D'où le filet ci-dessous. Le décodeur n'a pas été auto-hébergé
+  à dessein : ce serait un `fetch` de plus, que le mode `file://` interdit — la variante
+  gstatic, elle, fonctionne même en ouvrant le fichier à la main.
+- **Le master texturé non compressé est archivé** dans
+  `Documentations/assets-sources/qbot-textured-uncompressed.glb`. C'est lui qu'il faut
+  recompresser si le modèle change ; ne jamais recompresser le livré.
+- **Sidecar régénéré** : `qbot.glb.data.js` tombe de 6,4 Mo à 762 Ko.
+
+### Filet de sécurité : 12 s, puis le repli statique
+
+Nouveau garde-fou dans `scrolly.js` : si `viewer.model` est toujours absent au bout de
+12 secondes, l'image de repli prend la place du canevas et l'indicateur de chargement
+disparaît. Vérifié en bloquant le décodeur Draco : `data-fallback="modele indisponible"`,
+image affichée, séquence toujours parcourable (le pas 3 s'active normalement). Le repli
+s'étend aussi désormais aux **connexions lentes** (`effectiveType` 2g, ou 3g sous
+1,2 Mbit/s) — seul `saveData` était testé, or il est rarement activé.
+
+Et un **indicateur de chargement** (`.scrolly__loading`) affiche la progression réelle :
+sans lui, quinze secondes d'affiche immobile ne se distinguent pas d'une panne.
+
+### En une colonne, l'image suit toujours son texte
+
+Sur deux colonnes, alterner les côtés donne le rythme ; en une colonne cela met deux
+images bout à bout. Relevé à 390 px sur la page d'accueil : « La solution » se lit
+texte → image et la section LuxTrust juste après image → texte, donc **« t I I t »** —
+deux visuels d'affilée sans un mot entre eux. Toutes les autres grilles du site étaient
+déjà en texte → image ; la règle (`order: 2` sur `.intro__image` sous 900 px) aligne la
+dernière exception. Le bureau est inchangé (`tI It`).

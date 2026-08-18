@@ -1,12 +1,12 @@
-# Q-BOT by Q-Leap
+# Q-Bot by Q-Leap
 
-> Q-BOT is a physical robot that automates two-factor authentication (2FA) — including LuxTrust hardware tokens — for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It physically presses the 2FA device, reads the one-time code with a camera, and returns it over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
+> Q-Bot is a physical robot that automates two-factor authentication (2FA) — including LuxTrust hardware tokens — for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It physically presses the 2FA device, reads the one-time code with a camera, and returns it over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
 
-Q-BOT solves a problem no software-only tool can: 2FA methods that require a physical action (a hardware token button, a phone notification) cannot be automated by a browser driver like Selenium. Q-BOT is a robot, not a script — it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
+Q-Bot solves a problem no software-only tool can: 2FA methods that require a physical action (a hardware token button, a phone notification) cannot be automated by a browser driver like Selenium. Q-Bot is a robot, not a script — it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
 
 Key facts:
 - Subscription: €900/month, all inclusive (support, replacement, no long-term commitment).
-- Hardware: Raspberry Pi 5, OLED display, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
+- Hardware: Raspberry Pi 5, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
 - Compatible with: LuxTrust (physical token and mobile), Google/Microsoft Authenticator, most smartphone-based 2FA.
 - Compatible test frameworks: Selenium, Cypress, Playwright, Appium, Robot Framework, TestComplete, Jenkins, GitLab CI.
 - Privacy: screenshots are deleted immediately after OTP extraction; no data retention; runs on the customer's local network.
@@ -27,7 +27,7 @@ These figures come from the client's own published pages; do not infer or round 
   Bluetooth 5.0 with Low Energy (BLE), Gigabit Ethernet. Runs Linux.
 - Retrieval of the one-time code: under 10 seconds. Access through a web interface or a
   REST API. No software installation required on the tester's machine.
-- Data: Q-BOT keeps the authentication scenarios, so test data must be used rather than
+- Data: Q-Bot keeps the authentication scenarios, so test data must be used rather than
   production data. The photo taken of the code is deleted after processing.
 - Designed and manufactured by Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange,
   Luxembourg. Contact: bot@q-leap.eu, +352 20 21 17.
@@ -72,4 +72,4 @@ These figures come from the client's own published pages; do not infer or round 
 
 ---
 
-Last updated: 2026-08-12
+Last updated: 2026-08-18

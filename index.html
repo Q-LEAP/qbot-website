@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Q-BOT — Automatiser la double authentification 2FA | Q-Leap</title>
-  <meta name="description" content="Q-BOT est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
-  <meta name="robots" content="index, follow">
+  <title>Q-Bot — Automatiser la double authentification 2FA | Q-Leap</title>
+  <meta name="description" content="Q-Bot est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://q-bot.eu/">
   <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/">
   <link rel="alternate" hreflang="fr" href="https://q-bot.eu/">
   <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/">
 
   <!-- Open Graph & Twitter Card -->
-  <meta property="og:title" content="Q-BOT — Automatiser la double authentification 2FA">
-  <meta property="og:description" content="Q-BOT est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
+  <meta property="og:title" content="Q-Bot — Automatiser la double authentification 2FA">
+  <meta property="og:description" content="Q-Bot est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
   <meta property="og:url" content="https://q-bot.eu/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Le robot Q-BOT, boîtier d'automatisation de la double authentification">
+  <meta property="og:image:alt" content="Le robot Q-Bot, boîtier d'automatisation de la double authentification">
   <meta property="og:locale" content="fr_FR">
-  <meta property="og:site_name" content="Q-BOT by Q-Leap">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Q-BOT — Automatiser la double authentification 2FA">
-  <meta name="twitter:description" content="Q-BOT est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
+  <meta name="twitter:title" content="Q-Bot — Automatiser la double authentification 2FA">
+  <meta name="twitter:description" content="Q-Bot est la solution unique sur le marché pour automatiser la double authentification (2FA), y compris LuxTrust. Plug & Play, 100% efficace, API disponible.">
   <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <!-- Favicon -->
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
@@ -37,14 +40,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026-08-19">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=50">
+  <!-- Google model-viewer : web component autonome, aucun build requis -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": "https://q-bot.eu/#organization",
     "name": "Q-Leap",
-    "alternateName": "Q-BOT",
+    "alternateName": "Q-Bot",
     "url": "https://q-bot.eu/",
     "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
     "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
@@ -73,7 +79,7 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "url": "https://q-bot.eu/",
-  "name": "Q-BOT by Q-Leap",
+  "name": "Q-Bot by Q-Leap",
   "inLanguage": "fr-FR",
   "publisher": {
     "@id": "https://q-bot.eu/#organization"
@@ -84,8 +90,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Product",
-  "name": "Q-BOT",
-  "description": "Q-BOT est un robot qui automatise la double authentification (2FA), y compris LuxTrust, pour les équipes de test logiciel. Conçu et fabriqué au Luxembourg par Q-Leap.",
+  "name": "Q-Bot",
+  "description": "Q-Bot est un robot qui automatise la double authentification (2FA), y compris LuxTrust, pour les équipes de test logiciel. Conçu et fabriqué au Luxembourg par Q-Leap.",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
   "brand": {
     "@type": "Brand",
@@ -118,8 +124,8 @@
 <header class="nav" role="banner">
   <div class="container">
     <nav class="nav__inner" aria-label="Navigation principale">
-      <a href="index.html" class="nav__logo" aria-label="Q-BOT — Accueil">
-        <img src="assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="94" height="40">
+      <a href="index.html" class="nav__logo" aria-label="Q-Bot — Accueil">
+        <img src="assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
       </a>
 
       <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
@@ -163,33 +169,228 @@
           <a href="contact.html" class="btn btn--outline-white btn--lg">Demander une démo</a>
         </div>
       </div>
-      <div class="hero__film">
-        <!-- Film produit : muet, bouclé, démarrage automatique dès l'arrivée.
-             Il est tourné sur fond clair — impossible de le détourer (le
-             boîtier est noir, il disparaîtrait sur le noir de la page), il est
-             donc présenté dans son propre cadre plutôt qu'en fond de hero. -->
-        <video
-          class="hero__film-video"
-          src="assets/video/qbot-home.mp4"
-          poster="assets/img/qbot-film-poster.jpg"
-          autoplay muted loop playsinline preload="auto"
-          width="1280" height="720"
-          aria-label="Film produit Q-BOT — robot d'automatisation de la double authentification"
-        ></video>
+      <!-- Variante Q-BOTAlt — le film de 2,9 Mo est retiré de cette branche.
+           La page montrait le produit deux fois de suite en mouvement : le film
+           ici, puis la séquence 3D juste dessous. Le hero garde un visuel fixe
+           et léger (49 Ko), la mise en scène est portée par la séquence, qui est
+           elle contrôlée par le visiteur. Sur `main`, le film reste en place. -->
+      <div class="hero__image">
+        <!-- Dimensions réelles du fichier. Elles étaient déclarées 900×900 pour une
+             image 900×710 : le navigateur réservait un carré, puis remettait la
+             page en page au chargement — un décalage de 190 px sur le plus gros
+             visuel de la page, et c'est le premier écran. -->
+        <img
+          src="assets/img/qbot-hero.webp"
+          alt="Le robot Q-Bot, boîtier d'automatisation de la double authentification"
+          width="900" height="710"
+          fetchpriority="high"
+        >
       </div>
     </div>
   </div>
 </section>
 
+<!-- Lien d'évitement de la séquence. Quatre écrans épinglés, c'est quatre
+     hauteurs de fenêtre à traverser : à la souris on ne le sent pas, au clavier
+     ou au lecteur d'écran c'est un couloir. Masqué au repos, révélé à la prise
+     de focus, comme le lien d'évitement de la barre de navigation. -->
+<a href="#apres-sequence" class="skip-nav skip-nav--sequence">Passer<span class="skip-nav__rest"> la séquence de présentation</span></a>
+
+<!-- ======= SÉQUENCE 3D AU SCROLL (variante Q-BOTAlt) =======
+     Une scène collante, cinq pas de texte. Le scroll ne déclenche pas une
+     animation : il en écrit la position, image par image. Cf. assets/js/scrolly.js
+     et la section « Scrollytelling » de assets/css/scrolly.css. -->
+<!-- Hauteur : elle est dans assets/css/scrolly.css (`--scrolly-screens`), et
+     surtout PAS ici. Écrite en style en ligne, aucune requête média ne pouvait la
+     reprendre : sous « mouvement réduit » la section gardait 4,5 écrans pour un
+     contenu qui n'en occupait plus que deux, et le mobile ne pouvait pas la
+     raccourcir. La règle vaut pour toute valeur qui dépend du contexte. -->
+<section class="scrolly" aria-labelledby="scrolly-title">
+  <h2 id="scrolly-title" class="visually-hidden">Q-Bot, étape par étape</h2>
+
+  <div class="scrolly__stage">
+   <!-- Un seul conteneur porte le zoom de « caméra » : le canevas 3D et le calque
+        d'annotations doivent subir EXACTEMENT la même transformation, sinon les
+        repères se décalent du produit dès que le zoom change. -->
+   <div class="scrolly__scene">
+    <model-viewer
+      class="scrolly__model"
+      id="scrolly-viewer"
+      src="assets/models/qbot.glb"
+      poster="assets/img/qbot-v3-poster.png"
+      alt="Le robot Q-Bot : le boîtier vu sous plusieurs angles, puis la vue éclatée de ses composants"
+      camera-orbit="-28deg 74deg 0.62m"
+      camera-target="0m 0.073m 0m"
+      field-of-view="30deg"
+      min-camera-orbit="auto 10deg 0.2m"
+      max-camera-orbit="auto 170deg 2m"
+      shadow-intensity="1.3"
+      shadow-softness="0.75"
+      exposure="0.8"
+      environment-image="neutral"
+      interaction-prompt="none"
+      animation-name="Explode"
+      disable-zoom
+      disable-pan
+      disable-tap
+      touch-action="pan-y"
+      loading="lazy"
+    ></model-viewer>
+
+    <!-- Le modèle pèse 571 Ko et son décodeur autant : sur une liaison lente il
+         s'écoulait jusqu'à quinze secondes pendant lesquelles la séquence montrait
+         une affiche immobile, sans rien dire. Une ligne suffit à faire la
+         différence entre « ça charge » et « c'est cassé ». -->
+    <p class="scrolly__loading" aria-hidden="true" hidden>Chargement du modèle<b>0 %</b></p>
+
+    <!-- Repli pour appareil faible ou sans WebGL (cf. scrolly.js). Il conserve le
+         langage visuel et le chemin de conversion : même cadre, même récit, 110 Ko
+         au lieu de 2,7 Mo. Masqué tant que la scène 3D tient. -->
+    <img class="scrolly__fallback" src="assets/img/qbot-gen-actuelle.webp"
+         alt="Le robot Q-Bot, boîtier d'automatisation de la double authentification"
+         width="1000" height="969" loading="lazy" hidden>
+
+    <!-- Calque d'annotations. Tout ce qui s'y trouve est PROJETÉ depuis le repère
+         du modèle par assets/js/scrolly.js : le sol, la feuille A3, les cotes et
+         l'emplacement du smartphone partagent la caméra du rendu 3D, donc ils
+         restent solidaires de l'objet quel que soit l'angle. C'est ce qui sépare
+         une cote d'un autocollant. Les tracés sont vides ici : leur géométrie
+         n'existe qu'en fonction de la caméra. `aria-hidden` : le texte du pas dit
+         déjà tout. -->
+    <svg class="scrolly__hud" aria-hidden="true" focusable="false">
+      <defs>
+        <!-- Nappe de lumière et fondu du quadrillage. Les deux dégradés sont en
+             coordonnées d'objet et s'appliquent à un cercle unité que le script
+             transforme en l'ellipse du sol vue par la caméra : le fondu se fait
+             donc DANS le plan du sol. Un dégradé en coordonnées d'écran donnait
+             une nappe tranchée net à son bord lointain, très raccourci par la
+             perspective, alors qu'il s'étalait sur tout le bas de l'écran côté
+             proche. -->
+        <radialGradient id="hudPool">
+          <stop offset="0"    stop-color="#ffffff" stop-opacity="0.13"/>
+          <stop offset="0.38" stop-color="#00CBBE" stop-opacity="0.08"/>
+          <stop offset="1"    stop-color="#00CBBE" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="hudFadeG">
+          <stop offset="0"    stop-color="#ffffff"/>
+          <stop offset="0.38" stop-color="#ffffff"/>
+          <stop offset="1"    stop-color="#000000"/>
+        </radialGradient>
+        <!-- Occultation : l'enveloppe projetée du boîtier est retirée des calques
+             posés au sol, si bien que le quadrillage et la feuille passent
+             DERRIÈRE le produit au lieu de lui passer dessus. -->
+        <mask id="hudFloorM" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="9000" height="9000">
+          <circle class="hud-fade-disc" r="1" fill="url(#hudFadeG)"/>
+          <polygon class="hud-occl" points="0,0"/>
+        </mask>
+        <mask id="hudSheetM" maskUnits="userSpaceOnUse" x="-3000" y="-3000" width="9000" height="9000">
+          <rect x="-3000" y="-3000" width="9000" height="9000" fill="#ffffff"/>
+          <polygon class="hud-occl" points="0,0"/>
+        </mask>
+      </defs>
+
+      <!-- Le sol, présent à tous les pas : c'est lui qui fait « posé » plutôt que
+           « flottant ». Son intensité varie d'un pas à l'autre (CSS). -->
+      <g class="hud-l hud-floor">
+        <circle class="hud-pool" r="1" mask="url(#hudSheetM)"/>
+        <g class="hud-grid" mask="url(#hudFloorM)"></g>
+      </g>
+
+      <!-- Pas 2 : l'emplacement du smartphone, tel que le modèle lui-même le
+           définit (position « à quai » du clip d'animation). Un contour, pas un
+           volume : on montre où il se pose sans prétendre le représenter. -->
+      <g class="hud-l hud-dock">
+        <path class="hud-ghost"/>
+        <path class="hud-ghost-screen"/>
+        <path class="hud-ghost-notch"/>
+        <path class="hud-lead"/>
+        <circle class="hud-node" r="2.5"/>
+        <text class="hud-lab hud-lab--dock">EMPLACEMENT DU SMARTPHONE</text>
+      </g>
+
+      <!-- Pas 3 : les repères d'assemblage de la vue éclatée. Chaque pièce reste
+           reliée à son logement par un trait, comme sur une planche technique. -->
+      <g class="hud-l hud-burst"></g>
+
+      <!-- Pas 4 : l'encombrement, coté sur l'objet. -->
+      <g class="hud-l hud-size">
+        <path class="hud-sheet" mask="url(#hudSheetM)"/>
+        <path class="hud-sheet-marks" mask="url(#hudSheetM)"/>
+        <text class="hud-lab hud-lab--sheet">FEUILLE A3 · 297 × 420 MM</text>
+        <g class="hud-dim" data-dim="depth"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">40 cm</text></g>
+        <g class="hud-dim" data-dim="width"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">24 cm</text></g>
+        <g class="hud-dim" data-dim="height"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">15 cm</text></g>
+      </g>
+    </svg>
+   </div>
+
+    <nav class="scrolly__nav" aria-label="Étapes de la séquence">
+      <span class="scrolly__nav-rail" aria-hidden="true"></span>
+      <a href="#qbot-etape-1" class="scrolly__dot" data-dot="0"><b aria-hidden="true">1</b><span class="visually-hidden">Aller à l'étape 1 : Le produit</span></a>
+      <a href="#qbot-etape-2" class="scrolly__dot" data-dot="1"><b aria-hidden="true">2</b><span class="visually-hidden">Aller à l'étape 2 : Le geste</span></a>
+      <a href="#qbot-etape-3" class="scrolly__dot" data-dot="2"><b aria-hidden="true">3</b><span class="visually-hidden">Aller à l'étape 3 : L'intérieur</span></a>
+      <a href="#qbot-etape-4" class="scrolly__dot" data-dot="3"><b aria-hidden="true">4</b><span class="visually-hidden">Aller à l'étape 4 : L'encombrement</span></a>
+    </nav>
+    <p class="scrolly__count" role="status"><span aria-hidden="true"><b>01</b> / 04</span><span class="visually-hidden">Étape 1 sur 4</span></p>
+    <p class="scrolly__hint" aria-hidden="true">
+      Faites défiler
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+    </p>
+  </div>
+
+  <div class="scrolly__steps">
+      <div class="scrolly__step" data-step="0" id="qbot-etape-1">
+        <div class="scrolly__step-inner">
+          <span class="scrolly__label">Le produit</span>
+          <h2 class="scrolly__title">Un boîtier posé sur le bureau</h2>
+          <p class="scrolly__text">Q-Bot s'installe à côté du poste du testeur et se connecte au réseau de l'entreprise. Aucune installation logicielle n'est requise.</p>
+        </div>
+      </div>
+      <div class="scrolly__step" data-step="1" id="qbot-etape-2">
+        <div class="scrolly__step-inner">
+          <span class="scrolly__label">Le geste</span>
+          <h2 class="scrolly__title">Un actionneur appuie, une caméra lit</h2>
+          <p class="scrolly__text">L'actionneur déclenche l'affichage du code à usage unique, la caméra le capte, la vision par ordinateur en extrait la valeur. La photo est supprimée juste après.</p>
+          <p class="scrolly__fig"><b>&lt; 10</b> <span>secondes pour récupérer le code</span></p>
+        </div>
+      </div>
+      <div class="scrolly__step" data-step="2" id="qbot-etape-3">
+        <div class="scrolly__step-inner">
+          <span class="scrolly__label">L'intérieur</span>
+          <h2 class="scrolly__title">Ouvrez-le</h2>
+          <p class="scrolly__text">Un Raspberry Pi 5 — Cortex A76, 4 GB — coordonne l'ensemble. Pilotage par interface web ou par API REST, depuis Selenium, Cypress, Appium ou vos pipelines.</p>
+          <p class="scrolly__fig"><b>Pi 5</b> <span>Wi-Fi, Bluetooth 5.0 BLE, Gigabit Ethernet</span></p>
+        </div>
+      </div>
+      <div class="scrolly__step" data-step="3" id="qbot-etape-4">
+        <div class="scrolly__step-inner">
+          <span class="scrolly__label">L'encombrement</span>
+          <h2 class="scrolly__title">Tout tient sur une feuille A3</h2>
+          <p class="scrolly__text">40 × 24 × 15 cm, conçu et fabriqué au siège de Q-Leap à Bertrange. Le format est pensé pour ne pas encombrer un bureau.</p>
+          <p class="scrolly__fig"><b>A3</b> <span>29,7 × 42 cm d'emprise au sol</span></p>
+        
+          <a class="scrolly__step-cta" href="contact.html">Réserver une démo<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+  </div>
+</section>
+
+<a href="caracteristiques.html" class="btn btn--primary scrolly__cta"
+   data-cta-default="Voir les caractéristiques|caracteristiques.html"
+   data-cta-last="Réserver une démo|contact.html">
+  <svg class="scrolly__cta-ico scrolly__cta-ico--lock" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><svg class="scrolly__cta-ico scrolly__cta-ico--check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 10,18 20,6"/></svg>
+  <span class="scrolly__cta-label">Voir les caractéristiques</span>
+</a>
+
 <!-- ======= INTRO 1 ======= -->
-<section class="section section--gray" aria-labelledby="intro-title">
+<section class="section section--gray" id="apres-sequence" aria-labelledby="intro-title">
   <div class="container">
     <div class="intro__grid">
       <div>
         <span class="section-label">La solution</span>
         <h2 class="section-title" id="intro-title">Automatiser la double authentification (2FA)</h2>
         <div class="problem-callout">
-          Q-BOT se connecte en un clic pour automatiser la double authentification dans tous vos cas de test.
+          Q-Bot se connecte en un clic pour automatiser la double authentification dans tous vos cas de test.
         </div>
         <p style="margin-top:16px;">
           Cette solution s'intègre à toutes vos campagnes d'automatisation pour gérer les parcours utilisateurs nécessitant une authentification forte, sans intervention manuelle.
@@ -202,7 +403,7 @@
       <div class="intro__image">
         <img
           src="assets/img/qbot-solution.jpg"
-          alt="Q-BOT — Robot d'automatisation 2FA"
+          alt="Q-Bot — Robot d'automatisation 2FA"
           width="560" height="368"
           loading="lazy"
         >
@@ -218,8 +419,8 @@
       <div class="intro__image">
         <img
           src="assets/img/qbot-luxtrust.jpg"
-          alt="Q-BOT avec un smartphone en place, authentification validée"
-          width="560" height="366"
+          alt="Boîtier Q-Bot en lévitation, cerclé d'anneaux lumineux teal"
+          width="560" height="315"
           loading="lazy"
         >
       </div>
@@ -227,7 +428,7 @@
         <span class="section-label">LuxTrust</span>
         <h2 class="section-title" id="luxtrust-title">Automatisez l'authentification de toutes les apps y compris de l'app mobile LuxTrust</h2>
         <p>
-          Q-BOT, solution 100&nbsp;% Made in Luxembourg, automatise la double authentification (2FA), que ce soit via des applications mobiles comme LuxTrust — la solution majoritaire au Luxembourg — ou via d'autres dispositifs similaires déployés dans différents pays.
+          Q-Bot, solution 100&nbsp;% Made in Luxembourg, automatise la double authentification (2FA), que ce soit via des applications mobiles comme LuxTrust — la solution majoritaire au Luxembourg — ou via d'autres dispositifs similaires déployés dans différents pays.
         </p>
       </div>
     </div>
@@ -237,7 +438,7 @@
 <!-- ======= AVANTAGES ======= -->
 <section class="section section--gray" aria-labelledby="features-title">
   <div class="container">
-    <div class="section-header centered">
+    <div class="section-header">
       <span class="section-label">Avantages</span>
       <h2 class="section-title" id="features-title">Pourquoi Q-Bot est l'allié idéal des testeurs logiciels&nbsp;?</h2>
       <p class="section-subtitle">Automatiser la double authentification dans 100% des cas de tests</p>
@@ -272,7 +473,7 @@
         <p>Accessible via une interface web ou une API</p>
       </article>
     </div>
-    <div style="text-align:center; margin-top:36px;">
+    <div style="margin-top:36px;">
       <p style="margin-bottom:20px;">Q-Bot ne nécessite aucune installation ni aucune configuration. Créez visuellement votre scénario et commencez à l'utiliser immédiatement&nbsp;!</p>
       <a href="caracteristiques.html" class="btn btn--outline">
         Caractéristiques techniques
@@ -282,10 +483,10 @@
   </div>
 </section>
 
-<!-- ======= À QUI S'ADRESSE Q-BOT ======= -->
+<!-- ======= À QUI S'ADRESSE Q-Bot ======= -->
 <section class="section" aria-labelledby="audience-title">
   <div class="container">
-    <div class="section-header centered">
+    <div class="section-header">
       <span class="section-label">Pour qui ?</span>
       <h2 class="section-title" id="audience-title">À qui s'adresse Q-Bot pour automatiser les cas de test&nbsp;?</h2>
       <p class="section-subtitle">Q-Bot pour tous les professionnels de l'IT</p>
@@ -303,11 +504,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </div>
         <h3>Tous types d'applications</h3>
-        <p>Q-BOT prend en charge vos applications Web, Mobile ou Desktop. Les cas d'utilisations sont nombreux : authentifier un utilisateur, créer un compte utilisateur, confirmer une transaction e-commerce, réinitialiser le mot de passe d'un utilisateur, valider un transfert d'argent, signer un document, demander un document officiel...</p>
+        <p>Q-Bot prend en charge vos applications Web, Mobile ou Desktop. Les cas d'utilisations sont nombreux : authentifier un utilisateur, créer un compte utilisateur, confirmer une transaction e-commerce, réinitialiser le mot de passe d'un utilisateur, valider un transfert d'argent, signer un document, demander un document officiel...</p>
       </article>
-    </div>
-    <div style="text-align:center; margin-top:36px;">
-      <a href="contact.html" class="btn btn--primary btn--lg">Demander une démo</a>
     </div>
   </div>
 </section>
@@ -315,12 +513,12 @@
 <!-- ======= VIDÉO ======= -->
 <section class="section section--gray" aria-labelledby="video-title">
   <div class="container">
-    <div style="text-align:center;">
+    <div>
       <h2 class="section-label" id="video-title">Un produit 100&nbsp;% conçu et développé au Luxembourg</h2>
-      <p style="max-width:680px; margin:16px auto 0;">
+      <p style="max-width:680px; margin:16px 0 0;">
         Q-Bot est le fruit du savoir-faire de l'équipe Q-Leap. Imaginée et développée dans nos locaux par des experts passionnés du test logiciel, cette solution est née d'un besoin concret rencontré sur le terrain — le nôtre, mais aussi celui de nos clients.
       </p>
-      <p style="max-width:680px; margin:16px auto 0;">
+      <p style="max-width:680px; margin:16px 0 0;">
         Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.
       </p>
     </div>
@@ -330,9 +528,9 @@
 <!-- ======= ÉVOLUTION DU PRODUIT ======= -->
 <section class="section evolution" aria-labelledby="evolution-title">
   <div class="container">
-    <div class="section-header centered">
+    <div class="section-header">
       <span class="section-label">L'innovation continue...</span>
-      <h2 class="section-title" id="evolution-title">L'évolution de Q-BOT</h2>
+      <h2 class="section-title" id="evolution-title">L'évolution de Q-Bot</h2>
       <p class="section-subtitle">Du portique assemblé dans nos locaux au boîtier compact d'aujourd'hui.</p>
     </div>
 
@@ -340,7 +538,7 @@
       <article class="evo-card" role="listitem">
         <span class="evo-card__node" aria-hidden="true"></span>
         <div class="evo-card__media">
-          <img src="assets/img/qbot-proto-gen1.png" alt="Premier prototype Q-BOT — portique motorisé et stylet capacitif" width="360" height="410" loading="lazy">
+          <img src="assets/img/qbot-proto-gen1.png" alt="Premier prototype Q-Bot — portique motorisé et stylet capacitif" width="360" height="410" loading="lazy">
         </div>
         <div class="evo-card__body">
           <span class="evo-card__step">Génération 1</span>
@@ -352,11 +550,11 @@
       <article class="evo-card evo-card--current" role="listitem">
         <span class="evo-card__node" aria-hidden="true"></span>
         <div class="evo-card__media">
-          <img src="assets/img/qbot-gen-actuelle.webp" alt="Q-BOT — le boîtier de production actuel" width="360" height="349" loading="lazy">
+          <img src="assets/img/qbot-gen-actuelle.webp" alt="Q-Bot — le boîtier de production actuel" width="360" height="349" loading="lazy">
         </div>
         <div class="evo-card__body">
           <span class="evo-card__step">Génération actuelle</span>
-          <h3>Le Q-BOT d'aujourd'hui</h3>
+          <h3>Le Q-Bot d'aujourd'hui</h3>
           <p>Toute la mécanique tient désormais dans un boîtier fermé, conçu et fabriqué au Luxembourg. Le smartphone vient se placer à l'avant : même principe, une fraction de l'encombrement.</p>
           <a href="modele-3d.html" class="evo-card__link">
             Explorer le modèle 3D
@@ -373,7 +571,7 @@
         <div class="evo-card__body">
           <span class="evo-card__step">Prochaine étape</span>
           <h3>La roadmap est en cours de création</h3>
-          <p>La feuille de route de la prochaine génération s'écrit en ce moment, avec les équipes qui utilisent Q-BOT au quotidien. Une évolution vous manque&nbsp;? Dites-le-nous.</p>
+          <p>La feuille de route de la prochaine génération s'écrit en ce moment, avec les équipes qui utilisent Q-Bot au quotidien. Une évolution vous manque&nbsp;? Dites-le-nous.</p>
           <a href="contact.html" class="evo-card__link">
             Proposer une évolution
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -390,17 +588,21 @@
     <h2>Newsletter</h2>
     <p>Si vous souhaitez bénéficier des dernières nouveautés de Q-Bot, inscrivez-vous à notre newsletter.</p>
     <!-- Formulaire Sendinblue/Brevo — remplacer par l'embed Brevo -->
-    <form class="newsletter__form" action="#" method="post" aria-label="Inscription newsletter">
+    <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Inscription newsletter">
       <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
       <button type="submit" class="btn">S'INSCRIRE</button>
+          <p class="form-status" role="status" aria-live="polite" hidden></p>
+      <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript est désactivé&nbsp;: écrivez-nous directement à <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a>.</p></noscript>
     </form>
     <div class="newsletter__consent">
       <label>
         <input type="checkbox" name="consent">
         <span>J'accepte de recevoir vos e-mails et confirme avoir pris connaissance de votre <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">politique de confidentialité</a> et mentions légales.</span>
       </label>
-      <p class="newsletter__legal">Vous pouvez vous désinscrire à tout moment en cliquant sur le lien présent dans nos emails.</p>
-      <p class="newsletter__legal">Nous utilisons Sendinblue en tant que plateforme marketing. En soumettant ce formulaire, vous reconnaissez que les informations que vous allez fournir seront transmises à Sendinblue en sa qualité de processeur de données&nbsp;; et ce conformément à ses conditions générales d'utilisation.</p>
+      <!-- Une seule mention, et non deux paragraphes empilés : le texte est
+           identique mot pour mot, mais cinq lignes de petit texte en trois blocs
+           séparés donnaient à la bande l'aspect d'un pied de formulaire. -->
+      <p class="newsletter__legal">Vous pouvez vous désinscrire à tout moment en cliquant sur le lien présent dans nos emails. Nous utilisons Sendinblue en tant que plateforme marketing. En soumettant ce formulaire, vous reconnaissez que les informations que vous allez fournir seront transmises à Sendinblue en sa qualité de processeur de données&nbsp;; et ce conformément à ses conditions générales d'utilisation.</p>
     </div>
     <!-- Fin formulaire Sendinblue -->
   </div>
@@ -409,9 +611,9 @@
 <!-- ======= FAQ APERÇU ======= -->
 <section class="section section--gray" aria-labelledby="faq-home-title">
   <div class="container">
-    <div class="section-header centered">
+    <div class="section-header">
       <span class="section-label">FAQ</span>
-      <h2 class="section-title" id="faq-home-title">Les principales questions autour de Q-BOT</h2>
+      <h2 class="section-title" id="faq-home-title">Les principales questions autour de Q-Bot</h2>
     </div>
     <div class="faq__list">
       <div class="faq-item">
@@ -422,8 +624,8 @@
           </span>
         </button>
         <div class="faq-item__answer" role="region">
-          <p>Q-BOT est un robot unique en son genre, conçu pour automatiser la double authentification (2FA), qu'elle s'appuie sur des applications mobiles d'authentification transactionnelle ou sur d'autres dispositifs sécurisés.</p>
-          <p style="margin-top:12px;">Grâce à Q-BOT, qui authentifie automatiquement vos accès, il devient possible d'automatiser des processus de test jusque-là difficilement accessibles, notamment ceux nécessitant une validation 2FA.</p>
+          <p>Q-Bot est un robot unique en son genre, conçu pour automatiser la double authentification (2FA), qu'elle s'appuie sur des applications mobiles d'authentification transactionnelle ou sur d'autres dispositifs sécurisés.</p>
+          <p style="margin-top:12px;">Grâce à Q-Bot, qui authentifie automatiquement vos accès, il devient possible d'automatiser des processus de test jusque-là difficilement accessibles, notamment ceux nécessitant une validation 2FA.</p>
         </div>
       </div>
       <div class="faq-item">
@@ -451,7 +653,7 @@
         </div>
       </div>
     </div>
-    <div style="text-align:center; margin-top:40px;">
+    <div style="margin-top:40px;">
       <a href="faq.html" class="btn btn--outline">Voir toutes les questions</a>
     </div>
   </div>
@@ -459,7 +661,7 @@
 
 <!-- ======= CTA FINAL ======= -->
 <section class="section" aria-labelledby="cta-title">
-  <div class="container" style="text-align:center;">
+  <div class="container cta-block">
     <h2 class="section-title" id="cta-title" style="margin-bottom:16px;">Vous souhaitez en savoir plus&nbsp;?</h2>
     <h3 style="font-size:1.5rem; font-weight:600; margin-bottom:32px; color:var(--teal-text);">Réservez une démo</h3>
     <a href="contact.html" class="btn btn--primary btn--lg">Prendre rendez-vous</a>
@@ -474,7 +676,7 @@
     <div class="footer__grid">
       <div>
         <div class="footer__logo">
-          <img src="assets/img/logo-baseline-neg.png" alt="Q-BOT by Q-Leap" width="84" height="36">
+          <img src="assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
         </div>
         <p class="footer__desc">
           Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
@@ -489,9 +691,9 @@
         </div>
       </div>
       <div class="footer__col">
-        <h3>Q-BOT</h3>
+        <h3>Q-Bot</h3>
         <ul role="list">
-          <li><a href="index.html">Accueil</a></li>
+          <li><span aria-current="page">Accueil</span></li>
           <li><a href="caracteristiques.html">Caractéristiques</a></li>
           <li><a href="a-propos.html">À propos</a></li>
           <li><a href="faq.html">FAQ</a></li>
@@ -520,7 +722,7 @@
       </div>
     </div>
     <div class="footer__bottom">
-      <p class="footer__copy">Copyright &copy;2026 Q-BOT powered by Q-Leap</p>
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Liens légaux">
         <a href="https://q-bot.eu/conditions-vente/" target="_blank" rel="noopener">Conditions de vente</a>
         <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>
@@ -529,6 +731,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/main.js?v=2026-08-18" defer></script>
+<script src="assets/js/scrolly.js?v=57" defer></script>
 </body>
 </html>

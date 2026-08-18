@@ -31,6 +31,13 @@ window.addEventListener('scroll', () => {
 
     const delta = y - lastY;
 
+    /* Seuil de 6 px avant de masquer la barre. Sans lui, UN pixel vers le bas
+       suffisait : au doigt, l'inertie du défilement mobile produit sans arrêt de
+       micro-variations, et la barre — donc le bouton de démo, seul CTA permanent
+       du téléphone — clignotait à chaque hésitation. La révélation, elle, reste
+       immédiate : on ne fait jamais attendre quelqu'un qui remonte. */
+    if (delta > 0 && delta < 6) { lastY = y; ticking = false; return; }
+
     if (!navMenu?.classList.contains('open')) {
       if (delta > 0 && y > navH) {
         // Scrolle vers le bas → masquer
@@ -96,7 +103,14 @@ document.addEventListener('keydown', (e) => {
   document.querySelectorAll('.nav__link').forEach(link => {
     const href     = link.getAttribute('href') || '';
     const linkFile = href.split('/').pop() || 'index.html';
-    if (linkFile === currentFile) link.classList.add('active');
+    if (linkFile === currentFile) {
+      link.classList.add('active');
+      /* La classe coloriait, elle n'annonçait rien : le lien de la page courante
+         était un lien ordinaire pour un lecteur d'écran. `aria-current` le dit.
+         Il reste un lien — c'est le motif attendu d'une navigation persistante,
+         contrairement au fil d'Ariane où le dernier élément est la page. */
+      link.setAttribute('aria-current', 'page');
+    }
   });
 }
 
@@ -763,8 +777,6 @@ backToTop.addEventListener('click', () => {
   var fullscreenBtn  = frame?.querySelector('[data-mv-action="fullscreen"]');
   var zoomInBtn      = frame?.querySelector('[data-mv-action="zoom-in"]');
   var zoomOutBtn     = frame?.querySelector('[data-mv-action="zoom-out"]');
-  var lightingBtn    = frame?.querySelector('[data-mv-action="lighting"]');
-  var phoneBtn       = frame?.querySelector('[data-mv-action="phone"]');
   var slider         = document.querySelector('[data-mv-action="explode-slider"]');
   var sliderValueEl  = document.querySelector('[data-mv-explode-value]');
   var reduceMotion   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -775,31 +787,19 @@ backToTop.addEventListener('click', () => {
   var DEFAULT_TARGET = viewer.getAttribute('camera-target') || 'auto auto auto';
   var STANDARD_SRC  = viewer.getAttribute('src');
 
-  /* Presets d'éclairage — valeurs en dur : le viewer démarre en nuit (ses
-     attributs exposure/shadow-intensity portent donc déjà le preset nuit
-     pour le premier rendu), on ne peut plus les relire pour en déduire le
-     preset jour. */
-  var DAY_EXPOSURE   = 1.1;
-  var DAY_SHADOW     = 1;
-  var NIGHT_EXPOSURE = 0.8;   /* relevé avec la matière sombre du modèle texturé */
-  var NIGHT_SHADOW   = 1.3;
 
-  /* Le clip glTF "Explode" couvre deux segments temporels distincts (pour
-     rester un seul clip robuste plutôt que de jongler entre plusieurs
-     animationName, ce qui remettrait les autres pièces à leur pose de repos) :
-     [0 .. EXPLODE_END]  pilote les pièces de la coque (slider d'éclatement).
-       Les pièces ont une 3e keyframe à t=1.0 qui les ré-assemble avant le
-       segment téléphone — sans ça, au-delà de leur dernière keyframe le clip
-       les laisse figées à leur valeur "éclatée" (clamp glTF), et cliquer sur
-       le bouton téléphone faisait donc exploser la coque au passage.
-       EXPLODE_END < 1.0 pour ne jamais toucher exactement ce point de bascule.
-     [PHONE_START .. PHONE_END] pilote le téléphone (position + échelle :
-       invisible/échelle 0 tant qu'on n'a pas cliqué, cf. clamp avant sa
-       1ère keyframe — pas besoin de logique JS pour le cacher par défaut). */
+  /* Le clip glTF "Explode" couvre deux segments : [0 .. 1.0] pour les pièces de
+     la coque, [1.0 .. 2.0] pour l'insertion du smartphone.
+     LE SECOND N'EST PLUS PILOTÉ. Le bouton « insérer un smartphone » a été retiré
+     de la visionneuse : le téléphone du GLB est un volume générique, bien moins
+     soigné que le boîtier, et le montrer desservait la page. En restant sous
+     t=1.0 il garde son échelle 0 — il est donc simplement absent, c'est le clip
+     qui s'en charge, il n'y a rien à masquer.
+     La borne EXPLODE_END < 1.0 garde tout son sens : les pièces portent une 3e
+     keyframe à t=1.0 qui les ré-assemble (elle existe pour que le segment
+     téléphone ne les laisse pas éclatées), et l'atteindre referait se refermer la
+     coque juste au moment où le slider arrive à 100 %. */
   var EXPLODE_END  = 0.98;
-  var PHONE_START  = 1.0;
-  var PHONE_END    = 2.0;
-  var TIME_EPSILON = 0.001; // évite currentTime === duration exacte du clip (voir plus bas)
 
   /* Cache-busting : les .glb sont régulièrement régénérés sous le même nom
      pendant qu'on affine le modèle (position du téléphone, etc.) — sans ceci,
@@ -879,7 +879,6 @@ backToTop.addEventListener('click', () => {
       slider.disabled = false;
       applySliderToModel();
     }
-    if (phoneDocked) viewer.currentTime = PHONE_END - TIME_EPSILON;
   });
 
   viewer.addEventListener('error', function () {
@@ -946,60 +945,8 @@ backToTop.addEventListener('click', () => {
   }
   slider?.addEventListener('input', applySliderToModel);
 
-  /* Tween générique de currentTime (utilisé par le bouton téléphone — le
-     slider d'éclatement, lui, est piloté en direct par le glissement). */
-  function tweenCurrentTime(from, to, ms, onDone) {
-    if (reduceMotion) {
-      viewer.currentTime = to;
-      if (onDone) onDone();
-      return;
-    }
-    var t0 = null;
-    function tick(now) {
-      if (t0 === null) t0 = now;
-      var p = Math.min((now - t0) / ms, 1);
-      var eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-      viewer.currentTime = from + (to - from) * eased;
-      if (p < 1) requestAnimationFrame(tick);
-      else if (onDone) onDone();
-    }
-    requestAnimationFrame(tick);
-  }
 
-  /* Insérer/retirer un smartphone — petite animation sur le second segment
-     du clip "Explode" ([PHONE_START..PHONE_END], voir plus haut). PHONE_END
-     est la durée totale du clip : comme pour le slider à 100%, on reste à
-     TIME_EPSILON de la borne exacte pour éviter que le mixer ne reboucle. */
-  var phoneDocked = false;
-  phoneBtn?.addEventListener('click', function () {
-    var from = phoneDocked ? PHONE_END - TIME_EPSILON : PHONE_START;
-    var to   = phoneDocked ? PHONE_START : PHONE_END - TIME_EPSILON;
-    phoneDocked = !phoneDocked;
-    /* Le segment téléphone [PHONE_START..PHONE_END] réassemble toujours la
-       coque (cf. keyframe de snap-back plus haut) : sans ceci, le slider
-       restait affiché à son ancienne valeur (ex. 100%) alors que le modèle
-       venait de se réassembler visuellement — il fallait le rebouger à la
-       main pour que l'affichage redevienne cohérent. */
-    setSliderDisplay(0);
-    phoneBtn.setAttribute('aria-pressed', String(phoneDocked));
-    phoneBtn.setAttribute('aria-label', phoneDocked
-      ? (FR ? 'Retirer le smartphone' : 'Remove the smartphone')
-      : (FR ? 'Insérer un smartphone' : 'Insert a smartphone'));
-    tweenCurrentTime(from, to, 700);
-  });
 
-  /* Jour/nuit — bascule l'exposition/l'intensité des ombres de model-viewer
-     et assombrit le fond du cadre, sans toucher au modèle ni à l'animation. */
-  lightingBtn?.addEventListener('click', function () {
-    var toNight = lightingBtn.getAttribute('aria-pressed') !== 'true';
-    lightingBtn.setAttribute('aria-pressed', String(toNight));
-    lightingBtn.setAttribute('aria-label', toNight
-      ? (FR ? 'Passer en éclairage jour' : 'Switch to day lighting')
-      : (FR ? 'Passer en éclairage nuit' : 'Switch to night lighting'));
-    viewer.exposure = toNight ? NIGHT_EXPOSURE : DAY_EXPOSURE;
-    viewer.shadowIntensity = toNight ? NIGHT_SHADOW : DAY_SHADOW;
-    frame?.classList.toggle('is-night', toNight);
-  });
 }());
 
 /* ════════════════════════════════════════
@@ -1056,3 +1003,110 @@ backToTop.addEventListener('click', () => {
   film.currentTime = 0;
 }());
 
+
+/* ════════════════════════════════════════
+   15. FORMULAIRES — plus jamais d'envoi qui disparaît
+   Les six formulaires du site (contact FR/EN, newsletter des deux homepages et
+   des deux index de blog) étaient en `action="#"` : le visiteur remplissait,
+   cliquait, la page se rechargeait, sa saisie était perdue — et rien n'indiquait
+   l'échec. C'est le pire des trois cas possibles, parce qu'il est invisible.
+
+   UN SEUL POINT DE CONFIGURATION : l'attribut `data-endpoint` du <form>.
+     data-endpoint=""                     → repli courrier (l'état actuel)
+     data-endpoint="https://…/f/xxxx"     → envoi HTTP, sans toucher au reste
+   Brevo, Formspree et compagnie exposent tous une URL de ce genre qui accepte un
+   POST multipart ; il suffira de la coller là, dans les six pages.
+
+   Sans endpoint, on n'invente pas un envoi : on ouvre le client courrier du
+   visiteur avec un message déjà rédigé. Ce n'est pas idéal — il faut qu'il
+   appuie sur « envoyer » — mais rien n'est perdu et il le SAIT.
+════════════════════════════════════════ */
+(function () {
+  var forms = document.querySelectorAll('form[data-form]');
+  if (!forms.length) return;
+
+  var FR = (document.documentElement.lang || 'fr').slice(0, 2) !== 'en';
+  var MAIL = 'bot@q-leap.eu';
+  var T = FR ? {
+    envoi:   'Envoi en cours…',
+    ok:      'Merci, votre message est parti. Nous revenons vers vous rapidement.',
+    okNews:  'Merci, votre inscription est enregistrée.',
+    erreur:  'L’envoi a échoué. Écrivez-nous à ' + MAIL + ', nous répondrons.',
+    manque:  'Merci de compléter les champs obligatoires.',
+    courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ».',
+    sujetC:  'Demande via le site Q-Bot',
+    sujetN:  'Inscription à la newsletter Q-Bot'
+  } : {
+    envoi:   'Sending…',
+    ok:      'Thank you, your message is on its way. We will get back to you shortly.',
+    okNews:  'Thank you, your subscription is registered.',
+    erreur:  'Sending failed. Write to us at ' + MAIL + ' and we will answer.',
+    manque:  'Please fill in the required fields.',
+    courrier:'Your mail application just opened with the message prefilled — all that is left is to hit send.',
+    sujetC:  'Enquiry from the Q-Bot website',
+    sujetN:  'Q-Bot newsletter subscription'
+  };
+
+  function dire(form, texte, type) {
+    var el = form.querySelector('.form-status');
+    if (!el) return;
+    el.textContent = texte;
+    el.hidden = false;
+    el.setAttribute('data-state', type);
+  }
+
+  /* Corps du courrier : « Libellé : valeur », un champ par ligne. On prend le
+     <label> associé quand il existe, sinon le nom du champ — le destinataire lit
+     ainsi le message dans les mots du formulaire. */
+  function corps(form) {
+    var lignes = [];
+    Array.prototype.forEach.call(form.elements, function (el) {
+      if (!el.name || el.type === 'submit' || el.type === 'button') return;
+      var v = el.type === 'checkbox' ? (el.checked ? (FR ? 'oui' : 'yes') : (FR ? 'non' : 'no')) : el.value;
+      if (!v) return;
+      var lab = form.querySelector('label[for="' + el.id + '"]');
+      var nom = (lab ? lab.textContent : el.name).replace(/\s*\*\s*$/, '').trim();
+      lignes.push(nom + ' : ' + v);
+    });
+    return lignes.join('\n');
+  }
+
+  Array.prototype.forEach.call(forms, function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var news = form.getAttribute('data-form') === 'newsletter';
+
+      /* `novalidate` est posé sur le formulaire de contact pour maîtriser
+         l'affichage : la validation reste à faire, à la main. */
+      if (typeof form.checkValidity === 'function' && !form.checkValidity()) {
+        dire(form, T.manque, 'error');
+        var premier = form.querySelector(':invalid');
+        if (premier) premier.focus();
+        return;
+      }
+
+      var url = (form.getAttribute('data-endpoint') || '').trim();
+
+      if (!url) {                                   // repli courrier
+        var sujet = news ? T.sujetN : T.sujetC;
+        window.location.href = 'mailto:' + MAIL
+          + '?subject=' + encodeURIComponent(sujet)
+          + '&body=' + encodeURIComponent(corps(form));
+        dire(form, T.courrier, 'info');
+        return;
+      }
+
+      dire(form, T.envoi, 'info');
+      var bouton = form.querySelector('[type="submit"]');
+      if (bouton) bouton.disabled = true;
+      fetch(url, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          form.reset();
+          dire(form, news ? T.okNews : T.ok, 'ok');
+        })
+        .catch(function () { dire(form, T.erreur, 'error'); })
+        .then(function () { if (bouton) bouton.disabled = false; });
+    });
+  });
+}());

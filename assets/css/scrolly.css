@@ -1,0 +1,946 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   SCROLLYTELLING — variante Q-BOTAlt
+   Surcouche de style.css : aucun token, aucune couleur, aucune police n'est
+   redéfinie ici. La direction artistique reste celle de la charte (teal #00CBBE,
+   noir, Roboto) ; seule la mise en scène change.
+
+   Principe : une scène en `position: sticky` occupe le viewport pendant que
+   des « pas » de texte défilent par-dessus. Le scroll ne fait qu'écrire une
+   progression, le rendu est piloté par assets/js/scrolly.js. On ne bloque
+   jamais le défilement — pas de scroll-jacking, le doigt garde la main.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Titre de section réservé aux technologies d'assistance : la séquence se
+   raconte visuellement, mais elle doit rester nommée dans l'arbre du document. */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Le lien d'évitement de la séquence réutilise entièrement le style de celui de
+   la navigation (masqué au repos, pastille teal à la prise de focus). Seule sa
+   position change : il se place sous la barre de navigation pour ne pas la
+   recouvrir quand les deux sont traversés à la suite. */
+/* Il était posé à 84px du haut, sur la gauche : à largeur tablette il tombait
+   pile sur le badge du hero, et le texte de ce badge le traversait — la pastille
+   du lien d'évitement héritait d'un z-index plus faible que le contenu du hero.
+   Deux corrections : un placement centré, où aucun contenu ne l'attend, et un
+   empilement au-dessus de tout. Le fond opaque et l'ombre le détachent de ce qui
+   se trouve derrière, quel que soit l'écran. */
+.skip-nav--sequence:focus {
+  left: 50%;
+  right: auto;
+  top: calc(72px + 14px);
+  transform: translateX(-50%);
+  z-index: 2147483000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+/* Sous 900px le hero passe en une colonne et son contenu remonte : on décale le
+   lien juste sous la barre, où il ne recouvre plus rien. */
+@media (max-width: 900px) {
+  .skip-nav--sequence:focus { top: calc(72px + 8px); font-size: .875rem; padding: 9px 16px; }
+}
+
+.scrolly {
+  position: relative;
+  /* HAUTEUR : un écran par pas, plus une marge pour que la scène reste épinglée
+     jusqu'à ce que la dernière carte soit centrée. Elle était écrite en STYLE EN
+     LIGNE dans le HTML — donc hors d'atteinte de toute requête média, et le bloc
+     « mouvement réduit » ne pouvait pas la reprendre : la section gardait 4,5
+     écrans alors que son contenu retombait à 1 917 px, soit 1 881 px de vide
+     mesurés à 390 px. C'est le troisième piège du même genre sur ce site (cf. les
+     fonds en ligne de `.spec-item` et les centrages de `commandez`) : une valeur
+     qui doit varier selon le contexte n'a rien à faire dans un attribut `style`. */
+  height: calc(var(--scrolly-screens, 4.5) * 100svh);
+}
+
+/* ── La scène : elle reste, le texte passe ─────────────────────────────── */
+.scrolly__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* Halo teal très large, décalé par le scroll — donne une profondeur à la
+   scène sans jamais concurrencer le produit. */
+.scrolly__stage::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(45% 40% at 50% calc(46% + var(--sc-glow, 0px)),
+              rgba(0, 203, 190, 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+/* La scène = le canevas 3D + le calque d'annotations, superposés et solidaires.
+   Le zoom de « caméra » est appliqué ICI, à l'ensemble : model-viewer recadre
+   automatiquement sur les bornes du modèle, donc un changement de rayon seul
+   produit un cadrage instable d'une scène à l'autre. Le porter sur le conteneur
+   garantit aussi que les cotes ne peuvent pas glisser par rapport au produit —
+   elles subissent la même transformation, au pixel près. */
+.scrolly__scene {
+  position: relative;
+  width: min(88vw, 900px);
+  height: min(76vh, 700px);
+  transform: scale(var(--sc-zoom, 1));
+  transition: transform 0.1s linear;
+}
+.scrolly__model {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  --poster-color: transparent;
+}
+
+/* Repli statique : il occupe exactement la place de la scène 3D, avec le même
+   zoom piloté par le scroll, pour que la séquence garde son rythme même sans
+   WebGL. */
+/* `hidden` seul ne suffit pas : la feuille principale déclare `img { display:
+   block }`, et une règle d'auteur l'emporte sur le `[hidden] { display: none }`
+   du navigateur — l'image du repli s'affichait donc EN PLUS de la scène 3D.
+   Il faut une règle d'auteur explicite. */
+.scrolly__fallback[hidden] { display: none; }
+
+.scrolly__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Navigation des étapes. Ce n'était qu'un repère passif ; c'est maintenant un
+   moyen de circuler. Chaque pastille est une ancre vers l'id du pas : le
+   navigateur amène le haut du pas en haut du viewport, donc son centre tombe
+   pile au centre de l'écran — le bon pas devient actif sans une ligne de JS,
+   et le lien reste fonctionnel si le script ne tourne pas. */
+.scrolly__nav {
+  position: absolute;
+  left: clamp(14px, 3vw, 40px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  z-index: 3;
+}
+.scrolly__nav-rail {
+  position: absolute;
+  /* Derrière les cases. Le fond des cases était translucide (3 % de blanc) : le
+     trait se voyait AU TRAVERS et barrait les chiffres. Un fond opaque et un
+     empilement explicite règlent les deux. */
+  z-index: 0;
+  top: 6px; bottom: 6px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+}
+.scrolly__nav-rail::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100%;
+  background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+  transform: scaleY(var(--sc-p, 0));
+  transform-origin: top center;
+}
+/* Les pastilles sont des CASES DE SAISIE DE CODE. C'est le signe que tout le
+   monde reconnaît comme 2FA, et il tombe juste : quatre cases qui se remplissent
+   à mesure qu'on avance, comme on saisit un code. Le repère de progression
+   devient la métaphore du produit au lieu d'être un simple indicateur. */
+.scrolly__dot {
+  position: relative;
+  width: 26px; height: 30px;          /* cible tactile : 26 x 30 > 24 (WCAG 2.5.8) */
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  /* Couleur explicite, pas un token : `--bg` n'existe pas dans la charte, la
+     déclaration était donc invalide et le fond restait transparent — le trait de
+     progression continuait de traverser les cases. #141414 est la surface des
+     cartes du thème sombre. */
+  background: #141414;
+  z-index: 1;
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
+}
+.scrolly__dot b {
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.32);
+  transition: color var(--transition);
+}
+.scrolly__dot:hover { border-color: rgba(255, 255, 255, 0.42); }
+.scrolly__dot:hover b { color: rgba(255, 255, 255, 0.7); }
+/* Case déjà saisie : remplie, mais en retrait — le regard reste sur la courante. */
+.scrolly__dot[data-done] {
+  border-color: rgba(0, 203, 190, 0.45);
+  /* La teinte est superposée à un fond OPAQUE : un simple rgba laissait le trait
+     de progression visible à travers les cases déjà remplies. */
+  background: linear-gradient(rgba(0, 203, 190, 0.16), rgba(0, 203, 190, 0.16)), #141414;
+}
+.scrolly__dot[data-done] b { color: var(--teal); }
+/* Case en cours de saisie : pleine, avec le halo du champ actif. */
+.scrolly__dot[aria-current="step"] {
+  border-color: var(--teal);
+  background: var(--teal);
+  transform: scale(1.08);
+  box-shadow: 0 0 0 4px rgba(0, 203, 190, 0.16);
+}
+.scrolly__dot[aria-current="step"] b { color: var(--dark); }
+
+/* Numéro du pas courant, sous la barre : un repère de lecture, pas une
+   pagination cliquable. */
+.scrolly__count {
+  position: absolute;
+  left: clamp(14px, 3vw, 40px);
+  top: calc(50% + 90px);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+.scrolly__count b { color: var(--teal); }
+
+/* ── Les pas de texte ─────────────────────────────────────────────────── */
+.scrolly__steps {
+  position: relative;
+  z-index: 2;
+  /* Le conteneur des pas couvre toute la scène : sans ça il interceptait les
+     clics destinés aux cases de navigation, qui sont dessous. Seules les cartes
+     de texte reprennent les événements (règle sur .scrolly__step > *). */
+  pointer-events: none;
+  /* On remonte les pas par-dessus la scène collante. */
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+.scrolly__step {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  /* Le padding haut dégage la barre de navigation : au centre de son pas, la
+     carte se lit intégralement, libellé compris. */
+  padding: 96px clamp(24px, 7vw, 96px) 0;
+  max-width: 620px;
+  pointer-events: none;
+}
+.scrolly__step > * { pointer-events: auto; }
+
+/* Un pas n'apparaît qu'une fois la scène en place : c'est la synchronisation
+   image/argument, pas une simple apparition au scroll. */
+.scrolly__step-inner {
+  /* La carte accompagne son pas — elle n'est pas épinglée. Un `position: sticky`
+     a été essayé puis retiré : dans un conteneur `grid` avec `align-content:
+     center`, le calage se fait contre la zone de grille et la carte se retrouvait
+     hors écran sur les premiers pas. Le padding du pas suffit à la tenir sous la
+     barre de navigation au moment où elle se lit. */
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.45s var(--ease-out), transform 0.55s var(--ease-out);
+  background: linear-gradient(100deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.42) 70%, transparent);
+  padding: 26px 30px 28px;
+  border-radius: var(--radius);
+  border-left: 2px solid var(--teal);
+}
+.scrolly__step.is-active .scrolly__step-inner { opacity: 1; transform: none; }
+
+/* Appel à l'action posé dans la carte du dernier pas. Il ne sert QUE sur
+   téléphone, où le bouton flottant est retiré ; au-dessus de 900 px c'est ce
+   dernier qui accompagne la séquence, et deux boutons feraient doublon. */
+.scrolly__step-cta { display: none; }
+
+/* Indicateur de chargement du modèle. Posé au centre de la scène, il occupe la
+   place de l'affiche : c'est le seul moment où quelque chose doit s'y écrire. */
+.scrolly__loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 16px;
+  border-radius: 100px;
+  background: rgba(20, 20, 20, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+}
+.scrolly__loading[hidden] { display: none; }
+.scrolly__loading b { color: var(--teal); font-variant-numeric: tabular-nums; }
+
+/* Les lignes de la carte arrivent en cascade — libellé, titre, texte, chiffre —
+   et non toutes ensemble. C'est la règle déjà appliquée aux en-têtes de section
+   du site (`group` dans main.js) : un fondu de bloc fait atterrir les trois au
+   même instant, ce qui se lit plat. 70 ms d'écart suffisent à donner un ordre de
+   lecture sans donner l'impression d'attendre. */
+.scrolly__step-inner > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s var(--ease-out), transform 0.6s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.scrolly__step-inner > *:nth-child(2) { --i: 1; }
+.scrolly__step-inner > *:nth-child(3) { --i: 2; }
+.scrolly__step-inner > *:nth-child(4) { --i: 3; }
+.scrolly__step.is-active .scrolly__step-inner > * { opacity: 1; transform: none; }
+
+.scrolly__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+.scrolly__title {
+  font-size: clamp(1.5rem, 3.4vw, 2.375rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+.scrolly__text {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.74);
+  margin: 0;
+}
+/* Le chiffre qui porte l'argument. Une seule donnée par écran. */
+.scrolly__fig {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 18px;
+  font-weight: 700;
+}
+.scrolly__fig b {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  color: var(--teal);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  /* Le chiffre ne se coupe jamais : sur la carte étroite du téléphone, « Pi 5 »
+     tombait sur deux lignes, « Pi » puis « 5 ». */
+  white-space: nowrap;
+}
+.scrolly__fig span {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── CTA persistant ───────────────────────────────────────────────────── */
+.scrolly__cta {
+  position: fixed;
+  /* Décalé pour ne pas recouvrir le bouton « retour en haut », qui occupe déjà
+     ce coin : deux actions superposées, c'est un clic perdu sur deux. */
+  right: clamp(72px, 4vw + 56px, 104px);
+  bottom: clamp(16px, 3vw, 32px);
+  z-index: 60;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out), transform 0.35s var(--ease-out);
+}
+.scrolly__cta.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ── Invitation à défiler, sur le premier écran seulement ─────────────── */
+.scrolly__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+  transition: opacity 0.4s var(--ease-out);
+}
+.scrolly__hint svg { animation: scrollyHint 2.2s var(--ease-soft) infinite; }
+@keyframes scrollyHint {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50%      { transform: translateY(5px); opacity: 1; }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* ── Deux zones : l'objet en haut, le texte en bas ────────────────────────
+     La version précédente débordait le canevas à 132vw et le décalait pour que
+     l'objet soit COUPÉ par le bord droit — on n'en voyait qu'une moitié, mais en
+     grand. Deux défauts, vérifiés à l'écran : sur téléphone le visiteur ne voyait
+     jamais le produit en entier, et au pas « encombrement » les cotes sortaient du
+     cadre (il fallait borner « 40 cm » de force pour la garder dans la fenêtre).
+
+     Relevé sur le scrollytelling de la Superleggera V4 Centenario, qui procède
+     autrement : le canevas reste plein écran, jamais rogné ni décalé ; c'est la
+     CAMÉRA qui cadre l'objet dans la moitié haute, et le texte occupe le tiers
+     bas, jamais par-dessus. L'objet est plus petit, mais entier et lisible, et le
+     texte a sa zone à lui.
+
+     Transposé ici : le canevas prend la largeur de l'écran, se pose sous la barre
+     de navigation, et occupe 44 % de la hauteur ; la carte de texte garde le bas.
+     Les cotes tiennent alors dans la fenêtre par construction. */
+  /* UNE ZONE RÉSERVÉE AU TEXTE, ET LA SCÈNE PREND LE RESTE.
+     La scène (44svh sous une barre de 84 px) et la carte (calée en bas, hauteur
+     dictée par son contenu) étaient posées INDÉPENDAMMENT : rien ne garantissait
+     qu'elles ne se croisent pas, et elles se croisaient. Mesuré sur iPhone SE
+     (375 × 667) : la scène finissait à 377 px, la carte commençait à 361 px —
+     16 px de recouvrement, et à l'écran le bas du boîtier passait sous la carte
+     au pas 2, la cote « 24 cm » au pas 4.
+     Désormais une seule grandeur gouverne les deux : la hauteur réservée au texte.
+     La carte ne monte jamais au-dessus, la scène s'arrête exactement dessus. Le
+     recouvrement devient impossible par construction, à toute hauteur d'écran.
+     Le plancher de 300 px est la carte la plus haute mesurée (252 px) plus sa
+     marge basse ; le plafond de 356 px évite qu'un grand téléphone donne au texte
+     plus de place qu'il n'en demande. Effet secondaire souhaitable : sur iPhone 14
+     la scène passe de 371 à 447 px — l'objet gagne un cinquième. */
+  .scrolly {
+    /* 44 px et non la hauteur de la barre (72) : la barre se masque au défilement
+       vers le bas, donc la séquence se parcourt le plus souvent sans elle, et lui
+       réserver sa place en permanence coûtait 32 px d'objet sur des écrans qui en
+       manquent. Quand elle réapparaît (défilement vers le haut) elle recouvre le
+       haut de la scène, où il n'y a que du fond : le modèle est centré dans sa
+       zone, il ne monte jamais jusque-là. */
+    --sc-top: 44px;
+    /* LA ZONE RÉSERVÉE EST MESURÉE, PAS DEVINÉE. scrolly.js relève la hauteur de la
+       plus haute des quatre cartes (elles vont de 209 à 344 px selon le pas et la
+       largeur) et l'écrit ici. Deux valeurs codées en dur ont été essayées avant :
+       un pourcentage de la hauteur d'écran, qui donne trop peu sur un petit
+       téléphone — donc le recouvrement qu'on corrige — et trop sur un grand ; puis
+       une constante, qui retombe faux dès qu'un texte est plus long d'une ligne.
+       La valeur ci-dessous n'est qu'un repli pour l'instant avant le premier
+       relevé, ou si le script ne tourne pas. */
+    --sc-card-zone: 384px;
+    --sc-free: calc(100svh - var(--sc-top) - var(--sc-card-zone));
+    /* Le zoom de caméra est un `scale()` porté par la scène ; sur téléphone son
+       amplitude est ramenée à la moitié (1,16 → 1,08). À pleine amplitude et sur
+       une scène large de 100vw, le pas 2 donnait 452 px pour un écran de 390 :
+       31 px rognés de chaque côté, donc un cadrage « serré » qui coupait l'objet
+       au lieu de s'en approcher. */
+    --sc-zoom-max: 1.08;
+    /* Un pas de moins à parcourir : après le dernier texte il restait 422 px de
+       défilement où le modèle dérivait seul (mesuré à 390 px). */
+    --scrolly-screens: 4.2;
+  }
+  /* Une rangée de grille exactement égale à la place libre, la scène centrée
+     dedans : au zoom maximum la boîte transformée coïncide avec la rangée, donc
+     elle ne peut ni passer sous la carte ni sortir par le haut. */
+  .scrolly__stage {
+    place-items: center center;
+    padding-top: var(--sc-top);
+    grid-template-rows: var(--sc-free);
+  }
+  .scrolly__scene {
+    width: calc(86vw / var(--sc-zoom-max));
+    height: calc(var(--sc-free) / var(--sc-zoom-max));
+    max-height: none;
+    transform: scale(calc(1 + (var(--sc-zoom, 1) - 1) * 0.5));
+  }
+  /* Le texte occupe le bas de l'écran, sous l'objet : superposé, il masquerait le
+     boîtier sur une largeur de téléphone. */
+  .scrolly__step { align-content: end; padding-bottom: 5svh; max-width: none; }
+
+
+  /* ── Repère de progression ────────────────────────────────────────────────
+     Les quatre cases de saisie sont retirées (quatre cibles de plus par-dessus le
+     produit sur un écran de 390 px, et le clavier de la métaphore 2FA n'a pas la
+     place de se lire), mais le visiteur se retrouvait alors à traverser quatre
+     écrans épinglés SANS aucune indication : rien ne disait qu'une séquence était
+     en cours ni combien il en restait. On garde donc la même information, sous la
+     forme qui convient à un téléphone — un trait fin au ras du bas de l'écran et
+     le numéro du pas. Aucune donnée nouvelle, aucun JS de plus : le trait réutilise
+     `--sc-p`, déjà écrit à chaque image, et le compteur son propre texte.
+     Le bas de l'écran est libre : la carte de texte s'arrête à 8vh du bord. */
+  .scrolly__nav {
+    display: block;
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    top: auto;
+    transform: none;
+    z-index: 3;
+  }
+  .scrolly__dot { display: none; }
+  .scrolly__nav-rail {
+    top: auto; bottom: 0; left: 0; right: 0;
+    width: auto; height: 2px;
+    border-radius: 0;
+  }
+  /* Le trait passe de vertical à horizontal : c'est la même progression, tournée
+     d'un quart de tour. */
+  .scrolly__nav-rail::after {
+    inset: 0;
+    height: 100%;
+    transform: scaleX(var(--sc-p, 0));
+    transform-origin: left center;
+  }
+  .scrolly__count {
+    display: block;
+    left: auto; right: 18px;
+    top: auto; bottom: 14px;
+    z-index: 3;
+    font-size: 0.6875rem;
+  }
+}
+@media (max-width: 520px) {
+  .scrolly__step-inner { padding: 18px 20px 20px; }
+  /* 15 px au lieu de 16, interligne 1,55 au lieu de 1,7 : la carte perd une
+     vingtaine de pixels de haut, qui reviennent à l'objet. La mesure de lecture y
+     gagne aussi — elle passe de 31 à 36 caractères par ligne, la fourchette
+     confortable commençant vers 35. */
+  .scrolly__text { font-size: 0.9375rem; line-height: 1.55; }
+}
+
+/* ── Mouvement réduit ─────────────────────────────────────────────────── */
+/* On ne supprime pas le contenu, on supprime la mise en scène : la scène ne
+   colle plus, chaque pas devient un bloc normal, le modèle reste sur son
+   cadrage par défaut. L'information reste intégralement lisible. */
+@media (prefers-reduced-motion: reduce) {
+  /* La mise en scène tombe, la hauteur doit tomber avec : sinon la section garde
+     ses 4,5 écrans pour un contenu qui n'en occupe plus que deux. */
+  .scrolly { height: auto; }
+  .scrolly__stage { position: relative; height: auto; padding: 40px 0; }
+  .scrolly__steps { margin-top: 0; }
+  .scrolly__step { min-height: 0; padding: 32px clamp(24px, 7vw, 96px); }
+  .scrolly__step-inner,
+  .scrolly__step-inner > * { opacity: 1; transform: none; transition: none; }
+  .scrolly__hint, .scrolly__nav, .scrolly__count { display: none; }
+  .scrolly__scene { transform: none; }
+  /* Le calque d'annotations suppose une caméra pilotée par le défilement ; ici
+     elle ne bouge plus et le récit est porté par le texte seul. */
+  .scrolly__hud { display: none; }
+  .scrolly__cta { opacity: 1; transform: none; pointer-events: auto; }
+  .scrolly__hint svg { animation: none; }
+}
+
+/* ── Au-delà de 940 px : deux colonnes, plus de superposition ─────────────
+   La carte flottait sur le modèle avec un dégradé pour rester lisible — d'où
+   deux corrections successives quand elle recouvrait le produit. Quand la place
+   existe, on sépare franchement : le texte à gauche, la scène à droite. Le
+   dégradé disparaît, il n'a plus rien à masquer.
+
+   Le seuil était à 1200 px. Il descend à 940 : depuis que les cotes entourent
+   l'objet au lieu d'être posées sous lui, une carte qui le recouvre ne masque
+   plus seulement le produit, elle passe au milieu des traits de cote et du
+   libellé de la feuille — c'était illisible entre 900 et 1200 px. En dessous de
+   940 px c'est l'autre mise en page qui prend le relais (objet coupé par le bord,
+   texte en bas), donc plus aucune largeur ne superpose les deux. */
+@media (min-width: 940px) {
+  .scrolly__stage { place-items: center end; padding-right: 4vw; }
+  .scrolly__scene { width: min(56vw, 800px); }
+  .scrolly__step { max-width: 44vw; padding-left: clamp(72px, 7vw, 120px); }
+  .scrolly__step-inner {
+    background: none;
+    padding: 0 0 0 26px;
+    border-radius: 0;
+  }
+  .scrolly__title { font-size: clamp(1.75rem, 2.9vw, 2.625rem); }
+}
+
+/* ── Déverrouillage du CTA au dernier pas ─────────────────────────────────
+   Le bouton mène aux caractéristiques pendant la description, puis se
+   « déverrouille » en demande de démo quand le boîtier s'ouvre. Le cadenas
+   pivote et cède la place à une coche : le visiteur a authentifié sa lecture en
+   défilant. Une seule transition, déclenchée par le parcours — pas une boucle. */
+.scrolly__cta { position: fixed; }
+.scrolly__cta-ico {
+  grid-area: 1 / 1;
+  transition: opacity 0.3s var(--ease-out), transform 0.45s var(--ease-out);
+}
+.scrolly__cta { display: inline-flex; align-items: center; gap: 9px; }
+.scrolly__cta-ico--lock,
+.scrolly__cta-ico--check {
+  display: inline-grid;
+  place-items: center;
+  width: 15px; height: 15px;
+}
+.scrolly__cta-ico--check { opacity: 0; transform: scale(0.5) rotate(-25deg); margin-left: -15px; }
+.scrolly__cta.is-unlocked .scrolly__cta-ico--lock { opacity: 0; transform: scale(0.5) rotate(25deg); }
+.scrolly__cta.is-unlocked .scrolly__cta-ico--check { opacity: 1; transform: none; }
+.scrolly__cta-label { transition: transform 0.35s var(--ease-out); }
+.scrolly__cta.is-unlocked .scrolly__cta-label { transform: translateX(1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scrolly__cta-ico, .scrolly__cta-label { transition: none; }
+  .scrolly__dot { transition: none; }
+}
+
+/* ── Fil conducteur : les libellés de section portent un numéro en case ────
+   Même vocabulaire que les cases de saisie de la séquence, appliqué à toute la
+   page : chaque libellé de section est précédé de son index dans une petite case
+   au trait. Le compteur est CSS, donc la numérotation se réajuste seule si une
+   section est ajoutée ou retirée — rien à maintenir à la main.
+   Le badge du hero (.hero__label) en est exclu : il n'est pas une section. */
+main { counter-reset: qsec; }
+main .section-label {
+  counter-increment: qsec;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+main .section-label::before {
+  content: counter(qsec, decimal-leading-zero);
+  display: inline-grid;
+  place-items: center;
+  width: 22px; height: 24px;
+  border: 1px solid rgba(0, 203, 190, 0.42);
+  border-radius: 5px;
+  background: rgba(0, 203, 190, 0.1);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: var(--teal);
+}
+
+
+/* ══ Calque d'annotations projetées ═══════════════════════════════════════
+   Ce qui suit ne décrit QUE l'apparence. Aucune coordonnée n'est écrite ici :
+   la géométrie de chaque tracé est recalculée à chaque image par scrolly.js, à
+   partir de la caméra réelle du rendu 3D. C'est la différence entre une cote et
+   un autocollant — la première tourne avec l'objet, la seconde glisse dessus.
+   La version précédente posait des rectangles en CSS par-dessus le canevas : la
+   « feuille A3 » traversait le boîtier et les cotes flottaient à côté de rien.
+
+   Le trait fait tout ici : `vector-effect: non-scaling-stroke` est systématique
+   pour que l'épaisseur reste à 1 px quel que soit le zoom de la scène (0,92 à
+   1,16 selon le pas). Sans lui les hairlines grossissent et perdent leur
+   finesse, qui est précisément ce qui les rend techniques plutôt que décoratives. */
+.scrolly__hud {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;          /* les cotes débordent volontairement de l'objet */
+  pointer-events: none;
+  z-index: 1;                 /* au-dessus du halo, sous les cases et le texte */
+}
+/* Sans WebGL il n'y a pas de caméra à suivre : le repli est une image fixe. */
+.scrolly[data-fallback] .scrolly__hud { display: none; }
+
+/* Un calque par pas. L'opacité est la seule chose qui dépende du pas — pilotée
+   par `data-step`, donc le CSS ignore l'ordre du HTML. */
+.hud-l { opacity: 0; transition: opacity 0.55s var(--ease-out); }
+.hud-floor { opacity: 1; }
+.scrolly[data-step="1"] .hud-dock  { opacity: 1; }
+.scrolly[data-step="2"] .hud-burst { opacity: 1; }
+.scrolly[data-step="3"] .hud-size  { opacity: 1; }
+
+/* ── Le sol ──────────────────────────────────────────────────────────────
+   Il est présent aux quatre pas : c'est lui qui fait « posé sur un bureau »
+   plutôt que « flottant dans le noir », et le garder d'un pas à l'autre donne
+   une scène unique au lieu de quatre décors. Il s'efface là où il gênerait :
+   sous la vue éclatée (les pièces s'envolent, le sol n'a plus de sens) et sous
+   la feuille A3 (deux trames au sol se parasitent). */
+.hud-pool { fill: url(#hudPool); stroke: none; }
+.hud-grid { transition: opacity 0.55s var(--ease-out); }
+.hud-grid path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.075);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+/* Les deux lignes passant par l'origine sont teintées : elles donnent au
+   quadrillage un centre, donc une raison d'être là. */
+.hud-grid path[data-axis] { stroke: rgba(0, 203, 190, 0.2); }
+.scrolly[data-step="1"] .hud-grid { opacity: 0.5; }
+.scrolly[data-step="2"] .hud-grid { opacity: 0.2; }
+.scrolly[data-step="3"] .hud-grid { opacity: 0.3; }
+.scrolly[data-step="2"] .hud-pool { opacity: 0.45; }
+
+/* ── Typographie d'annotation ────────────────────────────────────────────
+   Le contour noir (`paint-order: stroke`) remplace une pastille de fond : une
+   étiquette posée sur un aplat se voit comme un badge collé, un texte détouré
+   se lit comme une annotation. Il tient sur le noir de la scène comme sur le
+   produit, sans avoir à mesurer quoi que ce soit. */
+.hud-lab, .hud-val {
+  font-family: var(--font);
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.82);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+  dominant-baseline: middle;
+}
+.hud-lab {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  fill: rgba(255, 255, 255, 0.66);
+}
+.hud-val {
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  fill: var(--teal);
+}
+
+/* ── Pas 2 : l'emplacement du smartphone ─────────────────────────────────
+   Un contour, pas un volume. Le modèle 3D contient bien un téléphone, mais
+   c'est un volume générique moins soigné que le boîtier : la séquence ne
+   l'affiche jamais (cf. scrolly.js). Le tracer en fil de fer dit la même chose
+   — « il se pose là » — sans montrer une pièce qui n'est pas au niveau. */
+.hud-ghost {
+  fill: rgba(0, 203, 190, 0.05);
+  stroke: rgba(0, 203, 190, 0.5);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* Le liseré de dalle, en retrait du contour : deux traits suffisent à faire
+   reconnaître un téléphone, là où un rectangle seul se lisait comme un aplat
+   peint sur la face avant du boîtier. */
+.hud-ghost-screen {
+  fill: rgba(0, 203, 190, 0.06);
+  stroke: rgba(0, 203, 190, 0.22);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-ghost-notch {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.45);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.hud-lead {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.45);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-node { fill: var(--teal); }
+
+/* ── Pas 3 : les repères d'assemblage ────────────────────────────────────
+   Chaque pièce qui s'écarte reste reliée à son logement par un trait pointillé,
+   comme sur une planche d'atelier : l'éclatement se lit alors comme un montage
+   et non comme une explosion. Le tracé suit l'ouverture image par image. */
+.hud-burst path {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.hud-burst circle {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ── Pas 4 : l'encombrement ──────────────────────────────────────────────
+   La feuille est tracée DANS le plan du sol, avec la même caméra que le rendu,
+   et l'enveloppe du boîtier est retirée du calque : elle passe donc derrière le
+   produit. Les cotes partent des arêtes réelles de l'objet. */
+.hud-sheet {
+  fill: rgba(255, 255, 255, 0.045);
+  stroke: rgba(255, 255, 255, 0.34);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-sheet-marks {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  opacity: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+.hud-dim-line {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.8);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.hud-dim-ext {
+  fill: none;
+  stroke: rgba(0, 203, 190, 0.26);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Deux cas où les MOTS des annotations gênent, alors que les tracés, eux, restent
+   justes puisqu'ils sont solidaires de l'objet :
+   - sous 900 px la scène déborde volontairement de l'écran (objet coupé par le
+     bord droit) et les étiquettes tomberaient dans le hors-champ ;
+   - entre 901 et 939 px la carte de texte est encore superposée au modèle (les
+     deux colonnes ne démarrent qu'à 940), donc les étiquettes lui passeraient
+     dessus.
+   Au-delà, la carte est à gauche et la scène à droite : plus de collision. */
+@media (max-width: 939px) {
+  .hud-lab { display: none; }
+}
+@media (max-width: 900px) {
+  /* 11 px mesurés à l'écran, sous le plancher de lisibilité, pour des chiffres
+     qui sont l'information du pas (« 40 cm »). La scène ayant reculé à 86vw, la
+     marge existe désormais pour les agrandir sans les envoyer hors cadre. */
+  .hud-val { font-size: 13px; }
+}
+
+/* ── Pas de CTA flottant sur téléphone ────────────────────────────────────
+   Sous 900 px la carte de texte occupe le bas de l'écran (l'objet est au-dessus,
+   coupé par le bord) — exactement là où se pose le bouton flottant, qui
+   recouvrait alors le titre du pas : « Un actionneur appuie, une caméra lit »
+   était illisible. Le chemin de conversion reste ouvert, le bouton de la barre
+   de navigation étant collant et visible en permanence.
+   Cette règle est en FIN de fichier à dessein : `.scrolly__cta` est redéclaré
+   plus haut avec `display: inline-flex` (section « déverrouillage »), et à
+   spécificité égale c'est la dernière déclaration qui gagne — placée dans le bloc
+   responsive, elle était écrasée. */
+@media (max-width: 900px) {
+  .scrolly__cta { display: none; }
+
+  /* ── Mais le chemin de conversion revient, DANS la carte ─────────────────
+     Le bouton flottant part (il recouvrait le titre du pas), et il ne restait
+     alors plus aucun appel à l'action dans toute la séquence sur téléphone —
+     4,2 écrans de défilement, le moment d'intérêt le plus haut de la page, et
+     rien au bout. Le renvoi à la barre de navigation ne suffit pas : son bouton
+     est le même sur toute la page, il ne dit rien de ce qui vient d'être montré.
+     Il est donc posé dans la carte du DERNIER pas, où il ne peut par construction
+     recouvrir personne, et il reprend mot pour mot le libellé que le bouton
+     flottant affiche à ce pas sur grand écran (`data-cta-last`). */
+  .scrolly__step-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 11px 20px;
+    border-radius: var(--radius-pill, 100px);
+    background: var(--teal);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+  .scrolly__step-cta svg { flex-shrink: 0; }
+
+  /* ── Le bouton « retour en haut » sort de la séquence ────────────────────
+     Mesuré à 390 px : il occupait [322, 772, 44 × 44] et le compteur d'étapes
+     [331, 811, 41 × 19] — deux éléments d'interface dans le même coin, l'un sur
+     l'autre. Pendant la séquence, la progression est déjà donnée par le trait au
+     ras du bas et par le compteur ; le bouton n'a rien à y ajouter. */
+  body.is-scrolly .back-to-top {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px) scale(0.8);
+  }
+
+  /* ── Sortir de la séquence : un lien visible, pas seulement au clavier ───
+     `.skip-nav--sequence` existe depuis le début, mais comme tous les liens
+     d'évitement il mesure 1 × 1 px hors focus : sur un téléphone, où il n'y a pas
+     de focus clavier, il n'existe pas. Le visiteur n'avait donc AUCUN moyen de
+     sauter 4,2 écrans épinglés. Le même élément — même cible, même intitulé —
+     devient une pastille discrète tant que la séquence traverse l'écran. */
+  body.is-scrolly .skip-nav--sequence,
+  body.is-scrolly .skip-nav--sequence:focus {
+    position: fixed;
+    top: calc(72px + 10px);
+    right: 12px;
+    left: auto;
+    transform: none;
+    width: auto;
+    height: auto;
+    min-height: 44px;
+    max-width: 44vw;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 6;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: 100px;
+    background: rgba(20, 20, 20, 0.82);
+    color: rgba(255, 255, 255, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    text-decoration: none;
+  }
+  /* L'intitulé complet fait 180 px : dans une pastille il débordait de l'écran.
+     Seul le premier mot reste visible ; le reste est masqué à l'œil mais toujours
+     lu par un lecteur d'écran, donc le nom accessible du lien ne change pas —
+     c'est ce qui distingue ce procédé d'un simple raccourcissement du texte. */
+  body.is-scrolly .skip-nav--sequence .skip-nav__rest {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  body.is-scrolly .skip-nav--sequence:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+/* ── Téléphone en paysage : deux colonnes, comme sur grand écran ───────────
+   Mesuré à 844 × 390 : la scène tombait à 172 px de haut et la carte la
+   recouvrait sur 89 px — l'empilement vertical n'a pas de sens quand la hauteur
+   est la ressource rare et la largeur abondante. C'est exactement la situation
+   du bureau, où le texte est à gauche et la scène à droite ; on reprend cette
+   mise en page plutôt que d'en inventer une troisième. */
+@media (max-width: 939px) and (orientation: landscape) and (max-height: 520px) {
+  .scrolly {
+    --scrolly-screens: 4.2;
+    /* Plus d'empilement, donc plus de zone à réserver en bas : la rangée de
+       grille et la réserve de la mise en page verticale doivent être annulées,
+       sinon `--sc-free` devient négatif et la scène part hors de l'écran
+       (mesuré : −164 px). */
+    --sc-card-zone: 0px;
+  }
+  .scrolly__stage {
+    place-items: center end;
+    padding: 0 3vw 0 0;
+    grid-template-rows: none;
+  }
+  .scrolly__scene {
+    /* 50vw, et la carte à 40vw : à 52/46 les deux boîtes se croisaient de 8 px
+       (mesuré à 844 × 390). Les deux dimensions sont divisées par le zoom maximum
+       pour la même raison qu'en portrait : la boîte agrandie doit tenir dans le
+       cadre, sinon le pas 2 en sort (mesuré : 9 px à droite, 26 px en hauteur). */
+    width: calc(50vw / var(--sc-zoom-max));
+    height: calc(84svh / var(--sc-zoom-max));
+  }
+  .scrolly__step {
+    align-content: center;
+    max-width: 40vw;
+    padding: 0 0 0 4vw;
+  }
+  .scrolly__step-cta { margin-top: 14px; min-height: 42px; }
+  /* Les cotes reviennent : la scène est assez large pour les porter. */
+  .hud-lab { display: block; font-size: 9px; }
+}

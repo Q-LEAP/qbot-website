@@ -1,5 +1,13 @@
 ﻿/* ======================================
    Q-BOT — Site statique
+
+   MISE EN CACHE — à ne pas oublier : cette feuille et assets/js/main.js sont
+   appelées avec un paramètre de version (`?v=2026-08-17`) sur les 23 pages. Elles
+   n'en avaient aucun, contrairement à scrolly.css/scrolly.js : après une
+   modification, le navigateur continuait de servir l'ancienne version, et un
+   style.css périmé face à un HTML à jour donne une page qui paraît cassée.
+   Quand on modifie l'une des deux, bumper la date dans les 23 pages :
+     grep -rl 'style.css?v=' --include='*.html' . | xargs sed -i '' 's/v=ANCIENNE/v=NOUVELLE/g'
    Charte (Documentations/Q-BOT BrandGuidelines.pdf) :
      • Couleur primaire   : #00CBBE
      • Couleur secondaire : #000000
@@ -113,7 +121,6 @@ button { cursor: pointer; font-family: var(--font); }
 .section--dark { background: var(--dark); color: var(--white); }
 
 .text-teal   { color: var(--teal); }
-.text-center { text-align: center; }
 .text-muted  { color: var(--muted); }
 
 /* ---- Typographie ---- */
@@ -145,8 +152,10 @@ p { color: var(--gray); }
 .section-title { margin-bottom: 16px; }
 .section-subtitle { font-size: 1.0625rem; max-width: 600px; }
 .section-header { margin-bottom: 56px; }
-.section-header.centered { text-align: center; }
-.section-header.centered .section-subtitle { margin: 0 auto; }
+/* Il n'y a plus de variante centrée : sur ce site un bloc de texte est aligné à
+   gauche sur la gouttière du conteneur — celle de l'encre du logo — ou à droite,
+   jamais au centre. La classe `centered` a été retirée des 26 en-têtes qui la
+   portaient plutôt que gardée en mentant sur son nom. */
 
 /* ---- Boutons ---- */
 .btn {
@@ -245,6 +254,10 @@ p { color: var(--gray); }
   --logo-h: 38px;
   display: inline-flex;
   align-items: center;
+  /* Le lockup ne se comprime jamais : c'est un élément flex, et à 320 px il se
+     faisait écraser de 87 à 61 px de large — le logo était donc déformé, ce que
+     la charte interdit. C'est au reste de la barre de céder, pas à la marque. */
+  flex-shrink: 0;
   padding: calc(var(--logo-h) * var(--logo-clear-y)) calc(var(--logo-h) * var(--logo-clear-x));
   margin-left: calc(-1 * var(--logo-h) * var(--logo-clear-x));
 }
@@ -360,14 +373,27 @@ p { color: var(--gray); }
   background: rgba(0,203,190,0.15);
   border: 1px solid rgba(0,203,190,0.35);
   color: var(--teal);
-  font-size: 0.8125rem;
+  /* 12 px / 0,06 em, et non 13 / 0,08 : le libellé français fait 58 caractères
+     (« Authentification à deux facteurs (2FA) plus simple que jamais ! ») et
+     dépassait de quelques pixels la colonne du hero à 1440 px. Il passait donc
+     sur deux lignes dans une pastille à rayon 100 px, avec le pictogramme centré
+     entre les deux — pour une trentaine de pixels de trop. À cette taille il
+     tient sur une ligne dès 1280 px ; en dessous il se replie proprement, d'où
+     la hauteur de ligne et le padding vertical un peu plus généreux. */
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
   text-transform: uppercase;
-  padding: 6px 14px;
+  padding: 7px 15px;
   border-radius: 100px;
   margin-bottom: 24px;
+  max-width: 100%;
 }
+/* Le pictogramme ne se comprime pas et reste sur la première ligne quand le
+   libellé se replie : centré verticalement sur deux lignes, il flottait au
+   milieu du texte. */
+.hero__label svg { flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
 
 .hero__title {
   color: var(--white);
@@ -541,7 +567,6 @@ p { color: var(--gray); }
   border: 2px solid var(--teal);
   border-radius: var(--radius-lg);
   padding: 48px;
-  text-align: center;
   box-shadow: var(--shadow-lg);
 }
 
@@ -585,7 +610,7 @@ p { color: var(--gray); }
 }
 
 /* ---- FAQ ---- */
-.faq__list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq__list { max-width: 760px; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 
 .faq-item {
   border: 1px solid var(--border);
@@ -642,6 +667,92 @@ p { color: var(--gray); }
   font-size: 0.9375rem;
 }
 
+/* ---- Message d'état des formulaires ---- */
+/* Les six formulaires ne signalaient RIEN : la page se rechargeait et la saisie
+   disparaissait. Cette ligne est la réponse visible à l'envoi — succès, échec, ou
+   « votre client courrier vient de s'ouvrir ». Alignée à gauche comme le reste. */
+.form-status {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border: 1px solid transparent;
+}
+.form-status[data-state="ok"] {
+  color: var(--teal-text);
+  background: rgba(0, 203, 190, 0.1);
+  border-color: rgba(0, 203, 190, 0.35);
+}
+.form-status[data-state="info"] {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+/* L'échec ne prend pas de rouge : la charte n'a que le teal et le noir, et un
+   rouge inventé jurerait. Le contraste du cadre suffit à marquer l'anomalie. */
+.form-status[data-state="error"] {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+}
+/* Le formulaire newsletter est une rangée flex : sans ces deux lignes, le message
+   se plaçait À CÔTÉ du bouton et rétrécissait le champ de saisie de 490 à 256 px.
+   Il prend maintenant toute la largeur, sous la rangée. */
+.newsletter__form { flex-wrap: wrap; }
+.newsletter__form .form-status { flex-basis: 100%; margin-top: 4px; }
+/* Sur la bande newsletter, fond teal : le texte repasse au noir de charte. */
+.newsletter .form-status {
+  color: #001A18;
+  background: rgba(0, 26, 24, 0.08);
+  border-color: rgba(0, 26, 24, 0.25);
+}
+.newsletter .form-status[data-state="ok"] { border-color: rgba(0, 26, 24, 0.5); font-weight: 500; }
+
+/* ---- Bloc d'appel à l'action de fin de page ---- */
+/* Aligné à gauche sur la gouttière du conteneur, comme l'en-tête de page et tout
+   le contenu : ces blocs étaient centrés par un `style="text-align:center"` posé
+   sur le conteneur, donc hors d'atteinte de toute feuille de style. Les dix blocs
+   du site partagent maintenant cette classe — libellé, titre, sous-titre et
+   boutons partent du même bord que le logo. */
+.cta-block .section-subtitle { margin-left: 0; margin-right: 0; }
+.cta-block__actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+/* Sous 520 px les boutons prennent toute la largeur, comme ceux des hero : c'est
+   la même règle, pour la même raison — une cible à la largeur du pouce et une
+   hiérarchie qui se lit. */
+@media (max-width: 520px) {
+  .cta-block__actions { flex-direction: column; align-items: stretch; }
+  /* Le sélecteur couvre aussi le bouton seul, sans rangée autour de lui : la
+     moitié des blocs n'en a qu'un, et sans ça le même bloc changeait d'allure
+     selon qu'il portait un bouton ou deux. */
+  .cta-block__actions .btn,
+  .cta-block > .btn { width: 100%; justify-content: center; }
+}
+
+/* ---- Deux colonnes égales ---- */
+/* Cette classe existe parce que le motif était écrit en style INLINE dans
+   `commandez.html` / `en/order.html` : `display:grid; grid-template-columns:1fr 1fr`.
+   Aucune media query ne peut atteindre un attribut `style`, si bien qu'à 390 px les
+   deux colonnes restaient forcées : le contenu ne pouvait pas se réduire davantage
+   et la page débordait de 42 px — elle défilait horizontalement, sur toute sa
+   hauteur. C'est le genre de bogue qu'un style inline rend impossible à corriger
+   ailleurs que dans le HTML. */
+.split-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  margin-top: 48px;
+}
+@media (max-width: 768px) {
+  .split-2 { grid-template-columns: 1fr; gap: 32px; }
+}
+
 /* ---- Newsletter ---- */
 /* Le teal de marque est une couleur CLAIRE : du blanc dessus plafonne à
    1,8:1, très en dessous du minimum AA de 4,5:1 — c'est le noir de charte qui
@@ -654,19 +765,17 @@ p { color: var(--gray); }
   background: var(--teal);
   color: #001A18;
   padding: 52px 0;
-  text-align: center;
 }
 .newsletter h2 { color: #001A18; margin-bottom: 8px; }
 .newsletter p { color: rgba(0,26,24,0.86); margin-bottom: 22px; }
 
 .newsletter__consent {
   max-width: 560px;
-  margin: 14px auto 0;
+  margin: 14px 0 0;
 }
 .newsletter__consent label {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
   gap: 9px;
   cursor: pointer;
   font-size: 0.8125rem;
@@ -687,14 +796,21 @@ p { color: var(--gray); }
   font-size: 0.75rem;
   line-height: 1.5;
   color: rgba(0,26,24,0.72);
-  margin: 8px 0 0;
+  /* Même mesure que la ligne de consentement juste au-dessus (560 px, héritée du
+     conteneur) : les deux blocs de petit texte s'alignent au lieu de former deux
+     largeurs différentes. */
+  margin: 12px 0 0;
 }
 
 .newsletter__form {
   display: flex;
   gap: 12px;
-  max-width: 500px;
-  margin: 0 auto;
+  /* 640 et non 500 : le placeholder fait 58 caractères (« Veuillez renseigner
+     votre adresse email pour vous inscrire ») et se retrouvait coupé en plein
+     mot dans un champ de 350 px — sur un formulaire, un libellé tronqué est ce
+     que le visiteur lit en premier. */
+  max-width: 640px;
+  margin: 0;
 }
 
 .newsletter__form input[type="email"] {
@@ -721,15 +837,30 @@ p { color: var(--gray); }
 }
 
 /* ---- Page hero (sous-pages) ---- */
+/* Aligné à gauche, comme tout le reste du site. Il était centré : un bloc centré
+   posé au-dessus d'une page entièrement alignée sur la gouttière du conteneur —
+   le fil d'Ariane juste en dessous, les titres de section, le pied de page.
+   Aucun `text-align` ici, donc l'en-tête part du bord de la boîte de contenu de
+   `.container`, qui est exactement là où commence l'encre du logo (celui-ci porte
+   une marge négative égale à son espace de protection transparent, cf.
+   `.nav__logo`). L'alignement se règle donc tout seul si la gouttière change. */
 .page-hero {
   background: var(--dark);
   color: var(--white);
   padding: 80px 0 64px;
-  text-align: center;
 }
 .page-hero h1 { color: var(--white); margin-bottom: 16px; }
-.page-hero p { color: rgba(255,255,255,0.75); }
-.page-hero p { color: rgba(255,255,255,0.7); max-width: 560px; margin: 0 auto; font-size: 1.0625rem; }
+/* Une seule règle : elle était déclarée deux fois de suite, la seconde écrasant
+   la couleur de la première — la première ne servait à rien. */
+.page-hero p {
+  color: rgba(255,255,255,0.7);
+  /* La mesure de lecture est conservée (elle vaut celle du chapô du hero
+     d'accueil, les deux se répondent), mais à fleur de gouttière : c'est
+     `margin: 0 auto` qui recentrait le paragraphe dans le conteneur. */
+  max-width: 560px;
+  margin: 0;
+  font-size: 1.0625rem;
+}
 
 /* ---- À propos ---- */
 .about-section__grid {
@@ -977,6 +1108,22 @@ p { color: var(--gray); }
   transition: color var(--transition);
 }
 .footer__col ul li a:hover { color: var(--teal); }
+/* La page courante n'est plus un lien vers elle-même dans la liste du pied de
+   page. Elle reste ÉCRITE — retirer la ligne rendrait le plan du site incomplet,
+   et différemment sur chaque page — mais elle est marquée « vous êtes ici » en
+   blanc, le même langage que le lien actif de la barre de navigation.
+   UNE EXCEPTION, décidée par le client : « Démo gratuite » / « Free Demo » reste
+   un lien sur la page de contact. La règle tient sur les entrées qui NOMMENT la
+   page (« À propos », « FAQ », « Commander »…) : les marquer dit au visiteur où il
+   est. Celle-ci nomme une action, pas la page — la page s'appelle « Contact » —
+   donc la marquer « vous êtes ici » désignait un endroit qui n'existe pas dans le
+   plan du site, alors qu'un appel à l'action y reste légitime. */
+.footer__col ul li [aria-current="page"] {
+  font-size: 0.875rem;
+  color: var(--white);
+  font-weight: 500;
+  cursor: default;
+}
 
 .footer__address {
   margin-top: 20px;
@@ -1297,7 +1444,14 @@ p { color: var(--gray); }
 .breadcrumb__list a { color: var(--muted); }
 .breadcrumb__list a:hover { color: var(--teal-text); }
 .breadcrumb__list span { color: var(--muted); }
-.breadcrumb__list li:last-child a { color: var(--black); font-weight: 500; pointer-events: none; }
+/* Le dernier élément du fil d'Ariane EST la page courante : ce n'était pas un
+   raccourci utile mais un lien vers soi-même, déjà désamorcé à la souris par un
+   `pointer-events: none` — donc encore focalisable au clavier et annoncé comme
+   lien par un lecteur d'écran. C'est désormais un `<span aria-current="page">`,
+   comme le veut le motif ARIA du fil d'Ariane. Le sélecteur sur `a` est conservé
+   pour un gabarit qui en porterait encore un. */
+.breadcrumb__list li:last-child a,
+.breadcrumb__list [aria-current="page"] { color: var(--black); font-weight: 500; pointer-events: none; }
 
 /* ---- Made in Luxembourg badge ---- */
 .badge-lux {
@@ -1319,7 +1473,6 @@ p { color: var(--gray); }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  text-align: center;
 }
 .stat-item__number {
   font-size: 2.5rem;
@@ -1355,9 +1508,76 @@ p { color: var(--gray); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; }
 
-  .hero__inner { grid-template-columns: 1fr; text-align: center; gap: 48px; }
-  .hero__desc { margin: 0 auto 40px; }
-  .hero__actions { justify-content: center; }
+  /* 16 px sur tous les champs de saisie, et pas 15. En dessous de 16 px, Safari
+     iOS ZOOME la page à la prise de focus pour rendre le texte lisible, puis ne
+     dézoome pas : le visiteur se retrouve dans un formulaire recadré, décalé
+     horizontalement, et doit pincer pour revenir. C'est le défaut d'ergonomie
+     mobile le plus courant sur un formulaire de contact, et il ne coûte qu'un
+     point de taille. */
+  .form-group input,
+  .form-group textarea,
+  .form-group select,
+  .newsletter__form input[type="email"] {
+    font-size: 1rem;
+  }
+
+  /* Barre de navigation en petite largeur. Trois défauts se cumulaient à 390 px :
+     le libellé « Demo gratuite » passait sur DEUX lignes, ce qui donnait une
+     pastille de 72 px de haut débordant d'une barre qui en fait 72 ; le bouton
+     hamburger se retrouvait collé au logo au lieu d'être au bord droit (trois
+     enfants en `space-between`, le bouton large poussant celui du milieu) ; et le
+     logo à 38 px ne laissait pas la place au reste.
+     Correctif : on ordonne — logo à gauche, actions puis hamburger à droite — et
+     on compacte le bouton (`nowrap` : c'est le retour à la ligne qui cassait la
+     hauteur de la barre, pas la largeur du texte). Le CTA n'est PAS masqué : il
+     est le chemin de conversion, et il tient une fois compacté. */
+  .nav__inner { gap: 8px; }
+  .nav__logo { --logo-h: 32px; }
+  .nav__actions { margin-left: auto; gap: 4px; }
+  .nav__actions .btn {
+    padding: 9px 14px;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .nav__toggle { order: 4; }
+
+  /* Sous 400 px il n'y a plus la place pour les quatre éléments : le logo passe à
+     28 px, le bouton se resserre, et le sélecteur de langue ne garde que son
+     globe. `font-size: 0` masque le code « FR » sans toucher au SVG, qui porte
+     ses propres dimensions — l'alternative demandait d'envelopper ce texte dans
+     un span sur les 23 pages. L'intitulé accessible du lien reste complet. */
+    /* Les boutons des deux hero (accueil et commande) prennent toute la largeur
+     sous 520 px. Ils gardaient la largeur de leur texte, centrés : deux pastilles
+     de tailles différentes, empilées, dont on devait viser le milieu. Pleine
+     largeur, la hiérarchie se lit (le teal d'abord, le contour ensuite) et la
+     cible fait la largeur du pouce. Cela ne vaut que pour les hero : ce sont les
+     seuls endroits où le bouton EST l'action de l'écran. */
+  @media (max-width: 520px) {
+    .hero__actions,
+    .order-hero__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .hero__actions .btn,
+    .order-hero__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+@media (max-width: 400px) {
+    .nav__logo { --logo-h: 28px; }
+    .nav__actions .btn { padding: 8px 11px; font-size: 0.75rem; }
+    /* Le padding porte la cible tactile : sans le code de langue, le lien se
+       réduisait au globe de 14 px et tombait à 22 px de large, sous le minimum
+       de 24 px de la WCAG 2.5.8. */
+    .nav__lang a { font-size: 0; gap: 0; padding: 9px 7px; }
+  }
+
+  /* Le hero d'accueil n'est plus centré sur mobile : même règle que partout,
+     le texte part de la gouttière. */
+  .hero__inner { grid-template-columns: 1fr; gap: 48px; }
+  .hero__desc { margin: 0 0 40px; }
   .hero__image { order: -1; }
   .hero__image img { max-height: 300px; }
   .hero__film { order: -1; }
@@ -1368,6 +1588,16 @@ p { color: var(--gray); }
   .tools__grid,
   .about-section__grid { grid-template-columns: 1fr; gap: 40px; }
   .about-section__grid.reverse { direction: ltr; }
+  /* EN UNE COLONNE, L'IMAGE SUIT TOUJOURS SON TEXTE.
+     Sur deux colonnes, alterner les côtés d'une section à l'autre donne le rythme ;
+     en une colonne, cette alternance met deux images bout à bout. Relevé à 390 px
+     sur la page d'accueil : « La solution » se lit texte → image et la section
+     LuxTrust juste après image → texte, donc la suite était « t I I t » — deux
+     visuels d'affilée, sans un mot entre eux. Toutes les autres grilles du site
+     sont déjà en texte → image ; cette règle aligne la dernière exception plutôt
+     que d'inventer un ordre nouveau. */
+  .intro__grid > .intro__image,
+  .about-section__grid > .intro__image { order: 2; }
 
   .features__grid { grid-template-columns: 1fr; }
   .stats__grid { grid-template-columns: 1fr; gap: 24px; }
@@ -1812,7 +2042,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   padding: 40px 48px;
   border-radius: var(--radius-lg);
   margin: 48px 0;
-  text-align: center;
 }
 .article-cta h3 { color: var(--white); font-size: 1.375rem; margin-bottom: 8px; }
 .article-cta p { color: rgba(255,255,255,0.85); margin-bottom: 24px; }
@@ -1837,6 +2066,9 @@ a:focus-visible { border-radius: var(--radius-sm); }
   box-shadow: var(--shadow-sm);
 }
 .sidebar-card h4 { font-size: 1rem; color: var(--dark); margin-bottom: 12px; }
+/* Le titre de la carte « Aperçu rapide » est un h3, pas un h4 : il ne recevait donc
+   aucune marge et collait à la première ligne de la fiche. */
+.sidebar-card h3 { margin-bottom: 18px; }
 .sidebar-card p { font-size: .9375rem; }
 .sidebar-card .btn { width: 100%; justify-content: center; margin-top: 16px; }
 .related-articles { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); }
@@ -1866,13 +2098,19 @@ a:focus-visible { border-radius: var(--radius-sm); }
   content: '';
   position: absolute;
   top: 28px;
-  left: calc(12.5%);
-  right: calc(12.5%);
+  /* Le trait relie le CENTRE du premier rond à celui du dernier. Les 12,5 %
+     d'origine visaient le milieu de la première et de la dernière colonne, quand
+     les étapes étaient centrées. Elles sont maintenant alignées à gauche : le
+     rond fait 56 px, son centre est donc à 28 px du bord de sa colonne, et la
+     dernière colonne commence à 100 % − (25 % − 18 px) — d'où 25 % − 46 px à
+     droite. Les 3 gouttières de 24 px sont bien comptées. */
+  left: 28px;
+  right: calc(25% - 46px);
   height: 2px;
   background: var(--teal-light);
   z-index: 0;
 }
-.order-step { text-align: center; position: relative; z-index: 1; }
+.order-step { position: relative; z-index: 1; }
 .order-step__number {
   width: 56px;
   height: 56px;
@@ -1884,7 +2122,11 @@ a:focus-visible { border-radius: var(--radius-sm); }
   justify-content: center;
   font-size: 1.25rem;
   font-weight: 700;
-  margin: 0 auto 16px;
+  /* Le rond suit son texte, à gauche : centré dans sa colonne alors que le titre
+     et le paragraphe sont alignés à gauche, il flottait au-dessus d'eux. C'est
+     aussi ce qui fait tomber juste le trait de `.order-process::before`, calculé
+     entre les CENTRES du premier et du dernier rond. */
+  margin: 0 0 16px;
   border: 4px solid var(--white);
   box-shadow: 0 0 0 2px var(--teal);
 }
@@ -1901,7 +2143,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 28px 24px;
-  text-align: center;
   box-shadow: var(--shadow-sm);
 }
 /* Pictogramme au trait (plus d'emoji sur le site — cf. la règle dans
@@ -1915,9 +2156,8 @@ a:focus-visible { border-radius: var(--radius-sm); }
   color: var(--white);
   border-radius: var(--radius-lg);
   padding: 48px;
-  text-align: center;
   max-width: 540px;
-  margin: 0 auto;
+  margin: 0;
 }
 .pricing-highlight__price {
   font-size: 4rem;
@@ -1952,8 +2192,21 @@ a:focus-visible { border-radius: var(--radius-sm); }
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  background: linear-gradient(160deg, var(--dark) 0%, #141414 100%);
+  /* Un plateau, pas une boîte : une lueur teal montant du bas pose l'objet sur
+     quelque chose, et la vignette en creux resserre le regard au centre. Les deux
+     sont DERRIÈRE le canevas (l'une est un calque de `background`, l'autre une
+     ombre interne) : le rendu 3D est sur fond transparent, elles se voient donc
+     autour du produit sans jamais le voiler. */
+  background:
+    radial-gradient(60% 44% at 50% 92%, rgba(255, 255, 255, 0.055), transparent 70%),
+    radial-gradient(46% 30% at 50% 84%, rgba(0, 203, 190, 0.1), transparent 70%),
+    linear-gradient(160deg, var(--dark) 0%, #141414 100%);
+  /* La vignette est posée PAR-DESSUS les calques de fond : à 0,42 d'opacité elle
+     éteignait la lueur de sol qu'elle est censée encadrer — mesuré à 6/255 au lieu
+     des ~16 visés. Le gris neutre porte l'essentiel du plateau, le teal n'est
+     qu'une teinte : c'est une lumière de studio, pas un néon. */
+  box-shadow: var(--shadow-lg), inset 0 0 90px 10px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   aspect-ratio: 4 / 3;
   min-height: 420px;
 }
@@ -1988,19 +2241,27 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .model-viewer-frame.is-loaded .mv-loading { opacity: 0; pointer-events: none; }
 
 /* Contrôles personnalisés */
+/* ── Boîte à outils ───────────────────────────────────────────────────────
+   Un seul endroit pour toutes les commandes. Le jour/nuit flottait seul en haut
+   à gauche, en pastille teal pleine : c'était la seule commande hors de la barre,
+   et la plus voyante alors qu'elle est secondaire. Les commandes sont maintenant
+   groupées par fonction — cadrage, vue, scène — séparées par des filets, puis
+   l'instrument d'éclatement. */
 .mv-controls {
   position: absolute;
   bottom: 16px; left: 50%;
   transform: translateX(-50%);
   z-index: 2;
   display: flex;
-  gap: 6px;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.12);
+  align-items: center;
+  gap: 2px;
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-pill);
-  padding: 6px;
+  padding: 6px 8px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
 }
 .mv-ctrl {
   width: 38px; height: 38px;
@@ -2011,9 +2272,44 @@ a:focus-visible { border-radius: var(--radius-sm); }
   color: rgba(255,255,255,0.75);
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.16,1,0.3,1);
 }
-.mv-ctrl:hover { background: rgba(0,203,190,0.2); color: var(--teal); transform: translateY(-1px); }
-.mv-ctrl[aria-pressed="true"] { background: var(--teal); color: var(--dark); }
+.mv-ctrl { position: relative; }
+.mv-ctrl:hover { background: rgba(255, 255, 255, 0.09); color: var(--white); }
+/* État enclenché en teinte, pas en aplat : la pastille teal pleine sur le bouton
+   de rotation en faisait l'action principale de la barre, ce qu'elle n'est pas. */
+.mv-ctrl[aria-pressed="true"] {
+  background: rgba(0, 203, 190, 0.14);
+  color: var(--teal);
+  box-shadow: inset 0 0 0 1px rgba(0, 203, 190, 0.4);
+}
 .mv-ctrl svg { width: 18px; height: 18px; }
+
+/* Infobulle : elle reprend `aria-label`, donc l'intitulé lu par un lecteur
+   d'écran EST celui qu'on voit — une seule source, rien à maintenir en double.
+   Cinq pictogrammes sans mot demandaient de devenir devin, en particulier pour
+   « réinitialiser la vue ». Désactivée au doigt : sans survol, elle resterait
+   collée après un appui. */
+.mv-ctrl::after {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s var(--ease-soft), transform 0.18s var(--ease-soft);
+}
+.mv-ctrl:hover::after,
+.mv-ctrl:focus-visible::after { opacity: 1; transform: translateX(-50%); }
+@media (hover: none) { .mv-ctrl::after { display: none; } }
 
 /* Bouton AR (slot="ar-button" — masqué automatiquement si non supporté) */
 .mv-ar-btn {
@@ -2037,51 +2333,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 .mv-ar-btn:hover { background: rgba(0,203,190,0.28); border-color: var(--teal); }
 
-/* Bouton qualité HD + toggle jour/nuit — pills groupées en haut à gauche,
-   miroir du bouton AR */
-.mv-top-left {
-  position: absolute;
-  top: 16px; left: 16px;
-  z-index: 2;
-  display: flex;
-  gap: 8px;
-}
-.mv-quality-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.16);
-  color: rgba(255,255,255,0.75);
-  font-family: var(--font);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 7px 13px;
-  border-radius: var(--radius-pill);
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-.mv-quality-btn:hover { border-color: rgba(0,203,190,0.5); color: var(--white); }
-.mv-quality-btn[aria-pressed="true"] {
-  background: var(--teal);
-  border-color: var(--teal);
-  color: var(--dark);
-}
-
-/* Toggle jour/nuit — pill soleil/lune : on affiche l'icône du mode vers
-   lequel on va basculer. Le viewer démarre en éclairage nuit (le site n'a
-   plus qu'un thème sombre) ; le bouton sert à rallumer la lumière du jour
-   pour mieux lire les détails du boîtier. */
-.mv-lighting-btn { padding: 7px 9px; }
-.mv-lighting-btn .mv-icon-sun  { display: none; }
-.mv-lighting-btn .mv-icon-moon { display: block; }
-.mv-lighting-btn[aria-pressed="true"] .mv-icon-sun  { display: block; }
-.mv-lighting-btn[aria-pressed="true"] .mv-icon-moon { display: none; }
-.model-viewer-frame.is-night {
-  background: linear-gradient(160deg, #000000 0%, #0D0D0D 100%);
-}
 
 /* Vue éclatée — désormais un segment compact DANS .mv-controls (même pill
    que les autres boutons), plutôt qu'une carte séparée : reste visible et
@@ -2091,16 +2342,25 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .mv-controls__sep {
   width: 1px;
   align-self: stretch;
-  margin: 4px 2px;
-  background: rgba(255,255,255,0.16);
+  margin: 7px 5px;
+  background: rgba(255, 255, 255, 0.13);
+}
+/* L'instrument d'éclatement : libellé, course, valeur. Il n'avait qu'un
+   pictogramme énigmatique et un pourcentage ; le mot dit ce que la course fait. */
+.mv-explode__label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
 }
 .mv-explode {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 10px 0 4px;
+  gap: 9px;
+  padding: 0 8px 0 6px;
 }
-.mv-explode__icon { flex-shrink: 0; color: rgba(255,255,255,0.6); }
 .mv-explode__value {
   font-size: 0.6875rem;
   font-weight: 700;
@@ -2112,7 +2372,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .mv-explode__slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 84px;
+  width: 96px;
   height: 4px;
   border-radius: var(--radius-pill);
   background: linear-gradient(90deg, var(--teal) 0%, var(--teal) var(--mv-explode-pct, 0%), rgba(255,255,255,0.25) var(--mv-explode-pct, 0%), rgba(255,255,255,0.25) 100%);
@@ -2143,6 +2403,14 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .mv-explode__slider::-moz-range-thumb:hover { transform: scale(1.15); }
 .mv-explode__slider::-moz-range-track { background: transparent; }
 .mv-explode__slider:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Le curseur était le seul élément focalisable du site sans indicateur visible :
+   `outline: none` est posé sur lui pour masquer le contour natif, et rien ne le
+   remplaçait. On le rend visible au clavier seulement — la souris n'en a pas
+   besoin et un halo au clic ferait sale. */
+.mv-explode__slider:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 203, 190, 0.45);
+  border-radius: var(--radius-pill);
+}
 
 .model-viewer-frame.has-error .mv-explode { display: none; }
 
@@ -2155,6 +2423,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
   margin-top: 16px;
 }
 .mv-hint svg { flex-shrink: 0; color: var(--teal); }
+/* Consigne d'usage : une formulation par mode de saisie. Le critère est `hover`
+   et non la largeur d'écran — une tablette large est tactile, une petite fenêtre
+   de portable ne l'est pas. Par défaut on montre la version pointeur : si le
+   navigateur ne connaît pas la requête, c'est celle-là qui reste. */
+.mv-hint__touch { display: none; }
+@media (hover: none) {
+  .mv-hint__pointer { display: none; }
+  .mv-hint__touch { display: inline; }
+}
 
 /* État d'erreur — modèle indisponible (repli gracieux) */
 .model-viewer-frame__fallback {
@@ -2173,8 +2450,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .model-viewer-frame__fallback p { color: rgba(255,255,255,0.7); font-size: 0.9375rem; max-width: 320px; }
 .model-viewer-frame.has-error .model-viewer-frame__fallback { display: flex; }
 .model-viewer-frame.has-error .mv-controls,
-.model-viewer-frame.has-error .mv-ar-btn,
-.model-viewer-frame.has-error .mv-top-left { display: none; }
+.model-viewer-frame.has-error .mv-ar-btn { display: none; }
 
 [data-theme="dark"] .mv-loading__label { color: rgba(255,255,255,0.5); }
 
@@ -2197,15 +2473,56 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .pricing-highlight__price { font-size: 3rem; }
   .order-process { grid-template-columns: 1fr 1fr; }
 
-  .model-viewer-frame { min-height: 320px; aspect-ratio: 1 / 1; }
-  .mv-ctrl { width: 34px; height: 34px; }
+  /* ── Visionneuse 3D sur téléphone : la barre d'outils sort du plateau ──────
+     Elle était en `position: absolute` au centre-bas du cadre. Sur un écran de
+     390 px le cadre fait 342 px de haut, et la barre — qui se replie alors sur
+     trois rangées (boutons, boutons, curseur d'éclatement) — en occupait 122 :
+     elle couvrait le produit, c'est-à-dire précisément ce qu'on est venu voir, et
+     toute tentative de faire pivoter le modèle en glissant dans cette zone
+     tombait sur les boutons.
+     Le cadre devient une colonne : le canevas garde son format carré, la barre se
+     pose DESSOUS, en flux. Elle reste un enfant de `.model-viewer-frame` — c'est
+     lui qui passe en plein écran, et tout ce qui est à l'extérieur y disparaît. */
+  .model-viewer-frame {
+    min-height: 0;
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 10px;
+  }
+  .model-viewer-frame model-viewer {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .mv-controls {
+    position: static;
+    transform: none;
+    margin-top: 10px;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,0.05);
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 6px;
+    max-width: none;
+  }
+  /* Les cibles reviennent à 40 px : hors du plateau, la place ne manque plus, et
+     34 px sous le doigt restaient petits pour une commande qu'on tâtonne. */
+  .mv-ctrl { width: 40px; height: 40px; }
+  .mv-ctrl svg { width: 20px; height: 20px; }
   .mv-ar-btn { top: 12px; right: 12px; padding: 7px 14px; font-size: 0.75rem; }
-  .mv-top-left { top: 12px; left: 12px; gap: 6px; }
-  .mv-quality-btn { padding: 6px 11px; font-size: 0.6875rem; }
-  .mv-lighting-btn { padding: 6px 8px; }
-  .mv-controls { flex-wrap: wrap; justify-content: center; row-gap: 6px; max-width: calc(100% - 24px); }
   .mv-controls__sep { display: none; }
-  .mv-explode { flex-basis: 100%; justify-content: center; padding: 4px 0 0; }
+  /* Le curseur d'éclatement prend toute la largeur de la barre : c'est la
+     commande la plus fine à manipuler au doigt, elle mérite la course la plus
+     longue possible. */
+  .mv-explode { flex-basis: 100%; justify-content: center; padding: 6px 4px 2px; }
+  .mv-explode__slider { flex: 1; }
+
+  /* En plein écran, le cadre occupe l'écran entier : le canevas doit alors
+     prendre toute la hauteur restante au lieu de garder son carré. */
+  .model-viewer-frame:fullscreen { padding: 0; justify-content: center; }
+  .model-viewer-frame:fullscreen model-viewer { aspect-ratio: auto; flex: 1; }
+  .model-viewer-frame:fullscreen .mv-controls { margin: 0 10px 10px; }
 }
 
 /* ── prefers-reduced-motion ── */
@@ -2362,7 +2679,8 @@ a:focus-visible { border-radius: var(--radius-sm); }
 
 /* ── Breadcrumb ── */
 [data-theme="dark"] .breadcrumb { border-bottom-color: #2B2B2B; }
-[data-theme="dark"] .breadcrumb__list li:last-child a { color: #E6E7E8; }
+[data-theme="dark"] .breadcrumb__list li:last-child a,
+[data-theme="dark"] .breadcrumb__list [aria-current="page"] { color: #E6E7E8; }
 
 /* ── Section label shimmer — surfaces sombres en dark mode : plein éclat ── */
 @supports (-webkit-background-clip: text) or (background-clip: text) {
@@ -3103,7 +3421,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   margin-top: 10px;
   font-size: 0.875rem;
   color: var(--muted);
-  text-align: center;
 }
 .article-figure--cover {
   margin: 0 0 36px;
@@ -3137,6 +3454,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
    `width:auto` en ligne, que seul un !important peut reprendre ; leur libellé
    entier reste de toute façon cliquable, ce qui satisfait déjà 2.5.8. */
 .breadcrumb__list a,
+.breadcrumb__list [aria-current="page"],
 .contact-info__item a {
   display: inline-block;
   padding: 5px 0;
@@ -3157,6 +3475,7 @@ label > input[type="checkbox"] {
 .footer__col ul { display: grid; gap: 0; }
 .footer__col ul li { margin: 0; }
 .footer__col ul a,
+.footer__col ul [aria-current="page"],
 .footer__legal a,
 .newsletter__consent a,
 .form-consent a,
