@@ -151,24 +151,26 @@
      animation autonome, avec ses propres bornes et sa propre inertie, alors qu'elle
      n'est qu'une lecture de l'état d'ouverture.
 
-     L'ouverture occupe la première moitié de la fenêtre de scrub (0 à 0.60, soit
-     ~410 px), et le fondu avec elle : quatre crans de molette pour la course
-     complète, contre moins de deux quand le fondu avait ses propres bornes. Le
-     boîtier est ouvert et en verre au centre du pas, là où le texte se lit.
-
-     PUIS IL SE REFERME, scrubbé lui aussi. C'était un saut sec à la bascule vers le
-     pas 4 : le choix se défendait tant que seule la géométrie était concernée — le
-     mouvement de la caméra masquait la coupe — mais il ne tient plus depuis que
-     l'opacité suit l'ouverture, puisqu'un saut de géométrie devient un saut de
-     fondu. La refermeture emprunte donc la même rampe que l'ouverture, sur la
-     MOITIÉ de la course : 0.70 à 1.00 contre 0 à 0.60, soit deux fois plus vite par
-     pixel parcouru. Elle se termine à 0.80 du pas, alors que la bascule vers le pas
-     suivant n'a lieu qu'à 1.00 : le boîtier est donc refermé ET opaque, immobile,
-     180 px avant que la caméra ne bouge. Les trois exigences — refermeture douce,
-     opacité liée à l'ouverture, opaque avant la rotation — se satisfont ensemble
-     dès lors que c'est le défilement qui gouverne, et non une inertie. */
-  var BURST_FULL = 0.60;   // ouverture complète
-  var BURST_HOLD = 0.70;   // fin de la tenue, début de la refermeture
+     TROIS TEMPS, ET NON DEUX : ouverture, TENUE, refermeture — à la même vitesse
+     dans les deux sens. L'ouverture occupait d'abord la première moitié de la
+     fenêtre (0 à 0.60) et la refermeture le dernier tiers, deux fois plus vite : on
+     passait donc le pas à ouvrir puis à refermer, sans jamais s'arrêter sur l'image
+     ouverte, et le même geste n'avait pas la même valeur selon le sens. Or le
+     boîtier ouvert est CE QUE LE PAS MONTRE : il lui faut un palier.
+       0     → 0.34   il s'ouvre        (~230 px, deux crans de molette)
+       0.34  → 0.66   il RESTE ouvert   (~220 px, c'est ici que le texte se lit)
+       0.66  → 1.00   il se referme     (~230 px, même vitesse qu'à l'ouverture)
+     Les deux rampes ont la même longueur, donc la même vitesse par pixel parcouru :
+     le mouvement est réversible à l'identique, ce qui est la lecture la plus
+     naturelle quand on remonte le défilement. Le centre du pas — fraction 0.5, soit
+     f = 0.605, l'instant où le texte est centré — tombe dans le palier : l'image que
+     le visiteur regarde en lisant est bien le boîtier grand ouvert, et non une étape
+     de son ouverture.
+     La refermeture se termine à 0.80 du pas alors que la bascule vers le pas suivant
+     n'a lieu qu'à 1.00 : le boîtier est refermé ET opaque, immobile, 180 px avant que
+     la caméra ne bouge. C'est l'acquis de la passe précédente, il est conservé. */
+  var BURST_FULL = 0.34;   // fin de l'ouverture, début de la tenue
+  var BURST_HOLD = 0.66;   // fin de la tenue, début de la refermeture
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
   var shellMat = null, shellRGB = null, shellBlend = false;
