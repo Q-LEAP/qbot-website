@@ -138,7 +138,21 @@
      donc vérifiée. En cas d'écart, l'effet se désactive et la séquence continue
      sans lui — jamais de coque à moitié transparente sur un modèle inattendu. */
   var XRAY_ALPHA = 0.26;   // opacité de la coque « en verre »
-  var XRAY_END   = 0.35;   // part du pas consacrée à la dissolution
+  /* Bornes des deux temps, en fraction de la fenêtre de scrub (elle-même 56 % du
+     pas, soit ~504 px). La dissolution en occupait 0,35, c'est-à-dire 176 px : à la
+     molette, dont un cran vaut ~100 px, le fondu entier tenait dans moins de deux
+     crans. Mesuré : quatre valeurs d'opacité en tout, 1 → 0,73 → 0,31 → 0,26, avec
+     un saut de 0,42 d'une image à l'autre. Ce n'était pas un fondu, c'était un
+     interrupteur.
+     Elle prend maintenant la moitié de la fenêtre (~252 px), et l'éclatement se
+     termine à 0,82 — l'endroit exact où tombe le centre du pas — pour rester complet
+     quand le texte est centré, ce qui était l'acquis à ne pas perdre. Les deux temps
+     se chevauchent légèrement : le boîtier commence à s'ouvrir alors que le verre
+     finit de s'installer, et ce recouvrement se lit comme un enchaînement plutôt que
+     comme deux animations mises bout à bout. */
+  var XRAY_END    = 0.50;
+  var BURST_START = 0.42;
+  var BURST_FULL  = 0.82;
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
   var shellMat = null, shellRGB = null, shellBlend = false;
@@ -193,6 +207,8 @@
   }
 
   function lerp(a, b, k) { return a + (b - a) * k; }
+  /* Courbe en S de Hermite : plate aux deux bouts, la plus économique qui soit. */
+  function smooth(x) { return x * x * (3 - 2 * x); }
 
   /* ══ CALQUE D'ANNOTATIONS PROJETÉES ═══════════════════════════════════════
      Le décor de la séquence était en CSS : un trait pour le bureau, un rectangle
@@ -641,15 +657,24 @@
        qui donne le montage qui se défait à vue plutôt qu'une boîte qui s'ouvre. */
     var scrub = (i === EXPLODE_STEP);
     var f = scrub ? fraction(i) : 0;
-    var xrayK  = scrub ? Math.min(1, f / XRAY_END) : 0;
-    var burstK = scrub ? Math.max(0, (f - XRAY_END) / (1 - XRAY_END)) : 0;
+    /* Courbe en S sur la dissolution : une rampe linéaire d'opacité démarre trop
+       franchement — l'œil est bien plus sensible aux premiers pourcents de
+       transparence qu'aux derniers. */
+    var xrayK  = scrub ? smooth(Math.min(1, f / XRAY_END)) : 0;
+    var burstK = scrub ? Math.max(0, Math.min(1, (f - BURST_START) / (BURST_FULL - BURST_START))) : 0;
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
-    /* Pendant le pas, l'opacité colle au doigt comme la tête de lecture ; en
-       sortant, elle revient à l'opaque avec l'inertie de la scène — un retour sec
-       se verrait comme un clignotement au moment où la caméra pivote. */
-    var aTarget = 1 - (1 - XRAY_ALPHA) * xrayK;
-    if (scrub) cur.alpha = aTarget;
-    else cur.alpha = lerp(cur.alpha, 1, k);
+    /* L'opacité est LISSÉE, à la différence de la tête de lecture de l'éclatement.
+       C'est un écart assumé avec la règle « une tête de lecture qui traîne se perçoit
+       comme du retard » : elle vaut pour un déplacement de pièces, où le décalage se
+       voit, pas pour une opacité, où deux dixièmes de seconde d'inertie sont
+       imperceptibles comme retard et décisifs comme fluidité. C'est ce lissage qui
+       transforme les crans de la molette en glissement continu.
+       0,11 et non 0,16 : les deux ont été mesurés sur un défilement à la molette.
+       À 0,16 le plus grand saut d'une image à l'autre valait 0,088 ; à 0,11 il tombe
+       à 0,051, pour un temps d'établissement d'environ 400 ms — imperceptible sur une
+       opacité. En dessous, le fondu commence à traîner derrière le doigt. */
+    var aTarget = scrub ? 1 - (1 - XRAY_ALPHA) * xrayK : 1;
+    cur.alpha = snap ? aTarget : lerp(cur.alpha, aTarget, 0.11);
     var seg = tTarget < PHONE_HANDOFF;
     /* Deux états, jamais d'entre-deux animé : pendant le pas d'ouverture la
        position colle au scroll ; en dehors elle vaut 0. À l'instant où l'on entre
@@ -738,7 +763,7 @@
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
                  /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
                     c'est-à-dire précisément quand elle doit jouer. */
-                 Math.abs(cur.alpha - (scrub ? aTarget : 1)) > 0.002 ||
+                 Math.abs(cur.alpha - aTarget) > 0.002 ||
                  idle || idleK > 0.002 || camLag;
     if (moving) { running = true; requestAnimationFrame(function () { apply(false); }); }
     else running = false;
