@@ -113,6 +113,67 @@
      chacun sur au moins 190 px de défilement. */
   var SCRUB_IN = 0.04, SCRUB_OUT = 0.80;
 
+  /* ── Cadrages SCRUBBÉS, et non plus enclenchés ────────────────────────────
+     La caméra sautait de cadrage au franchissement du milieu du pas : la cible
+     changeait d'un coup et une inertie de 0.16 l'y amenait en ~300 ms, quel que
+     soit le geste. Deux défauts, les mêmes que ceux corrigés sur l'éclatement :
+     le mouvement ne répondait pas au défilement (on pouvait s'arrêter net, il
+     continuait), et il ne se remontait pas — en revenant en arrière la caméra
+     refaisait le trajet à sa propre vitesse au lieu de se laisser rembobiner.
+
+     Chaque pas déclare donc un PALIER — la portion du pas où son cadrage est
+     immobile — et la caméra interpole d'un palier au suivant, la tête de lecture
+     étant le défilement lui-même. Même grammaire que l'éclatement : on tient
+     l'image là où le texte se lit, on ne bouge qu'entre deux.
+
+     Les bornes ne sont pas décoratives, chacune répond à une contrainte :
+     - pas 1 : palier ouvert dès l'entrée dans la section, sinon le cadrage
+       arriverait pendant que le premier texte est déjà lisible ;
+     - pas 3 : le palier ENCADRE la fenêtre d'éclatement (SCRUB_IN…SCRUB_OUT)
+       avec 0.08 de marge de part et d'autre — soit ~70 px. C'est la contrainte
+       dure de la séquence : la caméra ne doit pas tourner pendant que la coque
+       est en verre. La marge paie le lissage : la position dans le clip chasse sa
+       cible en ~250 ms, elle finit donc de se refermer un peu après 0.80, et le
+       palier doit couvrir ce retard. La borne d'entrée est négative : le cadrage
+       est en place 36 px AVANT que le pas ne devienne courant, jamais après ;
+     - pas 4 : le palier s'ouvre à 0.40, juste avant que son texte ne se centre —
+       le mouvement 3 → 4 est le plus ample de la séquence (86° et une élévation),
+       il a besoin de place et la prend là où il n'y a rien d'autre à lire.
+     Les trois transitions occupent ainsi 324 / 252 / 468 px, soit 0.13 / 0.135 /
+     0.165 degré par pixel : à peu près la même vitesse angulaire partout, la
+     dernière étant un peu plus rapide parce que son trajet est deux fois plus long
+     et qu'il n'y a pas la place de l'étirer davantage. */
+  var HOLD = [
+    [0.00, 0.82],
+    [0.18, 0.68],
+    [SCRUB_IN - 0.08, SCRUB_OUT + 0.08],
+    [0.40, 1.00]
+  ];
+
+  /* Tête de lecture continue, en unités de pas : `i` + la fraction parcourue du
+     pas `i`. Monotone et sans discontinuité au changement de pas, puisque la
+     fraction vaut 1 à l'instant même où le pas suivant prend la main à 0. */
+  function head(i) {
+    var r = steps[i].getBoundingClientRect();
+    if (!r.height) return i;
+    return i + (window.innerHeight / 2 - r.top) / r.height;
+  }
+
+  /* Où en est la caméra sur le chemin des cadrages ? Renvoie les deux scènes à
+     mêler et le mélange, adouci en S : une rampe linéaire fait démarrer et
+     s'arrêter la rotation d'un coup, ce qui se voit sur un mouvement aussi ample
+     que 3 → 4. */
+  function camAt(u) {
+    var n = SCENES.length;
+    for (var i = 0; i < n - 1; i++) {
+      var a = i + HOLD[i][1];
+      var b = (i + 1) + HOLD[i + 1][0];
+      if (u <= a) return { a: i, b: i, e: 0 };
+      if (u < b)  return { a: i, b: i + 1, e: smooth((u - a) / (b - a)) };
+    }
+    return { a: n - 1, b: n - 1, e: 0 };
+  }
+
   /* ── Radiographie de la coque ─────────────────────────────────────────────
      Sur le pas « Ouvrez-le », la coque devient d'abord du verre : on voit la
      mécanique à l'intérieur, puis les pièces s'écartent. Deux temps dans un seul
@@ -211,6 +272,22 @@
   var IDLE = { on: true, delay: 1800, amp: 3.2, periodMs: 9000 };
   var lastScrollAt = 0, idleK = 0;
 
+  /* Cible de cadrage, réécrite en place à chaque image : la boucle tourne à 60 Hz,
+     inutile d'y allouer un objet. */
+  var gTmp = { theta: 0, phi: 0, r: 0, zoom: 0, t: 0 };
+  /* Au-delà d'un demi-pas parcouru en une image, ce n'est plus un geste mais un
+     SAUT : glissé de barre de défilement, Page suivante, lien d'ancre, coup de
+     molette d'une souris rapide. Un demi-pas (450 px) couvre déjà une transition
+     entière, il n'y a donc rien à lisser — et lisser quand même coûte cher : la
+     caméra met ~300 ms à rattraper son retard, pendant lesquelles l'éclatement,
+     lui, est déjà arrivé. C'est comme cela qu'on obtenait une coque en verre qui
+     tourne, seul cas où cela se produisait encore (mesuré identique sur la version
+     à cadrages enclenchés : le défaut est antérieur aux rampes, il vient du
+     lissage). Au-dessus du seuil, cadrage et position dans le clip sont posés
+     d'un coup, ensemble : rien ne peut plus se désynchroniser. */
+  var TELEPORT = 0.5;
+  var lastU = null;
+  var lastShown = null;   // angle RÉEL de la caméra à l'image précédente, en degrés
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1 };
   var loaded = false, running = false, lastP = -1, wasScrub = false, onScreen = false;
@@ -659,8 +736,21 @@
   function apply(snap) {
     var p = progress();
     var i = nearest();
-    var g = SCENES[Math.min(i, SCENES.length - 1)];
-    var k = snap ? 1 : 0.16;          // inertie : la scène chasse la cible
+    var u = head(i);
+    var jump = lastU !== null && Math.abs(u - lastU) > TELEPORT;
+    lastU = u;
+    var mix = camAt(u);
+    var A = SCENES[mix.a], B = SCENES[mix.b], e = mix.e;
+    var g = gTmp;
+    g.theta = A.theta + (B.theta - A.theta) * e;
+    g.phi   = A.phi   + (B.phi   - A.phi)   * e;
+    g.r     = A.r     + (B.r     - A.r)     * e;
+    g.zoom  = A.zoom  + (B.zoom  - A.zoom)  * e;
+    g.t     = A.t     + (B.t     - A.t)     * e;
+    /* Lissage, et non plus inertie : la cible étant désormais donnée par le
+       défilement, ce facteur ne sert qu'à transformer un cran de molette en
+       glissement — même rôle que le 0.22 de la position dans le clip. */
+    var k = (snap || jump) ? 1 : 0.16;
     cur.theta = lerp(cur.theta, g.theta, k);
     cur.phi   = lerp(cur.phi,   g.phi,   k);
     cur.r     = lerp(cur.r,     g.r,     k);
@@ -694,7 +784,7 @@
        (~250 ms) transforme les crans en glissement pour les deux à la fois, sans
        jamais rompre leur corrélation : c'est le même nombre qui les gouverne. */
     if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = tTarget;   // on ne franchit jamais t=1.0
-    else if (scrub !== wasScrub) cur.t = tTarget;           // entrée ou sortie du pas
+    else if (scrub !== wasScrub || jump) cur.t = tTarget;   // entrée/sortie du pas, ou saut
     else if (scrub) cur.t = lerp(cur.t, tTarget, 0.22);     // pendant le pas
     else cur.t = lerp(cur.t, tTarget, k);
     wasScrub = scrub;
@@ -726,9 +816,34 @@
       var goal = cur.theta + drift;
       viewer.cameraOrbit = goal.toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
       viewer.currentTime = cur.t;
-      setShellAlpha(cur.alpha);
-      var shown = HUD.draw(cur.t);
-      camLag = Math.abs(shown * 180 / Math.PI - goal) > 0.02;
+      var shown = HUD.draw(cur.t) * 180 / Math.PI;
+      camLag = Math.abs(shown - goal) > 0.02;
+      /* ET LE VERRE EXIGE UNE CAMÉRA POSÉE.
+         Les paliers séparent déjà les deux mouvements tant que le défilement est un
+         geste : l'éclatement se joue caméra immobile, mesuré à 42,00° d'un bout à
+         l'autre de sa fenêtre. Ils n'y suffisent plus quand le défilement est
+         PROGRAMMÉ. `html { scroll-behavior: smooth }` est posé sur tout le site, et
+         les pastilles de la séquence sont de vrais liens d'ancre : un clic sur la
+         pastille 3 parcourt jusqu'à trois pas en ~400 ms. La consigne de cadrage
+         saute alors bien plus vite que la caméra ne la suit, et l'on voyait une
+         coque en verre qui tourne. Le seuil de saut ne peut rien y faire : une
+         animation de défilement avance par petits pas, indiscernables d'une molette
+         rapide.
+         La règle est donc énoncée sur l'état, et sur la SEULE grandeur qui la dise :
+         le déplacement réel de la caméra d'une image à l'autre. Ni la consigne ni
+         mon propre lissage ne suffisent — model-viewer lisse encore de son côté (le
+         même retard qui oblige `camLag` à exister), si bien qu'un filet posé sur
+         l'écart à ma cible laissait passer l'essentiel du défaut : mesuré, il n'en
+         retirait que 2 images sur 15.
+         Aucun blocage en retour : la caméra n'attend rien, elle converge, et le
+         verre revient avec — la boucle continue de tourner tant que `camLag` est
+         vrai, donc jusqu'à ce qu'elle soit posée. Sur un défilement à la molette le
+         déplacement reste sous le seuil pendant toute la fenêtre : ce filet ne
+         change rien à ce qui a été validé, il ne rattrape que les sauts. */
+      var spin = lastShown === null ? 0 : Math.abs(shown - lastShown);
+      lastShown = shown;
+      var still = Math.min(1, Math.max(0, (0.35 - spin) / 0.25));
+      setShellAlpha(1 - (1 - cur.alpha) * still);
     }
     stage.style.setProperty('--sc-zoom', cur.zoom.toFixed(4));
     stage.style.setProperty('--sc-glow', (p * 60 - 30).toFixed(1) + 'px');
