@@ -1111,7 +1111,13 @@ p { color: var(--gray); }
 /* La page courante n'est plus un lien vers elle-même dans la liste du pied de
    page. Elle reste ÉCRITE — retirer la ligne rendrait le plan du site incomplet,
    et différemment sur chaque page — mais elle est marquée « vous êtes ici » en
-   blanc, le même langage que le lien actif de la barre de navigation. */
+   blanc, le même langage que le lien actif de la barre de navigation.
+   UNE EXCEPTION, décidée par le client : « Démo gratuite » / « Free Demo » reste
+   un lien sur la page de contact. La règle tient sur les entrées qui NOMMENT la
+   page (« À propos », « FAQ », « Commander »…) : les marquer dit au visiteur où il
+   est. Celle-ci nomme une action, pas la page — la page s'appelle « Contact » —
+   donc la marquer « vous êtes ici » désignait un endroit qui n'existe pas dans le
+   plan du site, alors qu'un appel à l'action y reste légitime. */
 .footer__col ul li [aria-current="page"] {
   font-size: 0.875rem;
   color: var(--white);
