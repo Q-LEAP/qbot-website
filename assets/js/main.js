@@ -181,6 +181,13 @@ if ('IntersectionObserver' in window) {
       '.intro__image',
       '.video__wrapper',
       '.blog__featured-img',
+      /* Figures d'article. Elles traversaient 4 à 7 écrans en fondu plat : la
+         mesure des six articles donnait 0 élément en parallaxe et trois
+         révélations « plain » pour toute la page. Le masque qui remonte est la
+         signature du site pour un média, il n'y avait pas de raison de l'en
+         priver. La légende est dans la figure, donc dans le masque : elle
+         apparaît en dernier, ce qui est l'ordre de lecture. */
+      '.article-figure',
     ]],
     ['group', [
       '.section-header',
@@ -189,6 +196,10 @@ if ('IntersectionObserver' in window) {
       '.intro__grid > div:not(.intro__image)',
     ]],
     ['card', [
+      /* Les titres de section d'un article arrivent un à un. Le corps entier est
+         déjà une révélation « plain » — un seul fondu pour plusieurs milliers de
+         pixels — donc rien ne marquait le passage d'une partie à l'autre. */
+      '.article-body h2',
       '.feature-card',
       '.faq-item',
       '.timeline-item',
@@ -501,6 +512,12 @@ backToTop.addEventListener('click', () => {
     /* .specs__image ne reçoit pas de contre-mouvement interne : son image et
        son bouton doivent rester solidaires (cf. style.css). */
     ['.blog__featured-img',                             28],
+    /* Figures d'article : la dérive la plus discrète du site (16 contre 20 à 38
+       pour les autres cadres). Le texte autour est fixe et se lit ligne à ligne ;
+       une amplitude franche y serait perçue comme un décalage, pas comme de la
+       profondeur. La figure de la barre latérale en est exclue : elle est dans un
+       bloc déjà collant, où une dérive lutterait contre l'épinglage. */
+    ['.article-body .article-figure',                   16],
     ['.video__wrapper',                                 24],
     ['.model-viewer-frame',                             20],
     /* Images à l'intérieur d'un cadre clippé : contre-mouvement.

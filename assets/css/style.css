@@ -3770,3 +3770,68 @@ label > input[type="checkbox"] {
   .faq-index__rail::after { transform: scaleY(1); }
   .faq-index__list a { transition: none; }
 }
+
+/* ══ RELIEF DES ARTICLES ═══════════════════════════════════════════════════
+   Proposition D de la revue. Les six articles traversaient 4 à 7 écrans avec zéro
+   élément en parallaxe et trois révélations en fondu plat — mesuré. Trois gestes,
+   aucun nouveau contenu, aucune image de plus.
+
+   1. Les figures prennent le masque qui remonte (variante « media », déjà la
+      signature du site pour un média). Il faut trois réglages pour qu'il tombe
+      juste sur une figure d'article : le rayon du masque doit être celui de
+      l'image (`--radius`) et non celui des grands cadres, sinon les angles
+      redeviennent carrés pendant la transition ; la figure doit être positionnée,
+      faute de quoi le passage de lumière du masque, qui est en `position:
+      absolute; inset: 0`, se rapporterait à un ancêtre quelconque ; et la marge
+      de sur-dimensionnement doit exister, sinon la dérive découvrirait un bord.
+   2. Elles dérivent, très peu (16 contre 20 à 38 pour les autres cadres).
+   3. Les titres de partie arrivent un à un, avec un trait teal qui se dessine à
+      leur gauche. Le corps entier est une seule révélation : rien ne marquait le
+      passage d'une partie à l'autre. */
+.article-figure {
+  position: relative;
+  /* `overflow: hidden` est OBLIGATOIRE, pas cosmétique. Le passage de lumière de
+     la variante « media » est un pseudo-élément en `inset: 0` translaté de −130 %
+     : sur une figure large de 748 px il ressort à 970 px à gauche, et la page
+     gagnait 341 px de débordement horizontal — mesuré, scrollWidth 1781 pour un
+     viewport de 1440. Les autres cadres de cette variante (`.intro__image`,
+     `.video__wrapper`) ont toujours eu cette propriété, c'est pour cela que le
+     défaut ne s'était jamais montré. À vérifier pour tout nouvel élément ajouté à
+     la variante. */
+  overflow: hidden;
+  --media-radius: var(--radius);
+}
+.article-figure img { --media-scale: 1.03; }
+
+/* Le trait des titres de partie. Il se dessine de haut en bas avec l'arrivée du
+   titre, puis reste : il marque la structure, il ne l'anime pas en boucle. */
+.article-body h2 { position: relative; }
+.article-body h2::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.7s var(--ease-out) 0.1s;
+}
+.article-body h2.is-visible::before { transform: scaleY(1); }
+
+/* Le trait se rapproche sur les petits écrans mais ne disparaît pas : mesuré à
+   390 px, la colonne de texte commence à 24 px du bord, donc un décalage de 10 px
+   laisse le trait à 14 px — visible en entier. Le supprimer aurait retiré le seul
+   repère de structure des pages qui en ont le plus besoin. */
+@media (max-width: 900px) {
+  .article-body h2::before { left: -12px; }
+}
+@media (max-width: 520px) {
+  .article-body h2::before { left: -10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-body h2::before { transform: scaleY(1); transition: none; }
+}
