@@ -2327,6 +2327,14 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .mv-explode__slider::-moz-range-thumb:hover { transform: scale(1.15); }
 .mv-explode__slider::-moz-range-track { background: transparent; }
 .mv-explode__slider:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Le curseur était le seul élément focalisable du site sans indicateur visible :
+   `outline: none` est posé sur lui pour masquer le contour natif, et rien ne le
+   remplaçait. On le rend visible au clavier seulement — la souris n'en a pas
+   besoin et un halo au clic ferait sale. */
+.mv-explode__slider:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 203, 190, 0.45);
+  border-radius: var(--radius-pill);
+}
 
 .model-viewer-frame.has-error .mv-explode { display: none; }
 

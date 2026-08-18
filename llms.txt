@@ -6,7 +6,7 @@ Q-BOT solves a problem no software-only tool can: 2FA methods that require a phy
 
 Key facts:
 - Subscription: €900/month, all inclusive (support, replacement, no long-term commitment).
-- Hardware: Raspberry Pi 5, OLED display, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
+- Hardware: Raspberry Pi 5, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
 - Compatible with: LuxTrust (physical token and mobile), Google/Microsoft Authenticator, most smartphone-based 2FA.
 - Compatible test frameworks: Selenium, Cypress, Playwright, Appium, Robot Framework, TestComplete, Jenkins, GitLab CI.
 - Privacy: screenshots are deleted immediately after OTP extraction; no data retention; runs on the customer's local network.
@@ -72,4 +72,4 @@ These figures come from the client's own published pages; do not infer or round 
 
 ---
 
-Last updated: 2026-08-12
+Last updated: 2026-08-18
