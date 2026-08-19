@@ -580,7 +580,11 @@ p { color: var(--gray); }
 /* ---- Compatible tools ---- */
 .tools__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* `minmax(0, 1fr)` et non `1fr` : la piste d'une bande d'outils passe en
+     `width: max-content`, et un élément de grille a `min-width: auto` — la colonne
+     s'étirerait à la largeur de la liste. Mesuré avant la correction : 1 835 px de
+     colonne et 2 721 px de débordement horizontal dans une fenêtre de 1 440. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
   align-items: center;
 }
@@ -1667,6 +1671,13 @@ p { color: var(--gray); }
   .contact__grid,
   .tools__grid,
   .about-section__grid { grid-template-columns: 1fr; gap: 40px; }
+  /* Même plancher qu'au-dessus : `1fr` vaut `minmax(auto, 1fr)`, donc la colonne
+     suivrait la piste en `max-content` d'une bande d'outils. Mesuré sans cette
+     ligne : 1 835 px de colonne et jusqu'à 1 484 px de débordement horizontal
+     entre 375 et 768 px. C'est la troisième fois sur ce site qu'une largeur
+     intrinsèque fait déborder une grille — le plancher doit être posé partout où
+     la colonne est redéclarée. */
+  .tools__grid { grid-template-columns: minmax(0, 1fr); }
   .about-section__grid.reverse { direction: ltr; }
   /* EN UNE COLONNE, L'IMAGE SUIT TOUJOURS SON TEXTE.
      Sur deux colonnes, alterner les côtés d'une section à l'autre donne le rythme ;
@@ -4050,3 +4061,73 @@ label > input[type="checkbox"] {
 .pricing-highlight:hover::before,
 .calendly-box:hover::before,
 .evo-card--current:hover::before { animation: ringTurn 4s linear infinite; }
+
+/* ══ BANDES D'OUTILS ═══════════════════════════════════════════════════════
+   Les pastilles d'outils défilent en boucle au lieu de s'empiler.
+
+   POURQUOI. Procédé relevé sur linearity.io (`anim-marquee`, trois rangées à
+   18 / 29 / 41 s, sens et vitesses différents) : le contenu défile, et c'est le
+   défilement lui-même qui est le contenu. C'est le seul endroit de ce site où une
+   boucle permanente se justifie — ailleurs elle a été retirée deux fois
+   (chatoiement des libellés ramené à 2 itérations, flottement du hero supprimé).
+   Ici la liste est plus longue que sa colonne : la faire défiler, c'est la montrer
+   entière. Et cela règle un défaut mesuré : à 390 px, dix pastilles se replient sur
+   quatre à cinq lignes.
+
+   L'ÉTAT DE BASE EST LE PAVÉ STATIQUE D'AUJOURD'HUI. Rien ici ne s'applique sans
+   l'attribut `data-looped`, que seul le module 17 pose — et il ne le pose ni en
+   mouvement réduit, ni si la liste est déjà plus courte que sa colonne. Sans
+   JavaScript, la bande reste exactement ce qu'elle était : un `flex-wrap: wrap`.
+   C'est la règle du dépôt, apprise deux fois : l'état au repos doit être l'état
+   lisible, jamais un état qu'une autre règle doit défaire.
+
+   LA PÉRIODE EST MESURÉE, PAS DEVINÉE. `--tb-w` vaut la largeur d'une copie de la
+   liste plus l'écart qui la sépare de la suivante, et `--tb-dur` s'en déduit à
+   vitesse constante (voir le module 17). Une durée fixe pour toutes les bandes
+   aurait donné des vitesses apparentes très différentes : cinq pastilles courtes
+   contre dix longues, c'est un rapport de plus de deux.
+
+   ARRÊT AU SURVOL ET HORS ÉCRAN. Une liste qui bouge est une liste qu'on ne finit
+   pas de lire : le survol l'arrête, donc on peut toujours la lire en entier. Et
+   `.is-running` n'est posé que lorsque la bande est à l'écran — rien ne tourne pour
+   personne. */
+/* Le même piège de largeur, côté bande : plancher explicite pour qu'aucun
+   contexte de mise en page (grille, flex) ne la laisse suivre sa piste. */
+.tool-band { min-width: 0; max-width: 100%; }
+
+.tool-band[data-looped] {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.tool-band[data-looped] .tool-band__track {
+  flex-wrap: nowrap;
+  width: max-content;
+  will-change: transform;
+  animation: toolBandRun var(--tb-dur, 24s) linear infinite;
+  animation-play-state: paused;
+}
+
+@keyframes toolBandRun {
+  to { transform: translateX(calc(-1 * var(--tb-w, 0px))); }
+}
+
+.tool-band[data-looped].is-running .tool-band__track { animation-play-state: running; }
+/* Déclaré APRÈS `.is-running`, à spécificité égale : le survol doit gagner. */
+.tool-band[data-looped]:hover .tool-band__track { animation-play-state: paused; }
+
+/* Le sens alterné d'une bande à l'autre : c'est lui qui distingue deux listes
+   voisines, là où deux bandes parallèles dans le même sens se lisent comme une
+   seule. `reverse` suffit — pas besoin d'un second jeu de keyframes. */
+.tool-band--rtl[data-looped] .tool-band__track { animation-direction: reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Filet : le module 17 ne clone rien en mouvement réduit, mais le réglage peut
+     changer après le chargement. On rend alors la bande à son pavé statique. */
+  .tool-band[data-looped] { overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .tool-band[data-looped] .tool-band__track {
+    flex-wrap: wrap; width: auto; animation: none; transform: none;
+  }
+  .tool-band__dup { display: none; }
+}

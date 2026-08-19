@@ -1,0 +1,414 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --qbot-navy:   #1C244B;
+  --qbot-blue:   #324A6D;
+  --qbot-accent: #00CBBE;
+  --qbot-light:  #F8F4FF;
+  --qbot-dark:   #111F3D;          /* rgba(17,31,61,1) — the overlay base */
+  --qbot-overlay: rgba(17, 31, 61, 0.6);
+  --qbot-white:  #FFFFFF;
+  --radius-card: 20px;
+  --radius-pill: 100px;
+}
+
+/* ─── Base ─────────────────────────────────────────────── */
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  color: #1C244B;
+}
+
+/* ─── Navbar ────────────────────────────────────────────── */
+.navbar {
+  background-color: var(--qbot-navy) !important;
+}
+.navbar {
+  padding-top: .6rem;
+  padding-bottom: .6rem;
+}
+.navbar-brand {
+  padding: 0;
+}
+.navbar-brand img {
+  display: block;
+}
+.nav-link {
+  font-weight: 500;
+  color: rgba(255,255,255,.75) !important;
+  font-size: .9rem;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: #fff !important;
+}
+
+/* ─── Hero ──────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--qbot-navy) 0%, #243460 100%);
+  color: #fff;
+  padding: 96px 0 80px;
+}
+.hero h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+.hero .lead {
+  font-size: 1.15rem;
+  font-weight: 300;
+  color: rgba(255,255,255,.85);
+  max-width: 640px;
+}
+.hero .badge-pill {
+  background: rgba(0, 203, 190, .15);
+  color: var(--qbot-accent);
+  border: 1px solid rgba(0, 203, 190, .35);
+  border-radius: var(--radius-pill);
+  padding: .35em 1.1em;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
+.hero-accent {
+  color: var(--qbot-accent);
+}
+
+/* ─── Buttons ───────────────────────────────────────────── */
+.btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+}
+.btn-primary {
+  background-color: var(--qbot-blue);
+  border-color: var(--qbot-blue);
+}
+.btn-primary:hover {
+  background-color: var(--qbot-navy);
+  border-color: var(--qbot-navy);
+}
+.btn-accent {
+  background-color: var(--qbot-accent);
+  border-color: var(--qbot-accent);
+  color: var(--qbot-navy);
+}
+.btn-accent:hover {
+  background-color: #00adb5;
+  border-color: #00adb5;
+  color: var(--qbot-navy);
+}
+.btn-outline-light:hover {
+  color: var(--qbot-navy) !important;
+}
+
+/* ─── Sections ──────────────────────────────────────────── */
+.section {
+  padding: 80px 0;
+}
+.section-alt {
+  background-color: var(--qbot-light);
+}
+.section-dark {
+  background-color: var(--qbot-navy);
+  color: #fff;
+}
+.section-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -.5px;
+  margin-bottom: .5rem;
+  color: var(--qbot-navy);
+}
+.section-dark .section-title {
+  color: #fff;
+}
+.section-subtitle {
+  color: var(--qbot-blue);
+  font-weight: 300;
+  font-size: 1.05rem;
+  max-width: 620px;
+  margin: 0 auto 3rem;
+}
+.section-dark .section-subtitle {
+  color: rgba(255,255,255,.6);
+}
+
+/* ─── Problem callout ───────────────────────────────────── */
+.problem-callout {
+  background: #fff;
+  border-left: 4px solid var(--qbot-accent);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  padding: 1.5rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--qbot-navy);
+  box-shadow: -5px 15px 30px rgba(28, 36, 75, .07);
+}
+
+/* ─── Benefit cards ─────────────────────────────────────── */
+.benefit-card {
+  border: none;
+  border-radius: var(--radius-card);
+  padding: 2rem 1.75rem;
+  height: 100%;
+  transition: box-shadow .25s ease;
+  background: #fff;
+  box-shadow: -5px 15px 30px rgba(28, 36, 75, .07);
+}
+.benefit-card:hover {
+  box-shadow: -10px 40px 80px rgba(28, 36, 75, .12);
+}
+.benefit-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(0, 203, 190, .12);
+  color: var(--qbot-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.1rem;
+}
+.benefit-card h5 {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--qbot-navy);
+  margin-bottom: .5rem;
+}
+.benefit-card p {
+  color: var(--qbot-blue);
+  font-size: .93rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ─── Steps ─────────────────────────────────────────────── */
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--qbot-accent);
+  color: var(--qbot-navy);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-connector {
+  width: 2px;
+  background: #dde0f0;
+  flex: 1;
+  min-height: 32px;
+  margin: 4px auto;
+}
+.step-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+.step-body h5 {
+  font-weight: 700;
+  color: var(--qbot-navy);
+  margin-bottom: .4rem;
+}
+.step-body p {
+  color: var(--qbot-blue);
+  font-size: .95rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ─── Trigger path cards ────────────────────────────────── */
+.path-card {
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  height: 100%;
+}
+.path-card-api {
+  background: rgba(50, 74, 109, .06);
+  border: 1px solid rgba(50, 74, 109, .18);
+}
+.path-card-auto {
+  background: rgba(0, 203, 190, .07);
+  border: 1px solid rgba(0, 203, 190, .28);
+}
+.path-label {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: .75rem;
+}
+.path-label-api { color: var(--qbot-blue); }
+.path-label-auto { color: var(--qbot-accent); }
+.path-card h5 {
+  font-weight: 700;
+  color: var(--qbot-navy);
+  margin-bottom: .75rem;
+}
+.path-card p {
+  color: var(--qbot-blue);
+  font-size: .93rem;
+  font-weight: 300;
+}
+
+/* ─── Feature sections ──────────────────────────────────── */
+.feature-block {
+  padding: 56px 0;
+  border-bottom: 1px solid #e4e8f5;
+}
+.feature-block:last-child {
+  border-bottom: none;
+}
+.feature-tag {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--qbot-accent);
+  margin-bottom: .5rem;
+}
+.feature-block h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  color: var(--qbot-navy);
+  margin-bottom: 1rem;
+}
+.feature-block .lead {
+  color: var(--qbot-blue);
+  font-weight: 300;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+.feature-visual {
+  background: var(--qbot-light);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+}
+
+/* ─── Check list ────────────────────────────────────────── */
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.check-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin-bottom: .6rem;
+  font-size: .93rem;
+  font-weight: 400;
+  color: var(--qbot-blue);
+}
+.check-list li i {
+  color: var(--qbot-accent);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── Code blocks ───────────────────────────────────────── */
+pre.code-block {
+  background: var(--qbot-navy);
+  color: #e9ecef;
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  font-size: .88rem;
+  overflow-x: auto;
+  margin: 0;
+}
+pre.code-block .comment { color: #6c8ebf; }
+pre.code-block .method  { color: var(--qbot-accent); }
+pre.code-block .url     { color: #a8d8a8; }
+pre.code-block .key     { color: #f4a261; }
+pre.code-block .value   { color: #a8d8a8; }
+
+/* ─── API table ─────────────────────────────────────────── */
+.api-table td:first-child code {
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+/* ─── Use case cards ────────────────────────────────────── */
+.usecase-card {
+  border: none;
+  border-radius: var(--radius-card);
+  background: #fff;
+  box-shadow: -5px 15px 30px rgba(28, 36, 75, .07);
+  padding: 2rem;
+  height: 100%;
+  transition: box-shadow .25s ease;
+}
+.usecase-card:hover {
+  box-shadow: -10px 40px 80px rgba(28, 36, 75, .12);
+}
+.usecase-card .usecase-num {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--qbot-accent);
+  margin-bottom: .4rem;
+}
+.usecase-card h5 {
+  font-weight: 700;
+  color: var(--qbot-navy);
+  margin-bottom: .75rem;
+}
+.usecase-card .challenge {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: #adb5bd;
+  margin-bottom: .25rem;
+}
+.usecase-card p {
+  font-size: .93rem;
+  font-weight: 300;
+  color: var(--qbot-blue);
+}
+
+/* ─── Compat table ──────────────────────────────────────── */
+.compat-table td, .compat-table th {
+  font-size: .9rem;
+  vertical-align: middle;
+}
+
+/* ─── Footer ────────────────────────────────────────────── */
+footer {
+  background: var(--qbot-navy);
+  color: rgba(255,255,255,.5);
+  padding: 40px 0;
+  font-size: .875rem;
+  font-weight: 300;
+}
+footer a {
+  color: rgba(255,255,255,.6);
+  text-decoration: none;
+}
+footer a:hover {
+  color: var(--qbot-accent);
+}
+footer img {
+  filter: brightness(0) invert(1);
+  opacity: .85;
+}
