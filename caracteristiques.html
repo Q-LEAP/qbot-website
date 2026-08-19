@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026.9-08-29b">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026.8-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -239,23 +239,7 @@
           </div>
           <div class="spec-item" role="listitem">
             <span class="spec-item__label">Système</span>
-            <span class="spec-item__value">Raspberry Pi OS Lite</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Déploiement</span>
-            <span class="spec-item__value">Conteneurs Docker&nbsp;: une seule commande Docker Compose pour installer comme pour mettre à jour</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Stockage</span>
-            <span class="spec-item__value">SQLite, sur le boîtier</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Écran</span>
-            <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Connexion internet</span>
-            <span class="spec-item__value">Aucune pendant les tests&nbsp;: aucun appel externe, aucune donnée qui sort de chez vous</span>
+            <span class="spec-item__value">Linux (Raspberry Pi OS)</span>
           </div>
           <div class="spec-item" role="listitem">
             <span class="spec-item__label">Dimensions</span>
@@ -283,29 +267,6 @@
   </div>
 </section>
 
-<!-- ======= ÉDITEUR DE SCÉNARIOS ======= -->
-<!-- Sans visuel, à dessein : la maquette de l'éditeur est déjà l'illustration de
-     la section suivante, qui zoome dedans. La montrer deux fois de suite, une fois
-     fixe et une fois épinglée, ne dirait rien de plus. -->
-<section class="section" aria-labelledby="editor-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Éditeur de scénarios</span>
-      <h2 class="section-title" id="editor-title">Construire une automatisation sans écrire une ligne de code</h2>
-      <p class="section-subtitle">L'interface web de Q-Bot permet à n'importe quel testeur de créer un scénario en quelques minutes. Aucun script, aucun sélecteur XPath, aucun identifiant d'élément fragile à maintenir.</p>
-    </div>
-    <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Vous versez une capture de l'écran de l'application, qui sert de fond à l'étape</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Vous posez les points d'appui numérotés en cliquant directement sur la capture</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Vous réglez les temps d'attente à la milliseconde, pour coller au comportement réel de l'application</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Les scénarios sont enregistrés et versionnés dans le boîtier</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Les captures d'étape restent stockées sur le boîtier, sans aucun envoi vers un cloud</span></li>
-    </ul>
-    <p style="margin-top:26px; font-size:0.9375rem;">Le résultat est un scénario nommé et réutilisable&nbsp;: une carte visuelle de ce qu'il faut toucher et quand, prête à être déclenchée depuis n'importe quelle chaîne de tests.</p>
-  </div>
-</section>
-
 <!-- ======= INTERFACE & API ======= -->
 <section class="section section--gray pin-modes" aria-labelledby="interface-title"
          data-panel="0">
@@ -327,7 +288,7 @@
         <div style="margin-top:28px; display:flex; flex-direction:column; gap:20px;">
           <div class="spec-item spec-item--card pin-modes__card" data-mode="0">
             <span class="spec-item__label">Interface Web</span>
-            <span class="spec-item__value">Une capture de l'écran 2FA, des points d'appui numérotés, des temps d'attente. Aucun script, aucun sélecteur à maintenir.</span>
+            <span class="spec-item__value">Créez vos scénarios d'authentification via une interface intuitive, accessible depuis n'importe quel navigateur sur votre réseau.</span>
           </div>
           <div class="spec-item spec-item--card pin-modes__card" data-mode="1">
             <span class="spec-item__label">API REST</span>

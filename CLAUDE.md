@@ -839,31 +839,6 @@ terminologie a été alignée sur « app compagnon », dans le texte visible et 
 La FAQ anglaise n'a pas l'équivalent de cette question, asymétrie antérieure et non traitée
 ici.
 
-## Éditeur, matériel et cas d'usage (2026-08-19, lots 5 à 7)
-
-Fin de la reprise du contenu de `Documentations/website`. Ce qui a été publié :
-
-- **l'éditeur de scénarios** (`caracteristiques` / `technical-specs`) : capture de l'écran en
-  fond d'étape, points d'appui numérotés posés au clic, temps d'attente à la milliseconde,
-  étapes réordonnables, scénarios versionnés dans le boîtier, captures stockées localement.
-  Section **sans visuel à dessein** : la maquette de l'éditeur illustre déjà la section
-  suivante, qui zoome dedans. La montrer deux fois de suite ne dirait rien de plus ;
-- **la pile matérielle**, en lignes de fiche plutôt qu'en section : `Système` passe de
-  « Linux (Raspberry Pi OS) » à **Raspberry Pi OS Lite**, et quatre lignes arrivent
-  (déploiement en conteneurs Docker par une seule commande Docker Compose, stockage SQLite
-  sur le boîtier, **écran intégré**, aucune connexion internet pendant les tests) ;
-- **l'écran du boîtier revient**, y compris sur les deux pages 3D. Il avait été retiré du
-  site entier le 2026-08-12 parce qu'il n'était pas visible sur le live (cf. la section sur
-  les blocs masqués). Le contenu fourni le confirme noir sur blanc, avec son usage : afficher
-  un QR code que le téléphone vient scanner. **Dire « petit écran intégré » et pas « OLED »** :
-  la technologie n'est confirmée nulle part ;
-- **les cinq cas d'usage** sur `commandez` / `order` et non sur la page technique : c'est la
-  page où l'on décide d'acheter. Chacun en deux volets, le blocage puis ce que Q-Bot en fait.
-
-Détail de forme : les lignes de fiche de `en/technical-specs.html` sont écrites **sur une
-seule ligne de source**, contrairement à celles de `caracteristiques.html`. Un motif de
-remplacement multi-lignes échoue silencieusement sur l'une des deux pages.
-
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en
