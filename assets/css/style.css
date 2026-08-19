@@ -970,13 +970,25 @@ p { color: var(--gray); }
 
 .specs__list { display: flex; flex-direction: column; gap: 20px; }
 
+/* LE FILET DE SÉPARATION APPARTIENT À LA VARIANTE « LIGNE », PAS À LA VARIANTE
+   « CARTE ». Il était posé sur `.spec-item` tout court, et retiré du dernier par
+   `.spec-item:last-child` — dont la spécificité (0,1,1) dépasse celle de
+   `.spec-item--card` (0,1,0). Conséquence : la DERNIÈRE carte d'une liste perdait
+   son bord inférieur, donc son cadre n'était pas fermé. Le défaut ne dépendait ni
+   de la fenêtre ni du défilement — mesuré identique de 1440 × 700 à 3840 × 2160,
+   `border-bottom-width: 0px` sur la troisième carte contre 1px sur les deux
+   autres — ce qui explique qu'il ait survécu à deux corrections visant la hauteur
+   de la scène épinglée. Le `:not()` règle la cause : une carte n'est jamais
+   concernée par la logique de séparateur. */
 .spec-item {
   display: flex;
   gap: 16px;
+}
+.spec-item:not(.spec-item--card) {
   padding-bottom: 20px;
   border-bottom: 1px solid var(--border);
 }
-.spec-item:last-child { border-bottom: none; }
+.spec-item:not(.spec-item--card):last-child { border-bottom: none; }
 
 .spec-item__label {
   font-size: 0.8125rem;
@@ -2733,7 +2745,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 [data-theme="dark"] .timeline-item__dot  { background: #0A0A0A; }
 
 /* ── Spécifications ── */
-[data-theme="dark"] .spec-item          { border-bottom-color: #2B2B2B; }
+[data-theme="dark"] .spec-item:not(.spec-item--card) { border-bottom-color: #2B2B2B; }
 [data-theme="dark"] .spec-item__value   { color: #E6E7E8; }
 
 /* ── Infos contact ── */
@@ -3624,8 +3636,13 @@ label > input[type="checkbox"] {
    carte : celle-ci est déjà une cible du système de révélation, dont la règle
    `.is-visible { opacity: 1 }` est plus spécifique et gagnait. */
 .pin-modes__card > * { opacity: 1; }
+/* Le liseré de la carte courante n'a de sens que pendant l'acte : il est donc éteint
+   ici et rallumé dans la porte. L'ordre compte — la même règle écrite APRÈS la
+   requête média l'écrasait à spécificité égale, et les trois liserés restaient
+   invisibles (mesuré : `display: none` sur les trois, panneau actif compris). */
 .pin-modes__card::before {
   content: '';
+  display: none;
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 2px;
@@ -3697,10 +3714,7 @@ label > input[type="checkbox"] {
    tient — sur téléphone on raccourcit, on n'ajoute pas trois écrans épinglés à
    une page qui en fait déjà six — et les trois cartes se lisent l'une après
    l'autre, ce qui est exactement leur ordre naturel. */
-/* Plus besoin d'annuler quoi que ce soit hors de la porte : l'état de base EST
-   l'état sans acte. Seul le liseré de la carte courante reste à neutraliser, car il
-   n'a de sens que pendant l'acte. */
-.pin-modes__card::before { display: none; }
+
 
 @media (prefers-reduced-motion: reduce) {
   .pin-modes__track { height: auto; }
