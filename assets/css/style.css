@@ -3963,3 +3963,90 @@ label > input[type="checkbox"] {
 @media (prefers-reduced-motion: reduce) {
   .page-home main .reveal.is-visible .section-label::before { animation: none; }
 }
+
+/* ══ LISERÉ VIVANT ═════════════════════════════════════════════════════════
+   Un anneau d'un pixel dont un segment plus clair fait le tour de la carte,
+   trois fois, à son arrivée à l'écran.
+
+   POURQUOI. Procédé relevé sur linearity.io (`.kp-glass-border.animate-border`,
+   `spin 4s linear infinite` sur un carré en `aspect-ratio: 1/1`) : un dégradé
+   conique tourne derrière la carte, masqué en anneau. La carte a l'air sous
+   tension sans que rien ne bouge dans sa mise en page.
+
+   CE QUI DIFFÈRE DE CHEZ EUX. Chez eux la rotation est infinie. Ici trois tours
+   puis arrêt : ce dépôt a déjà tranché ce point pour le chatoiement des libellés
+   (ramené d'`infinite` à 2 itérations) au motif qu'une boucle permanente est une
+   signature de gabarit. Le survol relance le mouvement — c'est la même animation
+   qui passe en `infinite`, donc elle reprend à l'angle courant sans saut.
+
+   TROIS CARTES, UNE PAR PAGE : le prix (commandez / order), la prise de
+   rendez-vous (contact) et la génération actuelle (accueil). Pas plus : l'effet
+   ne désigne quelque chose que s'il ne désigne qu'une chose.
+
+   MÉCANIQUE — un seul pseudo-élément, aucun enfant, aucun `overflow: hidden`.
+   Le dégradé est peint sur toute la boîte, un masque à deux couches n'en garde
+   que le cadre. Quatre pièges, tous rencontrés :
+   - l'anneau est en `inset: -1px`, donc exactement sur la bordure existante, et
+     celle-ci passe en transparent — sinon on lit deux traits parallèles. Ce
+     passage en transparent est sous `@supports` : sans `mask-composite`, la
+     carte garde sa bordure au lieu de n'avoir plus rien du tout.
+   - l'abrégé `mask` remet `mask-composite` à `add`. Les abrégés doivent donc
+     être déclarés AVANT les longues, jamais après.
+   - `[data-theme="dark"] .calendly-box` (0,2,0) fixe déjà une couleur de
+     bordure : la remettre à transparent demande la même spécificité, sinon la
+     règle est simplement ignorée. Idem pour `.evo-card:hover`.
+   - `--ring-a` doit être enregistrée par `@property` pour être interpolable.
+     Sans elle l'animation ne fait rien et l'anneau reste à son angle de départ,
+     ce qui reste un état lisible : un arc clair sur un anneau discret.
+
+   Mouvement réduit : la règle globale ramène toute animation à 0,01 ms et une
+   itération — l'anneau s'arrête donc à 360°, c'est-à-dire à son point de
+   départ. Rien à neutraliser ici. */
+@property --ring-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes ringTurn { to { --ring-a: 360deg; } }
+
+.pricing-highlight,
+.calendly-box,
+.evo-card--current { position: relative; }
+
+.pricing-highlight::before,
+.calendly-box::before,
+.evo-card--current::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;                     /* épaisseur de l'anneau */
+  background: conic-gradient(from var(--ring-a),
+    rgba(0,203,190,0.14)  0    58%,
+    rgba(0,203,190,0.38) 72%,
+    var(--teal)          80%,
+    rgba(0,203,190,0.38) 88%,
+    rgba(0,203,190,0.14) 96% 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* La bordure d'origine s'effacerait sous l'anneau : elle ne cède la place que
+   là où l'anneau existe vraiment. */
+@supports (mask-composite: exclude) or (-webkit-mask-composite: xor) {
+  [data-theme="dark"] .calendly-box,
+  .evo-card--current,
+  .evo-card--current:hover { border-color: transparent; }
+}
+
+.pricing-highlight.is-visible::before,
+.calendly-box.is-visible::before,
+.evo-card--current.is-visible::before { animation: ringTurn 4s linear 3; }
+
+.pricing-highlight:hover::before,
+.calendly-box:hover::before,
+.evo-card--current:hover::before { animation: ringTurn 4s linear infinite; }

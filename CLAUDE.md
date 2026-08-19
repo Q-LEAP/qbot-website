@@ -354,6 +354,14 @@ the only genuinely scroll-scrubbed effect on the site.
 
 ### Verifying a motion change
 
+**Le balayage doit défiler en `behavior: 'instant'`.** `<html>` porte `scroll-behavior:
+smooth` : un `scrollTo(0, y)` toutes les 110 ms ne tient aucune des positions échantillonnées
+— chaque appel interrompt l'animation précédente, la page traîne derrière la boucle, puis le
+`scrollTo` final la traverse à plus de 700 px par image et un élément peut n'intersecter à
+aucune image. Mesuré sur l'accueil FR : 1 révélation manquée à chaque essai en `smooth`,
+**0 sur 3 essais en `instant`**. Un faux positif coûteux — il ressemble exactement au vrai bug
+« un bloc reste invisible » documenté plus bas, et il a déjà fait chercher un défaut inexistant.
+
 `prefers-reduced-motion` and "did anything stay invisible" are the two things eyeballing
 misses. A Playwright sweep over all 24 pages × (normal, reduced-motion) that scrolls to the
 bottom and asserts no `.reveal` element (or `group` child) is left under `opacity: 0.9`,

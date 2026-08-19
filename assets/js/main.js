@@ -210,6 +210,10 @@ if ('IntersectionObserver' in window) {
       '.spec-item',
       '.contact-info__item',
       '.pricing-card',
+      /* Ajouté pour le liseré vivant : il se déclenche sur .is-visible, que
+         seul le système de révélation pose. Effet de bord assumé et
+         cohérent — le bloc prend l'arrivée standard des cartes du site. */
+      '.pricing-highlight',
       '.blog-card',
       '.calendly-box',
       /* Exclu de « media » : le bloc contient aussi un bouton, un masque
