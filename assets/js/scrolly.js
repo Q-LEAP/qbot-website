@@ -260,12 +260,27 @@
   }
 
   /* Le mode alpha ne change qu'au franchissement du seuil : le basculer à chaque
-     image recompilerait le shader de la coque soixante fois par seconde. */
+     image recompilerait le shader de la coque soixante fois par seconde.
+     ET LA COQUE CESSE D'ÊTRE DOUBLE-FACE TANT QU'ELLE EST EN VERRE. Le GLB livré
+     la déclare `doubleSided` pour une raison précise, notée dans CLAUDE.md : sans
+     ça, le hublot de verre laisse voir le fond de la page au lieu d'une cavité
+     sombre. Mais une surface double-face en mode BLEND additionne ses faces
+     ARRIÈRE à ses faces avant sans les trier par profondeur : à mi-transparence on
+     ne voit plus un boîtier translucide mais un empilement de plans dans un ordre
+     arbitraire — des bandes claires et des coutures qui apparaissent et
+     disparaissent au moindre degré de rotation. C'est le pire là où on l'attend le
+     moins : vers α = 0,7, quand la coque est presque opaque, donc juste avant le
+     retour à l'opaque entre les pas 3 et 4.
+     Pendant le verre, la raison d'être du double-face tombe d'elle-même : la coque
+     étant transparente, il n'y a plus de cavité à noircir. Simple face le temps de
+     la transparence, double face dès le retour à l'opacité — un seul appel au
+     franchissement du seuil, comme pour le mode alpha. */
   function setShellAlpha(a) {
     if (!shellMat) return;
     var blend = a < 0.99;
     if (blend !== shellBlend) {
       shellMat.setAlphaMode(blend ? 'BLEND' : 'OPAQUE');
+      if (shellMat.setDoubleSided) shellMat.setDoubleSided(!blend);
       shellBlend = blend;
     }
     shellMat.pbrMetallicRoughness.setBaseColorFactor(
@@ -396,6 +411,20 @@
        dessin — c'est ce qui leur permet de décider seules de quel côté de l'objet
        se poser — et réécrits une fois par image, au début de draw(). */
     var C = null, midHi = [0, 0];
+    /* Caméra NOMINALE du pas courant, et le centre du volume vu par elle. Tout ce
+       qui est un CHOIX — de quel côté poser une cote, sur quel coin poser une
+       étiquette — s'y réfère, jamais à la caméra en vol. Le placement, lui, reste
+       calculé sur la caméra réelle : les annotations suivent donc l'objet image par
+       image, seul le côté est figé.
+       POURQUOI. Ces choix sont des comparaisons (« la face la plus proche »,
+       « le coin le plus éloigné du centre »), et une comparaison bascule d'un coup.
+       Mesuré sur la seconde moitié de la séquence : au franchissement de 0,611 du
+       parcours, TROIS annotations sautaient dans la même image, à pleine opacité —
+       « 15 cm » de 507 unités, « 24 cm » de 466, l'étiquette de la feuille A3 de
+       336. C'est ce que le balayage 3 → 4 donnait à voir : un plan qui se réorganise
+       brusquement, que l'œil lit comme un défaut d'affichage du fond. Le même défaut
+       avait été corrigé juste avant sur « emplacement du smartphone ». */
+    var CN = null, midHiN = [0, 0];
     function readCamera() {
       var o = viewer.getCameraOrbit(), t = viewer.getCameraTarget(), fov = viewer.getFieldOfView();
       /* Dimensions de MISE EN PAGE, pas la boîte affichée : `scene` porte un
@@ -419,7 +448,31 @@
                th: Math.tan(fov * Math.PI / 360), aspect: w / h, theta: o.theta,
                px: rect.width / w, left: rect.left, top: rect.top };
     }
+    /* Même géométrie que `readCamera`, mais sur les valeurs de consigne du pas
+       (degrés et mètres absolus de la table SCENES) au lieu de l'état du viewer.
+       Le champ de vision reste celui du composant : il ne change jamais. */
+    function camNominal(sc) {
+      if (!sc) return null;
+      var t = viewer.getCameraTarget(), w = scene.offsetWidth, h = scene.offsetHeight;
+      if (!w || !h) return null;
+      var th = sc.theta * Math.PI / 180, ph = sc.phi * Math.PI / 180;
+      var tgt = [t.x, t.y, t.z], sp = Math.sin(ph), cp = Math.cos(ph);
+      var eye = [tgt[0] + sc.r * sp * Math.sin(th),
+                 tgt[1] + sc.r * cp,
+                 tgt[2] + sc.r * sp * Math.cos(th)];
+      var f = nrm(sub(tgt, eye)), sv = nrm(crs(f, [0, 1, 0]));
+      return { eye: eye, f: f, s: sv, u: crs(sv, f), w: w, h: h,
+               th: Math.tan(viewer.getFieldOfView() * Math.PI / 360), aspect: w / h };
+    }
     function depth(p) { return dot(sub(p, C.eye), C.f); }
+    /* Profondeur et projection dans la caméra nominale — pour les choix seulement.
+       Repli sur la caméra réelle si la consigne n'est pas encore connue. */
+    function depthN(p) { var c = CN || C; return dot(sub(p, c.eye), c.f); }
+    function projN(p) {
+      var c = CN || C, d = sub(p, c.eye), z = dot(d, c.f);
+      return [(0.5 + 0.5 * (dot(d, c.s) / z) / (c.th * c.aspect)) * c.w,
+              (0.5 - 0.5 * (dot(d, c.u) / z) / c.th) * c.h];
+    }
     function proj(p) {
       var d = sub(p, C.eye), z = dot(d, C.f);
       return [(0.5 + 0.5 * (dot(d, C.s) / z) / (C.th * C.aspect)) * C.w,
@@ -514,7 +567,7 @@
     /* Une cote se pose du côté le plus proche de l'œil : elle passe alors devant
        l'objet et jamais dedans. On compare les profondeurs plutôt que de figer un
        côté, sinon la cote se cache dès que la caméra tourne. */
-    function nearSide(a, b) { return depth(a) < depth(b) ? -1 : 1; }
+    function nearSide(a, b) { return depthN(a) < depthN(b) ? -1 : 1; }
 
     function cote(d, a0, b0, off) {
       var a = add(a0, off, 1), b = add(b0, off, 1);
@@ -592,8 +645,9 @@
     });
 
     /* ── Tracé ──────────────────────────────────────────────────────────── */
-    function draw(t) {
+    function draw(t, sc) {
       C = readCamera();
+      CN = camNominal(sc);
       if (!C) return 0;
       var i, j, p;
 
@@ -604,7 +658,8 @@
       var hp = hull(corners).map(function (c) { return c[0].toFixed(1) + ',' + c[1].toFixed(1); }).join(' ');
       for (i = 0; i < occl.length; i++) occl[i].setAttribute('points', hp);
 
-      midHi = proj([0, BOX.y[1] / 2, 0]);            // centre du volume, pour orienter les cotes
+      midHi = proj([0, BOX.y[1] / 2, 0]);
+      midHiN = projN([0, BOX.y[1] / 2, 0]);            // centre du volume, pour orienter les cotes
 
       groundDisc(pool, 0.27);
       groundDisc(fadeDisc, 0.30);      /* un peu plus large que le quadrillage */
@@ -678,12 +733,13 @@
          garantisse à la fois qu'elle ne tombe pas SUR le boîtier et qu'elle reste
          dégagée des deux cotes au sol. Un choix figé (« le coin le plus bas »,
          « le plus haut ») marchait pour un angle et échouait pour le suivant. */
-      var lab = null, ld = -1;
+      var iLab = 0, ld = -1;
       for (i = 0; i < 4; i++) {
-        p = proj(sh[i]);
-        var pd = Math.hypot(p[0] - midHi[0], p[1] - midHi[1]);
-        if (pd > ld) { ld = pd; lab = p; }
+        p = projN(sh[i]);
+        var pd = Math.hypot(p[0] - midHiN[0], p[1] - midHiN[1]);
+        if (pd > ld) { ld = pd; iLab = i; }
       }
+      var lab = proj(sh[iLab]);   // choix au nominal, position au réel
       /* Le libellé se pose À L'INTÉRIEUR de la feuille, en retrait du coin, comme
          le cartouche d'un plan. Posé à l'extérieur il tombait entre le bord de la
          feuille et les lignes de cote, qui sont déportées plus loin encore (3,4 cm
@@ -706,8 +762,8 @@
       var best = null, bd = -1;
       for (i = 0; i < 2; i++) for (j = 0; j < 2; j++) {
         var e0 = [BOX.x[i], 0, BOX.z[j]];
-        p = proj(e0);
-        var dd = Math.abs(p[0] - midHi[0]);
+        p = projN(e0);
+        var dd = Math.abs(p[0] - midHiN[0]);
         if (dd > bd) { bd = dd; best = { x: BOX.x[i], z: BOX.z[j], sx: i ? 1 : -1, sz: j ? 1 : -1 }; }
       }
       /* Déport réduit pour la hauteur (2,2 cm au lieu de 3,4) : une cote
@@ -842,7 +898,7 @@
       var goal = cur.theta + drift;
       viewer.cameraOrbit = goal.toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
       viewer.currentTime = cur.t;
-      var shown = HUD.draw(cur.t) * 180 / Math.PI;
+      var shown = HUD.draw(cur.t, SCENES[i]) * 180 / Math.PI;
       camLag = Math.abs(shown - goal) > 0.02;
       /* ET LE VERRE EXIGE UNE CAMÉRA POSÉE.
          Les paliers séparent déjà les deux mouvements tant que le défilement est un
