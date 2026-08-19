@@ -188,6 +188,10 @@ if ('IntersectionObserver' in window) {
          priver. La légende est dans la figure, donc dans le masque : elle
          apparaît en dernier, ce qui est l'ordre de lecture. */
       '.article-figure',
+      /* Le bloc de code de la section API : c'est un objet encadré, donc un média
+         au sens du site. Il apparaissait sans rien. Il n'a pas d'<img>, donc le
+         dézoom de la variante ne s'applique à rien et seul le masque joue. */
+      '.code-block',
     ]],
     ['group', [
       '.section-header',

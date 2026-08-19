@@ -4241,6 +4241,17 @@ label > input[type="checkbox"] {
 .code-block {
   position: relative;
   align-self: start;
+  /* Deux lignes exigées par la variante « média » de la révélation, à laquelle ce
+     bloc est rattaché (module 4) :
+     - `overflow: hidden` contient le passage de lumière, qui est un `::after`
+       translaté de −130 % à +130 %. Sans lui il s'échappe de son cadre : c'est ce
+       qui avait provoqué 341 px de débordement horizontal sur les figures
+       d'article, seul média du site à ne pas avoir cette propriété ;
+     - `--media-radius` aligne les angles du masque sur ceux du `pre`. Par défaut la
+       variante prend `--radius-lg`, et le masque arrondirait plus que le cadre
+       pendant toute la durée du dévoilement. */
+  overflow: hidden;
+  --media-radius: var(--radius);
 }
 
 .code-block pre {

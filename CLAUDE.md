@@ -918,9 +918,25 @@ Le retard suit `--reveal-delay`, et comme l'index d'échelonnement est calculé 
 repart de zéro à chaque liste : relevé 0 à 5 puis 0 à 3 puis 0 à 1 puis 0 à 2 sur les quatre
 listes de la page. Quinze coches simultanées auraient fait du bruit.
 
-**Reste proposé et non fait** : le bloc de code en variante `media`. Pour ce dernier, attention au passage de lumière : c'est un
-`::after` qui se translate, et il s'échappe sans `overflow: hidden` — c'est ce qui avait causé
-341 px de débordement horizontal sur les figures d'article.
+**Proposition O faite le même jour : le bloc de code se dévoile comme un média.** Un objet
+encadré est un média au sens de ce site : `.code-block` rejoint la variante `media` (masque qui
+remonte, puis un passage de lumière). Il n'a pas d'`<img>`, donc le dézoom de la variante ne
+s'applique à rien et seul le masque joue.
+
+Deux lignes de CSS étaient obligatoires, et la première est le piège :
+
+- **`overflow: hidden`**, sans quoi le passage de lumière (un `::after` translaté de −130 % à
+  +130 %) s'échappe du cadre. C'est exactement ce qui avait causé 341 px de débordement
+  horizontal sur les figures d'article, seul média du site à ne pas avoir cette propriété.
+  Vérifié après coup : 0 débordement à 390, 768 et 1440 px ;
+- **`--media-radius: var(--radius)`**, sinon le masque prend `--radius-lg` par défaut et
+  arrondit plus que le cadre pendant toute la durée du dévoilement.
+
+Le bouton « Copier » reste en place et cliquable (il est dans le `pre`, bien à l'intérieur du
+masque), et le `pre` garde son propre défilement horizontal. Sans JavaScript et en mouvement
+réduit : opacité 1, aucun masque.
+
+Les trois propositions issues de l'audit d'animation (M, N, O) sont donc faites.
 
 ## Matière du modèle 3D livré (2026-08-11)
 
