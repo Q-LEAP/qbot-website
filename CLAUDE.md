@@ -741,6 +741,44 @@ cassé (23 URL), aucun lien sans intitulé, tous les `alt` présents, `Organizat
    (`grep -rn '€\s*900\|900\s*€\|900 EUR'`).
 
 
+## Le mécanisme : ADB sur un vrai Android (2026-08-19)
+
+`Documentations/website` (quatre pages fournies par le client, plus récentes que le live)
+décrit le produit autrement que ne le faisait ce site, et **c'est ce contenu qui fait foi** :
+
+- Q-Bot **pilote un vrai téléphone Android relié en USB, par ADB**. Chaque appui arrive sur
+  l'écran physique, dans la véritable application 2FA. Ni simulateur, ni bouchon.
+- Les scénarios se construisent **visuellement** : une capture de l'écran 2FA, des points
+  d'appui numérotés, des temps d'attente. Aucun script.
+- Deux déclenchements : l'**API REST** (`GET /scenarios/:id/execute`) ou l'**app compagnon**
+  installée sur le téléphone, qui part seule dès qu'une notification 2FA arrive.
+- Deux autres endpoints : `GET /get-luxtrust-otp` et `POST /display-image` (un QR code
+  affiché sur le petit écran du boîtier, que le téléphone scanne).
+- Confidentialité : les scénarios et leurs captures **restent sur le boîtier**, aucun envoi
+  vers un cloud, aucune connexion internet nécessaire pendant les tests.
+
+**Ce qui a donc été SUPPRIMÉ du site le 2026-08-19** (lot 1, 63 remplacements sur 9
+fichiers) : l'actionneur qui appuie sur un bouton, la caméra HD, les leds qui éclairent
+l'écran, la vision par ordinateur, le programme de reconnaissance, et les photos supprimées
+après traitement. Contrôlé après coup : **0 occurrence** de ce récit sur les 23 pages.
+Ne pas le réintroduire depuis le live WordPress, qui le porte encore.
+
+Deux conséquences non évidentes :
+
+- **la réponse « Comment Q-Bot fonctionne-t-il ? » de la FAQ existe en double**, en texte
+  visible et dans le JSON-LD `FAQPage`. Les deux copies partagent les mêmes fragments de
+  phrase : les remplacer par fragment corrige les deux d'un coup, et c'est le seul moyen de
+  ne pas les désynchroniser ;
+- **la carte du pas 2 de la séquence 3D s'allonge** (308 → 331 px à 375 px de large). Sans
+  effet : `--sc-card-zone` est mesurée sur la plus haute des quatre cartes, qui est celle du
+  pas 4 (344 px). Vérifié avant/après, zone et scène identiques au pixel.
+
+**Reste à faire, et le site est incohérent tant que ce n'est pas fait** : la FAQ anglaise
+garde une question entière sur les tokens PHYSIQUES (« What type of token does Q-Bot work
+with? », « the vast majority of physical tokens on the market ») et le cadre « retrieving
+the value of authentication tokens », qu'ADB ne peut pas piloter. Le client a tranché le
+retrait du token physique de la liste de compatibilité : c'est le lot 2.
+
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en

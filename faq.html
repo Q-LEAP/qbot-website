@@ -173,7 +173,7 @@
       "name": "Comment Q-Bot fonctionne-t-il ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Q-Bot repose sur un mini-ordinateur de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous Linux, coordonne tous les traitements nécessaires à la récupération de la valeur du token . Au démarrage de Q-Bot, son serveur web démarre automatiquement et se met à l'écoute. Le traitement d'une demande suit toujours les actions suivantes, réalisées par les différents composants à l'intérieur du Q-Bot : • L'actionneur appuie sur le bouton du token pour l'allumer • Les leds s'allument pour éclairer l'écran du token • La caméra fait la mise au point sur l'écran du token et prend une photo • Les leds s'éteignent • L'actionneur appuie sur le bouton du token pour l'éteindre • Le programme de reconnaissance traite la photo et renvoie la valeur du token"
+        "text": "Q-Bot repose sur un mini-ordinateur de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous Linux, coordonne l'interface web, l'API et l'exécution des scénarios . Au démarrage de Q-Bot, son serveur web démarre automatiquement et se met à l'écoute. Le traitement d'une demande suit toujours les mêmes actions : • Votre scénario de test appelle l'API de Q-Bot, ou l'app compagnon détecte la notification 2FA sur le téléphone • Q-Bot rejoue le scénario enregistré pour cette étape • Chaque appui part vers le téléphone par ADB et arrive sur son écran physique • Les temps d'attente du scénario laissent à l'application le temps de répondre • L'étape 2FA se résout dans la véritable application, jamais dans un simulateur • Le test reprend exactement là où il s'était arrêté"
       }
     },
     {
@@ -480,16 +480,16 @@
           </span>
         </button>
         <div class="faq-item__answer" role="region">
-          <p>Q-Bot repose sur <strong>un mini-ordinateur</strong> de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous <strong>Linux, coordonne tous les traitements nécessaires à la récupération de la valeur du token</strong>.</p>
+          <p>Q-Bot repose sur <strong>un mini-ordinateur</strong> de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous <strong>Linux, coordonne l'interface web, l'API et l'exécution des scénarios</strong>.</p>
           <p>Au démarrage de Q-Bot, son serveur web démarre automatiquement et se met à l'écoute.</p>
-          <p><strong>Le traitement d'une demande suit toujours les actions suivantes, réalisées par les différents composants à l'intérieur du Q-Bot</strong>&nbsp;:</p>
+          <p><strong>Le traitement d'une demande suit toujours les mêmes actions</strong>&nbsp;:</p>
           <ol>
-          <li>L'actionneur appuie sur le bouton du token pour l'allumer</li>
-          <li>Les leds s'allument pour éclairer l'écran du token</li>
-          <li>La caméra fait la mise au point sur l'écran du token et prend une photo</li>
-          <li>Les leds s'éteignent</li>
-          <li>L'actionneur appuie sur le bouton du token pour l'éteindre</li>
-          <li>Le programme de reconnaissance traite la photo et renvoie la valeur du token</li>
+          <li>Votre scénario de test appelle l'API de Q-Bot, ou l'app compagnon détecte la notification 2FA sur le téléphone</li>
+          <li>Q-Bot rejoue le scénario enregistré pour cette étape</li>
+          <li>Chaque appui part vers le téléphone par ADB et arrive sur son écran physique</li>
+          <li>Les temps d'attente du scénario laissent à l'application le temps de répondre</li>
+          <li>L'étape 2FA se résout dans la véritable application, jamais dans un simulateur</li>
+          <li>Le test reprend exactement là où il s'était arrêté</li>
           </ol>
         </div>
       </div>

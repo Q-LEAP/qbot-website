@@ -172,7 +172,7 @@
       "name": "How does Q-Bot work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Q-Bot works with a mini-computer the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under Linux, coordinates all the processing required to recover the value of the token . When Q-Bot starts, its web server starts automatically. The latter is listening. The processing of a request always follows the following actions performed by the different components inside the Q-Bot : • The actuator presses on the button of the token to light it • The leds light up to illuminate the screen of the token • The camera focuses on the token screen and takes a picture • The leds go out • The actuator presses on button of the token to extinguish it • The token value recognition program processes the photo and returns the value"
+        "text": "Q-Bot works with a mini-computer the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under Linux, coordinates the web interface, the API and scenario execution . When Q-Bot starts, its web server starts automatically. The latter is listening. Handling a request always follows the same actions : • Your test scenario calls the Q-Bot API, or the companion app detects the 2FA notification on the device • Q-Bot replays the scenario saved for that step • Every tap is delivered to the device through ADB and lands on its physical screen • The wait times set in the scenario give the app time to respond • The 2FA step resolves in the genuine app, never in a simulator • The test continues from exactly where it left off"
       }
     },
     {
@@ -180,7 +180,7 @@
       "name": "What data is kept by Q-Bot and for what purpose?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Q-Bot requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. Q-Bot takes a picture of the token with the OTP value and with the help of a Computer Vision type image processing, recovers the OTP value. Before returning this value to the test case, the photo is deleted from the Q-Bot. This way, no files or information are stored on Q-Bot."
+        "text": "Q-Bot requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. The scenarios and their step images stay on the Q-Bot device: nothing is uploaded to a cloud, and no data leaves your environment."
       }
     },
     {
@@ -408,16 +408,16 @@
       <div class="faq-item" id="faq-q13">
         <button class="faq-item__question" aria-expanded="false">How does Q-Bot work?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
-          <p>Q-Bot works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates all the processing required to recover the value of the token</strong>.</p>
+          <p>Q-Bot works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates the web interface, the API and scenario execution</strong>.</p>
           <p>When Q-Bot starts, its web server starts automatically. The latter is listening.</p>
-          <p><strong>The processing of a request always follows the following actions performed by the different components inside the Q-Bot</strong>:</p>
+          <p><strong>Handling a request always follows the same actions</strong>:</p>
           <ol>
-          <li>The actuator presses on the button of the token to light it</li>
-          <li>The leds light up to illuminate the screen of the token</li>
-          <li>The camera focuses on the token screen and takes a picture</li>
-          <li>The leds go out</li>
-          <li>The actuator presses on button of the token to extinguish it</li>
-          <li>The token value recognition program processes the photo and returns the value</li>
+          <li>Your test scenario calls the Q-Bot API, or the companion app detects the 2FA notification on the device</li>
+          <li>Q-Bot replays the scenario saved for that step</li>
+          <li>Every tap is delivered to the device through ADB and lands on its physical screen</li>
+          <li>The wait times set in the scenario give the app time to respond</li>
+          <li>The 2FA step resolves in the genuine app, never in a simulator</li>
+          <li>The test continues from exactly where it left off</li>
           </ol>
         </div>
       </div>
@@ -425,7 +425,7 @@
       <div class="faq-item" id="faq-q14">
         <button class="faq-item__question" aria-expanded="false">What data is kept by Q-Bot and for what purpose?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" role="region">
-          <p>Q-Bot requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. Q-Bot takes a picture of the token with the OTP value and with the help of a Computer Vision type image processing, recovers the OTP value. Before returning this value to the test case, the photo is deleted from the Q-Bot. This way, no files or information are stored on Q-Bot.</p>
+          <p>Q-Bot requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. The scenarios and their step images stay on the Q-Bot device: nothing is uploaded to a cloud, and no data leaves your environment.</p>
         </div>
       </div>
 

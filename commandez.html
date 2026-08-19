@@ -302,29 +302,29 @@
           <div style="display:flex; gap:20px; align-items:flex-start;">
             <div style="width:48px; height:48px; background:var(--teal); color:var(--white); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">1</div>
             <div>
-              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Déclenchement</h3>
-              <p style="font-size:.9375rem; margin:0;">Votre script de test appelle l'API Q-Bot. L'actionneur appuie sur le bouton du dispositif 2FA (LuxTrust, smartphone, etc.).</p>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Construction</h3>
+              <p style="font-size:.9375rem; margin:0;">Vous construisez le scénario dans l'interface web&nbsp;: une capture de l'écran 2FA, des points d'appui numérotés, des temps d'attente. Aucun script à écrire.</p>
             </div>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
             <div style="width:48px; height:48px; background:var(--teal); color:var(--white); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">2</div>
             <div>
-              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Capture &amp; analyse</h3>
-              <p style="font-size:.9375rem; margin:0;">La caméra HD capture l'écran illuminé du dispositif. La vision par ordinateur extrait le code OTP en temps réel.</p>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Déclenchement</h3>
+              <p style="font-size:.9375rem; margin:0;">Votre scénario de test appelle l'API de Q-Bot. Ou l'app compagnon déclenche seule, dès qu'une notification 2FA arrive sur le téléphone.</p>
             </div>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
             <div style="width:48px; height:48px; background:var(--teal); color:var(--white); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">3</div>
             <div>
-              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Retour API</h3>
-              <p style="font-size:.9375rem; margin:0;">Le code OTP est renvoyé à votre script en moins de 10 secondes. Il est saisi automatiquement dans votre application.</p>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Exécution</h3>
+              <p style="font-size:.9375rem; margin:0;">Q-Bot rejoue le scénario sur le téléphone Android relié en USB&nbsp;: appuis, glissements et temps d'attente, par ADB.</p>
             </div>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
             <div style="width:48px; height:48px; background:var(--teal); color:var(--white); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">4</div>
             <div>
-              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Sécurité</h3>
-              <p style="font-size:.9375rem; margin:0;">La photo est supprimée immédiatement après traitement. Aucune donnée n'est conservée en dehors de Q-Bot.</p>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Reprise</h3>
+              <p style="font-size:.9375rem; margin:0;">La 2FA est validée, la chaîne est débloquée, le test reprend exactement là où il s'était arrêté.</p>
             </div>
           </div>
         </div>
