@@ -4298,3 +4298,14 @@ label > input[type="checkbox"] {
   .spec-item--api .spec-item__label { min-width: 0; }
   .code-block pre { padding: 18px; font-size: .75rem; }
 }
+
+/* Deux colonnes pour une liste de faits longue (l'éditeur de scénarios en compte
+   six) : en une seule colonne, six lignes à coche font un mur. */
+.api-facts--deux {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 44px;
+}
+@media (max-width: 760px) {
+  .api-facts--deux { grid-template-columns: 1fr; }
+}
