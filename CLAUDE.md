@@ -818,6 +818,27 @@ Au passage, les `role="list"` de `.specs__list` n'avaient aucun `role="listitem"
 sur quatre pages en ont reçu un. Même défaut que la liste d'outils de la page commande,
 corrigé au lot J.
 
+## L'app compagnon (2026-08-19, lot 4)
+
+Le produit a **deux chemins de déclenchement**, et le site n'en connaissait qu'un. L'app
+compagnon s'installe sur le téléphone sous test, surveille les notifications des applications
+2FA et déclenche le scénario correspondant dès qu'une arrive, sans aucun appel depuis la
+chaîne de tests. Les deux chemins coexistent dans le même environnement.
+
+Publié dans une section « Déclenchement » sur `caracteristiques` / `technical-specs`, deux
+cartes côte à côte : l'appel HTTP d'un côté, l'app de l'autre.
+
+**Et la troisième carte de l'acte épinglé disait le contraire de la vérité** : « Notification
+mobile : déclenchez MANUELLEMENT via notification mobile pour les cas de test
+semi-automatisés. » Le déclenchement est automatique, c'est tout son intérêt. Elle est devenue
+« App compagnon ». La zone de projecteur n°2 de la maquette montre justement la ligne
+« notification envoyée au téléphone », donc le pointage reste juste.
+
+La FAQ française décrivait déjà ce déclenchement automatique (question 12) : seule sa
+terminologie a été alignée sur « app compagnon », dans le texte visible et dans le JSON-LD.
+La FAQ anglaise n'a pas l'équivalent de cette question, asymétrie antérieure et non traitée
+ici.
+
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en
