@@ -3353,6 +3353,49 @@ a:focus-visible { border-radius: var(--radius-sm); }
   filter: none;
 }
 
+/* ── Variante « éventail » : la grille se range en arrivant ──
+   Les cartes d'une grille arrivent légèrement de travers, en alternance, et se
+   rangent. Un seul passage, à la révélation.
+
+   POURQUOI. Procédé relevé sur linearity.io, sur leur page produit : pendant un
+   épinglage, chaque carte d'une pile prend une rotation propre et un décalage de
+   profondeur, puis celle du dessus se détache. Mesuré dans leurs matrices :
+   rotations ALTERNÉES et CROISSANTES — 2,00° / 2,40° / 2,76° / 3,08° — et
+   translateZ à −20 / −40 / −60.
+
+   CE QUI DIFFÈRE DE CHEZ EUX, et c'est l'essentiel : aucun épinglage. L'accueil en
+   a déjà un (la séquence 3D) et `caracteristiques` un autre ; un troisième coûterait
+   des écrans de défilement pour un contenu qui tient dans une grille. L'éventail se
+   joue donc À L'ARRIVÉE, dans la révélation que ces cartes avaient déjà : c'est la
+   même durée, la même courbe, le même échelonnement — seule la pose de départ change.
+   La profondeur est rendue par l'échelle et non par un translateZ, ce qui évite
+   d'imposer une `perspective` au conteneur (et donc un contexte d'empilement de plus
+   sur chaque grille).
+
+   L'ANGLE EST DÉRIVÉ DE L'ÉCHELONNEMENT DÉJÀ POSÉ par le module 4 (`--stagger-i`,
+   l'index dans la grille, plafonné à 5) : alternance par la parité, amplitude
+   croissante de 1,6° à 3,0°, exactement le motif relevé. Rien de nouveau à écrire en
+   JavaScript, et l'angle repart de zéro à chaque grille puisque l'index est calculé
+   par parent.
+
+   L'ÉTAT D'ARRIVÉE EST IDENTIQUE À CELUI DE LA VARIANTE « CARTE » (`transform: none`)
+   : l'inclinaison au pointeur du module 10 écrit un `transform` EN LIGNE sur
+   `.feature-card`, qui gagne donc sur cette règle, et le relâchement le remet à
+   vide. L'éventail ne peut pas interférer avec le survol. */
+.reveal--fan {
+  --fan-sign: -1;
+  transform:
+    translateY(30px)
+    rotate(calc(var(--fan-sign) * (1.6deg + var(--stagger-i, 0) * 0.28deg)))
+    scale(0.955);
+  filter: blur(4px);
+}
+.reveal--fan:nth-child(even) { --fan-sign: 1; }
+.reveal--fan.is-visible {
+  transform: none;
+  filter: none;
+}
+
 /* ── Variante « groupe » : le conteneur ne bouge pas, ses enfants s'enchaînent ──
    Utilisée sur les en-têtes de section et les colonnes de texte : label puis
    titre puis paragraphe, comme une phrase qui se compose. Un reveal du bloc
@@ -3433,6 +3476,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .reveal--plain,
   .reveal--media,
   .reveal--card,
+  .reveal--fan,
   .reveal--group,
   .reveal--group > * {
     opacity: 1;

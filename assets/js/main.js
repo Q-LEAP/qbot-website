@@ -195,12 +195,26 @@ if ('IntersectionObserver' in window) {
          arrivent en cascade. `:not()` écarte la colonne image du même grid. */
       '.intro__grid > div:not(.intro__image)',
     ]],
+    /* La variante « éventail » doit précéder « carte » : un élément ne prend que la
+       première variante qui le désigne. Réservée aux grilles à plusieurs colonnes —
+       les quatre atouts (accueil, caracteristiques) et les six garanties
+       (commandez). Écartés à dessein : les listes verticales (`.spec-item`,
+       `.faq-item`, `.product-card`, `.contact-info__item`), où une rotation ne se
+       lirait pas comme un éventail mais comme des lignes de guingois ; `.evo-card`,
+       dont la pastille doit atterrir sur le rail de la section au pixel près ; et
+       `.blog-card`, qui n'est que deux cartes.
+       `.guarantee-item` n'avait AUCUNE révélation jusqu'ici — ni elle, ni sa grille :
+       six cartes arrivaient sans entrée alors que toutes les autres grilles du site
+       en ont une. Elles la reçoivent ici. */
+    ['fan', [
+      '.feature-card',
+      '.guarantee-item',
+    ]],
     ['card', [
       /* Les titres de section d'un article arrivent un à un. Le corps entier est
          déjà une révélation « plain » — un seul fondu pour plusieurs milliers de
          pixels — donc rien ne marquait le passage d'une partie à l'autre. */
       '.article-body h2',
-      '.feature-card',
       '.faq-item',
       '.timeline-item',
       '.evo-card',
