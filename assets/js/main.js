@@ -476,29 +476,42 @@ backToTop.addEventListener('click', () => {
     });
   }, { passive: true });
 
-  /* ── Bouton Copier sur les blocs <pre> ── */
-  document.querySelectorAll('.article-body pre').forEach(function (pre) {
-    if (!navigator.clipboard) return;
-    var copyBtn = document.createElement('button');
-    copyBtn.className = 'code-copy-btn';
-    copyBtn.textContent = FR ? 'Copier' : 'Copy';
-    copyBtn.setAttribute('aria-label', FR ? 'Copier le code' : 'Copy code');
-    copyBtn.addEventListener('click', function () {
-      var code = pre.querySelector('code');
-      var text = (code || pre).innerText || (code || pre).textContent || '';
-      navigator.clipboard.writeText(text).then(function () {
-        copyBtn.textContent = FR ? 'Copié !' : 'Copied!';
-        copyBtn.classList.add('copied');
-        setTimeout(function () {
-          copyBtn.textContent = FR ? 'Copier' : 'Copy';
-          copyBtn.classList.remove('copied');
-        }, 2000);
-      }).catch(function () { /* silencieux si refusé */ });
-    });
-    pre.style.position = 'relative';
-    pre.appendChild(copyBtn);
-  });
 }());
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     7 bis. BOUTON COPIER SUR LES BLOCS DE CODE
+     ══════════════════════════════════════════════════════════════════════════
+     Sorti du module 7, qui s'arrête net s'il n'y a pas d'article sur la page
+     (`if (!articleBody) return;`) : le temps de lecture et la barre de
+     progression n'ont pas de sens ailleurs, mais un bloc de code, si. La section
+     API de la page Caractéristiques en porte un, et un exemple d'appel qu'on ne
+     peut pas copier ne sert à rien. Le défaut ne se voyait pas : le bouton
+     n'apparaissait simplement pas, sans erreur.                                 */
+  (function () {
+    if (!navigator.clipboard) return;
+    var FR = document.documentElement.lang !== 'en';
+    document.querySelectorAll('.article-body pre, .code-block pre').forEach(function (pre) {
+      var copyBtn = document.createElement('button');
+      copyBtn.className = 'code-copy-btn';
+      copyBtn.textContent = FR ? 'Copier' : 'Copy';
+      copyBtn.setAttribute('aria-label', FR ? 'Copier le code' : 'Copy code');
+      copyBtn.addEventListener('click', function () {
+        var code = pre.querySelector('code');
+        var text = (code || pre).innerText || (code || pre).textContent || '';
+        navigator.clipboard.writeText(text).then(function () {
+          copyBtn.textContent = FR ? 'Copié !' : 'Copied!';
+          copyBtn.classList.add('copied');
+          setTimeout(function () {
+            copyBtn.textContent = FR ? 'Copier' : 'Copy';
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        }).catch(function () { /* silencieux si refusé */ });
+      });
+      pre.style.position = 'relative';
+      pre.appendChild(copyBtn);
+    });
+  }());
+
 
 
 /* ════════════════════════════════════════

@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=2026.6-08-29b">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026.7-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -205,14 +205,14 @@
         <span class="section-label">Technical sheet</span>
         <h2 class="section-title" id="specs-main-title">Technical specifications</h2>
         <div class="specs__list" role="list">
-          <div class="spec-item"><span class="spec-item__label">Processor</span><span class="spec-item__value">Raspberry Pi 5, Cortex A76 (ARM v8) 64-bit</span></div>
-          <div class="spec-item"><span class="spec-item__label">Memory</span><span class="spec-item__value">4 GB RAM</span></div>
-          <div class="spec-item"><span class="spec-item__label">Wi-Fi</span><span class="spec-item__value">IEEE 802.11ac (dual-band Wi-Fi 5)</span></div>
-          <div class="spec-item"><span class="spec-item__label">Bluetooth</span><span class="spec-item__value">Bluetooth 5.0 BLE</span></div>
-          <div class="spec-item"><span class="spec-item__label">Ethernet</span><span class="spec-item__value">Gigabit Ethernet (1 Gbit/s)</span></div>
-          <div class="spec-item"><span class="spec-item__label">OS</span><span class="spec-item__value">Linux (Raspberry Pi OS)</span></div>
-          <div class="spec-item"><span class="spec-item__label">Dimensions</span><span class="spec-item__value">40 cm × 24 cm × 15 cm (fits on an A3 sheet)</span></div>
-          <div class="spec-item"><span class="spec-item__label">Manufacturing</span><span class="spec-item__value">Made in Luxembourg, at Q-Leap in Bertrange</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Processor</span><span class="spec-item__value">Raspberry Pi 5, Cortex A76 (ARM v8) 64-bit</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Memory</span><span class="spec-item__value">4 GB RAM</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Wi-Fi</span><span class="spec-item__value">IEEE 802.11ac (dual-band Wi-Fi 5)</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Bluetooth</span><span class="spec-item__value">Bluetooth 5.0 BLE</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Ethernet</span><span class="spec-item__value">Gigabit Ethernet (1 Gbit/s)</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">OS</span><span class="spec-item__value">Linux (Raspberry Pi OS)</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Dimensions</span><span class="spec-item__value">40 cm × 24 cm × 15 cm (fits on an A3 sheet)</span></div>
+          <div class="spec-item" role="listitem"><span class="spec-item__label">Manufacturing</span><span class="spec-item__value">Made in Luxembourg, at Q-Leap in Bertrange</span></div>
         </div>
       </div>
       <div class="specs__image">
@@ -251,7 +251,7 @@
           </div>
           <div class="spec-item spec-item--card pin-modes__card" data-mode="1">
             <span class="spec-item__label">REST API</span>
-            <span class="spec-item__value">Trigger Q-Bot directly from your test scripts: Selenium, Cypress, Appium, Playwright, Robot Framework and many others.</span>
+            <span class="spec-item__value">Three endpoints, called straight from your test scripts. No SDK, no agent to install, no API key to manage.</span>
           </div>
           <div class="spec-item spec-item--card pin-modes__card" data-mode="2">
             <span class="spec-item__label">Mobile notification</span>
@@ -272,6 +272,92 @@
    </div>
   </div>
 </section>
+
+<!-- ======= API REST ======= -->
+<section class="section" aria-labelledby="api-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">API REST</span>
+      <h2 class="section-title" id="api-title">One HTTP call. Any pipeline. Any framework.</h2>
+      <p class="section-subtitle">Every scenario in Q-Bot is accessible via a simple REST API. No SDK, no proprietary plugin, no agent to install in your CI environment.</p>
+    </div>
+
+    <div class="split-2" style="align-items:start; gap:48px;">
+      <div>
+        <ul class="api-facts">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Self-hosted, runs on your local network</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>No authentication tokens or API keys required</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Compatible with Selenium, Cypress, Playwright, Robot Framework, JUnit, shell scripts, and more</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Integration takes under an hour</span></li>
+        </ul>
+      </div>
+      <div class="code-block">
+        <pre><code># Selenium (Python)
+import requests
+
+# Trigger 2FA scenario
+requests.get(
+  &quot;http://q-bot.local:8000&quot;
+  &quot;/scenarios/42/execute&quot;
+)
+
+# Test continues normally
+driver.find_element(
+  By.ID, &quot;dashboard&quot;
+).is_displayed()</code></pre>
+      </div>
+    </div>
+
+    <h3 style="margin:52px 0 18px;">Three endpoints</h3>
+    <div class="specs__list" role="list" aria-label="Three endpoints">
+          <div class="spec-item spec-item--api" role="listitem">
+            <span class="spec-item__label">GET /scenarios/:id/execute</span>
+            <span class="spec-item__value">Run a saved scenario on the connected device.</span>
+          </div>
+          <div class="spec-item spec-item--api" role="listitem">
+            <span class="spec-item__label">GET /get-luxtrust-otp</span>
+            <span class="spec-item__value">Return the current OTP from the LuxTrust app.</span>
+          </div>
+          <div class="spec-item spec-item--api" role="listitem">
+            <span class="spec-item__label">POST /display-image</span>
+            <span class="spec-item__value">Display a QR code on Q-Bot's screen for the Android device to scan.</span>
+          </div>
+    </div>
+
+    <h3 style="margin:48px 0 18px;">How to call it, tool by tool</h3>
+    <div class="specs__list" role="list" aria-label="How to call it, tool by tool">
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Selenium (Python / Java)</span>
+            <span class="spec-item__value"><code>requests</code> or <code>HttpClient</code> call before the assertion</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Cypress</span>
+            <span class="spec-item__value"><code>cy.request()</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Playwright</span>
+            <span class="spec-item__value"><code>request.get()</code> or <code>fetch()</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Robot Framework</span>
+            <span class="spec-item__value"><code>RequestsLibrary</code> keyword</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">JUnit / TestNG</span>
+            <span class="spec-item__value">RestAssured or Java <code>HttpClient</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Shell / Bash</span>
+            <span class="spec-item__value"><code>curl</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Any CI/CD pipeline</span>
+            <span class="spec-item__value">An HTTP step, a <code>curl</code> command or a custom script</span>
+          </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ======= PRIVACY ======= -->
 <section class="section" aria-labelledby="privacy-title">
@@ -426,6 +512,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=2026.4-08-23" defer></script>
+<script src="../assets/js/main.js?v=2026.7-08-23" defer></script>
 </body>
 </html>

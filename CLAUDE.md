@@ -791,6 +791,33 @@ leur `headline` JSON-LD et leurs fils de navigation. L'un d'eux annonce même, e
 que les smartcard ». Reprendre tout cela n'est plus une correction de compatibilité mais la
 réécriture de six publications datées. À arbitrer avec le client avant d'y toucher.
 
+## L'API sur la page Caractéristiques (2026-08-19, lot 3)
+
+Les trois points d'entrée du produit sont désormais publiés, dans une section propre placée
+juste après l'acte épinglé « Interface & API » : `GET /scenarios/:id/execute`,
+`GET /get-luxtrust-otp`, `POST /display-image`. Avec un exemple d'appel Selenium/Python, les
+quatre faits qui comptent (auto-hébergé, aucune clé, compatible HTTP, moins d'une heure
+d'intégration) et le tableau d'appel par outil, sept lignes, reprises de leur page Use Cases.
+
+Trois choses à savoir avant d'y toucher :
+
+- **l'acte épinglé n'accepte QUE trois cartes.** `data-mode="0|1|2"`, trois zones de
+  projecteur en CSS et `['.pin-modes', '--pin-p', 3]` dans le moteur : ajouter une quatrième
+  carte demande de toucher les trois. C'est pourquoi l'API a sa propre section au lieu d'une
+  carte de plus ;
+- **le libellé d'une ligne de fiche est en capitales espacées**, ce qui est illisible pour une
+  URL (`GET /SCENARIOS/:ID/EXECUTE`). La variante `.spec-item--api` le remet en minuscules et
+  en chasse fixe ;
+- **le bouton « Copier » du module 7 n'avait jamais rien à copier.** Le module s'arrête net
+  s'il n'y a pas de `.article-body` sur la page, et aucun des six articles ne contient de
+  bloc de code : la fonction était morte depuis toujours, sans erreur ni trace. Elle est
+  sortie dans un module 7 bis qui vise `.article-body pre, .code-block pre`, et la section
+  API est son premier usage réel.
+
+Au passage, les `role="list"` de `.specs__list` n'avaient aucun `role="listitem"` : 22 lignes
+sur quatre pages en ont reçu un. Même défaut que la liste d'outils de la page commande,
+corrigé au lot J.
+
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en

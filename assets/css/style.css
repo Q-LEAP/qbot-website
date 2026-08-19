@@ -4223,3 +4223,78 @@ label > input[type="checkbox"] {
 @media (max-width: 520px) {
   .article-note { padding: 12px 14px; font-size: 0.875rem; }
 }
+
+/* ══ SECTION API ═══════════════════════════════════════════════════════════
+   Bloc de code hors article, liste de faits à coches, et lignes de fiche dont
+   le libellé est un point d'entrée HTTP.
+
+   Le bloc de code reprend l'apparence de `.article-body pre` plutôt que d'en
+   inventer une seconde : même fond, même rayon, même graisse. Il est en
+   `position: relative` parce que le bouton « Copier » du module 7 se pose en
+   absolu dedans, et ce module vise désormais `.code-block pre` en plus des
+   articles.
+
+   Le libellé d'une ligne de fiche est normalement en capitales espacées, ce qui
+   est illisible pour une URL (`GET /SCENARIOS/:ID/EXECUTE`). La variante `--api`
+   le remet en minuscules, en police à chasse fixe, et lui laisse la place d'un
+   chemin complet. */
+.code-block {
+  position: relative;
+  align-self: start;
+}
+
+.code-block pre {
+  background: #141414;
+  color: #E6E7E8;
+  padding: 24px;
+  border: 1px solid #2B2B2B;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  margin: 0;
+  font-size: .8125rem;
+  line-height: 1.7;
+}
+
+.code-block pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-family: 'Courier New', monospace;
+}
+
+.api-facts {
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.api-facts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.api-facts svg {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: var(--teal);
+}
+
+.spec-item--api .spec-item__label {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8125rem;
+  color: var(--teal-text);
+  min-width: 218px;
+}
+
+@media (max-width: 720px) {
+  .spec-item--api .spec-item__label { min-width: 0; }
+  .code-block pre { padding: 18px; font-size: .75rem; }
+}

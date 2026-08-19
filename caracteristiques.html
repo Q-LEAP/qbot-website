@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026.6-08-29b">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026.7-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -217,35 +217,35 @@
         <span class="section-label">Fiche technique</span>
         <h2 class="section-title" id="specs-main-title">Spécifications techniques</h2>
         <div class="specs__list" role="list" aria-label="Spécifications">
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Processeur</span>
             <span class="spec-item__value">Raspberry Pi 5, Cortex A76 (ARM v8) 64-bit</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Mémoire</span>
             <span class="spec-item__value">4 Go RAM</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Wi-Fi</span>
             <span class="spec-item__value">IEEE 802.11ac (Wi-Fi 5 dual-band)</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Bluetooth</span>
             <span class="spec-item__value">Bluetooth 5.0 BLE</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Ethernet</span>
             <span class="spec-item__value">Gigabit Ethernet (1 Gbit/s)</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Système</span>
             <span class="spec-item__value">Linux (Raspberry Pi OS)</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Dimensions</span>
             <span class="spec-item__value">40 cm × 24 cm × 15 cm (tient sur une feuille A3)</span>
           </div>
-          <div class="spec-item">
+          <div class="spec-item" role="listitem">
             <span class="spec-item__label">Fabrication</span>
             <span class="spec-item__value">Made in Luxembourg, chez Q-Leap à Bertrange</span>
           </div>
@@ -292,7 +292,7 @@
           </div>
           <div class="spec-item spec-item--card pin-modes__card" data-mode="1">
             <span class="spec-item__label">API REST</span>
-            <span class="spec-item__value">Déclenchez Q-Bot directement depuis vos scripts de test : Selenium, Cypress, Appium, Playwright, Robot Framework et bien d'autres.</span>
+            <span class="spec-item__value">Trois points d'entrée, appelés depuis vos scripts de test. Aucun SDK, aucun agent à installer, aucune clé à gérer.</span>
           </div>
           <div class="spec-item spec-item--card pin-modes__card" data-mode="2">
             <span class="spec-item__label">Notification mobile</span>
@@ -313,6 +313,92 @@
    </div>
   </div>
 </section>
+
+<!-- ======= API REST ======= -->
+<section class="section" aria-labelledby="api-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">API REST</span>
+      <h2 class="section-title" id="api-title">Un appel HTTP, et n'importe quelle chaîne de tests</h2>
+      <p class="section-subtitle">Chaque scénario enregistré dans Q-Bot est accessible par une API REST. Aucun SDK, aucun greffon propriétaire, aucun agent à installer dans votre intégration continue.</p>
+    </div>
+
+    <div class="split-2" style="align-items:start; gap:48px;">
+      <div>
+        <ul class="api-facts">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Auto-hébergé&nbsp;: tout reste sur votre réseau local</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Aucun jeton ni clé d'API à gérer</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Compatible avec Selenium, Cypress, Playwright, Robot Framework, JUnit et de simples scripts shell</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>L'intégration prend moins d'une heure</span></li>
+        </ul>
+      </div>
+      <div class="code-block">
+        <pre><code># Selenium (Python)
+import requests
+
+# On déclenche le scénario 2FA
+requests.get(
+  &quot;http://q-bot.local:8000&quot;
+  &quot;/scenarios/42/execute&quot;
+)
+
+# Le test reprend normalement
+driver.find_element(
+  By.ID, &quot;dashboard&quot;
+).is_displayed()</code></pre>
+      </div>
+    </div>
+
+    <h3 style="margin:52px 0 18px;">Trois points d'entrée</h3>
+    <div class="specs__list" role="list" aria-label="Trois points d'entrée">
+          <div class="spec-item spec-item--api" role="listitem">
+            <span class="spec-item__label">GET /scenarios/:id/execute</span>
+            <span class="spec-item__value">Exécute un scénario enregistré sur le téléphone relié.</span>
+          </div>
+          <div class="spec-item spec-item--api" role="listitem">
+            <span class="spec-item__label">GET /get-luxtrust-otp</span>
+            <span class="spec-item__value">Renvoie le code à usage unique affiché par l'app LuxTrust.</span>
+          </div>
+          <div class="spec-item spec-item--api" role="listitem">
+            <span class="spec-item__label">POST /display-image</span>
+            <span class="spec-item__value">Affiche un QR code sur l'écran du boîtier, pour que le téléphone le scanne.</span>
+          </div>
+    </div>
+
+    <h3 style="margin:48px 0 18px;">L'appel, selon votre outil</h3>
+    <div class="specs__list" role="list" aria-label="L'appel, selon votre outil">
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Selenium (Python / Java)</span>
+            <span class="spec-item__value">Appel <code>requests</code> ou <code>HttpClient</code> avant l'assertion</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Cypress</span>
+            <span class="spec-item__value"><code>cy.request()</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Playwright</span>
+            <span class="spec-item__value"><code>request.get()</code> ou <code>fetch()</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Robot Framework</span>
+            <span class="spec-item__value">Mot-clé <code>RequestsLibrary</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">JUnit / TestNG</span>
+            <span class="spec-item__value">RestAssured ou le <code>HttpClient</code> de Java</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Shell / Bash</span>
+            <span class="spec-item__value"><code>curl</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Toute chaîne CI/CD</span>
+            <span class="spec-item__value">Une étape HTTP, une commande <code>curl</code> ou un script maison</span>
+          </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- ======= CONFIDENTIALITÉ ======= -->
 <section class="section" aria-labelledby="privacy-title">
@@ -468,6 +554,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2026.4-08-23" defer></script>
+<script src="assets/js/main.js?v=2026.7-08-23" defer></script>
 </body>
 </html>
