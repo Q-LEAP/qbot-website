@@ -555,6 +555,12 @@ backToTop.addEventListener('click', () => {
     ['.timeline', '--tl-p'],
     ['.pin-modes', '--pin-p', 3],
     ['.faq-layout', '--faq-p'],
+    /* Le tracé de l'accueil : un segment par section, chacun avec sa propre
+       progression, ce qui place le front du remplissage là où se lit la page. Le
+       sélecteur est porté par `.page-home`, donc seules les deux pages d'accueil
+       sont concernées — ailleurs, `querySelectorAll` ne trouve rien et le tableau
+       ne coûte pas une écriture. */
+    ['.page-home main > .section, .page-home main > .newsletter', '--rail-p'],
     /* `.evolution__rail` était ici : son trait teal se remplissait au scroll.
        Retiré — ce trait indique où en est le PRODUIT (il s'arrête sur le point
        « Génération actuelle »), pas où en est la lecture ; scrubbé, il
