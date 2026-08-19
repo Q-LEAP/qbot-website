@@ -626,11 +626,26 @@
       var face = [ph(-PH.r, PH.u0), ph(PH.r, PH.u0), ph(PH.r, PH.u1), ph(-PH.r, PH.u1)];
       var dockPt = proj(DOCK);
       put(node, { cx: dockPt[0].toFixed(1), cy: dockPt[1].toFixed(1) });
-      /* Ligne de rappel : elle part du sommet de la silhouette et s'écarte du
-         centre — donc jamais par-dessus le produit, quel que soit l'angle. */
-      var top = proj(face[2]), topL = proj(face[3]);
-      if (topL[1] < top[1]) top = topL;
-      var away = top[0] >= midHi[0] ? 1 : -1;
+      /* Ligne de rappel : TOUJOURS vers la gauche, et depuis le coin haut gauche
+         de la silhouette. Deux choix figés, et c'est tout l'objet de ce bloc.
+         La version d'avant prenait « celui des deux coins hauts qui se projette le
+         plus haut », puis partait « du côté opposé au centre du volume ». Les deux
+         critères basculent pendant le balayage de caméra : mesuré image par image
+         sur un défilement continu, le libellé sautait de `end` x=245 à `start`
+         x=543 entre DEUX IMAGES, à pleine opacité — 298 unités d'un coup, au
+         milieu du pas. Une annotation qui change de côté sous l'œil n'annote plus.
+         POURQUOI LA GAUCHE. À ce cadrage la silhouette du téléphone est à 61
+         unités du flanc gauche de la coque contre 102 du flanc droit : c'est par
+         la gauche que le trait sort le plus court, donc le seul côté où le libellé
+         se pose hors du produit. Verrouiller le côté sans changer le point
+         d'accroche ne suffisait pas — l'ancien point est le coin haut DROIT, et
+         mesuré ainsi le libellé mordait la coque sur les 151 images du pas.
+         `face[3]` est le coin (−r, u1) du téléphone : son coin haut du côté des X
+         négatifs. La séquence ne s'écarte jamais de plus de 42° de la face, donc
+         ce coin reste à gauche à l'écran d'un bout à l'autre — le point d'accroche
+         est stable par construction, pas par comparaison. */
+      var top = proj(face[3]);
+      var away = -1;
       var lx = top[0] + away * 34, ly = top[1] - 30;
       lead.setAttribute('d', 'M' + top[0].toFixed(1) + ' ' + top[1].toFixed(1) +
                              'L' + lx.toFixed(1) + ' ' + ly.toFixed(1) +
