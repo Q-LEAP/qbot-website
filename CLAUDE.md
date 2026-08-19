@@ -864,6 +864,45 @@ Détail de forme : les lignes de fiche de `en/technical-specs.html` sont écrite
 seule ligne de source**, contrairement à celles de `caracteristiques.html`. Un motif de
 remplacement multi-lignes échoue silencieusement sur l'une des deux pages.
 
+## Proposition M : les cas d'usage arrivent, et leur solution se trace (2026-08-19)
+
+Audit demandé après la reprise de contenu : les blocs ajoutés n'avaient pour la plupart
+aucune entrée. Mesuré sur les pages enrichies — 5 cas d'usage sans rien, 10 des 15 faits à
+coche sans rien, le bloc de code sans rien, la note d'article sans rien, contre 37 éléments
+déjà révélés. Ce lot traite le plus visible : cinq blocs qui apparaissaient d'un coup sur la
+page où l'on décide d'acheter.
+
+Deux temps. Le bloc monte (variante `card`, échelonnée), puis **le liseré teal du volet
+« Avec Q-Bot » se dessine** 0,28 s plus tard, quand le bloc est posé. C'est le procédé n°4 de
+linearity.io (un tracé qui se dessine au défilement, 7 139 px chez eux en
+`stroke-dashoffset`) transposé à l'échelle d'un bloc, et ici il dit quelque chose : la
+réponse arrive après le problème.
+
+Trois points à ne pas défaire :
+
+- **le liseré est un pseudo-élément, pas une bordure** : une bordure ne se met pas à
+  l'échelle ;
+- **son retard suit `--reveal-delay`**, donc l'échelonnement du bloc : le trait se dessine
+  après que SON bloc s'est posé, pas après le premier de la pile. Mesuré : 0,28 / 0,355 /
+  0,43 s ;
+- **l'état au repos est le liseré entier.** L'animation n'existe que sous `.is-visible`.
+  Vérifié sans JavaScript et en mouvement réduit : opacité 1, trait à pleine hauteur, aucune
+  animation. C'est la règle apprise sur le trait de la section évolution, qui restait
+  invisible faute de valeur par défaut.
+
+**Trois temps ont été écartés** : faire en plus arriver les deux volets en cascade demande la
+variante « groupe », qui immobilise le conteneur, et le module 4 écarte justement un élément
+de groupe dont le parent est déjà révélé (il serait animé deux fois et repartirait de zéro au
+milieu de sa propre arrivée).
+
+Au passage, la note en tête d'article reçoit la variante `plain` : elle n'avait pas d'entrée
+non plus.
+
+**Reste proposé et non fait** : les coches qui se dessinent (procédé identique, à 16 px) et le
+bloc de code en variante `media`. Pour ce dernier, attention au passage de lumière : c'est un
+`::after` qui se translate, et il s'échappe sans `overflow: hidden` — c'est ce qui avait causé
+341 px de débordement horizontal sur les figures d'article.
+
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en

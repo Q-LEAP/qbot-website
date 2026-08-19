@@ -4354,7 +4354,48 @@ label > input[type="checkbox"] {
   margin-bottom: 7px;
 }
 
-.usecase__part--sol { border-left: 2px solid var(--teal); padding-left: 16px; }
+/* Le liseré du volet « solution » est un pseudo-élément et non une bordure, parce
+   qu'il se DESSINE à l'arrivée du bloc : une bordure ne se met pas à l'échelle.
+
+   POURQUOI CE GESTE. Procédé n°4 relevé sur linearity.io, où un tracé de 7 139 px
+   se dessine au défilement en `stroke-dashoffset`. Ici à l'échelle d'un bloc, et
+   surtout il dit quelque chose : la réponse arrive après le problème. Le
+   vocabulaire existe déjà dans cette feuille (les marques de titre des articles et
+   le rail de la section évolution se dessinent en `scaleY`).
+
+   DEUX TEMPS ET PAS TROIS. Le bloc monte, puis le liseré se trace 0,28 s plus tard,
+   quand le bloc est posé. Faire en plus arriver les deux volets en cascade
+   demanderait la variante « groupe », qui immobilise le conteneur : le dépôt note
+   qu'un élément de groupe dont le parent est lui-même révélé se retrouve animé deux
+   fois et repart de zéro au milieu de sa propre arrivée. Sur cinq blocs empilés,
+   trois temps feraient de toute façon du bruit.
+
+   L'ÉTAT AU REPOS EST LE LISERÉ ENTIER. L'animation n'est ajoutée que par
+   `.is-visible`, donc sans JavaScript, sans révélation ou en mouvement réduit, le
+   trait est simplement là. C'est la règle du dépôt, apprise sur le trait de la
+   section évolution qui restait invisible. */
+.usecase__part--sol { position: relative; padding-left: 16px; }
+
+.usecase__part--sol::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+}
+
+@keyframes usecaseRule { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* Le retard suit l'échelonnement du bloc : le trait se dessine toujours juste après
+   que SON bloc s'est posé, pas après le premier de la pile. */
+.usecase.is-visible .usecase__part--sol::before {
+  transform-origin: top center;
+  animation: usecaseRule 0.6s var(--ease-out) calc(var(--reveal-delay, 0s) + 0.28s) both;
+}
+
 .usecase__part--sol .usecase__lab { color: var(--teal-text); }
 .usecase p { font-size: 0.9375rem; margin: 0; }
 .usecase code { font-family: 'Courier New', monospace; font-size: 0.875em; color: var(--teal-text); }

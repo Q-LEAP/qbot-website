@@ -210,6 +210,9 @@ if ('IntersectionObserver' in window) {
       '.feature-card',
       '.guarantee-item',
     ]],
+    /* La note en tête d'article : montée et fondu, sans flou. Elle est courte et
+       posée haut dans la page, un flou n'y ajouterait rien. */
+    ['plain', ['.article-note']],
     ['card', [
       /* Les titres de section d'un article arrivent un à un. Le corps entier est
          déjà une révélation « plain » — un seul fondu pour plusieurs milliers de
@@ -227,6 +230,11 @@ if ('IntersectionObserver' in window) {
       '.spec-item',
       '.contact-info__item',
       '.pricing-card',
+      /* Les cinq cas d'usage de la page commande n'avaient aucune entrée, ni eux ni
+         leurs volets : cinq blocs qui apparaissent d'un coup sur la page où l'on
+         décide d'acheter. Le liseré teal de leur volet « solution » se dessine
+         ensuite, cf. la feuille de style. */
+      '.usecase',
       /* Ajouté pour le liseré vivant : il se déclenche sur .is-visible, que
          seul le système de révélation pose. Effet de bord assumé et
          cohérent — le bloc prend l'arrivée standard des cartes du site. */
