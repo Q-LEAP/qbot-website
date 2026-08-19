@@ -3612,23 +3612,18 @@ label > input[type="checkbox"] {
               width 0.65s var(--ease-out), height 0.65s var(--ease-out),
               opacity 0.4s var(--ease-out);
 }
-/* Le projecteur n'existe que s'il y a un acte. `data-panel` est écrit par le module
-   9, qui ne tourne pas en mouvement réduit : son absence vaut « pas d'acte », et
-   l'image reste entière et pleinement éclairée. C'est la règle retenue après le
-   viewer mort de la proposition E — l'état de repos du HTML doit être l'état actif. */
-.pin-modes[data-panel] .pin-modes__zoom::after { opacity: 1; }
 
-/* Une carte inactive s'efface, elle ne disparaît pas : les trois restent
-   lisibles, c'est la hiérarchie qui bouge.
-   L'estompe porte sur le CONTENU de la carte, pas sur la carte : celle-ci est
-   déjà une cible du système de révélation (`.reveal--card`), dont la règle
-   `.is-visible { opacity: 1 }` est plus spécifique et gagnait — mesuré, la carte
-   restait à 1. Viser les enfants évite le conflit au lieu de surenchérir en
-   spécificité. */
-.pin-modes__card > * {
-  opacity: 0.45;
-  transition: opacity 0.45s var(--ease-out, ease);
-}
+/* L'ÉTAT DE BASE EST L'ÉTAT LISIBLE : les trois cartes pleinement visibles, aucun
+   projecteur. L'acte n'AJOUTE l'estompe que là où il a la place de se jouer.
+   L'inverse avait été écrit d'abord — estompe par défaut, annulée sous 900 px — et
+   c'était faux : entre 901 et 1119 px, ou sur une fenêtre courte, aucune des deux
+   règles ne s'appliquait et les cartes restaient éteintes sans que rien ne les
+   rallume. Même leçon que le viewer mort de la proposition E : l'état de repos doit
+   être l'état actif.
+   Quand l'estompe s'applique, elle porte sur le CONTENU de la carte et non sur la
+   carte : celle-ci est déjà une cible du système de révélation, dont la règle
+   `.is-visible { opacity: 1 }` est plus spécifique et gagnait. */
+.pin-modes__card > * { opacity: 1; }
 .pin-modes__card::before {
   content: '';
   position: absolute;
@@ -3641,7 +3636,25 @@ label > input[type="checkbox"] {
 }
 .pin-modes .spec-item--card { position: relative; }
 
-@media (min-width: 901px) {
+/* ── La porte de l'acte : DEUX dimensions, et des chiffres, pas une intuition ──
+   Défaut signalé par le client : « le cadre Notification mobile n'est pas entier ».
+   Mesuré : la scène épinglée est aussi haute que son contenu plus ses marges, et
+   quand ce total dépasse la fenêtre, le bas sort de l'écran — définitivement, car
+   une scène collée ne défile pas. Sur une fenêtre de 700 px la troisième carte
+   était coupée de 16 px.
+
+   Hauteur de contenu relevée selon la largeur (français, le plus long des deux) :
+       901 px de large → 698 px      1120 px → 582 px
+       960 px          → 698 px      1280 px → 588 px
+      1024 px          → 652 px      1440 px → 588 px
+   La colonne de texte est d'autant plus haute que la fenêtre est étroite. Plutôt
+   qu'un seuil unique calé sur le pire cas — qui aurait privé de l'acte un portable
+   de 1440 × 780 —, l'acte ne se joue qu'à partir de 1120 px de large, où le contenu
+   se stabilise à 588 px : avec des marges de 5vh il faut alors 660 px de fenêtre, et
+   la porte est posée à 720 px. Reste 60 px de réserve si le texte s'allonge.
+   Entre 901 et 1119 px, ou sur une fenêtre plus courte, la section reprend sa mise
+   en page normale — lisible, simplement sans acte. */
+@media (min-width: 1120px) and (min-height: 720px) {
   /* Trois écrans de course : un par mode, plus la marge d'arrivée et de sortie
      que ménagent les bornes resserrées du module 9. */
   .pin-modes { padding: 0; }
@@ -3652,11 +3665,15 @@ label > input[type="checkbox"] {
     min-height: 100svh;
     display: flex;
     align-items: center;
-    padding: var(--section-py) 0;
+    /* Marges élastiques : à marges fixes de 96 px il fallait 780 px de fenêtre. */
+    padding: clamp(28px, 5vh, 72px) 0;
   }
+  .pin-modes__card > * { opacity: 0.45; transition: opacity 0.45s var(--ease-out, ease); }
+  .pin-modes[data-panel] .pin-modes__zoom::after { opacity: 1; }
   .pin-modes[data-panel="0"] .pin-modes__card[data-mode="0"] > *,
   .pin-modes[data-panel="1"] .pin-modes__card[data-mode="1"] > *,
   .pin-modes[data-panel="2"] .pin-modes__card[data-mode="2"] > * { opacity: 1; }
+  .pin-modes__card::before { display: block; }
   .pin-modes[data-panel="0"] .pin-modes__card[data-mode="0"]::before,
   .pin-modes[data-panel="1"] .pin-modes__card[data-mode="1"]::before,
   .pin-modes[data-panel="2"] .pin-modes__card[data-mode="2"]::before { transform: scaleY(1); }
@@ -3680,18 +3697,14 @@ label > input[type="checkbox"] {
    tient — sur téléphone on raccourcit, on n'ajoute pas trois écrans épinglés à
    une page qui en fait déjà six — et les trois cartes se lisent l'une après
    l'autre, ce qui est exactement leur ordre naturel. */
-@media (max-width: 900px) {
-  .pin-modes__card > * { opacity: 1; }
-  .pin-modes__card::before { display: none; }
-  /* Pas d'acte, donc pas de projecteur. Le module 9 écrit `data-panel` à toutes les
-     largeurs : sans cette règle, le téléphone héritait d'une maquette assombrie en
-     permanence avec un liseré figé sur la zone du scénario — mesuré. */
-  .pin-modes__zoom::after { display: none; }
-}
+/* Plus besoin d'annuler quoi que ce soit hors de la porte : l'état de base EST
+   l'état sans acte. Seul le liseré de la carte courante reste à neutraliser, car il
+   n'a de sens que pendant l'acte. */
+.pin-modes__card::before { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .pin-modes__track { height: auto; }
-  .pin-modes__stage { position: static; min-height: 0; }
+  .pin-modes__stage { position: static; min-height: 0; padding: 0; }
   .pin-modes__card > * { opacity: 1; }
   .pin-modes__card::before { display: none; }
   .pin-modes .pin-modes__zoom::after { display: none; }
