@@ -4298,3 +4298,71 @@ label > input[type="checkbox"] {
   .spec-item--api .spec-item__label { min-width: 0; }
   .code-block pre { padding: 18px; font-size: .75rem; }
 }
+
+/* Deux colonnes pour une liste de faits longue (l'éditeur de scénarios en compte
+   six) : en une seule colonne, six lignes à coche font un mur. */
+.api-facts--deux {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 44px;
+}
+@media (max-width: 760px) {
+  .api-facts--deux { grid-template-columns: 1fr; }
+}
+
+/* ══ CAS D'USAGE ═══════════════════════════════════════════════════════════
+   Cinq situations, chacune en deux volets : le blocage, puis ce que Q-Bot en
+   fait. Deux colonnes sur grand écran, empilées en dessous.
+
+   Le volet « blocage » est en retrait de couleur et le volet « avec Q-Bot »
+   porte le liseré teal : c'est le seul indice visuel de lecture, et il suffit,
+   là où deux fonds différents auraient fait un damier sur cinq blocs. */
+.usecase {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 28px;
+  background: var(--white);
+}
+
+.usecase + .usecase { margin-top: 18px; }
+
+.usecase__cat {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal-text);
+  margin-bottom: 6px;
+}
+
+.usecase h3 { font-size: 1.0625rem; margin-bottom: 18px; }
+
+.usecase__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 36px;
+}
+
+.usecase__lab {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+.usecase__part--sol { border-left: 2px solid var(--teal); padding-left: 16px; }
+.usecase__part--sol .usecase__lab { color: var(--teal-text); }
+.usecase p { font-size: 0.9375rem; margin: 0; }
+.usecase code { font-family: 'Courier New', monospace; font-size: 0.875em; color: var(--teal-text); }
+
+[data-theme="dark"] .usecase { background: #141414; border-color: #2B2B2B; }
+
+@media (max-width: 760px) {
+  .usecase { padding: 22px 20px; }
+  .usecase__grid { grid-template-columns: 1fr; gap: 18px; }
+  .usecase__part--sol { padding-left: 14px; }
+}
