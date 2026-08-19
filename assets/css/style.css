@@ -3835,3 +3835,66 @@ label > input[type="checkbox"] {
 @media (prefers-reduced-motion: reduce) {
   .article-body h2::before { transform: scaleY(1); transition: none; }
 }
+
+/* ══ MARQUES DE SECTION — ACCUEIL ══════════════════════════════════════════
+   Proposition F de la revue. Procédé n°4 relevé sur linearity.io : un tracé qui
+   traverse la page et relie des blocs que rien d'autre ne relie. Chez eux c'est une
+   grande courbe décorative ; deux formes ont été mises en balance ici et c'est
+   celle-ci qui a été retenue — un trait court à gauche de chaque libellé de
+   section, le geste exact déjà employé sur les titres de partie des articles.
+   Aucun composant d'interface en plus, aucune interaction nouvelle, aucun
+   JavaScript : sur 11,8 écrans, chaque section s'annonce, et l'ensemble se lit
+   comme une suite.
+
+   L'ÉTAT STATIQUE EST L'ÉTAT VISIBLE, et c'est la décision qui compte ici. Sur les
+   sept libellés de l'accueil, SIX ont un ancêtre révélé au défilement ; le
+   septième — celui de la section Luxembourg, dont le libellé a été promu en `<h2>`
+   lors d'une passe antérieure — n'en a aucun. Une marque qui partirait de
+   `scaleY(0)` en attendant un `.is-visible` resterait donc invisible pour toujours
+   sur cette section. C'est la classe de bug déjà rencontrée deux fois sur ce site
+   (les articles rendus invisibles, le trait de la frise resté à zéro). Le tracé est
+   donc une animation AJOUTÉE quand la révélation arrive, jamais une condition pour
+   exister — même motif que le rail de la section évolution.
+
+   Le libellé de la section LuxTrust est à 760 px et non 154 : cette section alterne
+   les côtés sur grand écran et sa colonne de texte est à droite. La marque
+   appartient au libellé, elle part donc à droite avec lui — ce n'est pas un défaut
+   à corriger, c'est ce qui rend l'alternance lisible au lieu de la combattre. Sous
+   900 px tout s'empile et les sept marques s'alignent : le tracé est plus net sur
+   téléphone que sur bureau. */
+.page-home main .section-label { position: relative; }
+
+.page-home main .section-label::before {
+  content: '';
+  position: absolute;
+  /* Mêmes décalages que les titres de partie des articles, mesurés : à 390 px la
+     colonne commence à 24 px du bord, donc 10 px laissent la marque entière. */
+  left: -18px;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+  transform-origin: top center;
+}
+
+/* Le tracé lui-même. Une seule fois : le module 4 cesse d'observer l'élément après
+   avoir posé `.is-visible`, la marque ne peut donc pas se redessiner en remontant. */
+@keyframes labelMark {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+.page-home main .reveal.is-visible .section-label::before {
+  animation: labelMark 0.7s var(--ease-out) 0.05s both;
+}
+
+@media (max-width: 900px) {
+  .page-home main .section-label::before { left: -12px; }
+}
+@media (max-width: 520px) {
+  .page-home main .section-label::before { left: -10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-home main .reveal.is-visible .section-label::before { animation: none; }
+}
