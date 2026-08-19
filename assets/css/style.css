@@ -463,6 +463,11 @@ p { color: var(--gray); }
 .hero__title {
   color: var(--white);
   margin-bottom: 20px;
+  /* Équilibrage des lignes du titre. Sans lui, « La 2FA sans prise de tête. »
+     laissait « tête. » seul sur sa ligne — à 1440, 1024 et 390 px, mesuré. Le
+     titre porte un <br> entre ses deux phrases : l'équilibrage s'applique à
+     chacune, la seconde reste donc sur une ligne. */
+  text-wrap: balance;
 }
 
 .hero__title em {

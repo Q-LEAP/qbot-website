@@ -102,6 +102,15 @@ Before any modification:
 
 **Never reword marketing copy.** Titles, subtitles, body text and button labels must match the original word for word.
 
+**Mais le français n'est JAMAIS une traduction littérale de l'anglais.** Arbitré par le
+client le 2026-08-19, sur le contenu de `Documentations/website` : « pour le FR la
+traduction littérale ne rendra pas bien, sois expert en comm et marketing, garde
+l'essence et la logique des phrases anglaises et retranscris-les en FR ». Exemple qui a
+motivé la consigne : « Stop babysitting 2FA. Start shipping faster. » rendu d'abord par
+« Plus personne pour surveiller la 2FA » — fidèle et plat. La formule retenue, du client,
+est « La 2FA sans prise de tête. Livrez plus vite. » Donc : l'anglais reprend leurs textes
+mot pour mot, le français rend l'intention avec ses propres moyens.
+
 ## Animation rules
 
 - Prefer native CSS animations and transitions.
