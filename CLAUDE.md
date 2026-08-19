@@ -700,8 +700,17 @@ cassé (23 URL), aucun lien sans intitulé, tous les `alt` présents, `Organizat
    Ne pas y revenir sans nouvelle demande.
 3. Le visuel « Interface & API » est une **maquette**, pas une capture du produit — à remplacer
    dès qu'une vraie capture existe.
-4. `Product.offers` à 900 €/mois : **confirmé exact au 2026-08-11**. Le client préviendra si le
-   tarif change — inutile de le requestionner à chaque passe.
+4. **Tarif : 850 € / mois HT** (arbitré par le client le 2026-08-19, remplace les 900 € TTC
+   affichés jusque-là). Publié partout : prix visible et « TTC » → « HT » sur
+   `commandez`/`order`, titre + les 3 métadonnées sociales de ces deux pages, la réponse
+   « combien coûte Q-Bot » de la FAQ (texte visible **et** sa copie dans le JSON-LD `FAQPage`,
+   FR + EN), `llms.txt` (2 lignes), le gabarit d'article de `admin/index.html`, et le
+   `Product.offers` des 8 pages qui en portent un — où `priceSpecification` déclare désormais
+   `"valueAddedTaxIncluded": false`, c'est la propriété schema.org qui dit « HT ».
+   **Le live WordPress affiche encore 900 €** : cet écart est volontaire, ne pas le « corriger »
+   en alignant sur le live. Un prix qui diffère entre le JSON-LD et la page étant pire que pas
+   de prix, tout contrôle doit vérifier qu'aucun `900` de tarif ne subsiste
+   (`grep -rn '€\s*900\|900\s*€\|900 EUR'`).
 
 
 ## Matière du modèle 3D livré (2026-08-11)
