@@ -3559,46 +3559,65 @@ label > input[type="checkbox"] {
 
 
 /* ══ ACTE ÉPINGLÉ « INTERFACE & API » ══════════════════════════════════════
-   Proposition B de la revue : le procédé n°2 de linearity.io, où le texte reste
-   en place et c'est le visuel qui change. Ici les trois modes de pilotage —
-   interface web, API REST, notification mobile — se lisaient comme trois cartes
-   empilées qu'on parcourt d'un œil. Ils deviennent trois temps : la carte
-   courante s'éclaire, et la maquette se recadre sur la partie qui la concerne.
+   Proposition B de la revue : le procédé n°2 de linearity.io, où le texte reste en
+   place et c'est le visuel qui change. Les trois modes de pilotage — interface web,
+   API REST, notification mobile — se lisaient comme trois cartes empilées qu'on
+   parcourt d'un œil. Ils deviennent trois temps : la carte courante s'éclaire, et un
+   projecteur se déplace sur la partie de la maquette qui la concerne.
 
    RIEN N'EST INVENTÉ. La maquette contient déjà les trois choses : la liste des
    étapes du scénario, l'étape « notification envoyée sur le mobile », et l'appel
-   `POST /api/v1/authenticate` en pied. On ne fabrique pas deux écrans de plus —
-   ce serait deux fictions supplémentaires sur un visuel déjà signalé comme une
-   maquette — on montre de plus près ce qui y est.
+   `POST /api/v1/authenticate` en pied. On ne fabrique pas deux écrans de plus.
 
-   LES TROIS CADRAGES SONT MESURÉS, pas réglés à l'œil : les boîtes de `.steps`,
-   du 3e `.step` et du bloc `.api` ont été relevées dans
-   tools/render/interface-mockup.html et rapportées à la taille de la capture.
-   Si la maquette est refaite, il faut refaire ce relevé.
+   POURQUOI UN PROJECTEUR ET NON UN ZOOM. La première version recadrait l'image
+   (translate + scale). Défaut signalé par le client : « le cadre Notification mobile
+   n'est pas entier » — et c'est structurel, pas un réglage à corriger. La fenêtre de
+   la maquette occupe 88,24 % de la largeur de l'image ; à l'échelle s la zone visible
+   n'en fait que 1/s. Garder la fenêtre entière impose donc s ≤ 1/0,8824 = 1,13, et à
+   cette échelle il ne reste plus de place pour déplacer le centre : viser le pied de
+   page, à 86 % de la hauteur, coupait forcément la fenêtre. Un zoom qui tranche une
+   bordure arrondie ne se lit pas comme un rapprochement mais comme une image cassée.
+   Le projecteur ne touche pas à l'image : elle reste entière et à l'échelle 1 du
+   premier au dernier temps. C'est l'extérieur de la région qui s'assombrit, par une
+   ombre portée de 9999 px que le cadre — déjà en `overflow: hidden` — découpe.
 
-   Le recadrage est une transformation composée (translate + scale) sur l'image,
-   avec `transform-origin: 0 0`, ce qui donne une arithmétique simple : pour
-   amener le point (cx, cy) de l'image au centre du cadre à l'échelle s, il faut
-   translater de (0,5 − cx·s) et (0,5 − cy·s) en pourcentage de la boîte. Une
-   transformation se composite, contrairement à un `left`/`top`. */
+   LES RÉGIONS SONT MESURÉES, pas réglées à l'œil : boîtes relevées dans
+   tools/render/interface-mockup.html et rapportées en pourcentage de la capture. Si
+   la maquette est refaite, il faut refaire ce relevé — c'est déjà arrivé une fois, à
+   la passe de finition de la maquette. */
 .pin-modes__track { position: relative; }
 /* `align-self: start` n'est pas cosmétique : dans la grille, la colonne image
    s'étirait à la hauteur de la colonne texte, donc la boîte du cadre était plus
-   haute que celle de l'image. Or les pourcentages d'un `translate` se rapportent
-   à la boîte de l'ÉLÉMENT TRANSLATÉ — l'image — et non à celle du cadre : le
-   centrage vertical était donc décalé de la différence, avec une bande noire en
-   bas et le texte coupé en haut. Cadre et image ont désormais la même boîte.
-   Le sélecteur est plus spécifique que `.specs__image:hover img`, qui posait un
-   `scale(1.04)` et écrasait le recadrage au survol. */
+   haute que celle de l'image — et les pourcentages du projecteur se rapportent au
+   cadre. Les deux boîtes doivent coïncider. */
 .pin-modes__zoom { overflow: hidden; align-self: start; }
-.pin-modes .pin-modes__zoom img {
-  transform-origin: 0 0;
-  transform:
-    translate(calc((0.5 - var(--zcx, 0.5) * var(--zs, 1)) * 100%),
-              calc((0.5 - var(--zcy, 0.5) * var(--zs, 1)) * 100%))
-    scale(var(--zs, 1));
-  transition: transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+/* Le survol de `.specs__image` pose un `scale(1.04)` : sous un projecteur aux
+   coordonnées figées, l'image glisserait dessous. */
+.pin-modes .pin-modes__zoom img,
+.pin-modes .pin-modes__zoom:hover img { transform: none; }
+
+.pin-modes__zoom::after {
+  content: '';
+  position: absolute;
+  left: var(--sx, 5.5%);
+  top: var(--sy, 22.9%);
+  width: var(--sw, 89%);
+  height: var(--sh, 56.3%);
+  border: 1px solid rgba(0, 203, 190, 0.55);
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.58), 0 0 22px rgba(0, 203, 190, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transition: left 0.65s var(--ease-out), top 0.65s var(--ease-out),
+              width 0.65s var(--ease-out), height 0.65s var(--ease-out),
+              opacity 0.4s var(--ease-out);
 }
+/* Le projecteur n'existe que s'il y a un acte. `data-panel` est écrit par le module
+   9, qui ne tourne pas en mouvement réduit : son absence vaut « pas d'acte », et
+   l'image reste entière et pleinement éclairée. C'est la règle retenue après le
+   viewer mort de la proposition E — l'état de repos du HTML doit être l'état actif. */
+.pin-modes[data-panel] .pin-modes__zoom::after { opacity: 1; }
+
 /* Une carte inactive s'efface, elle ne disparaît pas : les trois restent
    lisibles, c'est la hiérarchie qui bouge.
    L'estompe porte sur le CONTENU de la carte, pas sur la carte : celle-ci est
@@ -3643,16 +3662,14 @@ label > input[type="checkbox"] {
   .pin-modes[data-panel="2"] .pin-modes__card[data-mode="2"]::before { transform: scaleY(1); }
 
   /* Les trois cadrages. Le premier est l'identité : la maquette entière. */
-  /* Les échelles sont modestes à dessein : les régions visées occupent déjà 56 à
-     82 % de la largeur de la maquette, un grossissement de 2 les débordait des
-     deux côtés et coupait les mots. À 1,55 il reste du contexte autour de la
-     ligne qu'on désigne. */
-  .pin-modes[data-panel="0"] .pin-modes__zoom { --zs: 1;    --zcx: 0.500; --zcy: 0.500; }
-  .pin-modes[data-panel="1"] .pin-modes__zoom { --zs: 1.55; --zcx: 0.400; --zcy: 0.790; }
-  /* La liste des étapes occupe 82 % de la largeur : au-delà de 1,22 elle est
-     coupée des deux côtés et les libellés perdent leur premier mot. La borne
-     est donc calculée, pas choisie — largeur visible = 1 / échelle. */
-  .pin-modes[data-panel="2"] .pin-modes__zoom { --zs: 1.45; --zcx: 0.420; --zcy: 0.532; }
+  /* Régions relevées sur la maquette, en pourcentage de la capture :
+       en-tête + liste des étapes  x 6,03  y 23,48  w 87,94  h 55,19
+       pied de page (l'appel API)  x 6,03  y 81,16  w 87,94  h 10,00
+       3e étape (la notification)  x 7,50  y 55,09  w 85,00  h  7,86
+     Chacune est élargie d'un demi-point pour que le liseré ne colle pas au texte. */
+  .pin-modes[data-panel="0"] .pin-modes__zoom { --sx: 5.5%; --sy: 22.9%; --sw: 89.0%; --sh: 56.3%; }
+  .pin-modes[data-panel="1"] .pin-modes__zoom { --sx: 5.5%; --sy: 80.6%; --sw: 89.0%; --sh: 11.1%; }
+  .pin-modes[data-panel="2"] .pin-modes__zoom { --sx: 7.0%; --sy: 54.5%; --sw: 86.0%; --sh:  9.0%; }
   /* Le centre est décalé à 0,42 et non 0,50 : la contrainte est que le bord
      gauche de la liste (à 0,090) reste dans le champ, soit cx − 0,5/échelle
      ≤ 0,090. À 1,45 cela impose cx ≤ 0,435. Centré, le premier mot de chaque
@@ -3666,6 +3683,10 @@ label > input[type="checkbox"] {
 @media (max-width: 900px) {
   .pin-modes__card > * { opacity: 1; }
   .pin-modes__card::before { display: none; }
+  /* Pas d'acte, donc pas de projecteur. Le module 9 écrit `data-panel` à toutes les
+     largeurs : sans cette règle, le téléphone héritait d'une maquette assombrie en
+     permanence avec un liseré figé sur la zone du scénario — mesuré. */
+  .pin-modes__zoom::after { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3673,7 +3694,7 @@ label > input[type="checkbox"] {
   .pin-modes__stage { position: static; min-height: 0; }
   .pin-modes__card > * { opacity: 1; }
   .pin-modes__card::before { display: none; }
-  .pin-modes .pin-modes__zoom img { transition: none; transform: none; }
+  .pin-modes .pin-modes__zoom::after { display: none; }
 }
 
 /* ══ INDEX COLLANT DE LA FAQ ═══════════════════════════════════════════════

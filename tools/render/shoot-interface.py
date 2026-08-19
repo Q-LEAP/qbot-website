@@ -25,7 +25,11 @@ W, H, DPR = 680, 560, 2
 
 # Traductions appliquées par clé `data-t`. La maquette porte le français en dur.
 EN = {
-    "url": "q-bot.local / scenarios",
+    "tab": "Q-Bot \u00b7 Scenarios",
+    "url": "q-bot.local/scenarios",
+    "local": "local",
+    "meta": "5 steps",
+    "w3": "App",
     "eyebrow": "Scenario",
     "title": "Two-factor authentication",
     "s1": "Open the application under test",   "s1d": "Browser, mobile or desktop",
@@ -45,9 +49,21 @@ with sync_playwright() as p:
         pg.evaluate("document.fonts.ready")
         pg.wait_for_timeout(1200)                      # polices Google
         if trad:
+            # `url` porte un `<b>` pour griser le chemin : on garde le balisage en
+            # coupant sur la barre oblique, sinon textContent l'écraserait et la
+            # ligne d'adresse perdrait sa hiérarchie.
             pg.evaluate("""(t) => { for (const k in t) {
                 const e = document.querySelector('[data-t="'+k+'"]');
-                if (e) e.textContent = t[k]; } }""", trad)
+                if (!e) continue;
+                if (k === 'url' && t[k].includes('/')) {
+                  const i = t[k].indexOf('/');
+                  e.innerHTML = '';
+                  e.appendChild(document.createTextNode(t[k].slice(0, i)));
+                  const b = document.createElement('b');
+                  b.textContent = t[k].slice(i);
+                  e.appendChild(b);
+                } else { e.textContent = t[k]; }
+              } }""", trad)
             pg.wait_for_timeout(400)
         cible = RACINE / f"assets/img/qbot-interface{suffixe}.jpg"
         pg.screenshot(path=str(cible), type="jpeg", quality=92)
