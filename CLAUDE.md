@@ -898,8 +898,27 @@ milieu de sa propre arrivée).
 Au passage, la note en tête d'article reçoit la variante `plain` : elle n'avait pas d'entrée
 non plus.
 
-**Reste proposé et non fait** : les coches qui se dessinent (procédé identique, à 16 px) et le
-bloc de code en variante `media`. Pour ce dernier, attention au passage de lumière : c'est un
+**Proposition N faite le même jour : les coches se dessinent.** Les quinze arguments à coche
+des deux pages Caractéristiques reçoivent la variante `plain` (elles n'avaient aucune entrée)
+et leur coche se trace, échelonnée, du talon vers la pointe.
+
+Trois choses à savoir :
+
+- **le sens du tracé est dans le balisage, pas dans le CSS.** La polyligne allait de la pointe
+  longue `(20,6)` au talon `(4,12)` : dessinée dans cet ordre elle se construisait à l'envers
+  d'une main. Les points ont été retournés dans les 30 SVG concernés. Aucune règle CSS ne peut
+  le corriger — un motif de tirets se décale, il ne s'inverse pas, et un décalage négatif est
+  équivalent au positif puisque la période du motif vaut deux fois la longueur ;
+- **longueur mesurée de la polyligne : 22,63 unités** de viewBox (7,07 + 15,56), d'où
+  `stroke-dasharray: 23` ;
+- **l'état au repos est la coche entière** (décalage 0). Vérifié sans JavaScript et en
+  mouvement réduit : opacité 1, décalage 0, aucune animation.
+
+Le retard suit `--reveal-delay`, et comme l'index d'échelonnement est calculé par parent, il
+repart de zéro à chaque liste : relevé 0 à 5 puis 0 à 3 puis 0 à 1 puis 0 à 2 sur les quatre
+listes de la page. Quinze coches simultanées auraient fait du bruit.
+
+**Reste proposé et non fait** : le bloc de code en variante `media`. Pour ce dernier, attention au passage de lumière : c'est un
 `::after` qui se translate, et il s'échappe sans `overflow: hidden` — c'est ce qui avait causé
 341 px de débordement horizontal sur les figures d'article.
 

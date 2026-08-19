@@ -212,7 +212,12 @@ if ('IntersectionObserver' in window) {
     ]],
     /* La note en tête d'article : montée et fondu, sans flou. Elle est courte et
        posée haut dans la page, un flou n'y ajouterait rien. */
-    ['plain', ['.article-note']],
+    /* La note d'article et les lignes de faits à coche : montée et fondu, sans
+       flou. Les faits sont courts et nombreux, un flou par ligne coûterait une
+       couche de composition pour rien. C'est aussi ce qui donne aux coches leur
+       `.is-visible` et leur `--stagger-i`, dont dépend le tracé (cf. la feuille
+       de style, section « coches qui se dessinent »). */
+    ['plain', ['.article-note', '.api-facts li']],
     ['card', [
       /* Les titres de section d'un article arrivent un à un. Le corps entier est
          déjà une révélation « plain » — un seul fondu pour plusieurs milliers de

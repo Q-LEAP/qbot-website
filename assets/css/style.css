@@ -4407,3 +4407,42 @@ label > input[type="checkbox"] {
   .usecase__grid { grid-template-columns: 1fr; gap: 18px; }
   .usecase__part--sol { padding-left: 14px; }
 }
+
+/* ══ COCHES QUI SE DESSINENT ════════════════════════════════════════════════
+   Les quinze arguments à coche des pages Caractéristiques n'avaient aucune
+   entrée. Leur coche se trace maintenant, du talon vers la pointe.
+
+   POURQUOI. C'est le procédé n°4 de linearity.io, le tracé qui se dessine en
+   `stroke-dashoffset`, à 16 px au lieu de 7 139. C'est le seul procédé relevé
+   chez eux que ce site n'employait pas encore.
+
+   LE SENS DU TRACÉ EST DANS LE BALISAGE, PAS ICI. La polyligne d'une coche allait
+   de la pointe longue (20,6) vers le talon (4,12) : dessinée dans cet ordre, elle
+   se construisait à l'envers de la façon dont une main la trace. Les points ont
+   donc été retournés dans les 30 SVG concernés. Aucune règle CSS ne peut corriger
+   cela : un motif de tirets se décale, il ne s'inverse pas. Le décalage négatif ne
+   change rien non plus, le motif ayant une période de deux fois la longueur.
+
+   LONGUEUR DE LA POLYLIGNE : (4,12) → (9,17) → (20,6), soit 7,07 + 15,56 = 22,63
+   unités du viewBox. `stroke-dasharray: 23` couvre donc le tracé entier, et un
+   décalage de 23 le cache complètement.
+
+   L'ÉTAT AU REPOS EST LA COCHE ENTIÈRE : décalage 0. L'animation n'est ajoutée que
+   par `.is-visible`, donc sans JavaScript, sans révélation ou en mouvement réduit,
+   les quinze coches sont simplement là. */
+.api-facts svg polyline {
+  stroke-dasharray: 23;
+  stroke-dashoffset: 0;
+}
+
+@keyframes tickDraw {
+  from { stroke-dashoffset: 23; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Le retard suit l'échelonnement de la ligne, et l'index repart de zéro à chaque
+   liste puisqu'il est calculé par parent : quinze coches qui se dessinent ensemble
+   feraient du bruit, quatre ou six qui s'enchaînent se lisent. */
+.api-facts li.is-visible svg polyline {
+  animation: tickDraw 0.5s var(--ease-out) calc(var(--reveal-delay, 0s) + 0.08s) both;
+}
