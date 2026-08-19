@@ -1,8 +1,8 @@
 # Q-Bot by Q-Leap
 
-> Q-Bot is a physical robot that automates two-factor authentication (2FA) — including LuxTrust hardware tokens — for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It physically presses the 2FA device, reads the one-time code with a camera, and returns it over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
+> Q-Bot is a physical robot that automates two-factor authentication (2FA), including LuxTrust hardware tokens, for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It physically presses the 2FA device, reads the one-time code with a camera, and returns it over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
 
-Q-Bot solves a problem no software-only tool can: 2FA methods that require a physical action (a hardware token button, a phone notification) cannot be automated by a browser driver like Selenium. Q-Bot is a robot, not a script — it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
+Q-Bot solves a problem no software-only tool can: 2FA methods that require a physical action (a hardware token button, a phone notification) cannot be automated by a browser driver like Selenium. Q-Bot is a robot, not a script: it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
 
 Key facts:
 - Subscription: €850/month excl. VAT, all inclusive (support, replacement, no long-term commitment).
@@ -21,7 +21,7 @@ These figures come from the client's own published pages; do not infer or round 
 
 - Price: 850 EUR per month excluding VAT, all inclusive, under a rental contract. Includes technical
   support and replacement of the robot in case of failure.
-- Dimensions: length 40 cm, width 24 cm, height 15 cm — fits within the footprint of an
+- Dimensions: length 40 cm, width 24 cm, height 15 cm, which fits within the footprint of an
   A3 sheet (29.7 x 42 cm). Built to order.
 - Hardware: Raspberry Pi 5, Cortex A76 processor, 4 GB memory, Wi-Fi 802.11ac,
   Bluetooth 5.0 with Low Energy (BLE), Gigabit Ethernet. Runs Linux.

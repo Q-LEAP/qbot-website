@@ -63,6 +63,17 @@ open('assets/models/qbot.glb.data.js', 'w').write(
 - `--font: 'Roboto'`, `--font-heading: 'Roboto'` — Google Fonts
 - `--container: 1180px`, `--section-py: 96px`
 
+**Jamais de cadratin (`—`).** Règle du client, énoncée le 2026-08-19 : « ne mets jamais
+de "—", aucun humain ne met de cadratin ». Selon le sens, on écrit deux-points, virgule,
+parenthèses ou point. Passe faite le même jour : 121 occurrences reprises une par une dans
+le contenu, les métadonnées, les `alt` et les `aria-label` des 23 pages, plus `llms.txt` et
+`robots.txt`. **Le contrôle doit porter sur le caractère ET sur l'entité** : cinq cadratins
+étaient écrits `&mdash;` dans les articles anglais, invisibles à une recherche du caractère
+et pourtant bien affichés. Le seul test fiable est `document.body.innerText` dans le
+navigateur, comme pour les emoji. Les commentaires de code (HTML, CSS, JS) et ce fichier en
+contiennent encore : ils ne sont pas lus par le visiteur, mais toute NOUVELLE rédaction, y
+compris les commentaires et les messages de commit, s'en passe.
+
 **No emoji anywhere on the site — corporate icons only.** Client rule, not a preference:
 every pictogram is an inline stroke SVG (24×24 viewBox, `fill="none"`, `stroke="currentColor"`),
 the same language as the icons already in the markup. This covers badges, guarantee tiles, blog

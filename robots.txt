@@ -1,7 +1,7 @@
 # https://q-bot.eu/robots.txt
 
 # ══════════════════════════════════════════════════════════════════════════
-# PRÉ-LANCEMENT — le site entier est fermé aux robots le temps de la mise au
+# PRÉ-LANCEMENT : le site entier est fermé aux robots le temps de la mise au
 # point. Le pendant de ce fichier est la balise
 # <meta name="robots" content="noindex, nofollow"> présente sur les 23 pages.
 #
