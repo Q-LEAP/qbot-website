@@ -1,13 +1,13 @@
 # Q-Bot by Q-Leap
 
-> Q-Bot is a physical robot that automates two-factor authentication (2FA), including LuxTrust hardware tokens, for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It drives a real Android device over USB using ADB, replaying a scenario built visually in its web interface, and is triggered over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
+> Q-Bot is a physical robot that automates two-factor authentication (2FA), including LuxTrust, Microsoft and Google Authenticator and itsme, for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It drives a real Android device over USB using ADB, replaying a scenario built visually in its web interface, and is triggered over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
 
-Q-Bot solves a problem no software-only tool can: 2FA methods that require a physical action (a hardware token button, a phone notification) cannot be automated by a browser driver like Selenium. Q-Bot is a robot, not a script: it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
+Q-Bot solves a problem no software-only tool can: 2FA methods that require an action on a real device (approving a push notification, reading a code inside an app) cannot be automated by a browser driver like Selenium. Q-Bot is a robot, not a script: it interacts with the real device the same way a human tester would, then exposes the resulting OTP code through an HTTP API that test scripts call directly.
 
 Key facts:
 - Subscription: €850/month excl. VAT, all inclusive (support, replacement, no long-term commitment).
 - Hardware: Raspberry Pi 5, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
-- Compatible with: LuxTrust (physical token and mobile), Google/Microsoft Authenticator, most smartphone-based 2FA.
+- Compatible with: any Android 2FA app. Already validated with LuxTrust, Microsoft Authenticator, Google Authenticator and itsme.
 - Compatible test frameworks: Selenium, Cypress, Playwright, Appium, Robot Framework, TestComplete, Jenkins, GitLab CI.
 - Privacy: scenarios and their step images stay on the Q-Bot device; no cloud uploads; runs on the customer's local network.
 - Company: Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange, Luxembourg. Contact: bot@q-leap.eu / +352 20 21 17.

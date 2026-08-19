@@ -773,11 +773,23 @@ Deux conséquences non évidentes :
   effet : `--sc-card-zone` est mesurée sur la plus haute des quatre cartes, qui est celle du
   pas 4 (344 px). Vérifié avant/après, zone et scène identiques au pixel.
 
-**Reste à faire, et le site est incohérent tant que ce n'est pas fait** : la FAQ anglaise
-garde une question entière sur les tokens PHYSIQUES (« What type of token does Q-Bot work
-with? », « the vast majority of physical tokens on the market ») et le cadre « retrieving
-the value of authentication tokens », qu'ADB ne peut pas piloter. Le client a tranché le
-retrait du token physique de la liste de compatibilité : c'est le lot 2.
+**Le token PHYSIQUE ne fait plus partie de la compatibilité** (lot 2, même jour, arbitré par
+le client). ADB pilote une application Android : un boîtier matériel à écran n'entre pas dans
+ce modèle. Sont donc partis : la pastille « LuxTrust Token (physique) », la question de la FAQ
+anglaise « What type of token does Q-Bot work with? » (devenue « Which 2FA apps does Q-Bot
+work with? »), le cadre « retrieving the value of authentication tokens », la ligne « the
+efficiency of the token's value recognition exceeds 99% » (il n'y a plus rien à reconnaître) et
+la promesse « in a future version, Q-Bot will also support dual authentication on all types of
+smartphones », que le présent a rattrapée. La liste devient : LuxTrust Mobile, Microsoft
+Authenticator, Google Authenticator, **itsme**, toute app 2FA Android. Contrôlé : 0
+revendication de token physique hors blog.
+
+**Les six articles de blog gardent le vocabulaire du token, et c'est une question ouverte.**
+Leur sujet même est « automatiser l'utilisation des tokens » : c'est dans leur titre, leur URL,
+leur `headline` JSON-LD et leurs fils de navigation. L'un d'eux annonce même, en 2022, que
+« prochainement, Q-Bot saura prendre en charge la totalité des tokens physiques du marché ainsi
+que les smartcard ». Reprendre tout cela n'est plus une correction de compatibilité mais la
+réécriture de six publications datées. À arbitrer avec le client avant d'y toucher.
 
 ## Matière du modèle 3D livré (2026-08-11)
 
