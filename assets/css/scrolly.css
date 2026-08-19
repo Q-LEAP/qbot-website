@@ -139,6 +139,10 @@
   z-index: 3;
 }
 .scrolly__nav-rail {
+  /* Le remplissage est un `::after` en `inset: 0` sans rayon : sans découpe, ses
+     extrémités dépassent des bouts arrondis du rail. Même correction que sur le
+     trait de la section évolution et sur l'index de la FAQ. */
+  overflow: hidden;
   position: absolute;
   /* Derrière les cases. Le fond des cases était translucide (3 % de blanc) : le
      trait se voyait AU TRAVERS et barrait les chiffres. Un fond opaque et un
