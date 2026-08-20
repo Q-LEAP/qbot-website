@@ -128,9 +128,15 @@
    navigateur amène le haut du pas en haut du viewport, donc son centre tombe
    pile au centre de l'écran — le bon pas devient actif sans une ligne de JS,
    et le lien reste fonctionnel si le script ne tourne pas. */
+/* Les pastilles se posent dans la MARGE du conteneur, 72 px à gauche du texte, et
+   non à `3vw` du bord de la fenêtre : à 2560 px elles se retrouvaient 674 px à
+   gauche de tout le contenu, seules dans le noir. Le plancher à 14 px garde le
+   comportement d'origine quand la fenêtre est plus étroite que le conteneur.
+   72 et non 40 : le liseré de la carte est déjà à −28, il faut la place des
+   pastilles (24 px) plus une respiration. */
 .scrolly__nav {
   position: absolute;
-  left: clamp(14px, 3vw, 40px);
+  left: max(14px, calc(var(--sc-gut, 24px) - 72px));
   top: 50%;
   transform: translateY(-50%);
   display: grid;
@@ -211,7 +217,7 @@
    pagination cliquable. */
 .scrolly__count {
   position: absolute;
-  left: clamp(14px, 3vw, 40px);
+  left: max(14px, calc(var(--sc-gut, 24px) - 72px));
   top: calc(50% + 90px);
   font-size: 0.75rem;
   font-weight: 700;
@@ -320,7 +326,7 @@
   margin-bottom: 12px;
 }
 .scrolly__title {
-  font-size: clamp(1.5rem, 3.4vw, 2.375rem);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
   line-height: 1.15;
   letter-spacing: -0.01em;
   margin-bottom: 14px;
@@ -555,15 +561,86 @@
    940 px c'est l'autre mise en page qui prend le relais (objet coupé par le bord,
    texte en bas), donc plus aucune largeur ne superpose les deux. */
 @media (min-width: 940px) {
-  .scrolly__stage { place-items: center end; padding-right: 4vw; }
-  .scrolly__scene { width: min(56vw, 800px); }
-  .scrolly__step { max-width: 44vw; padding-left: clamp(72px, 7vw, 120px); }
+  /* ── LA SÉQUENCE SE CALE SUR LA MÊME GOUTTIÈRE QUE LE RESTE DU SITE ───────
+     Avant : le texte était posé à `clamp(72px, 7vw, 120px)` du bord de la FENÊTRE
+     et la scène collée à droite par `padding-right: 4vw`. Les deux ignoraient donc
+     le conteneur du site, qui est centré et plafonné à 1180 px. Mesuré à 2560 px :
+     le texte des étapes commençait 566 px à GAUCHE de tous les autres titres du
+     site, la scène débordait le conteneur de 588 px à droite, et il restait
+     1 500 px de vide entre les deux. Signalé par le client, et à juste titre.
+
+     Désormais les deux colonnes tiennent dans la boîte du conteneur :
+     - `--sc-gut` reproduit la gouttière de `.container` (moitié du reste, plus les
+       24 px de remplissage). Le pourcentage se résout sur le même bloc conteneur
+       que celui de `.container`, donc sans écart de barre de défilement ;
+     - le texte est posé à `--sc-gut` moins les 26 px de son propre retrait, de
+       sorte que le TEXTE tombe sur la gouttière et que son liseré teal se place
+       dans la marge, comme les marques de section ;
+     - la scène garde sa taille tant qu'elle rentre, et son plafond est la place
+       qui reste après la colonne de texte : elle vaut 662 px sur toute la plage,
+       ce qui est constant par construction et non un réglage à l'œil.
+
+     Ne pas remettre de `vw` ici : c'est ce qui faisait fuir les deux colonnes en
+     sens opposés dès que l'écran dépassait le conteneur. */
+  .scrolly__stage,
+  .scrolly__steps {
+    --sc-box: min(100%, var(--container));
+    --sc-gut: calc((100% - var(--sc-box)) / 2 + 24px);
+    --sc-col: 430px;   /* mesure de lecture de la colonne de texte */
+    --sc-gap: 40px;    /* respiration entre le texte et la scène */
+  }
+
+  .scrolly__stage { place-items: center end; padding-right: var(--sc-gut); }
+
+  /* ATTENTION, LA GOUTTIÈRE SE RECALCULE ICI, ET CE N'EST PAS UNE REDONDANCE.
+     Un pourcentage dans une propriété personnalisée se résout sur le bloc conteneur
+     de l'élément qui l'UTILISE, pas de celui qui la déclare. La scène est un
+     élément de la grille du plateau, dont la boîte de contenu vaut déjà
+     « fenêtre moins gouttière » : `--sc-gut` y donnait 77 px au lieu de 154, et le
+     plafond valait 739 px au lieu de 662, d'où un recouvrement de 37 à 98 px entre
+     le texte et la scène. Mesuré avant correction.
+     En posant S = 100% (la base de la scène) et g la gouttière, on a S = fenêtre − g
+     et g = (fenêtre − conteneur) / 2 + 24, donc g = S − (conteneur − 48). D'où
+     l'expression ci-dessous, exacte sur toute la plage, et le plancher à 24 px pour
+     les fenêtres plus étroites que le conteneur. */
+  .scrolly__scene {
+    --sc-gut-scene: max(24px, calc(100% - var(--container) + 48px));
+    width: min(56vw, 800px);
+    max-width: calc(100% - var(--sc-gut-scene) - var(--sc-col) - var(--sc-gap));
+  }
+
+  .scrolly__step {
+    max-width: none;
+    /* `max()` parce que la gouttière tombe à 24 px avant que le conteneur ne soit
+       plafonné : 24 − 26 serait un remplissage négatif, donc invalide. */
+    /* 28 et non 26 : le retrait interne (26) plus le liseré (2). C'est le TEXTE
+       qui doit tomber sur la gouttière, pas le bord de la carte.
+       Et la part négative passe en marge : entre 940 et 1204 px la gouttière vaut
+       24, donc 24 − 28 serait un remplissage négatif, refusé, et le texte retombait
+       4 px trop à droite. La marge, elle, accepte le négatif. */
+    padding-left: max(0px, calc(var(--sc-gut) - 28px));
+    margin-left: min(0px, calc(var(--sc-gut) - 28px));
+  }
+
   .scrolly__step-inner {
     background: none;
     padding: 0 0 0 26px;
     border-radius: 0;
+    max-width: calc(var(--sc-col) + 26px);
   }
-  .scrolly__title { font-size: clamp(1.75rem, 2.9vw, 2.625rem); }
+
+  /* Même échelle que les titres de section (`h2`), au lieu d'une échelle propre qui
+     montait à 42 px contre 36. Deux titres de même rang ne peuvent pas avoir deux
+     tailles : c'est le second point signalé par le client. */
+  .scrolly__title { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+
+  /* L'indication de défilement se cale à gauche elle aussi : centrée, elle était le
+     dernier bloc de texte centré de la page. */
+  .scrolly__hint {
+    /* Sur la gouttière elle-même : cette indication n'a pas de liseré à décaler. */
+    left: var(--sc-gut);
+    transform: none;
+  }
 }
 
 /* ── Déverrouillage du CTA au dernier pas ─────────────────────────────────

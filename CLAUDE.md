@@ -1211,6 +1211,52 @@ pièces qui bougent), et le halo CSS derrière l'objet, dont le centre est pourt
 chaque image — sur le GPU il produit moins de 2 niveaux d'écart entre deux images et le sol
 n'a aucune marche de bande.
 
+## Passe d'alignement, et le piège du `vw` (2026-08-20)
+
+Retours client : « le site en 2K est un peu étrange et pas trop responsive », « il y a encore
+du texte centré », « les titres des étapes n'ont pas la même taille que les autres titres »,
+« les titres et textes des étapes ne sont pas alignés sous le logo Q-Leap ». Tout était exact,
+et tout venait de la même faute : **la séquence était posée en unités de FENÊTRE, pas dans le
+conteneur du site.**
+
+Mesuré avant correction, à 2560 px : le texte des étapes commençait à x=148 quand le logo et
+tous les autres titres sont à x=714, soit **566 px d'écart** ; la scène 3D, collée à droite par
+`padding-right: 4vw`, débordait le conteneur de 588 px ; il restait environ 1 500 px de vide
+entre les deux colonnes. Et le titre d'étape montait à 42 px contre 36 px pour un titre de
+section, alors que ce sont deux `h2`.
+
+Ce qui est en place :
+
+- `--sc-gut` reproduit la gouttière de `.container` (moitié du reste, plus 24 px). Le texte est
+  posé à `--sc-gut` moins 28 px, soit le retrait interne (26) plus le liseré (2) : c'est le
+  TEXTE qui tombe sur la gouttière, et son liseré teal se place dans la marge, comme les
+  marques de section. Écart mesuré : **0 px de 1200 à 3440 px** ;
+- la part négative passe en `margin-left` : entre 940 et 1204 px la gouttière vaut 24, donc
+  24 − 28 serait un remplissage négatif, refusé, et le texte retombait 4 px trop à droite ;
+- la scène s'arrête sur la gouttière droite et son plafond est la place restante, soit 662 px,
+  constant par construction. Jeu texte/scène : +42 px partout ;
+- le titre d'étape reprend l'échelle des `h2` (`clamp(1.5rem, 3vw, 2.25rem)`), au-dessus comme
+  en dessous de 940 px ;
+- pastilles et compteur passent de `3vw` du bord de la fenêtre à 72 px à gauche du texte, donc
+  dans la marge du conteneur : à 2560 ils étaient 674 px à gauche de tout le contenu.
+
+**ATTENTION AU PIÈGE QUI M'A COÛTÉ DEUX ITÉRATIONS** : un pourcentage dans une propriété
+personnalisée se résout sur le bloc conteneur de l'élément qui l'UTILISE, pas de celui qui la
+déclare. La scène étant un élément de la grille du plateau, dont la boîte de contenu vaut déjà
+« fenêtre moins gouttière », `--sc-gut` y valait 77 px au lieu de 154, et le plafond 739 au lieu
+de 662, d'où un recouvrement de 37 à 98 px avec le texte. D'où l'expression dédiée
+`--sc-gut-scene`, dérivée algébriquement et documentée sur place.
+
+**Blocs centrés** : le seul restant était la liste de questions des pages commande, centrée par
+un `margin: 0 auto` EN LIGNE, invisible à la feuille de style (qui dit pourtant `margin: 0`).
+Un contrôle des centrages doit chercher les styles en ligne, et pas seulement les règles. Reste
+volontairement centré : le contenu des boutons, et le bouton flottant de la séquence, ancré à la
+fenêtre comme tout bouton flottant.
+
+**Ce qui n'est PAS traité** : le conteneur reste plafonné à 1180 px, donc à 2560 il y a 690 px de
+marge de chaque côté. L'élargir est une décision de charte qui toucherait les 23 pages ; à
+arbitrer avec le client.
+
 ## Passe mobile du scrollytelling + modèle compressé (2026-08-19)
 
 Audit mesuré (Playwright, 375×667 / 360×740 / 390×844 / 414×896 / 844×390 en paysage)
