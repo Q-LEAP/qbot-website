@@ -374,6 +374,14 @@ the only genuinely scroll-scrubbed effect on the site.
 
 ### Verifying a motion change
 
+**LE NAVIGATEUR D'ANALYSE REND EN LOGICIEL EN MODE INVISIBLE.** Relevé le 2026-08-20 :
+`chromium.launch(headless=True)` donne « ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device),
+SwiftShader driver) », c'est-à-dire du rendu processeur ; `headless=False` donne « ANGLE
+(Apple, ANGLE Metal Renderer: Apple M4) », le vrai GPU, celui du visiteur. **Tout défaut de
+rendu 3D doit donc être cherché en mode fenêtré.** C'est ce qui a fait échouer trois tentatives
+de reproduction du défaut entre les pas 3 et 4 : les captures logicielles ne montraient rien
+d'anormal, et les mesures d'écart pixel non plus.
+
 **Le balayage doit défiler en `behavior: 'instant'`.** `<html>` porte `scroll-behavior:
 smooth` : un `scrollTo(0, y)` toutes les 110 ms ne tient aucune des positions échantillonnées
 — chaque appel interrompt l'animation précédente, la page traîne derrière la boucle, puis le
@@ -1100,6 +1108,44 @@ Conséquences à ne pas oublier :
   seconde fois (UV par-dessus UV, matériaux déjà sombres re-assombris).
 - Contrôlé après coup : éclatement, insertion du téléphone, jour/nuit, FR et EN, plus le repli
   `file://`. Aucune erreur console.
+
+## Le défaut entre les pas 3 et 4 : c'était le plan coté (2026-08-20)
+
+Signalé trois fois, cherché trois fois sans succès, et trouvé en passant le navigateur
+d'analyse en mode fenêtré (cf. la note sur SwiftShader ci-dessus). **La cause était une
+correction précédente.**
+
+Le 2026-08-19, pour supprimer les sauts d'annotations, les choix de côté du pas 4 (de quel
+côté poser une cote, sur quel coin poser l'étiquette de la feuille) ont été figés sur la
+caméra NOMINALE du pas. Conséquence non vue alors : le calque `hud-size` s'allumait dès que
+`data-step` passait à 3, c'est-à-dire au premier pixel d'un balayage de **86°**, le plus long
+de la séquence. Pendant tout ce balayage, le plan était juste pour un angle qu'on ne regardait
+pas encore : constaté à l'image, à 61° de l'angle d'arrivée, **la cote « 15 cm » barre le
+boîtier de haut en bas et l'étiquette « FEUILLE A3 » se pose sur sa face avant**.
+
+Correction : le plan n'apparaît que **caméra posée**. `scrolly.js` compare l'angle réel à
+l'angle nominal du pas et pose `is-cam-posee` sur la section ; le CSS conditionne le calque à
+cette classe. Deux détails :
+
+- **seuil 10°, hystérésis 16°** : sans elle, la dérive au repos (±3,2°) ferait clignoter le
+  calque ;
+- **la comparaison porte sur l'angle nominal**, pas sur la consigne lissée : c'est l'angle pour
+  lequel le plan a été calculé.
+
+Mesuré après : écart 70° puis 28° pendant le balayage, calque à 0 ; à 9,9° la classe tombe et
+le calque monte à 0,91 ; à 0,4° il est à 1. Le fondu de 0,55 s du calque fait que le plan se
+pose au lieu d'apparaître.
+
+**Sans la classe, l'ancien comportement revient** : le seul risque est que le plan reste caché,
+jamais qu'il s'affiche de travers. Et en mouvement réduit la classe est vraie par défaut, donc
+rien n'est perdu (la séquence n'y dépasse de toute façon pas le pas 0).
+
+Pistes explorées et écartées, pour ne pas les refaire : les coordonnées du calque SVG (aucun
+NaN, aucun emballement sur 275 images), l'alpha de la coque (monotone, bond maximal 0,098),
+l'ombre portée de model-viewer (forcée à 0, l'agitation du sol est identique : ce sont les
+pièces qui bougent), et le halo CSS derrière l'objet, dont le centre est pourtant déplacé à
+chaque image — sur le GPU il produit moins de 2 niveaux d'écart entre deux images et le sol
+n'a aucune marche de bande.
 
 ## Passe mobile du scrollytelling + modèle compressé (2026-08-19)
 

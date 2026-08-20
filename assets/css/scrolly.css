@@ -653,7 +653,13 @@ main .section-label::before {
 .hud-floor { opacity: 1; }
 .scrolly[data-step="1"] .hud-dock  { opacity: 1; }
 .scrolly[data-step="2"] .hud-burst { opacity: 1; }
-.scrolly[data-step="3"] .hud-size  { opacity: 1; }
+/* Le plan coté attend que la caméra soit arrivée : `is-cam-posee` est posée par
+   scrolly.js quand l'angle réel est à moins de 10° de l'angle nominal du pas. Le
+   balayage du pas 3 au pas 4 fait 86°, et un plan dessiné pour l'angle d'arrivée
+   traverse le produit tant qu'on n'y est pas. Sans la classe, l'ancien
+   comportement revient : le seul risque est que le plan reste caché, jamais qu'il
+   s'affiche de travers. */
+.scrolly[data-step="3"].is-cam-posee .hud-size { opacity: 1; }
 
 /* ── Le sol ──────────────────────────────────────────────────────────────
    Il est présent aux quatre pas : c'est lui qui fait « posé sur un bureau »

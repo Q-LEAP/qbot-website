@@ -313,6 +313,7 @@
      d'un coup, ensemble : rien ne peut plus se désynchroniser. */
   var TELEPORT = 0.5;
   var lastU = null;
+  var camPosee = false;   // cf. « le plan coté n'apparaît que caméra arrivée »
   var lastShown = null;   // angle RÉEL de la caméra à l'image précédente, en degrés
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1 };
@@ -900,6 +901,30 @@
       viewer.currentTime = cur.t;
       var shown = HUD.draw(cur.t, SCENES[i]) * 180 / Math.PI;
       camLag = Math.abs(shown - goal) > 0.02;
+
+      /* ── LE PLAN COTÉ N'APPARAÎT QUE CAMÉRA ARRIVÉE ──────────────────────
+         Le pas 4 dessine un plan : feuille A3 au sol et trois cotes. Ses choix de
+         côté sont figés sur la caméra NOMINALE du pas, pour qu'ils ne basculent
+         pas en cours de route. Conséquence non vue à l'époque : tant que la caméra
+         n'est pas arrivée, ce plan est juste pour un angle qui n'est pas celui
+         qu'on regarde, et il traverse le produit. Constaté à l'image sur le GPU, à
+         61° de l'angle final : la cote « 15 cm » barre le boîtier de haut en bas et
+         l'étiquette de la feuille se pose sur sa face. Le balayage du pas 3 au pas 4
+         fait 86°, le plus long de la séquence, et le calque s'allumait dès le
+         premier pixel.
+
+         On attend donc que la caméra soit posée. Deux détails :
+         - seuil à 10°, hystérésis à 16° : sans elle, la dérive au repos (±3,2°)
+           suffirait à faire clignoter le calque ;
+         - la comparaison porte sur l'angle NOMINAL du pas et non sur ma consigne
+           lissée, puisque c'est l'angle pour lequel le plan a été calculé.
+         Le fondu de 0,55 s du calque fait le reste : le plan se pose au lieu
+         d'apparaître. */
+      var ecartNom = Math.abs(shown - SCENES[i].theta);
+      if (ecartNom > 180) ecartNom = 360 - ecartNom;
+      if (camPosee && ecartNom > 16) camPosee = false;
+      else if (!camPosee && ecartNom < 10) camPosee = true;
+      root.classList.toggle('is-cam-posee', camPosee);
       /* ET LE VERRE EXIGE UNE CAMÉRA POSÉE.
          Les paliers séparent déjà les deux mouvements tant que le défilement est un
          geste : l'éclatement se joue caméra immobile, mesuré à 42,00° d'un bout à
