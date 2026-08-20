@@ -4599,59 +4599,156 @@ label > input[type="checkbox"] {
   top: max(104px, calc(50vh - 190px));
 }
 
-/* ── Le schéma : le cadre est permanent, les mots changent ─────────────────
-   Les libellés d'un même emplacement sont empilés dans UNE SEULE cellule de
-   grille : la boîte prend donc la hauteur du plus long, sans qu'aucune hauteur
-   ne soit écrite à la main. C'est ce qui garantit qu'elle ne change pas de taille
-   d'un cas à l'autre. */
-.ucs__diagram { display: flex; flex-direction: column; }
-.ucs__node {
-  display: grid;
+/* ── Le panneau : un objet de produit, pas une maquette filaire ────────────
+   Première version : trois grands cadres identiques empilés, et de la prose en
+   chasse fixe entre eux. Signalé — à raison — comme pas au niveau. Ce qui n'allait
+   pas, dans l'ordre :
+
+   - trois rectangles de même taille et de même poids, donc aucune hiérarchie : rien
+     ne disait lequel des trois est le produit ;
+   - la chasse fixe employée pour TOUT, y compris des phrases ; or la chasse fixe
+     dit « ceci est du code ». Employée pour de la prose, elle dit « sortie de
+     console » ;
+   - beaucoup de vide : trois boîtes de 440 px pour trois mots chacune.
+
+   Le panneau est maintenant fait comme un objet d'interface : un en-tête qui nomme
+   le cas, trois lignes d'acteurs avec leur icône, la ligne du milieu marquée comme
+   le pivot, et une note en pied. Les transitions sont rendues SELON LEUR NATURE :
+   pastille de code pour un appel HTTP (verbe en teal), légende sobre pour une
+   action physique. C'est cette distinction qui fait lire le schéma comme une trace
+   d'exécution et non comme un dessin.
+
+   Les libellés d'un même emplacement restent empilés dans UNE SEULE cellule de
+   grille : la boîte prend la hauteur du plus long, sans qu'aucune hauteur ne soit
+   écrite à la main, et elle ne change donc pas de taille d'un cas à l'autre. */
+.ucs__panel {
+  margin: 0;
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
-  color: var(--black);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  line-height: 1.35;
+  border-radius: 16px;
+  /* Un dégradé qui s'éteint vers le bas plus une lumière d'un pixel en haut : c'est
+     ce qui donne au cadre l'épaisseur d'un objet plutôt que d'un rectangle. */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012) 45%,
+                    rgba(255, 255, 255, 0) 100%),
+    #101010;
+  box-shadow:
+    0 24px 60px -32px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
 }
-.ucs__node--fort {
-  border-color: var(--teal);
-  background: linear-gradient(135deg, rgba(0, 203, 190, 0.14), rgba(0, 203, 190, 0.04));
+.ucs__panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.022);
+}
+.ucs__panel-eyebrow {
+  font-size: 0.625rem;
   font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
 }
-.ucs__link {
+.ucs__panel-cat {
+  display: grid;
+  justify-items: end;
+  text-align: right;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.ucs__flow {
+  list-style: none;
+  margin: 0;
+  padding: 14px 16px 6px;
+}
+.ucs__row {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 56px;
-  padding: 6px 0 6px 42px;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 10px;
 }
-.ucs__link-rail {
+/* La ligne du milieu est le produit : c'est la seule qui porte une surface et un
+   liseré. Les deux autres sont le contexte. */
+.ucs__row--pivot {
+  background: linear-gradient(90deg, rgba(0, 203, 190, 0.13), rgba(0, 203, 190, 0.025));
+  box-shadow: inset 0 0 0 1px rgba(0, 203, 190, 0.3);
+}
+.ucs__ico {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--gray);
+}
+.ucs__ico svg { width: 17px; height: 17px; }
+.ucs__row--pivot .ucs__ico {
+  border-color: rgba(0, 203, 190, 0.42);
+  background: rgba(0, 203, 190, 0.09);
+  color: var(--teal);
+}
+.ucs__row--out .ucs__ico { color: var(--teal); }
+.ucs__actor {
+  display: grid;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--black);
+}
+.ucs__row--pivot .ucs__actor { font-weight: 700; }
+
+/* Le rail entre deux lignes, aligné sur le centre des icônes. Le calcul : 16 de
+   marge du bloc + 10 de marge de ligne + 15 de demi-icône = 41 px depuis le bord du
+   panneau, soit 25 depuis le bord du segment ; le rail faisant 2 px de large, il se
+   pose à 24 pour que son axe tombe sur l'axe des icônes. La pointe est un carré de 7 px tourné
+   d'un huitième de tour : son sommet est au centre de sa boîte, donc à `rail − 2,5`.
+   Relevé après réglage : centres d'icônes et axes de rails à 888 px, noms et
+   libellés à 915 px. */
+.ucs__seg {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.ucs__seg-rail {
   position: absolute;
-  left: 21px;
+  left: 24px;
   top: 0;
-  bottom: 10px;
+  /* 14 px et non 9 : la tête du tracé se pose au bas du rail, et à 9 px elle
+     chevauchait la pointe — deux marques sur le même quart de centimètre, ce qui
+     faisait une flèche épaissie et sale. À 14, la tête s'arrête juste au-dessus. */
+  bottom: 14px;
   width: 2px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.11);
 }
-/* La pointe : un carré tourné, deux côtés seulement. */
-.ucs__link::after {
+.ucs__seg::after {
   content: '';
   position: absolute;
-  left: 16px;
-  bottom: 3px;
-  width: 8px;
-  height: 8px;
+  left: 21px;
+  bottom: 2px;
+  width: 7px;
+  height: 7px;
   border-right: 2px solid var(--teal);
   border-bottom: 2px solid var(--teal);
   transform: rotate(45deg);
 }
-/* Le tracé. On anime `height` et non `scaleY` : la tête est un disque, et une
-   mise à l'échelle verticale l'écraserait en ellipse. Deux pixels de large sur
-   quarante de haut, le coût de rastérisation est nul. */
-.ucs__link-head {
+/* Le tracé. On anime `height` et non `scaleY` : la tête est un disque, et une mise
+   à l'échelle verticale l'écraserait en ellipse. Deux pixels de large sur quarante
+   de haut, le coût de rastérisation est nul. */
+.ucs__seg-head {
   position: absolute;
   left: 0;
   top: 0;
@@ -4659,41 +4756,59 @@ label > input[type="checkbox"] {
   height: 100%;
   background: linear-gradient(180deg, var(--teal-dark), var(--teal));
 }
-.ucs__link-head::after {
+.ucs__seg-head::after {
   content: '';
   position: absolute;
-  left: -2px;
-  bottom: -3px;
-  width: 6px;
-  height: 6px;
+  left: -1.5px;
+  bottom: -2.5px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--teal);
-  box-shadow: 0 0 0 4px rgba(0, 203, 190, 0.18);
+  box-shadow: 0 0 0 3px rgba(0, 203, 190, 0.16);
 }
 @keyframes ucsDrawA { from { height: 0; } to { height: 100%; } }
 @keyframes ucsDrawB { from { height: 0; } to { height: 100%; } }
-.ucs[data-uc="0"] .ucs__link-head,
-.ucs[data-uc="2"] .ucs__link-head,
-.ucs[data-uc="4"] .ucs__link-head { animation: ucsDrawA 0.5s var(--ease-out) both; }
-.ucs[data-uc="1"] .ucs__link-head,
-.ucs[data-uc="3"] .ucs__link-head { animation: ucsDrawB 0.5s var(--ease-out) both; }
-/* Le second lien part après le premier : l'œil suit l'appel qui redescend. */
-.ucs__diagram > .ucs__link:nth-child(4) .ucs__link-head { animation-delay: 0.12s; }
+.ucs[data-uc="0"] .ucs__seg-head,
+.ucs[data-uc="2"] .ucs__seg-head,
+.ucs[data-uc="4"] .ucs__seg-head { animation: ucsDrawA 0.5s var(--ease-out) both; }
+.ucs[data-uc="1"] .ucs__seg-head,
+.ucs[data-uc="3"] .ucs__seg-head { animation: ucsDrawB 0.5s var(--ease-out) both; }
+/* Le second rail part après le premier : l'œil suit l'appel qui redescend. */
+.ucs__flow > .ucs__seg:nth-child(4) .ucs__seg-head { animation-delay: 0.12s; }
 
-.ucs__link-lab {
+.ucs__seg-lab {
   display: grid;
+  justify-items: start;
+  margin-left: 52px;
+  min-width: 0;
+}
+/* Une pastille de code : c'est un appel, et cela doit se voir comme tel. */
+.ucs__lbl--code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.75rem;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--gray);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 5px 9px;
+}
+.ucs__lbl--code b { color: var(--teal); font-weight: 700; margin-right: 7px; }
+/* Une action physique n'est pas du code : elle se lit en texte courant. */
+.ucs__lbl--prose {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--muted);
+  padding: 3px 0;
 }
 .ucs__cap {
   display: grid;
-  margin-top: 18px;
-  padding-top: 16px;
+  padding: 13px 18px 15px;
   border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.015);
   font-size: 0.8125rem;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--muted);
 }
 /* La bascule des mots. Tous les libellés d'un emplacement occupent la même
@@ -4711,19 +4826,69 @@ label > input[type="checkbox"] {
 .ucs[data-uc="3"] .ucs__lbl[data-i="3"],
 .ucs[data-uc="4"] .ucs__lbl[data-i="4"] { opacity: 1; transform: none; }
 
-/* Les trois exemples d'appel, côte à côte tant que la place existe. */
-.ucs__snippets {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
-  gap: 20px;
-  /* `stretch` et non `start` : les trois exemples n'ont pas le même nombre de
-     lignes (10, 12, 13) et alignés en haut, leurs cadres finissaient en escalier. */
+/* ── La bande d'exemples qui glisse ────────────────────────────────────────
+   Procédé de la section « Everyone creates » de linearity.io : le bloc est épinglé
+   et sa piste défile latéralement pendant qu'on continue à descendre.
+
+   LA COURSE EST EXACTEMENT CE QUI DÉPASSE, donc le rapport est de un pour un : la
+   section est haute d'un écran plus le débordement, et la piste se translate de ce
+   même débordement. On ne détourne pas le défilement, on le réoriente. C'est aussi
+   ce qui évite le défaut classique du genre, une section qui retient le lecteur
+   plus longtemps que ce qu'elle a à montrer.
+
+   TOUT EST EN UNITÉS DE FENÊTRE, JAMAIS EN POURCENTAGE. Un pourcentage se résout
+   sur le bloc conteneur de l'élément qui s'en sert, et ce piège a déjà coûté trois
+   corrections sur ce dépôt (`--sc-gut-scene`, le calage de la carte de séquence, la
+   marge de la carte de cas d'usage). Ici la gouttière, la piste et le débordement
+   sont tous exprimés en `vw` et en pixels.
+
+   La première carte part sur la gouttière du site, et la dernière s'arrête sur la
+   gouttière opposée : la bande commence et finit alignée sur le texte, comme le
+   reste de la page. */
+.ucs-api {
+  --api-card: 460px;
+  --api-gap: 20px;
+  --api-n: 5;
+  --api-gut: max(24px, calc((100vw - var(--container)) / 2 + 24px));
+  --api-track: calc(var(--api-n) * var(--api-card)
+                    + (var(--api-n) - 1) * var(--api-gap) + var(--api-gut));
+  --api-over: max(0px, calc(var(--api-track) - 100vw + var(--api-gut)));
+  height: calc(100svh + var(--api-over));
+}
+.ucs-api__pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+}
+.ucs-api__pin .section-header { margin-bottom: 0; }
+.ucs-api__viewport { overflow: hidden; }
+.ucs-api__track {
+  display: flex;
   align-items: stretch;
+  gap: var(--api-gap);
+  width: max-content;
+  padding-left: var(--api-gut);
+  transform: translate3d(calc(-1 * var(--api-p, 0) * var(--api-over)), 0, 0);
 }
 .ucs__snippet {
   margin: 0;
+  width: var(--api-card);
   display: flex;
   flex-direction: column;
+}
+/* La carte en cours de lecture. `data-panel` est écrit par le moteur de mouvement,
+   qui découpe la course en autant de parts qu'il y a de cartes. */
+.ucs-api[data-panel="0"] .ucs__snippet:nth-child(1) .code-block,
+.ucs-api[data-panel="1"] .ucs__snippet:nth-child(2) .code-block,
+.ucs-api[data-panel="2"] .ucs__snippet:nth-child(3) .code-block,
+.ucs-api[data-panel="3"] .ucs__snippet:nth-child(4) .code-block,
+.ucs-api[data-panel="4"] .ucs__snippet:nth-child(5) .code-block {
+  border-color: rgba(0, 203, 190, 0.34);
 }
 .ucs__snippet .code-block { flex: 1; }
 .ucs__snippet figcaption {
@@ -4788,6 +4953,43 @@ label > input[type="checkbox"] {
 @media (max-width: 1219px) {
   .ucs__steps::before, .ucs__steps::after, .ucs__step::before { display: none; }
 }
+/* Sous 940 px et en mouvement réduit : plus d'épinglage du tout. La bande devient
+   un défilement horizontal natif, avec accrochage. Épingler une section sur un
+   téléphone est ce qui a coûté le plus de corrections sur ce site ; ici le
+   navigateur fait le travail, et le doigt va plus vite qu'un défilement détourné. */
+@media (max-width: 939px), (prefers-reduced-motion: reduce) {
+  .ucs-api { height: auto; }
+  .ucs-api__pin {
+    position: static;
+    height: auto;
+    overflow: visible;
+    gap: 24px;
+  }
+  .ucs-api__viewport {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    /* La piste sort du conteneur : le rembourrage droit rend la dernière carte
+       entièrement atteignable, sinon elle colle au bord. */
+    padding-bottom: 8px;
+  }
+  .ucs-api__track {
+    transform: none;
+    padding-right: var(--api-gut);
+  }
+  .ucs__snippet {
+    width: min(86vw, var(--api-card));
+    scroll-snap-align: start;
+  }
+  /* LA RÉVÉLATION EST NEUTRALISÉE ICI, et c'est nécessaire : une carte hors du champ
+     n'est jamais « intersectée » par l'observateur du module 4, donc dans un
+     défilement horizontal elle resterait invisible jusqu'à ce que le doigt l'amène,
+     puis apparaîtrait en retard. Mesuré avant correction : trois cartes à l'opacité 0
+     à 390 px, signalées par le balayage de non-régression. Sur grand écran la
+     révélation garde son sens, les cartes arrivant poussées par le défilement. */
+  .ucs-api__track .code-block { opacity: 1; transform: none; filter: none; }
+}
+
 @media (max-width: 939px) {
   .ucs__inner { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .ucs__stage { display: none; }
@@ -4797,8 +4999,8 @@ label > input[type="checkbox"] {
 }
 @media (prefers-reduced-motion: reduce) {
   .ucs__lbl { transition: none; }
-  /* `.ucs[data-uc]` et non `.ucs__link-head` seul : les règles qui posent
+  /* `.ucs[data-uc]` et non `.ucs__seg-head` seul : les règles qui posent
      l'animation portent un sélecteur d'attribut, donc pèsent plus lourd. */
-  .ucs[data-uc] .ucs__link-head { animation: none; }
+  .ucs[data-uc] .ucs__seg-head { animation: none; }
   .ucs__steps::after { transform: none; }
 }

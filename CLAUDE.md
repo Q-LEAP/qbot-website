@@ -1608,6 +1608,71 @@ un cas est inséré. La carte que l'on lit prend un liseré teal, pour s'accorde
 pastille ; les autres ne sont PAS assombries, un assombrissement coûterait du contraste sur
 du texte.
 
+### Le panneau du schéma : un objet de produit, pas une maquette filaire
+
+Deuxième reprise, sur le même retour (« niveau UX/UI, SaaS/premium, c'est pas top »). Ce qui
+n'allait pas dans la version d'avant, dans l'ordre d'importance :
+
+1. **trois grands cadres identiques empilés**, donc aucune hiérarchie : rien ne disait lequel
+   des trois est le produit ;
+2. **la chasse fixe employée pour tout**, y compris des phrases. La chasse fixe dit « ceci est
+   du code » ; sur de la prose, elle dit « sortie de console » ;
+3. **beaucoup de vide** : trois boîtes de 440 px pour trois mots chacune.
+
+Le panneau est maintenant fait comme un objet d'interface : un en-tête (« le chemin de
+l'appel » à gauche, la catégorie du cas en teal à droite), trois lignes d'acteurs avec leur
+icône, la ligne du milieu marquée comme le pivot (surface et liseré teal, c'est la seule),
+et une note en pied. Les transitions sont rendues **selon leur nature** : pastille de code
+pour un appel HTTP (verbe en teal), légende sobre pour une action physique. C'est cette
+distinction qui fait lire le schéma comme une trace d'exécution.
+
+Deux relevés qui comptent : le rail tombe **au pixel** sur l'axe des icônes (888 px, comme
+les trois icônes) et les libellés de transition sur le nom des acteurs (915 px) ; et la
+hauteur du panneau est **constante sur les cinq cas** (356 px), parce que les libellés d'un
+même emplacement sont empilés dans une seule cellule de grille. La tête du tracé s'arrête
+14 px au-dessus de la pointe : à 9 px elles se chevauchaient et faisaient une flèche épaisse
+et sale.
+
+### La bande d'exemples d'appel qui glisse
+
+Demandé explicitement : le procédé de la section « Everyone creates » de linearity.io, où des
+blocs défilent de droite à gauche pendant qu'on descend. Appliqué aux exemples d'appel de la
+section « Un appel HTTP, et n'importe quelle chaîne de tests ».
+
+**La course est exactement ce qui dépasse**, donc le rapport au défilement est de un pour un :
+la section est haute d'un écran plus le débordement, et la piste se translate de ce même
+débordement. On ne détourne pas le défilement, on le réoriente, et la section ne retient pas
+le lecteur plus longtemps qu'elle n'a à montrer. Relevé à 1440 : hauteur 2 148 px = 900 d'écran
++ 1 248 de course, piste 2 534 px.
+
+**Tout est en unités de fenêtre, jamais en pourcentage.** Un pourcentage se résout sur le bloc
+conteneur de l'élément qui s'en sert : ce piège a déjà coûté trois corrections sur ce dépôt.
+Ici gouttière, piste et débordement sont en `vw` et en pixels.
+
+**La première carte part sur la gouttière du site et la dernière s'arrête sur la gouttière
+opposée.** Vérifié à 940, 1024, 1280, 1440, 1920 et 2560 px : la carte 1 tombe exactement sur
+le logo (écart 0), le bord droit de la dernière carte tombe exactement sur `largeur − gouttière`,
+et **aucun débordement horizontal de la page** à aucune largeur.
+
+Deux exemples ont été ajoutés (Robot Framework, JUnit/RestAssured) : à trois cartes il n'y avait
+presque rien à faire glisser, et ces deux outils sont déjà annoncés comme compatibles dans le
+tableau juste en dessous, avec ces mécanismes exacts.
+
+Trois pièges rencontrés, tous corrigés :
+
+- **le masque du média n'a aucun sens sur un objet qui glisse latéralement.** `.code-block` est
+  dans la liste `media` du module 4 (masque qui remonte plus passage de lumière) : les cinq
+  cartes se révélant au même instant, les cinq éclats se voyaient ensemble, et le masque
+  écrêtait les cadres à des hauteurs différentes. Une entrée `plain` placée EN PREMIER dans
+  `REVEAL_MAP` gagne, puisqu'un élément n'y prend qu'une variante ;
+- **une carte hors du champ n'est jamais « intersectée »**, donc dans le repli à défilement
+  horizontal natif (téléphone, mouvement réduit) trois cartes restaient à l'opacité 0 jusqu'à
+  ce que le doigt les amène. Signalé par le balayage de non-régression, pas à l'œil. La
+  révélation est neutralisée dans ce repli ;
+- **sous 940 px et en mouvement réduit, plus d'épinglage du tout** : la bande devient un
+  défilement horizontal natif avec accrochage. Épingler une section sur un téléphone est ce
+  qui a coûté le plus de corrections sur ce site ; ici le navigateur fait le travail.
+
 Ce qui reste inchangé : l'index du cas courant vient d'un observateur d'intersection à
 marges négatives (module 17), pas d'un calcul sur `--ucs-p`. Les deux formules du moteur
 divisent une course en parts égales, alors que les pas n'ont pas tous la même hauteur

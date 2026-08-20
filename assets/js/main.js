@@ -177,6 +177,12 @@ if ('IntersectionObserver' in window) {
   /* Ordre significatif : le premier motif qui matche gagne, donc les
      sélecteurs les plus spécifiques d'abord. */
   const REVEAL_MAP = [
+    /* EN PREMIER, donc gagnant : les blocs de code de la bande d'exemples de la page
+       des cas d'usage. Ils entrent PAR LA DROITE, poussés par le défilement ; un
+       masque qui remonte et un passage de lumière verticaux n'ont aucun sens sur un
+       objet qui glisse latéralement, et les cinq cartes se révélant au même instant,
+       les cinq éclats se voyaient ensemble. Ils gardent la montée et le fondu. */
+    ['plain', ['.ucs-api__track .code-block']],
     ['media', [
       '.intro__image',
       '.video__wrapper',
@@ -611,6 +617,10 @@ backToTop.addEventListener('click', () => {
        `.timeline`. Le modèle de la ligne de lecture est le bon ici — le bloc
        TRAVERSE le viewport, il n'est pas épinglé (seul le schéma l'est). */
     ['.ucs__inner', '--ucs-p'],
+    /* La bande d'exemples d'appel : le troisième argument dit au moteur que c'est
+       un rail ÉPINGLÉ (mesuré à sa course de collage et non à la ligne de lecture)
+       et lui fait écrire `data-panel`, qui sert ici à marquer la carte en cours. */
+    ['.ucs-api', '--api-p', 5],
   ];
 
   var LERP = 0.14;          // 0 = figé, 1 = suivi immédiat (aucune inertie)
