@@ -1719,3 +1719,67 @@ Contrôlé : 25 pages × (normal, mouvement réduit) × (1440, 390) sans anomali
 contraste sur les deux nouvelles pages, un seul `h1`, aucun saut de niveau de titre, aucun
 lien interne cassé, hreflang auto-référent des deux côtés, `sitemap.xml` et `llms.txt` à
 jour.
+
+
+## La boule qui dérive, et une passe d'aération (2026-08-20)
+
+### La boule et sa traîne
+
+Demandé d'après linearity.io : « lorsqu'on ne bouge pas de la homepage, il y a dans le fond
+une boule, un trail orange qui illumine le site ». Le calque ambiant de ce site
+(`body::before/::after`) dérive avec la PROGRESSION dans la page : à l'arrêt il est immobile.
+Celui-ci dérive avec le TEMPS.
+
+`.orbz` : trois calques, **une seule animation**, décalée de 2,4 s et de 4,8 s, avec des
+tailles et des opacités décroissantes. C'est ce décalage qui fait la traîne, sans une
+deuxième trajectoire à écrire. Seul `transform` est animé, donc composité : aucun repeint.
+(Le piège est documenté juste au-dessus dans la feuille de style : déplacer le centre d'un
+dégradé radial repeint toute la surface et coûtait 14 % des images par seconde sur l'accueil.)
+
+**LES TROIS OPACITÉS SONT UN BUDGET, PAS UN GOÛT.** Les calques se superposent au coeur du
+parcours, donc l'opacité résultante vaut `1 − (1−a1)(1−a2)(1−a3)`. Le plafond vient du
+contraste : à 30 % de teal sur le noir de la page, `--gray` tombe à 4,67:1, juste au-dessus
+du seuil AA, et `--muted` à 3,71, en dessous. D'où 0,21 / 0,065 / 0,03, soit 0,283 au total :
+la tête est plus lumineuse qu'un calque unique et le budget tient.
+
+Deux conséquences :
+
+- **le calque ambiant du site est neutralisé là où la boule existe** (`body:has(.orbz)`) :
+  sinon les halos s'additionnent et le total repasse au-dessus du plafond. Un seul système de
+  fond par page ;
+- **deux textes ont changé de gris** parce qu'ils sont posés sur le fond de page, donc sur la
+  boule : la note de l'API et le fil d'Ariane passent de `--muted` à `--gray`.
+
+Vérifié en forçant le fond de page à la couleur du coeur du halo (`#08342F`) sur les
+25 pages : **0 défaut de contraste**. C'est la seule façon de contrôler un halo en
+`position: fixed` — un audit qui remonte l'arbre des fonds ne le voit pas.
+
+En mouvement réduit la boule ne bouge plus mais **reste allumée** : c'est de la lumière, pas
+une animation décorative. Sous 700 px elle est réduite et ralentie (44 s), pour rester un
+fond et pas un événement. Le balisage n'existe que sur les deux pages de cas d'usage :
+l'accueil a déjà son canevas 3D et ses deux orbes de hero.
+
+### Aération, sur l'échelle de 8 px
+
+Demandé : « aère un peu entre les blocs, utilise les normes d'ergo et d'UX/UI connues ».
+Tout reste multiple de 8, et le rythme vertical d'une section se place dans la fourchette
+courante de ce type d'interface (80 à 128 px sur écran large) :
+
+| | avant | après |
+|---|---|---|
+| `--section-py` (large / tablette / téléphone) | 96 / 72 / 56 | **112 / 88 / 64** |
+| chapeau de section | 56 | **64** |
+| grilles denses (4 et 3 colonnes) | 24 | **32** |
+| lignes de fiche technique | 20 | **24** |
+| cartes (`.feature-card`, `.product-card`, `.calendly-box`, `.sidebar-card`) | 28 | **32** |
+| cas d'usage (marge intérieure / gouttière) | 26-28 / 20-36 | **30-34 / 24-40** |
+| matrice de compatibilité | 10 (8 en une colonne) | **14 (12)** |
+
+Effet mesuré à 1440 px : accueil 10 669 → 10 957 px, Caractéristiques 10 215 → 10 619,
+commande 6 353 → 6 677, FAQ 2 738 → 2 802. Soit 3 % de hauteur en plus pour un rythme qui
+respire.
+
+**La seule contrainte dure que cette passe pouvait casser est la carte de la séquence
+épinglée**, qui doit tenir dans un écran. Vérifié à 1440×900, 1280×720, 1024×768, 1440×700 et
+1366×640 : la pile fait 352 à 359 px et il reste au minimum 141 px de marge au-dessus comme
+en dessous.

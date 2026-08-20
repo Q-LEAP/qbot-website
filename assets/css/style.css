@@ -86,7 +86,7 @@
      La gouttière de la séquence 3D suit automatiquement : elle est calculée à partir
      de cette variable (cf. scrolly.css). */
   --container:   clamp(1180px, 72vw, 1440px);
-  --section-py:  96px;
+  --section-py:  112px;
 
   /* ── Espace de protection du logo (charte p. 3 : « Always allow a minimum
      space around the logo »).
@@ -228,7 +228,7 @@ p { color: var(--gray); }
 
 .section-title { margin-bottom: 16px; }
 .section-subtitle { font-size: 1.0625rem; max-width: 600px; }
-.section-header { margin-bottom: 56px; }
+.section-header { margin-bottom: 64px; }
 /* Il n'y a plus de variante centrée : sur ce site un bloc de texte est aligné à
    gauche sur la gouttière du conteneur — celle de l'encre du logo — ou à droite,
    jamais au centre. La classe `centered` a été retirée des 26 en-têtes qui la
@@ -560,7 +560,7 @@ p { color: var(--gray); }
 .features__grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 32px;
 }
 
 .feature-card {
@@ -950,7 +950,7 @@ p { color: var(--gray); }
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 32px;
   display: flex;
   gap: 20px;
   align-items: center;
@@ -972,7 +972,7 @@ p { color: var(--gray); }
   align-items: start;
 }
 
-.specs__list { display: flex; flex-direction: column; gap: 20px; }
+.specs__list { display: flex; flex-direction: column; gap: 24px; }
 
 /* LE FILET DE SÉPARATION APPARTIENT À LA VARIANTE « LIGNE », PAS À LA VARIANTE
    « CARTE ». Il était posé sur `.spec-item` tout court, et retiré du dernier par
@@ -1090,7 +1090,7 @@ p { color: var(--gray); }
   background: var(--teal-light);
   border: 1px solid rgba(0,203,190,0.2);
   border-radius: var(--radius);
-  padding: 28px;
+  padding: 32px;
 }
 .calendly-box h3 { margin-bottom: 8px; font-size: 1rem; }
 .calendly-box p { font-size: 0.9rem; margin-bottom: 16px; }
@@ -1525,9 +1525,13 @@ p { color: var(--gray); }
   padding: 0;
   margin: 0;
 }
-.breadcrumb__list a { color: var(--muted); }
+/* `--gray` et non `--muted` : le fil d'Ariane est posé sur le fond de page, donc sur
+   la boule là où elle passe (page des cas d'usage). Calculé au coeur du halo :
+   `--gray` tient 4,8:1, `--muted` tombe à 3,8. Et un lien de navigation gagne à être
+   plus lisible de toute façon. */
+.breadcrumb__list a { color: var(--gray); }
 .breadcrumb__list a:hover { color: var(--teal-text); }
-.breadcrumb__list span { color: var(--muted); }
+.breadcrumb__list span { color: var(--gray); }
 /* Le dernier élément du fil d'Ariane EST la page courante : ce n'était pas un
    raccourci utile mais un lien vers soi-même, déjà désamorcé à la souris par un
    `pointer-events: none` — donc encore focalisable au clavier et annoncé comme
@@ -1580,13 +1584,13 @@ p { color: var(--gray); }
 
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
-  :root { --section-py: 72px; }
+  :root { --section-py: 88px; }
   .features__grid { grid-template-columns: repeat(2, 1fr); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 768px) {
-  :root { --section-py: 56px; }
+  :root { --section-py: 64px; }
 
   .nav__menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: flex-start; padding: 16px 24px 24px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .nav__menu.open { display: flex; }
@@ -1691,7 +1695,7 @@ p { color: var(--gray); }
   .about-section__grid > .intro__image { order: 2; }
 
   .features__grid { grid-template-columns: 1fr; }
-  .stats__grid { grid-template-columns: 1fr; gap: 24px; }
+  .stats__grid { grid-template-columns: 1fr; gap: 32px; }
   .form-row { grid-template-columns: 1fr; }
 
   .footer__grid { grid-template-columns: 1fr; gap: 32px; }
@@ -2137,7 +2141,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 32px;
   margin-bottom: 24px;
   box-shadow: var(--shadow-sm);
 }
@@ -2166,7 +2170,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .order-process {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 32px;
   margin-top: 48px;
   position: relative;
 }
@@ -2211,7 +2215,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .guarantee-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 32px;
   margin-top: 40px;
 }
 .guarantee-item {
@@ -4240,7 +4244,7 @@ label > input[type="checkbox"] {
 .usecase {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 26px 28px;
+  padding: 30px 34px;
   background: var(--white);
 }
 
@@ -4261,7 +4265,7 @@ label > input[type="checkbox"] {
 .usecase__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px 36px;
+  gap: 24px 40px;
 }
 
 .usecase__lab {
@@ -4323,8 +4327,8 @@ label > input[type="checkbox"] {
 [data-theme="dark"] .usecase { background: #141414; border-color: #2B2B2B; }
 
 @media (max-width: 760px) {
-  .usecase { padding: 22px 20px; }
-  .usecase__grid { grid-template-columns: 1fr; gap: 18px; }
+  .usecase { padding: 24px 22px; }
+  .usecase__grid { grid-template-columns: 1fr; gap: 22px; }
   .usecase__part--sol { padding-left: 14px; }
 }
 
@@ -4419,7 +4423,7 @@ label > input[type="checkbox"] {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 10px;
+  gap: 14px;
 }
 .compat__head {
   font-size: 1.0625rem;
@@ -4477,7 +4481,7 @@ label > input[type="checkbox"] {
 }
 .compat__item--open::before { display: none; }
 @media (max-width: 520px) {
-  .compat { grid-template-columns: 1fr; gap: 8px; }
+  .compat { grid-template-columns: 1fr; gap: 12px; }
   .compat__item { min-height: 48px; padding: 11px 14px 11px 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4810,7 +4814,10 @@ label > input[type="checkbox"] {
   margin-top: 20px;
   max-width: 760px;
   font-size: 0.875rem;
-  color: var(--muted);
+  /* `--gray` et non `--muted` : c'est un paragraphe posé sur le fond de page, donc
+     sur la boule quand elle passe dessous. Calculé : au coeur de la boule le fond
+     monte à 21 % de teal, où `--gray` tient 5,9:1 et `--muted` 4,7 seulement. */
+  color: var(--gray);
 }
 
 /* Sous 940 px et en mouvement réduit : plus d'épinglage du tout. La bande devient
@@ -4875,4 +4882,93 @@ label > input[type="checkbox"] {
   }
   .ucs__case + .ucs__case { margin-top: 18px; }
   .ucs__index, .ucs__rail, .ucs__glow { display: none; }
+}
+
+
+/* ══ LA BOULE ET SA TRAÎNE ═════════════════════════════════════════════════
+   Procédé relevé sur linearity.io : un halo traverse lentement le fond, et il
+   continue même quand le visiteur ne bouge pas. Le calque ambiant du site
+   (`body::before/::after`) dérive avec la PROGRESSION dans la page ; à l'arrêt il
+   est immobile. Celui-ci dérive avec le TEMPS, ce qui est autre chose : la page
+   respire au lieu d'attendre.
+
+   TROIS CALQUES, UNE SEULE ANIMATION. Le même parcours, décalé de 2,4 s et de
+   4,8 s, avec des tailles et des opacités décroissantes : c'est ce décalage qui
+   fait la traîne, sans une deuxième trajectoire à écrire.
+
+   CE QUI EST ANIMÉ EST UNIQUEMENT `transform`, donc composité : aucun repeint. Le
+   piège est documenté juste au-dessus, sur le calque ambiant — déplacer le centre
+   d'un dégradé radial repeint toute la surface et coûtait 14 % des images par
+   seconde sur l'accueil.
+
+   POUR L'INSTANT SUR LA SEULE PAGE DES CAS D'USAGE : le balisage n'existe que là.
+   L'accueil a déjà son canevas 3D et ses deux orbes de hero, et y ajouter un
+   troisième mouvement de fond serait de trop. */
+/* UN SEUL SYSTÈME DE FOND PAR PAGE. Le calque ambiant du site (`body::before` et
+   `::after`) est neutralisé là où la boule existe : sinon les halos s'additionnent,
+   et là où ils se superposent tous le fond monte à 30 % de teal, ce qui fait tomber
+   le texte gris clair à 3,7:1 (calculé, pas estimé). La boule est un calque ambiant
+   plus vivant, pas un calque de plus. */
+body:has(.orbz)::before,
+body:has(.orbz)::after { content: none; }
+
+.orbz {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.orbz span {
+  position: absolute;
+  top: -18vh;
+  left: -14vw;
+  width: 46vw;
+  height: 46vw;
+  border-radius: 50%;
+  /* LES TROIS OPACITÉS SONT UN BUDGET, PAS UN GOÛT. Les trois calques se
+     superposent au coeur du parcours, donc l'opacité résultante est
+     1 − (1−a1)(1−a2)(1−a3). Le plafond est fixé par le contraste : à 30 % de teal
+     sur le noir de la page, le gris clair `--gray` tombe à 4,67:1, juste au-dessus
+     du seuil AA. Avec 0,21 / 0,065 / 0,03 le total fait 0,283, la tête est plus
+     lumineuse qu'avant et le budget est respecté. */
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.21), transparent 72%);
+  will-change: transform;
+  animation: orbzDrift 34s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+/* La traîne : plus petite, plus pâle, et en retard. */
+.orbz span:nth-child(2) {
+  width: 38vw; height: 38vw;
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.065), transparent 72%);
+  animation-delay: -2.4s;
+}
+.orbz span:nth-child(3) {
+  width: 30vw; height: 30vw;
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.03), transparent 72%);
+  animation-delay: -4.8s;
+}
+/* Un parcours fermé, en pourcentages de la fenêtre : il traverse la page en
+   diagonale, remonte par la droite et revient. Les valeurs sont volontairement
+   larges — un halo qui reste au centre ne se remarque pas, et un halo qui va vite
+   se remarque trop. */
+@keyframes orbzDrift {
+  0%   { transform: translate3d(6vw, 12vh, 0) scale(1); }
+  25%  { transform: translate3d(62vw, 34vh, 0) scale(1.12); }
+  50%  { transform: translate3d(78vw, 82vh, 0) scale(0.94); }
+  75%  { transform: translate3d(22vw, 66vh, 0) scale(1.08); }
+  100% { transform: translate3d(6vw, 12vh, 0) scale(1); }
+}
+/* Sur téléphone la boule occuperait presque tout l'écran : on la réduit et on
+   ralentit encore, pour qu'elle reste un fond et pas un événement. */
+@media (max-width: 700px) {
+  .orbz span { width: 82vw; height: 82vw; animation-duration: 44s; }
+  .orbz span:nth-child(2) { width: 68vw; height: 68vw; }
+  .orbz span:nth-child(3) { width: 54vw; height: 54vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Elle ne bouge plus, mais elle reste : c'est de la lumière, pas une animation
+     décorative, et la page en a besoin. */
+  .orbz span { animation: none; transform: translate3d(30vw, 30vh, 0); }
+  .orbz span:nth-child(2) { transform: translate3d(58vw, 62vh, 0); }
+  .orbz span:nth-child(3) { transform: translate3d(14vw, 74vh, 0); }
 }
