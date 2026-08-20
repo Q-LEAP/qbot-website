@@ -947,11 +947,15 @@ chacune**, et une seule question du live EN n'a jamais été reprise, celle de l
 
 **Elle ne peut pas l'être en l'état** : sur le live, la réponse à « What are the warranty
 conditions of Q-Bot? » ne parle pas de garantie, elle explique comment utiliser Q-Bot. Notre
-copie avait hérité de ce défaut. Deux issues, et aucune n'est de notre ressort : soit le
-client fournit de vraies conditions (durée, couverture, exclusions), soit la question reste
-absente, ce qui se défend puisque la question 15 (« Que faire en cas de dysfonctionnement »)
-énonce déjà la réparation à distance puis le remplacement par un robot neuf, et que la page
-commande porte la carte « Remplacement garanti ».
+copie avait hérité de ce défaut.
+
+**ARBITRÉ PAR LE CLIENT LE 2026-08-20 : la question de la garantie reste hors du site.** Ce
+n'est donc pas un oubli à combler, et il ne faut ni la réintroduire depuis le live, ni écrire
+des conditions de garantie de notre propre chef. Ce qui la remplace existe déjà et suffit : la
+question 15 (« Que faire en cas de dysfonctionnement ») énonce la réparation à distance puis
+le remplacement par un robot neuf, et les pages commande portent la carte « Remplacement
+garanti ». Si de vraies conditions arrivent un jour (durée, couverture, exclusions), la
+question pourra être ajoutée dans les deux langues à la position 12 bis.
 
 Ce qui a été corrigé ici :
 
