@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026.18-08-29b">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026.22-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -232,58 +232,56 @@
       </article>
       </div>
       <aside class="ucs__stage" aria-hidden="true">
-        <div class="ucs__panels">
-        <figure class="ucs__panel" data-i="0">
-          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
-            <span class="ucs__node">Application 2FA</span>
-            <span class="ucs__link"><span class="ucs__link-lab">notification reçue, l'app compagnon la voit</span></span>
-            <span class="ucs__node ucs__node--fort">Q-Bot</span>
-            <span class="ucs__link"><span class="ucs__link-lab">appui sur l'écran, par ADB</span></span>
-            <span class="ucs__node">Connexion validée</span>
+        <div class="ucs__diagram" role="img" aria-label="Le chemin de l'appel">
+          <div class="ucs__node">
+              <span class="ucs__lbl" data-i="0">Application 2FA</span>
+              <span class="ucs__lbl" data-i="1">Chaîne CI/CD</span>
+              <span class="ucs__lbl" data-i="2">Test en cours</span>
+              <span class="ucs__lbl" data-i="3">Test en cours</span>
+              <span class="ucs__lbl" data-i="4">Chaîne de tests</span>
           </div>
-          <figcaption class="ucs__cap">Aucun appel depuis la chaîne de tests&nbsp;: c'est la notification qui déclenche.</figcaption>
-        </figure>
-        <figure class="ucs__panel" data-i="1">
-          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
-            <span class="ucs__node">Chaîne CI/CD</span>
-            <span class="ucs__link"><span class="ucs__link-lab">GET /scenarios/42/execute</span></span>
-            <span class="ucs__node ucs__node--fort">Q-Bot</span>
-            <span class="ucs__link"><span class="ucs__link-lab">appui sur l'écran, par ADB</span></span>
-            <span class="ucs__node">La compilation continue</span>
+          <div class="ucs__link">
+            <span class="ucs__link-rail" aria-hidden="true"><span class="ucs__link-head"></span></span>
+            <span class="ucs__link-lab">
+              <span class="ucs__lbl" data-i="0">notification reçue, l'app compagnon la voit</span>
+              <span class="ucs__lbl" data-i="1">GET /scenarios/42/execute</span>
+              <span class="ucs__lbl" data-i="2">GET /get-luxtrust-otp</span>
+              <span class="ucs__lbl" data-i="3">trois scénarios appelés dans l'ordre</span>
+              <span class="ucs__lbl" data-i="4">POST /display-image</span>
+            </span>
           </div>
-          <figcaption class="ucs__cap">Un verrou 2FA devient un appel HTTP, comme n'importe quelle autre étape.</figcaption>
-        </figure>
-        <figure class="ucs__panel" data-i="2">
-          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
-            <span class="ucs__node">Test en cours</span>
-            <span class="ucs__link"><span class="ucs__link-lab">GET /get-luxtrust-otp</span></span>
-            <span class="ucs__node ucs__node--fort">Q-Bot lit l'app LuxTrust</span>
-            <span class="ucs__link"><span class="ucs__link-lab">réponse : le code affiché</span></span>
-            <span class="ucs__node">Le test remplit le formulaire</span>
+          <div class="ucs__node ucs__node--fort">
+              <span class="ucs__lbl" data-i="0">Q-Bot</span>
+              <span class="ucs__lbl" data-i="1">Q-Bot</span>
+              <span class="ucs__lbl" data-i="2">Q-Bot lit l'app LuxTrust</span>
+              <span class="ucs__lbl" data-i="3">Q-Bot</span>
+              <span class="ucs__lbl" data-i="4">Écran du boîtier</span>
           </div>
-          <figcaption class="ucs__cap">Le code arrive dans la réponse HTTP&nbsp;: rien à recopier, rien à attendre.</figcaption>
-        </figure>
-        <figure class="ucs__panel" data-i="3">
-          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
-            <span class="ucs__node">Test en cours</span>
-            <span class="ucs__link"><span class="ucs__link-lab">trois scénarios appelés dans l'ordre</span></span>
-            <span class="ucs__node ucs__node--fort">Q-Bot</span>
-            <span class="ucs__link"><span class="ucs__link-lab">mot de passe, notification, code temporaire</span></span>
-            <span class="ucs__node">Session ouverte</span>
+          <div class="ucs__link">
+            <span class="ucs__link-rail" aria-hidden="true"><span class="ucs__link-head"></span></span>
+            <span class="ucs__link-lab">
+              <span class="ucs__lbl" data-i="0">appui sur l'écran, par ADB</span>
+              <span class="ucs__lbl" data-i="1">appui sur l'écran, par ADB</span>
+              <span class="ucs__lbl" data-i="2">réponse : le code affiché</span>
+              <span class="ucs__lbl" data-i="3">mot de passe, notification, code temporaire</span>
+              <span class="ucs__lbl" data-i="4">la caméra du téléphone scanne</span>
+            </span>
           </div>
-          <figcaption class="ucs__cap">L'ordre des étapes et les temps d'attente vivent dans Q-Bot, pas dans vos scripts.</figcaption>
-        </figure>
-        <figure class="ucs__panel" data-i="4">
-          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
-            <span class="ucs__node">Chaîne de tests</span>
-            <span class="ucs__link"><span class="ucs__link-lab">POST /display-image</span></span>
-            <span class="ucs__node ucs__node--fort">Écran du boîtier</span>
-            <span class="ucs__link"><span class="ucs__link-lab">la caméra du téléphone scanne</span></span>
-            <span class="ucs__node">Étape 2FA résolue</span>
+          <div class="ucs__node">
+              <span class="ucs__lbl" data-i="0">Connexion validée</span>
+              <span class="ucs__lbl" data-i="1">La compilation continue</span>
+              <span class="ucs__lbl" data-i="2">Le test remplit le formulaire</span>
+              <span class="ucs__lbl" data-i="3">Session ouverte</span>
+              <span class="ucs__lbl" data-i="4">Étape 2FA résolue</span>
           </div>
-          <figcaption class="ucs__cap">Le boîtier sert d'écran&nbsp;: le téléphone lit un vrai QR code, pas une image injectée.</figcaption>
-        </figure>
         </div>
+        <p class="ucs__cap">
+          <span class="ucs__lbl" data-i="0">Aucun appel depuis la chaîne de tests&nbsp;: c'est la notification qui déclenche.</span>
+          <span class="ucs__lbl" data-i="1">Un verrou 2FA devient un appel HTTP, comme n'importe quelle autre étape.</span>
+          <span class="ucs__lbl" data-i="2">Le code arrive dans la réponse HTTP&nbsp;: rien à recopier, rien à attendre.</span>
+          <span class="ucs__lbl" data-i="3">L'ordre des étapes et les temps d'attente vivent dans Q-Bot, pas dans vos scripts.</span>
+          <span class="ucs__lbl" data-i="4">Le boîtier sert d'écran&nbsp;: le téléphone lit un vrai QR code, pas une image injectée.</span>
+        </p>
       </aside>
     </div>
   </div>
@@ -453,6 +451,6 @@ OTP=$(curl -s \
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2026.14-08-23" defer></script>
+<script src="assets/js/main.js?v=2026.15-08-23" defer></script>
 </body>
 </html>

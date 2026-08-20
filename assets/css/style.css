@@ -4485,29 +4485,68 @@ label > input[type="checkbox"] {
 }
 
 
-/* ══ CAS D'USAGE : LA SÉQUENCE LÉGÈRE ══════════════════════════════════════
-   Une séquence de lecture, pas une mise en scène : la colonne de gauche défile
-   normalement, celle de droite reste à l'écran et change de schéma au fil des cinq
-   cas. Tout tient dans `position: sticky` et un observateur d'intersection (module
-   17 de main.js). AUCUNE hauteur n'est calculée, aucune écoute du défilement,
-   aucune image par image — la séquence 3D de l'accueil a coûté trois passes de
-   corrections de géométrie, celle-ci n'a rien à mesurer.
+/* ══ CAS D'USAGE : LA SÉQUENCE ═════════════════════════════════════════════
+   Deux procédés, tous deux repris de linearity.io, et tous deux au service de ce
+   que la section raconte plutôt que d'eux-mêmes.
 
-   L'ÉTAT AU REPOS EST LISIBLE : `data-uc="0"` est écrit dans le HTML, donc le
-   premier schéma s'affiche sans JavaScript, et les cinq cas restent lus dans
-   l'ordre. Le JS ne fait que changer ce numéro.
+   1. LE TRACÉ QUI SE DESSINE AU DÉFILEMENT (leur procédé n°4, un chemin vectoriel
+      de 7 139 px en `stroke-dashoffset`). Ici c'est une colonne vertébrale le long
+      des cinq cas, avec un anneau par cas : elle se remplit à mesure qu'on lit, et
+      relie les cinq situations en un seul parcours. C'est la seule chose de la page
+      qui dit « il y en a cinq, tu en as lu deux ». Scrubbée par le moteur de
+      mouvement (`--ucs-p`), donc par le doigt du lecteur et non par une horloge.
 
-   SOUS 900 PX LE SCHÉMA DISPARAÎT et les cinq cas redeviennent une simple liste.
-   C'est délibéré : la séquence 3D a montré qu'un panneau épinglé sur un écran de
-   téléphone finit toujours par recouvrir le texte, et le contenu des schémas est
-   déjà dans la prose (les trois points d'entrée y sont nommés). */
+   2. UN SEUL SCHÉMA QUI SE TRANSFORME, au lieu de cinq diapositives qui se
+      succèdent. Le cadre — trois boîtes, deux liens — ne bouge jamais ; à chaque
+      cas, les mots basculent et les deux liens SE RETRACENT de haut en bas, décalés
+      de 120 ms, si bien que l'œil suit l'appel qui redescend. C'est le même geste
+      que le liseré des cas d'usage et que le rail de la section évolution, à
+      l'échelle d'un schéma.
+
+   POURQUOI LE RETRAÇAGE MARCHE SANS JAVASCRIPT SUPPLÉMENTAIRE. Une animation CSS
+   ne repart pas quand un sélecteur cesse de correspondre : le lien est le MÊME
+   élément d'un cas à l'autre, donc `animation` inchangée, donc aucun redémarrage.
+   D'où les deux noms de keyframes alternés selon la parité du cas : changer
+   `animation-name` relance l'animation, et deux cas consécutifs sont toujours de
+   parités différentes. (Un saut de 0 à 2 ne relance pas — c'est sans conséquence,
+   l'état d'arrivée est le même.)
+
+   L'ÉTAT AU REPOS EST L'ÉTAT COMPLET, comme partout ici : la colonne est remplie
+   (`var(--ucs-p, 1)`), les liens sont tracés, le premier cas est affiché
+   (`data-uc="0"` est écrit dans le HTML). Sans JavaScript ou en mouvement réduit,
+   la section se lit entièrement. */
 .ucs__inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
   gap: 56px;
   align-items: start;
 }
+
+/* ── La colonne vertébrale ─────────────────────────────────────────────────
+   Elle se pose dans la gouttière du conteneur, en retrait négatif, exactement
+   comme les marques de section : la carte garde ainsi son alignement sur le logo,
+   qui est la règle du site. */
+.ucs__steps { position: relative; counter-reset: uc; }
+.ucs__steps::before,
+.ucs__steps::after {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 2px;
+}
+.ucs__steps::before { background: rgba(255, 255, 255, 0.10); }
+.ucs__steps::after {
+  background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+  transform: scaleY(var(--ucs-p, 1));
+  transform-origin: top center;
+}
+
 .ucs__step {
+  position: relative;
+  counter-increment: uc;
   min-height: 78vh;
   display: flex;
   align-items: center;
@@ -4516,44 +4555,58 @@ label > input[type="checkbox"] {
    qu'à laisser au schéma le temps de changer entre deux cas. */
 .ucs__step:first-child, .ucs__step:last-child { min-height: 62vh; }
 
+/* L'anneau du cas, posé sur la colonne. Son centre est opaque : c'est lui qui
+   masque le trait, sinon la colonne le traverse comme une cible. La couleur est
+   celle du fond de page (cf. `[data-theme="dark"]`). */
+.ucs__step::before {
+  content: '';
+  position: absolute;
+  left: -27px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--teal-dark);
+  background: #0A0A0A;
+  transition: background 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out),
+              border-color 0.4s var(--ease-out);
+}
+.ucs[data-uc="0"] .ucs__step[data-i="0"]::before,
+.ucs[data-uc="1"] .ucs__step[data-i="1"]::before,
+.ucs[data-uc="2"] .ucs__step[data-i="2"]::before,
+.ucs[data-uc="3"] .ucs__step[data-i="3"]::before,
+.ucs[data-uc="4"] .ucs__step[data-i="4"]::before {
+  background: var(--teal);
+  border-color: var(--teal);
+  box-shadow: 0 0 0 5px rgba(0, 203, 190, 0.16);
+}
+/* La carte que l'on lit s'accorde avec son anneau. Rien de plus : un
+   assombrissement des autres cartes coûterait du contraste sur du texte. */
+.ucs[data-uc="0"] .ucs__step[data-i="0"] .usecase,
+.ucs[data-uc="1"] .ucs__step[data-i="1"] .usecase,
+.ucs[data-uc="2"] .ucs__step[data-i="2"] .usecase,
+.ucs[data-uc="3"] .ucs__step[data-i="3"] .usecase,
+.ucs[data-uc="4"] .ucs__step[data-i="4"] .usecase {
+  border-color: rgba(0, 203, 190, 0.34);
+}
+
 .ucs__stage {
   position: sticky;
   /* Le schéma se centre verticalement, comme la carte qu'il illustre : calé en haut
      il se lisait 400 px au-dessus du texte auquel il répond. Le plancher de 104 px
-     est la barre de navigation (72) plus une respiration, pour les écrans courts.
-     170 px est la moitié de la hauteur réservée ci-dessous. */
-  top: max(104px, calc(50vh - 170px));
-}
-.ucs__panels {
-  position: relative;
-  /* Hauteur imposée par le plus haut des cinq panneaux (mesuré : 335 px à 940 comme
-     à 1440) : sans elle, le bloc collant change de taille à chaque cas et le schéma
-     sautille. */
-  min-height: 340px;
-}
-.ucs__panel {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.45s var(--ease-out), transform 0.55s var(--ease-out);
-  pointer-events: none;
-}
-.ucs[data-uc="0"] .ucs__panel[data-i="0"],
-.ucs[data-uc="1"] .ucs__panel[data-i="1"],
-.ucs[data-uc="2"] .ucs__panel[data-i="2"],
-.ucs[data-uc="3"] .ucs__panel[data-i="3"],
-.ucs[data-uc="4"] .ucs__panel[data-i="4"] {
-  opacity: 1;
-  transform: none;
+     est la barre de navigation (72) plus une respiration, pour les écrans courts. */
+  top: max(104px, calc(50vh - 190px));
 }
 
-/* Le schéma : trois étapes, deux liens légendés. Le trait court à gauche, comme
-   sur un diagramme de séquence, et le libellé se lit à sa droite : centré sur le
-   trait, il l'aurait masqué. */
-.ucs__flow { display: flex; flex-direction: column; }
+/* ── Le schéma : le cadre est permanent, les mots changent ─────────────────
+   Les libellés d'un même emplacement sont empilés dans UNE SEULE cellule de
+   grille : la boîte prend donc la hauteur du plus long, sans qu'aucune hauteur
+   ne soit écrite à la main. C'est ce qui garantit qu'elle ne change pas de taille
+   d'un cas à l'autre. */
+.ucs__diagram { display: flex; flex-direction: column; }
 .ucs__node {
+  display: grid;
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px 18px;
@@ -4570,39 +4623,72 @@ label > input[type="checkbox"] {
 }
 .ucs__link {
   position: relative;
-  min-height: 54px;
   display: flex;
   align-items: center;
-  padding-left: 42px;
+  min-height: 56px;
+  padding: 6px 0 6px 42px;
 }
-.ucs__link::before {
-  content: '';
+.ucs__link-rail {
   position: absolute;
   left: 21px;
   top: 0;
-  bottom: 9px;
+  bottom: 10px;
   width: 2px;
-  background: linear-gradient(180deg, var(--teal-dark), var(--teal));
+  background: rgba(255, 255, 255, 0.12);
 }
 /* La pointe : un carré tourné, deux côtés seulement. */
 .ucs__link::after {
   content: '';
   position: absolute;
   left: 16px;
-  bottom: 2px;
+  bottom: 3px;
   width: 8px;
   height: 8px;
   border-right: 2px solid var(--teal);
   border-bottom: 2px solid var(--teal);
   transform: rotate(45deg);
 }
+/* Le tracé. On anime `height` et non `scaleY` : la tête est un disque, et une
+   mise à l'échelle verticale l'écraserait en ellipse. Deux pixels de large sur
+   quarante de haut, le coût de rastérisation est nul. */
+.ucs__link-head {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--teal-dark), var(--teal));
+}
+.ucs__link-head::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  bottom: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 0 4px rgba(0, 203, 190, 0.18);
+}
+@keyframes ucsDrawA { from { height: 0; } to { height: 100%; } }
+@keyframes ucsDrawB { from { height: 0; } to { height: 100%; } }
+.ucs[data-uc="0"] .ucs__link-head,
+.ucs[data-uc="2"] .ucs__link-head,
+.ucs[data-uc="4"] .ucs__link-head { animation: ucsDrawA 0.5s var(--ease-out) both; }
+.ucs[data-uc="1"] .ucs__link-head,
+.ucs[data-uc="3"] .ucs__link-head { animation: ucsDrawB 0.5s var(--ease-out) both; }
+/* Le second lien part après le premier : l'œil suit l'appel qui redescend. */
+.ucs__diagram > .ucs__link:nth-child(4) .ucs__link-head { animation-delay: 0.12s; }
+
 .ucs__link-lab {
+  display: grid;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.75rem;
   line-height: 1.4;
   color: var(--gray);
 }
 .ucs__cap {
+  display: grid;
   margin-top: 18px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
@@ -4610,6 +4696,20 @@ label > input[type="checkbox"] {
   line-height: 1.55;
   color: var(--muted);
 }
+/* La bascule des mots. Tous les libellés d'un emplacement occupent la même
+   cellule ; seul celui du cas courant est visible, et il arrive par le bas —
+   comme une roue qui avance d'un cran. */
+.ucs__lbl {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.32s var(--ease-out), transform 0.42s var(--ease-out);
+}
+.ucs[data-uc="0"] .ucs__lbl[data-i="0"],
+.ucs[data-uc="1"] .ucs__lbl[data-i="1"],
+.ucs[data-uc="2"] .ucs__lbl[data-i="2"],
+.ucs[data-uc="3"] .ucs__lbl[data-i="3"],
+.ucs[data-uc="4"] .ucs__lbl[data-i="4"] { opacity: 1; transform: none; }
 
 /* Les trois exemples d'appel, côte à côte tant que la place existe. */
 .ucs__snippets {
@@ -4641,6 +4741,53 @@ label > input[type="checkbox"] {
   color: var(--muted);
 }
 
+/* ── Les anneaux deviennent des pastilles numérotées quand la place existe ──
+   La numérotation n'est pas décorative : il y a bien cinq cas et le lecteur doit
+   pouvoir savoir où il en est. Le numéro vient de `counter()`, donc aucun balisage
+   n'est ajouté et l'ordre reste vrai si un cas est inséré.
+
+   LE SEUIL EST GÉOMÉTRIQUE, PAS ESTHÉTIQUE. La pastille fait 24 px et se pose à
+   40 px à gauche du texte ; il faut donc 42 px de gouttière, soit une fenêtre de
+   1 216 px avec un conteneur de 1 180. On prend 1 260 pour laisser respirer le halo
+   du cas courant. En dessous, l'anneau simple de 12 px suffit et tient dans les
+   24 px du plancher de gouttière. */
+@media (min-width: 1260px) {
+  .ucs__steps::before, .ucs__steps::after { left: -28px; }
+  .ucs__step::before {
+    content: counter(uc, decimal-leading-zero);
+    left: -40px;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--gray);
+    border-color: var(--border);
+  }
+  .ucs[data-uc="0"] .ucs__step[data-i="0"]::before,
+  .ucs[data-uc="1"] .ucs__step[data-i="1"]::before,
+  .ucs[data-uc="2"] .ucs__step[data-i="2"]::before,
+  .ucs[data-uc="3"] .ucs__step[data-i="3"]::before,
+  .ucs[data-uc="4"] .ucs__step[data-i="4"]::before {
+    color: var(--dark);
+    font-weight: 700;
+  }
+}
+
+/* Sous 1220 px la gouttière du conteneur tombe à son plancher (24 px) : l'anneau,
+   posé 27 px à gauche du texte, sortirait de l'écran. Le seuil est calculé, pas
+   choisi — il faut 27 px de gouttière plus une marge de respiration, soit
+   (1220 − 1180) / 2 + 24 = 44 px, ce qui laisse l'anneau à 17 px du bord. En
+   dessous, la colonne et ses anneaux disparaissent : un trait collé au bord de
+   l'écran est du bruit, pas un repère. */
+@media (max-width: 1219px) {
+  .ucs__steps::before, .ucs__steps::after, .ucs__step::before { display: none; }
+}
 @media (max-width: 939px) {
   .ucs__inner { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .ucs__stage { display: none; }
@@ -4649,5 +4796,9 @@ label > input[type="checkbox"] {
   .ucs__step + .ucs__step { margin-top: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ucs__panel { transition: none; }
+  .ucs__lbl { transition: none; }
+  /* `.ucs[data-uc]` et non `.ucs__link-head` seul : les règles qui posent
+     l'animation portent un sélecteur d'attribut, donc pèsent plus lourd. */
+  .ucs[data-uc] .ucs__link-head { animation: none; }
+  .ucs__steps::after { transform: none; }
 }

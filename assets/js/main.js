@@ -606,6 +606,11 @@ backToTop.addEventListener('click', () => {
        désormais figé en CSS (--evo-fill). Aucune page ne porte plus de
        `.timeline`, donc ce tableau ne pilote aujourd'hui plus rien : on le
        garde parce que c'est le chemin de code d'une progression scrubbée. */
+    /* La colonne vertébrale des cas d'usage : elle se remplit à mesure qu'on lit
+       les cinq cas. Premier usage réel de ce tableau depuis le retrait de
+       `.timeline`. Le modèle de la ligne de lecture est le bon ici — le bloc
+       TRAVERSE le viewport, il n'est pas épinglé (seul le schéma l'est). */
+    ['.ucs__inner', '--ucs-p'],
   ];
 
   var LERP = 0.14;          // 0 = figé, 1 = suivi immédiat (aucune inertie)

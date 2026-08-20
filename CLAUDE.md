@@ -481,8 +481,8 @@ is now `--evo-fill: 0.5` in CSS. `0.5` is not eyeballed: the rail runs from one 
 to the other, so its midpoint *is* the middle column's centre. For a 4th step the value becomes
 `(index of the current step) / (number of steps − 1)`. Side effect, an improvement: under
 `prefers-reduced-motion` the teal portion now shows at all (the engine doesn't run there, so
-`--tl-p` stayed 0 and the trait was simply absent). `PROGRESS` no longer matches anything on any
-page — `.timeline` is used by none — but it is kept as the code path for a scrubbed progression.
+`--tl-p` stayed 0 and the trait was simply absent). `PROGRESS` matched nothing on any page for a while
+(and did so until the use-cases spine, 2026-08-20, gave it a real use again) — `.timeline` is used by none — but it is kept as the code path for a scrubbed progression.
 
 **Stacking + entrance (2026-08-12).** The teal trait was painting *over* the nodes: both rail lines
 are pseudo-elements of `.evolution__rail`, and `::after` is its **last** child, so it painted after
@@ -1114,7 +1114,8 @@ La homepage a porté successivement les deux. La **frise datée du live** (Févr
 2023, `.timeline`) avait été remise le 2026-08-12 dans la passe « texte exact du live », puis
 **retirée le même jour à la demande du client : elle n'est plus à jour.** Ce sont les trois cartes
 `.evolution` qui sont en place (prototype → génération actuelle → roadmap), sans aucune date.
-`.timeline` reste dans la feuille de style et dans `PROGRESS` comme chemin de code, mais aucune
+`.timeline` reste dans la feuille de style et dans `PROGRESS` (qui pilote depuis le 2026-08-20 la
+colonne vertébrale des cas d'usage), mais aucune
 page ne l'utilise. Ne pas « corriger » cet écart avec le live sans demander : c'est un arbitrage
 client, pas un oubli.
 
@@ -1556,34 +1557,62 @@ entrée de menu n'est atteignable que par le plan du site. Vérifié : la barre 
 1440 px sans recouvrement ni débordement (elle porte maintenant quatre entrées, un bouton
 et le sélecteur de langue).
 
-### La séquence de lecture : `position: sticky` et rien d'autre
+### La séquence : deux procédés de linearity.io, pas un fondu enchaîné
 
-La colonne de gauche défile normalement, celle de droite reste à l'écran et change de
-schéma au fil des cinq cas. **Aucune hauteur n'est calculée, aucune écoute du défilement,
-aucun rendu image par image** : un `position: sticky` et un observateur d'intersection
-(module 17 de `main.js`) suffisent. C'est le contraire de la séquence 3D de l'accueil, qui
-doit scruber une caméra et qui a coûté trois passes de corrections de géométrie ; ici il
-n'y a rien à interpoler.
+Première version signalée comme « pas la folie », et c'était juste : cinq panneaux qui se
+succédaient en fondu, sans repère de progression. Refaite autour de deux procédés relevés
+chez linearity.io, tous deux au service de ce que la section raconte.
 
-Trois décisions à ne pas défaire :
+**1. Le tracé qui se dessine au défilement** (leur procédé n°4, un chemin de 7 139 px en
+`stroke-dashoffset`). Ici, une colonne vertébrale le long des cinq cas, avec une pastille
+numérotée par cas : elle se remplit à mesure qu'on lit et relie les cinq situations en un
+seul parcours. C'est la seule chose de la page qui dise « il y en a cinq, tu en as lu
+deux ». Elle est **scrubbée par le moteur de mouvement** (`--ucs-p`), donc par le doigt du
+lecteur et non par une horloge : c'est le **premier usage réel du tableau `PROGRESS`**
+depuis le retrait de `.timeline`, et le modèle de la ligne de lecture est le bon (le bloc
+traverse le viewport, seul le schéma est épinglé).
 
-- **`data-uc="0"` est écrit dans le HTML.** Sans JavaScript, le premier schéma s'affiche et
-  les cinq cas se lisent quand même. Le module ne fait que changer ce numéro. (Vérifié en
-  mouvement réduit : panneau 0 à l'opacité 1, cinq cartes visibles.)
-- **Les marges de l'observateur sont négatives en haut et en bas** (`-45%`) : il ne
-  déclenche que lorsqu'un pas croise la bande centrale de l'écran, ce qui est exactement
-  « quel cas suis-je en train de lire ». Quand deux pas la touchent en même temps (le
-  sortant et l'entrant), on prend le plus haut, sinon le schéma clignote entre les deux.
-- **Sous 900 px le schéma disparaît** et les cinq cas redeviennent une liste. La séquence 3D
-  a montré qu'un panneau épinglé sur un écran de téléphone finit toujours par recouvrir le
-  texte ; et le contenu des schémas est déjà dans la prose, qui nomme les trois points
-  d'entrée.
+**2. Un seul schéma qui se transforme**, au lieu de cinq diapositives. Le cadre — trois
+boîtes, deux liens — ne bouge jamais ; à chaque cas les mots basculent et les deux liens
+**se retracent** de haut en bas, décalés de 120 ms, si bien que l'œil suit l'appel qui
+redescend. Mesuré au changement de cas : 14 px et 0 px de tracé à 60 ms, 35 et 3 à 140 ms,
+44 et 36 à 260 ms, complet à 500 ms.
 
-Deux réglages mesurés : la hauteur réservée aux panneaux vaut 340 px (le plus haut des cinq
-en fait 335, à 940 comme à 1440 px) — sans elle le bloc collant change de taille à chaque
-cas et le schéma sautille ; et le calage vertical est `max(104px, calc(50vh - 170px))`, donc
-le schéma se centre comme la carte qu'il illustre. Calé en haut, il se lisait 400 px
-au-dessus du texte auquel il répond (écart des centres ramené de 400 à 126 px).
+Cinq points à ne pas défaire :
+
+- **Le retraçage n'existe que grâce à deux noms de keyframes alternés selon la parité du
+  cas.** Une animation CSS ne repart pas quand un sélecteur cesse de correspondre : le lien
+  est le MÊME élément d'un cas à l'autre, donc `animation` inchangée, donc aucun
+  redémarrage. Changer `animation-name` relance l'animation, et deux cas consécutifs sont
+  toujours de parités différentes. (Un saut de 0 à 2 ne relance pas : sans conséquence,
+  l'état d'arrivée est identique.)
+- **Le tracé anime `height`, pas `scaleY`** : sa tête est un disque, une mise à l'échelle
+  verticale l'écraserait en ellipse. Deux pixels de large sur quarante de haut, le coût de
+  rastérisation est nul.
+- **Les libellés d'un même emplacement sont empilés dans une seule cellule de grille**
+  (`grid-area: 1 / 1`). La boîte prend donc la hauteur du plus long et ne change plus de
+  taille d'un cas à l'autre, sans qu'aucune hauteur ne soit écrite à la main.
+- **L'état au repos est l'état complet** : colonne remplie (`var(--ucs-p, 1)`), liens
+  tracés, premier cas affiché (`data-uc="0"` est dans le HTML). Vérifié sans JavaScript et
+  en mouvement réduit : les cinq cas se lisent, rien ne bouge.
+- **Le seuil de la colonne est calculé, pas choisi.** La pastille numérotée fait 24 px et
+  se pose à 40 px à gauche du texte : il faut 42 px de gouttière, soit une fenêtre de
+  1 216 px pour un conteneur de 1 180 (on prend 1 260 pour le halo). En dessous, un anneau
+  simple de 12 px, qui tient dans les 24 px du plancher de gouttière jusqu'à 1 220 px.
+  Sous 1 220 px la colonne disparaît : un trait collé au bord de l'écran est du bruit, pas
+  un repère. Relevé : pastille à x=114 en 1440, à x=24 en 1260, anneau à x=25 en 1220,
+  rien en dessous.
+
+Le numéro vient de `counter()`, donc aucun balisage n'est ajouté et l'ordre reste vrai si
+un cas est inséré. La carte que l'on lit prend un liseré teal, pour s'accorder à sa
+pastille ; les autres ne sont PAS assombries, un assombrissement coûterait du contraste sur
+du texte.
+
+Ce qui reste inchangé : l'index du cas courant vient d'un observateur d'intersection à
+marges négatives (module 17), pas d'un calcul sur `--ucs-p`. Les deux formules du moteur
+divisent une course en parts égales, alors que les pas n'ont pas tous la même hauteur
+(78 vh, 62 vh aux extrémités) : l'observateur lit la position réelle des cartes, lui.
+Et sous 900 px le schéma disparaît toujours, les cinq cas redevenant une liste.
 
 Contrôlé : 25 pages × (normal, mouvement réduit) × (1440, 390) sans anomalie, 0 défaut de
 contraste sur les deux nouvelles pages, un seul `h1`, aucun saut de niveau de titre, aucun
