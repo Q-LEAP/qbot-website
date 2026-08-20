@@ -73,7 +73,19 @@
   --dur-text:  0.7s;
   --dur-media: 1.05s;
 
-  --container:   1180px;
+  /* Conteneur fluide, plafonné. Il valait 1180 px fixes : à 1920 cela laissait
+     370 px de marge de chaque côté, à 2560 près de 700, et le site paraissait
+     étroit sur grand écran (signalé par le client). Il grandit maintenant avec
+     l'écran, mais dans des bornes :
+     - plancher 1180 px, donc RIEN NE CHANGE jusqu'à 1639 px : les portables, les
+       tablettes et le 1366 × 768 gardent exactement la mise en page validée ;
+     - 72 vw entre 1639 et 2000 px, soit 1382 px en 1080p — 75 % de l'écran, la
+       proportion habituelle d'une mise en page large ;
+     - plafond 1440 px, parce qu'au-delà ce sont les longueurs de ligne qui cassent,
+       pas la largeur disponible. Les blocs de prose ont leur propre plafond.
+     La gouttière de la séquence 3D suit automatiquement : elle est calculée à partir
+     de cette variable (cf. scrolly.css). */
+  --container:   clamp(1180px, 72vw, 1440px);
   --section-py:  96px;
 
   /* ── Espace de protection du logo (charte p. 3 : « Always allow a minimum
@@ -4457,3 +4469,26 @@ label > input[type="checkbox"] {
 .api-facts li.is-visible svg polyline {
   animation: tickDraw 0.5s var(--ease-out) calc(var(--reveal-delay, 0s) + 0.08s) both;
 }
+
+
+/* ══ PLAFONDS DE LECTURE ═══════════════════════════════════════════════════
+   Le conteneur pouvant aller jusqu'à 1440 px, deux blocs de prose devenaient trop
+   longs à lire. Mesuré à 1440 px de conteneur : une réponse de FAQ passait de ~850
+   à ~1100 px de large, et un volet de cas d'usage de 520 à 660. Au-delà d'environ
+   80 caractères par ligne, l'œil perd la ligne suivante.
+
+   Le plafond porte sur les PARAGRAPHES et non sur leur conteneur : la colonne, elle,
+   doit continuer de suivre la grille, sinon l'index collant de la FAQ et les deux
+   volets d'un cas d'usage se décaleraient. */
+.faq-item__answer p,
+.faq-item__answer li { max-width: 760px; }
+
+.usecase__part p { max-width: 620px; }
+
+/* Un paragraphe posé DIRECTEMENT dans le conteneur occupe toute sa largeur, donc il
+   s'allonge avec lui. Mesuré à 1920 px : « Q-Bot ne nécessite aucune installation… »
+   sur l'accueil tenait 139 caractères par ligne, et la phrase de conclusion de
+   l'éditeur de scénarios 170. Au-delà de 80, l'œil ne retrouve plus la ligne
+   suivante. Les paragraphes encadrés (cartes, grilles, volets) ne sont pas concernés :
+   leur colonne les borne déjà. */
+.container > p { max-width: 760px; }
