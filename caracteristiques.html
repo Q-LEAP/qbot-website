@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=2026.13-08-29b">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026.15-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -517,32 +517,28 @@ driver.find_element(
     </div>
     <div class="tools__grid" style="gap:48px;">
       <div>
-        <h3 style="margin-bottom:20px;">Applications d'authentification</h3>
-        <div class="tool-band">
-          <div class="tools__list tool-band__track" role="list">
-            <span class="tool-tag" role="listitem">LuxTrust Mobile</span>
-            <span class="tool-tag" role="listitem">Microsoft Authenticator</span>
-            <span class="tool-tag" role="listitem">Google Authenticator</span>
-            <span class="tool-tag" role="listitem">itsme</span>
-            <span class="tool-tag" role="listitem">Toute app 2FA Android</span>
-          </div>
-        </div>
+        <h3 class="compat__head">Applications d'authentification</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">LuxTrust Mobile</li>
+          <li class="compat__item" role="listitem">Microsoft Authenticator</li>
+          <li class="compat__item" role="listitem">Google Authenticator</li>
+          <li class="compat__item" role="listitem">itsme</li>
+          <li class="compat__item compat__item--open" role="listitem">Toute app 2FA Android</li>
+        </ul>
       </div>
       <div>
-        <h3 style="margin-bottom:20px;">Outils de test compatibles</h3>
-        <div class="tool-band tool-band--rtl">
-          <div class="tools__list tool-band__track" role="list">
-            <span class="tool-tag" role="listitem">Selenium</span>
-            <span class="tool-tag" role="listitem">Cypress</span>
-            <span class="tool-tag" role="listitem">Appium</span>
-            <span class="tool-tag" role="listitem">Playwright</span>
-            <span class="tool-tag" role="listitem">Robot Framework</span>
-            <span class="tool-tag" role="listitem">TestComplete</span>
-            <span class="tool-tag" role="listitem">Jenkins CI</span>
-            <span class="tool-tag" role="listitem">GitLab CI</span>
-            <span class="tool-tag" role="listitem">REST API custom</span>
-          </div>
-        </div>
+        <h3 class="compat__head">Outils de test compatibles</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">Selenium</li>
+          <li class="compat__item" role="listitem">Cypress</li>
+          <li class="compat__item" role="listitem">Appium</li>
+          <li class="compat__item" role="listitem">Playwright</li>
+          <li class="compat__item" role="listitem">Robot Framework</li>
+          <li class="compat__item" role="listitem">TestComplete</li>
+          <li class="compat__item" role="listitem">Jenkins CI</li>
+          <li class="compat__item" role="listitem">GitLab CI</li>
+          <li class="compat__item compat__item--open" role="listitem">REST API custom</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -620,6 +616,6 @@ driver.find_element(
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2026.12-08-23" defer></script>
+<script src="assets/js/main.js?v=2026.13-08-23" defer></script>
 </body>
 </html>

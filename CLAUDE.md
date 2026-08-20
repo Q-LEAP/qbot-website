@@ -1357,3 +1357,167 @@ texte → image et la section LuxTrust juste après image → texte, donc **« t
 deux visuels d'affilée sans un mot entre eux. Toutes les autres grilles du site étaient
 déjà en texte → image ; la règle (`order: 2` sur `.intro__image` sous 900 px) aligne la
 dernière exception. Le bureau est inchangé (`tI It`).
+
+
+## Le filet de sécurité étranglait la séquence sur téléphone (2026-08-20)
+
+Signalé autrement : « pas de souci entre les pas 3 et 4 sur iPhone, c'est peut-être
+l'optimisation ». Il n'y avait rien à voir sur iPhone parce qu'**il n'y avait pas de 3D
+du tout**. Sous 1440 px de large, la séquence tombait TOUJOURS sur son image de repli,
+sur toutes les liaisons, y compris rapides — relevé : aucune requête `qbot.glb` à 390,
+768 et 1024 px, `data-fallback="modele indisponible"` à chaque fois.
+
+Cause : le compte à rebours de 12 s partait du **chargement de la page**, alors que la
+balise porte `loading="lazy"`. Sur un écran étroit le hero occupe le premier écran, donc
+la scène est hors champ au chargement et model-viewer ne demande même pas le fichier :
+le délai expirait avant la première requête. Le filet censé protéger la séquence la
+supprimait.
+
+Trois corrections, toutes dans `scrolly.js` sauf la dernière :
+- le délai s'arme à l'**arrivée réelle** de la scène à l'écran (IntersectionObserver
+  **sans marge** : `rootMargin: '400px'` suffisait à l'armer au chargement sur un
+  téléphone, la séquence commençant juste sous le hero) ;
+- il est **relancé à chaque `progress`** : 12 s comptent désormais l'absence de progrès,
+  pas la durée totale. À 0,7 Mbit/s le modèle arrive en 8 s, sans repli ;
+- la balise passe en **`loading="eager"`** : la séquence est le contenu principal de
+  l'accueil, pas un supplément.
+
+Contrôlé aux quatre largeurs × trois situations (15 s en haut de page, arrivée sur la
+séquence, décodeur Draco injoignable). Le repli ne survient plus que dans le dernier cas.
+
+**Leçon de méthode** : un repli qui se déclenche est indistinguable, à l'œil, d'un repli
+qui doit se déclencher. Tout garde-fou de ce genre doit être vérifié dans les deux sens —
+« il s'affiche quand il faut » ET « il ne s'affiche pas quand il ne faut pas », aux
+largeurs où la mise en page change.
+
+### Ce que le chargement a rendu visible : la carte passait sur le produit
+
+Personne n'avait jamais vu la séquence 3D sur téléphone. Une fois le modèle chargé, la
+carte de texte recouvrait le tiers bas du boîtier : **jusqu'à 303 px de recouvrement à
+390 px, 243 à 375, 282 à 414**, pendant l'essentiel du parcours. La passe mobile du
+2026-08-19 concluait « zéro recouvrement » parce qu'elle ne mesurait qu'aux **quatre
+positions de calage** — les seules où la carte est effectivement en bas.
+
+> **Règle de mesure.** Un recouvrement se relève sur un **balayage fin** de tout le
+> parcours (ici 81 positions), jamais aux quelques positions canoniques. Et il se compte
+> en **deux dimensions** : un relevé par abscisses annonçait « 452 px » pour un trait
+> horizontal au ras du bas de l'écran, qui ne touche rien.
+
+La carte est maintenant en **`position: fixed`** dans la zone qui lui est réservée, sous
+900 px. Deux choses à ne pas refaire :
+- **Ne pas épingler le conteneur des pas.** `nearest()` et `fraction()` lisent la
+  position des `.scrolly__step` pour savoir quel pas est actif et où en est
+  l'éclatement. Épinglé, tout se figeait : séquence bloquée au pas 1, caméra immobile.
+  Seule la carte quitte le flux.
+- **`position: sticky` ne peut pas y arriver**, quelle que soit la valeur de `top` ou de
+  `bottom` : un élément collant reste dans sa boîte parente, et le pas fait exactement un
+  écran de haut. Sa course d'épinglage vaut donc « écran − hauteur de carte » (498 px à
+  390) quand la fenêtre où le pas est actif vaut un écran entier (844). Essayé deux fois,
+  recouvrements identiques au pixel.
+
+Conséquence à connaître : la dernière hauteur d'écran de la section sert à évacuer la
+scène, et une carte fixe ne peut pas partir avec elle — on la retrouvait posée sur le
+titre de la section suivante. D'où le drapeau **`is-scrolly-exit`** (posé par `apply()`
+quand `p >= 1`, c'est-à-dire pile quand le bloc collant se décroche), qui l'efface. Il
+n'est utilisé que sous 900 px : au-dessus, le texte est à côté de la scène et part
+normalement avec elle.
+
+### Le repère de progression passe à l'horizontale jusqu'à 1300 px
+
+Les pastilles numérotées recouvraient le texte de **940 à 1200 px, 26 px de recouvrement
+constant** : le texte se cale sur la gouttière du site, qui tombe à son plancher de 24 px
+dès que la fenêtre est plus étroite que le conteneur, et les pastilles font 26 px de
+large. Il n'y a pas de place, aucun réglage n'en crée. La forme déjà validée pour le
+téléphone — trait fin au ras du bas + numéro du pas — monte donc à 1300 px : elle ne coûte
+aucune largeur. Au-delà, les pastilles reviennent et c'est le compteur chiffré qui
+s'efface (doublon signalé par le client).
+
+Corrigé au passage : la carte dépassait de l'écran par la gauche (**bord à −4 px de 940 à
+1180 px**), emportant son filet teal. Le calage tire la carte de 28 px vers la gauche pour
+que le TEXTE tombe sur la gouttière ; les 4 px manquants sont maintenant pris sur la marge
+intérieure. **La version calculée (`min(0px, var(--sc-gut) - 28px)` posé sur la carte) est
+fausse** : `--sc-gut` contient un pourcentage, et un pourcentage se résout sur l'élément
+qui s'en sert — la carte fait 456 px de large, pas la largeur de la section. Troisième
+occurrence de ce piège (cf. `--sc-gut-scene`). La borne est fixe (1187 px) parce que le
+manque vaut exactement 4 px dès que la fenêtre est plus étroite que le conteneur.
+
+## Les bandes d'outils qui défilaient sont remplacées (2026-08-20)
+
+« Les carrousels sont un peu illisibles cognitivement » — et c'est juste : une liste qui
+bouge ne se lit pas, elle se subit. On ne peut ni la parcourir, ni relire un nom qui vient
+de passer, ni vérifier si le sien y est, ce qui est exactement la raison d'être de la
+section. Le défilement rendait la liste entière *visible*, pas *lisible*.
+
+À la place, `.compat` : une **grille régulière** (`auto-fill`, plancher 190 px), une case
+par entrée, les noms alignés en colonnes. Ce qui la tient : un liseré teal sur le bord
+gauche de chaque case (le vocabulaire des cartes de la séquence et des titres de partie),
+une case qui se soulève de 2 px au survol, et un **trait pointillé** pour l'entrée
+fourre-tout — « toute app 2FA Android » n'est pas un produit, c'est une porte ouverte, et
+le pointillé le dit sans un mot. Le liseré se dessine une fois à la révélation ; au repos
+il est entier.
+
+Appliqué aux quatre bandes du site (`caracteristiques`, `en/technical-specs`,
+`commandez`, `en/order`). **Le motif est écarté, pas mis de côté** : le module 17 de
+`main.js` (~120 lignes), le bloc CSS « BANDES D'OUTILS », `.tool-tag` et `.tools__list`
+sont supprimés — plus une page ne les emploie. C'est l'écart avec `.timeline`, gardée
+comme chemin de code sur arbitrage du client.
+
+`.tools__grid` passe en `align-items: start` : les deux colonnes n'ont pas le même nombre
+de cases (cinq applications, neuf outils) et, centrées, leurs titres ne tombaient pas sur
+la même ligne (89 px d'écart à 1440 px).
+
+## Retours de contenu du 2026-08-20
+
+- **« Feuille A3 » retiré du pas 4** (carte + étiquette dans le plan) : les trois cotes
+  portées par le modèle disent déjà l'encombrement, la mention faisait doublon. Le tracé
+  de la feuille reste, c'est lui qui donne aux cotes au sol un cadre où se poser. Le titre
+  devient « Il ne prend pas votre bureau », et le chiffre-clé la fabrication à Bertrange.
+  La page `caracteristiques` garde ses mentions A3, qui viennent du live.
+- **La carte « 100 % »** de l'accueil disait « Efficace à 100 % : l'appui arrive sur la
+  vraie application, il n'y a rien à reconnaître » — brumeux, parce qu'il faut savoir que
+  les robots concurrents lisent l'écran en image pour comprendre l'argument. Devient
+  « Zéro faux positif » + « L'appui se fait sur la vraie application. Rien n'est deviné à
+  l'image, donc rien ne peut être mal lu. » (FR et EN.)
+- **« Éclaté » → « Ouvrir »** sur le curseur de `modele-3d.html` : c'est le terme de la
+  CAO, il ne dit pas au visiteur ce qui va se passer. L'anglais garde « Exploded », qui
+  est le mot courant dans cette langue.
+- **L'étiquette « emplacement du smartphone »** se recentre de 16 unités vers le produit
+  (34→24, 22→18, 28→22), sans changer de côté ni de point d'accroche — le verrouillage du
+  côté gauche reste, c'est lui qui empêche le libellé de sauter en cours de balayage.
+
+## Pages légales : aucune n'existe dans ce dépôt
+
+Question posée le 2026-08-20 : d'où vient le contenu des pages « conditions de vente » et
+« confidentialité » ? Réponse : **de nulle part, il n'y en a pas**. Il n'existe aucun
+fichier local ; les pieds de page des 23 pages et la case de consentement du formulaire de
+contact **pointent vers le live** (`https://q-bot.eu/conditions-vente/`,
+`/confidentialite/`, et les équivalents `/en/`). Rien n'a été inventé, rien n'a été repris
+du dossier `Documentations/website`. C'est un arbitrage du 2026-07-09 : un texte juridique
+paraphrasé est pire que pas de texte, et l'outil de relevé refuse de reproduire ces pages
+mot pour mot. Si un jour ces pages doivent vivre dans le site statique, il faut le texte
+fourni par le client, pas une reconstitution.
+
+## Mesures de performance de la séquence (2026-08-20)
+
+Faites parce que la question était posée (« peut-être un souci d'optimisation ? »). Trois
+relevés indépendants, tous sur Chromium fenêtré (en headless c'est SwiftShader qui rend,
+les temps ne veulent rien dire) :
+
+- **16,7 ms par image** en DPR 1 comme en DPR 2, sur les quatre pas et les trois
+  transitions, aucune tâche longue sur le fil principal ;
+- **~59 im/s médianes avec le processeur bridé quatre fois** (p95 34-49 ms, aucun
+  blocage) ;
+- **103 ms de rastérisation** sur toute la traversée (~3 s), soit 0,6 ms par image.
+
+Deux optimisations envisagées et **écartées faute de gain mesurable** : figer les
+animations d'ambiance hors écran (0,2 ms par image, soit le bruit entre deux passes
+identiques) et arrêter le déplacement du halo `--sc-glow`, écrit à chaque image sur un
+dégradé de 4 Mpx (RasterTask identique à 5 ms près). Ne pas y revenir sans un chiffre.
+
+Le différentiel image par image de la traversée 3→4 est propre sur les **deux moteurs** :
+écart médian de 1,5/255 entre deux prises consécutives sous Chromium, les deux plus grands
+(2,6 et 2,5) tombant sur les moments où la caméra tourne le plus vite ; et 0,08/255 sous
+WebKit (installer le navigateur avec `python3 -m playwright install webkit`). Aucun pic,
+donc aucun artéfact. Ce qui avait été signalé était bien les deux états corrigés
+précédemment (le plan coté qui apparaissait pendant le balayage, les bagues d'éclatement
+sur un boîtier fermé).

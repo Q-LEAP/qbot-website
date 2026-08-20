@@ -597,32 +597,15 @@ p { color: var(--gray); }
 /* ---- Compatible tools ---- */
 .tools__grid {
   display: grid;
-  /* `minmax(0, 1fr)` et non `1fr` : la piste d'une bande d'outils passe en
-     `width: max-content`, et un élément de grille a `min-width: auto` — la colonne
-     s'étirerait à la largeur de la liste. Mesuré avant la correction : 1 835 px de
-     colonne et 2 721 px de débordement horizontal dans une fenêtre de 1 440. */
+  /* `minmax(0, 1fr)` et non `1fr` : un élément de grille a `min-width: auto`, donc
+     un contenu de largeur intrinsèque étire sa colonne. C'est arrivé trois fois sur
+     ce site ; le plancher est posé partout où la colonne est redéclarée. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
-  align-items: center;
-}
-
-.tools__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.tool-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 8px 16px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--dark);
+  /* En haut, pas au centre : les deux colonnes de la matrice de compatibilité n'ont
+     pas le même nombre de cases (cinq applications, neuf outils), et centrées, leurs
+     titres ne tombaient pas sur la même ligne — mesuré 89 px d'écart à 1 440 px. */
+  align-items: start;
 }
 
 /* ---- Vidéo ---- */
@@ -1826,21 +1809,6 @@ p { color: var(--gray); }
   }
 }
 
-/* ── Tool tags — hover lift ── */
-.tool-tag {
-  transition:
-    border-color 0.2s ease,
-    background   0.2s ease,
-    color        0.2s ease,
-    transform    0.2s cubic-bezier(0.16,1,0.3,1);
-}
-.tool-tag:hover {
-  border-color: var(--teal);
-  background: var(--teal-light);
-  color: var(--teal-dark);
-  transform: translateY(-2px);
-}
-
 /* ── Image produit — cadre clippé + hover ──
    Le cadre porte le border-radius et le clipping ; l'image dedans est
    sur-dimensionnée (--media-scale) pour laisser de la marge au parallaxe
@@ -2741,7 +2709,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 
 /* ── Tags / badges ── */
-[data-theme="dark"] .tool-tag,
 [data-theme="dark"] .badge-lux {
   background: #1C1C1C;
   border-color: #2B2B2B;
@@ -4123,76 +4090,6 @@ label > input[type="checkbox"] {
 .calendly-box:hover::before,
 .evo-card--current:hover::before { animation: ringTurn 4s linear infinite; }
 
-/* ══ BANDES D'OUTILS ═══════════════════════════════════════════════════════
-   Les pastilles d'outils défilent en boucle au lieu de s'empiler.
-
-   POURQUOI. Procédé relevé sur linearity.io (`anim-marquee`, trois rangées à
-   18 / 29 / 41 s, sens et vitesses différents) : le contenu défile, et c'est le
-   défilement lui-même qui est le contenu. C'est le seul endroit de ce site où une
-   boucle permanente se justifie — ailleurs elle a été retirée deux fois
-   (chatoiement des libellés ramené à 2 itérations, flottement du hero supprimé).
-   Ici la liste est plus longue que sa colonne : la faire défiler, c'est la montrer
-   entière. Et cela règle un défaut mesuré : à 390 px, dix pastilles se replient sur
-   quatre à cinq lignes.
-
-   L'ÉTAT DE BASE EST LE PAVÉ STATIQUE D'AUJOURD'HUI. Rien ici ne s'applique sans
-   l'attribut `data-looped`, que seul le module 17 pose — et il ne le pose ni en
-   mouvement réduit, ni si la liste est déjà plus courte que sa colonne. Sans
-   JavaScript, la bande reste exactement ce qu'elle était : un `flex-wrap: wrap`.
-   C'est la règle du dépôt, apprise deux fois : l'état au repos doit être l'état
-   lisible, jamais un état qu'une autre règle doit défaire.
-
-   LA PÉRIODE EST MESURÉE, PAS DEVINÉE. `--tb-w` vaut la largeur d'une copie de la
-   liste plus l'écart qui la sépare de la suivante, et `--tb-dur` s'en déduit à
-   vitesse constante (voir le module 17). Une durée fixe pour toutes les bandes
-   aurait donné des vitesses apparentes très différentes : cinq pastilles courtes
-   contre dix longues, c'est un rapport de plus de deux.
-
-   ARRÊT AU SURVOL ET HORS ÉCRAN. Une liste qui bouge est une liste qu'on ne finit
-   pas de lire : le survol l'arrête, donc on peut toujours la lire en entier. Et
-   `.is-running` n'est posé que lorsque la bande est à l'écran — rien ne tourne pour
-   personne. */
-/* Le même piège de largeur, côté bande : plancher explicite pour qu'aucun
-   contexte de mise en page (grille, flex) ne la laisse suivre sa piste. */
-.tool-band { min-width: 0; max-width: 100%; }
-
-.tool-band[data-looped] {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-}
-
-.tool-band[data-looped] .tool-band__track {
-  flex-wrap: nowrap;
-  width: max-content;
-  will-change: transform;
-  animation: toolBandRun var(--tb-dur, 24s) linear infinite;
-  animation-play-state: paused;
-}
-
-@keyframes toolBandRun {
-  to { transform: translateX(calc(-1 * var(--tb-w, 0px))); }
-}
-
-.tool-band[data-looped].is-running .tool-band__track { animation-play-state: running; }
-/* Déclaré APRÈS `.is-running`, à spécificité égale : le survol doit gagner. */
-.tool-band[data-looped]:hover .tool-band__track { animation-play-state: paused; }
-
-/* Le sens alterné d'une bande à l'autre : c'est lui qui distingue deux listes
-   voisines, là où deux bandes parallèles dans le même sens se lisent comme une
-   seule. `reverse` suffit — pas besoin d'un second jeu de keyframes. */
-.tool-band--rtl[data-looped] .tool-band__track { animation-direction: reverse; }
-
-@media (prefers-reduced-motion: reduce) {
-  /* Filet : le module 17 ne clone rien en mouvement réduit, mais le réglage peut
-     changer après le chargement. On rend alors la bande à son pavé statique. */
-  .tool-band[data-looped] { overflow: visible; -webkit-mask-image: none; mask-image: none; }
-  .tool-band[data-looped] .tool-band__track {
-    flex-wrap: wrap; width: auto; animation: none; transform: none;
-  }
-  .tool-band__dup { display: none; }
-}
-
 /* ══ NOTE D'ARTICLE ════════════════════════════════════════════════════════
    Un encart en tête des six articles, sous leur ligne de méta.
 
@@ -4492,3 +4389,97 @@ label > input[type="checkbox"] {
    suivante. Les paragraphes encadrés (cartes, grilles, volets) ne sont pas concernés :
    leur colonne les borne déjà. */
 .container > p { max-width: 760px; }
+
+
+/* ══ MATRICE DE COMPATIBILITÉ ══════════════════════════════════════════════
+   Remplace les bandes d'outils qui défilaient en boucle. Le client les trouve
+   « illisibles cognitivement », et il a raison : une liste qui bouge ne se lit pas,
+   elle se subit — on ne peut ni la parcourir des yeux, ni relire un nom qu'on vient
+   de voir passer, ni vérifier si le sien y est. Or c'est exactement pour ça qu'on
+   vient dans cette section. Le défilement rendait la liste entière VISIBLE, pas
+   LISIBLE, et c'est la lisibilité qui compte ici.
+
+   Ce qui la remplace n'est pas le pavé de pastilles d'avant (il se repliait sur
+   quatre à cinq lignes en désordre à 390 px) mais une grille régulière : chaque
+   entrée occupe une case de largeur égale, donc les noms s'alignent en colonnes et
+   se parcourent d'un coup d'œil. `auto-fill` avec un plancher de 190 px décide le
+   nombre de colonnes, il n'est pas codé en dur.
+
+   CE QUI EST PREMIUM ICI N'EST PAS UNE ANIMATION, c'est le tracé : un liseré teal
+   sur le bord gauche de chaque case (le même vocabulaire que le filet des cartes de
+   la séquence et des titres de partie), une case qui se soulève de 2 px au survol,
+   et une entrée fourre-tout distinguée par un trait pointillé — « toute app 2FA
+   Android » n'est pas un produit, c'est une porte ouverte, et le pointillé le dit
+   sans un mot de plus. Le liseré se dessine une fois à la révélation, en cascade ;
+   au repos il est entier, donc sans JavaScript ou en mouvement réduit la grille est
+   simplement là. */
+.compat {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+}
+.compat__head {
+  font-size: 1.0625rem;
+  margin: 0 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.compat__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 54px;
+  padding: 12px 16px 12px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  color: var(--black);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+/* Le liseré. État au repos = entier : c'est la règle du dépôt, l'animation est
+   ajoutée par `.is-visible`, jamais défaite par une autre règle. */
+.compat__item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--teal), var(--teal-dark));
+  transform-origin: top center;
+}
+@keyframes compatMark {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+.compat__item.is-visible::before {
+  animation: compatMark 0.55s var(--ease-out) both;
+  animation-delay: calc(var(--stagger-i, 0) * 60ms);
+}
+.compat__item:hover {
+  transform: translateY(-2px);
+  border-color: var(--teal-tint);
+  background: linear-gradient(135deg, rgba(0, 203, 190, 0.10), rgba(255, 255, 255, 0.015));
+}
+/* L'entrée ouverte : ce n'est pas un produit de plus dans la liste, c'est ce qui
+   reste après la liste. */
+.compat__item--open {
+  border-style: dashed;
+  color: var(--teal-text);
+}
+.compat__item--open::before { display: none; }
+@media (max-width: 520px) {
+  .compat { grid-template-columns: 1fr; gap: 8px; }
+  .compat__item { min-height: 48px; padding: 11px 14px 11px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compat__item.is-visible::before { animation: none; }
+}

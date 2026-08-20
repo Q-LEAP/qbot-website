@@ -213,6 +213,10 @@ if ('IntersectionObserver' in window) {
     ['fan', [
       '.feature-card',
       '.guarantee-item',
+      /* Les cases de la matrice de compatibilité : c'est cette révélation qui leur
+         donne `.is-visible` et `--stagger-i`, dont dépend le tracé du liseré (cf.
+         la feuille de style, section « matrice de compatibilité »). */
+      '.compat__item',
     ]],
     /* La note en tête d'article : montée et fondu, sans flou. Elle est courte et
        posée haut dans la page, un flou n'y ajouterait rien. */
@@ -232,10 +236,6 @@ if ('IntersectionObserver' in window) {
       '.evo-card',
       '.product-card',
       '.stat-item',
-      /* La bande entière, et non chaque pastille : depuis le lot J elles
-         défilent en boucle, et un échelonnement pastille par pastille dans un
-         contenu qui glisse ne se lit pas. */
-      '.tool-band',
       '.spec-item',
       '.contact-info__item',
       '.pricing-card',
@@ -1281,100 +1281,3 @@ backToTop.addEventListener('click', () => {
     if (item) io.observe(item);
   });
 }());
-
-
-  /* ══════════════════════════════════════════════════════════════════════════
-     17. BANDES D'OUTILS — la liste défile au lieu de s'empiler
-     ══════════════════════════════════════════════════════════════════════════
-     Le module ne fait que trois choses : cloner la liste autant de fois qu'il le
-     faut pour qu'il n'y ait jamais de vide, MESURER la période, et n'allumer
-     l'animation que lorsque la bande est à l'écran. Toute l'apparence est dans la
-     feuille de style, section « BANDES D'OUTILS ».
-
-     TROIS POINTS QUI DÉCIDENT DU CODE.
-
-     1. La largeur doit être mesurée SANS repli. Au repos la piste est en
-        `flex-wrap: wrap` : si le contenu se replie déjà, `scrollWidth` renvoie la
-        largeur de la colonne, pas celle de la liste sur une ligne. On pose donc
-        `data-looped` AVANT de mesurer — c'est lui qui met `nowrap` et
-        `width: max-content` — et on le retire si finalement on renonce.
-     2. La période n'est pas la largeur du contenu : c'est cette largeur PLUS
-        l'écart qui sépare la dernière pastille d'une copie de la première de la
-        suivante. Sans ce terme, la boucle saute d'un `gap` à chaque tour.
-     3. Le nombre de copies dépend de la colonne. Une liste plus courte que sa
-        colonne laisserait un trou pendant la moitié du cycle : il faut
-        `ceil(largeur de colonne / période) + 1` copies. Sur la page de commande la
-        liste ne fait que ~950 px dans un conteneur de 1180 : c'est ce cas-là qui
-        impose la formule, une seule copie dupliquée n'y suffit pas.
-
-     Rien ne se déclenche en mouvement réduit, et rien ne se déclenche si la liste
-     tient déjà dans sa colonne — faire défiler ce qu'on voit déjà en entier
-     n'apporte rien et coûte une animation permanente.                            */
-  (function () {
-    var bandes = [].slice.call(document.querySelectorAll('.tool-band'));
-    if (!bandes.length) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    var VITESSE = 42;          // pixels par seconde — lent, pour rester lisible
-    var MARGE = 0.75;          // en dessous, la liste tient dans sa colonne
-
-    function monter(bande) {
-      var piste = bande.querySelector('.tool-band__track');
-      if (!piste) return;
-
-      /* Remise à zéro : au redimensionnement on repart de la liste d'origine. */
-      [].slice.call(piste.querySelectorAll('.tool-band__dup')).forEach(function (e) {
-        e.parentNode.removeChild(e);
-      });
-      bande.setAttribute('data-looped', '');       // cf. point 1 : avant la mesure
-
-      var ecart = parseFloat(getComputedStyle(piste).columnGap) || 0;
-      var periode = piste.scrollWidth + ecart;     // cf. point 2
-      var colonne = bande.clientWidth;
-      if (!colonne || periode <= ecart + 1 || piste.scrollWidth < colonne * MARGE) {
-        bande.removeAttribute('data-looped');
-        return;
-      }
-
-      var originaux = [].slice.call(piste.children);
-      var copies = Math.ceil(colonne / periode) + 1;    // cf. point 3
-      for (var c = 1; c < copies; c++) {
-        originaux.forEach(function (e) {
-          var d = e.cloneNode(true);
-          d.classList.add('tool-band__dup');
-          d.setAttribute('aria-hidden', 'true');
-          d.removeAttribute('role');                    // la liste n'a qu'un jeu d'items
-          piste.appendChild(d);
-        });
-      }
-      bande.style.setProperty('--tb-w', periode.toFixed(1) + 'px');
-      bande.style.setProperty('--tb-dur', (periode / VITESSE).toFixed(1) + 's');
-    }
-
-    function monterToutes() { bandes.forEach(monter); }
-    monterToutes();
-
-    /* Les polices Google arrivent après le premier rendu et changent la largeur des
-       pastilles : la période serait celle de la police de repli. Même précaution que
-       `scrolly.js` pour la hauteur de ses cartes. */
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(monterToutes);
-
-    var t = null;
-    window.addEventListener('resize', function () {
-      clearTimeout(t);
-      t = setTimeout(monterToutes, 200);
-    });
-
-    /* Hors écran, rien ne tourne. Une boucle permanente qui s'anime pour personne
-       est la seule chose qui rendrait ce procédé indéfendable. */
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entrees) {
-        entrees.forEach(function (e) {
-          e.target.classList.toggle('is-running', e.isIntersecting);
-        });
-      }, { rootMargin: '80px 0px' });
-      bandes.forEach(function (b) { io.observe(b); });
-    } else {
-      bandes.forEach(function (b) { b.classList.add('is-running'); });
-    }
-  }());
