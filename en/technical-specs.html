@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=2026.15-08-29b">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026.18-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -129,6 +129,7 @@
       <ul class="nav__menu" id="main-menu" role="list">
         <li><a href="about.html" class="nav__link">About</a></li>
         <li><a href="technical-specs.html" class="nav__link active">Technical Specs</a></li>
+        <li><a href="use-cases.html" class="nav__link">Use Cases</a></li>
         <li><a href="contact.html" class="nav__link">Contact</a></li>
       </ul>
       <div class="nav__actions">
@@ -309,31 +310,12 @@
       <p class="section-subtitle">Every scenario in Q-Bot is accessible via a simple REST API. No SDK, no proprietary plugin, no agent to install in your CI environment.</p>
     </div>
 
-    <div class="split-2" style="align-items:start; gap:48px;">
-      <div>
-        <ul class="api-facts">
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Self-hosted, runs on your local network</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No authentication tokens or API keys required</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Compatible with Selenium, Cypress, Playwright, Robot Framework, JUnit, shell scripts, and more</span></li>
-          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Integration takes under an hour</span></li>
-        </ul>
-      </div>
-      <div class="code-block">
-        <pre><code># Selenium (Python)
-import requests
-
-# Trigger 2FA scenario
-requests.get(
-  &quot;http://q-bot.local:8000&quot;
-  &quot;/scenarios/42/execute&quot;
-)
-
-# Test continues normally
-driver.find_element(
-  By.ID, &quot;dashboard&quot;
-).is_displayed()</code></pre>
-      </div>
-    </div>
+    <ul class="api-facts api-facts--deux">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Self-hosted, runs on your local network</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No authentication tokens or API keys required</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Compatible with Selenium, Cypress, Playwright, Robot Framework, JUnit, shell scripts, and more</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Integration takes under an hour</span></li>
+    </ul>
 
     <h3 style="margin:52px 0 18px;">Three endpoints</h3>
     <div class="specs__list" role="list" aria-label="Three endpoints">
@@ -351,37 +333,11 @@ driver.find_element(
           </div>
     </div>
 
-    <h3 style="margin:48px 0 18px;">How to call it, tool by tool</h3>
-    <div class="specs__list" role="list" aria-label="How to call it, tool by tool">
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Selenium (Python / Java)</span>
-            <span class="spec-item__value"><code>requests</code> or <code>HttpClient</code> call before the assertion</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Cypress</span>
-            <span class="spec-item__value"><code>cy.request()</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Playwright</span>
-            <span class="spec-item__value"><code>request.get()</code> or <code>fetch()</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Robot Framework</span>
-            <span class="spec-item__value"><code>RequestsLibrary</code> keyword</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">JUnit / TestNG</span>
-            <span class="spec-item__value">RestAssured or Java <code>HttpClient</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Shell / Bash</span>
-            <span class="spec-item__value"><code>curl</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Any CI/CD pipeline</span>
-            <span class="spec-item__value">An HTTP step, a <code>curl</code> command or a custom script</span>
-          </div>
-    </div>
+    <p style="margin-top:40px;">
+      <a href="use-cases.html" class="btn btn--outline">Integration examples, case by case
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </p>
   </div>
 </section>
 
@@ -526,6 +482,7 @@ driver.find_element(
         <ul role="list">
           <li><a href="index.html">Home</a></li>
           <li><span aria-current="page">Technical Specs</span></li>
+          <li><a href="use-cases.html">Use Cases</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="blog.html">Blog</a></li>
@@ -562,6 +519,6 @@ driver.find_element(
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=2026.13-08-23" defer></script>
+<script src="../assets/js/main.js?v=2026.14-08-23" defer></script>
 </body>
 </html>

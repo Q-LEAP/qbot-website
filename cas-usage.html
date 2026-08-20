@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cas d'usage : Q-Bot dans de vraies chaînes de tests</title>
+  <meta name="description" content="Cinq situations réelles où Q-Bot débloque la chaîne de tests : connexion bancaire, campagne de nuit, code LuxTrust, authentification d'entreprise, 2FA par QR code.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/cas-usage.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/cas-usage.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/use-cases.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/cas-usage.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Cas d'usage : Q-Bot dans de vraies chaînes de tests">
+  <meta property="og:description" content="Cinq situations réelles où Q-Bot débloque la chaîne de tests : connexion bancaire, campagne de nuit, code LuxTrust, authentification d'entreprise, 2FA par QR code.">
+  <meta property="og:url" content="https://q-bot.eu/cas-usage.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Le robot Q-Bot, boîtier d'automatisation de la double authentification">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Cas d'usage : Q-Bot dans de vraies chaînes de tests">
+  <meta name="twitter:description" content="Cinq situations réelles où Q-Bot débloque la chaîne de tests : connexion bancaire, campagne de nuit, code LuxTrust, authentification d'entreprise, 2FA par QR code.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=2026.18-08-29b">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Cas d'usage",
+      "item": "https://q-bot.eu/cas-usage.html"
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="index.html" class="nav__logo" aria-label="Q-Bot, accueil">
+        <img src="assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="a-propos.html" class="nav__link">À propos</a></li>
+        <li><a href="caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="cas-usage.html" class="nav__link active" aria-current="page">Cas d'usage</a></li>
+        <li><a href="contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="contact.html" class="btn btn--primary">Demo gratuite</a>
+                <div class="nav__lang">
+          <a href="en/use-cases.html" hreflang="en" aria-label="Cette page est en français. Passer à la version anglaise." title="Cette page est en français. Passer à la version anglaise."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> FR</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Cas d'usage</span>
+    <h1 id="page-title">Q-Bot sur le terrain</h1>
+    <p>Du parcours de connexion bancaire à la campagne de tests de nuit, voici comment des équipes QA emploient Q-Bot.</p>
+  </div>
+</section>
+
+<!-- ======= BREADCRUMB ======= -->
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Fil d'Ariane">
+      <li><a href="index.html">Accueil</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">Cas d'usage</span></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ======= LES CINQ CAS, EN SÉQUENCE ═══════════════════════════════════════
+     Une séquence légère : la colonne de droite reste à l'écran et change de
+     schéma au fil de la lecture, la colonne de gauche défile normalement. Rien
+     n'est épinglé à la fenêtre et aucune hauteur n'est calculée en JavaScript —
+     un `position: sticky` et un observateur d'intersection suffisent. Sous 900 px
+     le schéma disparaît et les cinq cas redeviennent une liste : c'est le
+     compromis qui évite tous les pièges de recouvrement de la séquence 3D. -->
+<section class="section ucs" aria-labelledby="ucs-title" data-uc="0">
+  <div class="container">
+    <h2 class="sr-only" id="ucs-title">Cinq situations où la chaîne se débloque</h2>
+    <div class="ucs__inner">
+      <div class="ucs__steps">
+      <article class="ucs__step" data-i="0">
+        <div class="usecase">
+          <span class="usecase__cat">Banque et fintech</span>
+          <h3>Une connexion testée de bout en bout, 2FA comprise</h3>
+          <div class="usecase__grid">
+            <div class="usecase__part">
+              <span class="usecase__lab">Le blocage</span>
+              <p>Chaque test de connexion passe par une étape 2FA&nbsp;: une notification à valider, un code de Microsoft ou Google Authenticator, une demande LuxTrust ou itsme. Jouer ces tests sans personne devant l'écran voulait dire soit sauter la 2FA, ce qui vide le test de son sens, soit garder un testeur d'astreinte à toute heure.</p>
+            </div>
+            <div class="usecase__part usecase__part--sol">
+              <span class="usecase__lab">Avec Q-Bot</span>
+              <p>L'app compagnon surveille l'application 2FA. Dès qu'une notification arrive, Q-Bot exécute le scénario de validation. Tout le parcours de connexion, 2FA comprise, se joue sans personne, sur un vrai appareil, à n'importe quelle heure.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="ucs__step" data-i="1">
+        <div class="usecase">
+          <span class="usecase__cat">Campagne de non-régression</span>
+          <h3>Des exécutions de nuit vraiment automatiques</h3>
+          <div class="usecase__grid">
+            <div class="usecase__part">
+              <span class="usecase__lab">Le blocage</span>
+              <p>La campagne tourne à chaque demande de fusion et chaque nuit. Plusieurs parcours butent sur la 2FA&nbsp;: à l'authentification, sur une opération sensible, ou à l'élévation de session. Une seule étape manuelle casse toute la chaîne.</p>
+            </div>
+            <div class="usecase__part usecase__part--sol">
+              <span class="usecase__lab">Avec Q-Bot</span>
+              <p>Chaque verrou 2FA de la chaîne devient un appel. Quand le test atteint l'étape, il envoie <code>GET /scenarios/:id/execute</code> et Q-Bot s'en occupe. La compilation passe ou échoue sur la logique de l'application, plus sur l'absence d'un humain.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="ucs__step" data-i="2">
+        <div class="usecase">
+          <span class="usecase__cat">Code LuxTrust</span>
+          <h3>Le code à usage unique dans vos assertions</h3>
+          <div class="usecase__grid">
+            <div class="usecase__part">
+              <span class="usecase__lab">Le blocage</span>
+              <p>Les parcours qui passent par LuxTrust, courants dans la finance, l'administration et les grandes entreprises au Luxembourg, ont besoin du code affiché pour remplir un formulaire ou vérifier une réponse d'authentification. Aller le lire à la main interrompt le test.</p>
+            </div>
+            <div class="usecase__part usecase__part--sol">
+              <span class="usecase__lab">Avec Q-Bot</span>
+              <p>Appelez <code>GET /get-luxtrust-otp</code> à l'endroit du test où le code est nécessaire. Q-Bot lit le code affiché par l'app LuxTrust sur le téléphone relié et le renvoie dans la réponse. Votre outil de test s'en sert directement.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="ucs__step" data-i="3">
+        <div class="usecase">
+          <span class="usecase__cat">Authentification d'entreprise</span>
+          <h3>Les parcours à plusieurs facteurs</h3>
+          <div class="usecase__grid">
+            <div class="usecase__part">
+              <span class="usecase__lab">Le blocage</span>
+              <p>Les applications d'entreprise enchaînent souvent mot de passe, validation par notification, puis code temporaire. Automatiser cela de bout en bout demande d'orchestrer plusieurs écrans&nbsp;: fragile en script, lent à la main.</p>
+            </div>
+            <div class="usecase__part usecase__part--sol">
+              <span class="usecase__lab">Avec Q-Bot</span>
+              <p>Chaque étape est un scénario, construit visuellement. Votre outil de test les appelle dans l'ordre par l'API. Q-Bot joue chacune avec les bons temps d'attente, et le parcours complet se termine sans intervention.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="ucs__step" data-i="4">
+        <div class="usecase">
+          <span class="usecase__cat">2FA par QR code</span>
+          <h3>Afficher, scanner, continuer</h3>
+          <div class="usecase__grid">
+            <div class="usecase__part">
+              <span class="usecase__lab">Le blocage</span>
+              <p>Certains parcours 2FA demandent au téléphone de scanner un QR code&nbsp;: pour confirmer une transaction, appairer une application d'authentification ou valider une session. Présenter un QR code à un appareil sous test automatisé n'a pas de solution évidente.</p>
+            </div>
+            <div class="usecase__part usecase__part--sol">
+              <span class="usecase__lab">Avec Q-Bot</span>
+              <p>La chaîne envoie l'image à Q-Bot par <code>POST /display-image</code>. Q-Bot l'affiche en plein écran sur son petit écran intégré. Un scénario demande alors au téléphone d'ouvrir sa caméra et de la pointer dessus&nbsp;: le scan se fait, l'étape 2FA se résout.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+      </div>
+      <aside class="ucs__stage" aria-hidden="true">
+        <div class="ucs__panels">
+        <figure class="ucs__panel" data-i="0">
+          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
+            <span class="ucs__node">Application 2FA</span>
+            <span class="ucs__link"><span class="ucs__link-lab">notification reçue, l'app compagnon la voit</span></span>
+            <span class="ucs__node ucs__node--fort">Q-Bot</span>
+            <span class="ucs__link"><span class="ucs__link-lab">appui sur l'écran, par ADB</span></span>
+            <span class="ucs__node">Connexion validée</span>
+          </div>
+          <figcaption class="ucs__cap">Aucun appel depuis la chaîne de tests&nbsp;: c'est la notification qui déclenche.</figcaption>
+        </figure>
+        <figure class="ucs__panel" data-i="1">
+          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
+            <span class="ucs__node">Chaîne CI/CD</span>
+            <span class="ucs__link"><span class="ucs__link-lab">GET /scenarios/42/execute</span></span>
+            <span class="ucs__node ucs__node--fort">Q-Bot</span>
+            <span class="ucs__link"><span class="ucs__link-lab">appui sur l'écran, par ADB</span></span>
+            <span class="ucs__node">La compilation continue</span>
+          </div>
+          <figcaption class="ucs__cap">Un verrou 2FA devient un appel HTTP, comme n'importe quelle autre étape.</figcaption>
+        </figure>
+        <figure class="ucs__panel" data-i="2">
+          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
+            <span class="ucs__node">Test en cours</span>
+            <span class="ucs__link"><span class="ucs__link-lab">GET /get-luxtrust-otp</span></span>
+            <span class="ucs__node ucs__node--fort">Q-Bot lit l'app LuxTrust</span>
+            <span class="ucs__link"><span class="ucs__link-lab">réponse : le code affiché</span></span>
+            <span class="ucs__node">Le test remplit le formulaire</span>
+          </div>
+          <figcaption class="ucs__cap">Le code arrive dans la réponse HTTP&nbsp;: rien à recopier, rien à attendre.</figcaption>
+        </figure>
+        <figure class="ucs__panel" data-i="3">
+          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
+            <span class="ucs__node">Test en cours</span>
+            <span class="ucs__link"><span class="ucs__link-lab">trois scénarios appelés dans l'ordre</span></span>
+            <span class="ucs__node ucs__node--fort">Q-Bot</span>
+            <span class="ucs__link"><span class="ucs__link-lab">mot de passe, notification, code temporaire</span></span>
+            <span class="ucs__node">Session ouverte</span>
+          </div>
+          <figcaption class="ucs__cap">L'ordre des étapes et les temps d'attente vivent dans Q-Bot, pas dans vos scripts.</figcaption>
+        </figure>
+        <figure class="ucs__panel" data-i="4">
+          <div class="ucs__flow" role="img" aria-label="Le chemin de l'appel">
+            <span class="ucs__node">Chaîne de tests</span>
+            <span class="ucs__link"><span class="ucs__link-lab">POST /display-image</span></span>
+            <span class="ucs__node ucs__node--fort">Écran du boîtier</span>
+            <span class="ucs__link"><span class="ucs__link-lab">la caméra du téléphone scanne</span></span>
+            <span class="ucs__node">Étape 2FA résolue</span>
+          </div>
+          <figcaption class="ucs__cap">Le boîtier sert d'écran&nbsp;: le téléphone lit un vrai QR code, pas une image injectée.</figcaption>
+        </figure>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ======= L'API, EN TROIS EXEMPLES ======= -->
+<section class="section section--gray" aria-labelledby="api-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">API REST</span>
+      <h2 class="section-title" id="api-title">Un appel HTTP, et n'importe quelle chaîne de tests</h2>
+      <p class="section-subtitle">Si votre outil sait faire une requête HTTP, il sait piloter Q-Bot. Aucun SDK, aucun greffon, aucun agent à installer.</p>
+    </div>
+    <div class="ucs__snippets">
+      <figure class="ucs__snippet">
+        <figcaption>Python / Selenium</figcaption>
+        <div class="code-block"><pre><code># On déclenche le scénario 2FA
+import requests
+
+requests.get(
+  &quot;http://q-bot.local:8000&quot;
+  &quot;/scenarios/42/execute&quot;
+)
+
+# Le test reprend son cours
+driver.find_element(
+  By.ID, &quot;dashboard&quot;
+).is_displayed()</code></pre></div>
+      </figure>
+      <figure class="ucs__snippet">
+        <figcaption>Cypress</figcaption>
+        <div class="code-block"><pre><code>// On déclenche le scénario 2FA
+cy.request(
+  'GET',
+  'http://q-bot.local:8000'
+  + '/scenarios/42/execute'
+)
+.its('status')
+.should('eq', 200)
+
+cy.get('#dashboard')
+  .should('be.visible')</code></pre></div>
+      </figure>
+      <figure class="ucs__snippet">
+        <figcaption>Shell / chaîne CI</figcaption>
+        <div class="code-block"><pre><code># On déclenche le scénario 2FA
+curl -s \
+  http://q-bot.local:8000 \
+  /scenarios/42/execute
+
+# Le code LuxTrust
+OTP=$(curl -s \
+  http://q-bot.local:8000 \
+  /get-luxtrust-otp \
+  | jq -r '.otp')</code></pre></div>
+      </figure>
+    </div>
+
+    <h3 style="margin:52px 0 18px;">L'appel, selon votre outil</h3>
+    <div class="specs__list" role="list" aria-label="L'appel, selon votre outil">
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Selenium (Python / Java)</span>
+            <span class="spec-item__value">Appel <code>requests</code> ou <code>HttpClient</code> avant l'assertion</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Cypress</span>
+            <span class="spec-item__value"><code>cy.request()</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Playwright</span>
+            <span class="spec-item__value"><code>request.get()</code> ou <code>fetch()</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Robot Framework</span>
+            <span class="spec-item__value">Mot-clé <code>RequestsLibrary</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">JUnit / TestNG</span>
+            <span class="spec-item__value">RestAssured ou le <code>HttpClient</code> de Java</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Shell / Bash</span>
+            <span class="spec-item__value"><code>curl</code></span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Toute chaîne CI/CD</span>
+            <span class="spec-item__value">Une étape HTTP, une commande <code>curl</code> ou un script maison</span>
+          </div>
+    </div>
+    <p class="ucs__note">Q-Bot tourne sur votre réseau local. L'API répond tant que le boîtier est allumé. Aucun jeton d'authentification, aucune limite de débit, aucune dépendance extérieure.</p>
+  </div>
+</section>
+
+<!-- ======= CTA ======= -->
+<section class="section" aria-labelledby="cta-uc-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-uc-title" style="margin-bottom:16px;">Prêt à supprimer la dernière étape manuelle&nbsp;?</h2>
+    <p style="margin-bottom:32px;">Q-Bot est proposé en location mensuelle à 850&nbsp;€ HT, assistance et remplacement compris.</p>
+    <div class="cta-block__actions">
+      <a href="contact.html" class="btn btn--primary btn--lg">Prendre rendez-vous</a>
+      <a href="caracteristiques.html" class="btn btn--outline btn--lg">Caractéristiques techniques</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="caracteristiques.html">Caractéristiques</a></li>
+          <li><span aria-current="page">Cas d'usage</span></li>
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Produit</h3>
+        <ul role="list">
+          <li><a href="modele-3d.html">Modèle 3D</a></li>
+          <li><a href="commandez.html">Commander</a></li>
+          <li><a href="contact.html">Démo gratuite</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="https://q-bot.eu/conditions-vente/" target="_blank" rel="noopener">Conditions de vente</a>
+        <a href="https://q-bot.eu/confidentialite/" target="_blank" rel="noopener">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js?v=2026.14-08-23" defer></script>
+</body>
+</html>

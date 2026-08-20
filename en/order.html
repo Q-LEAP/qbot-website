@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=2026.15-08-29b">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026.18-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -134,6 +134,7 @@
       <ul class="nav__menu" id="main-menu" role="list">
         <li><a href="about.html" class="nav__link">About</a></li>
         <li><a href="technical-specs.html" class="nav__link">Technical Specs</a></li>
+        <li><a href="use-cases.html" class="nav__link">Use Cases</a></li>
         <li><a href="contact.html" class="nav__link">Contact</a></li>
       </ul>
       <div class="nav__actions">
@@ -349,77 +350,10 @@
       <h2 class="section-title" id="usecases-title">Five situations where the pipeline unblocks</h2>
       <p class="section-subtitle">From banking login flows to nightly CI regressions, here is how QA teams are putting Q-Bot to work.</p>
     </div>
-    <div style="margin-top:44px;">
-      <article class="usecase">
-        <span class="usecase__cat">Banking and fintech</span>
-        <h3>End-to-end login with 2FA</h3>
-        <div class="usecase__grid">
-          <div class="usecase__part">
-            <span class="usecase__lab">The challenge</span>
-            <p>Every login test requires a 2FA step: a push notification approval, an OTP from Microsoft Authenticator or Google Authenticator, or a LuxTrust or itsme prompt. Running those tests unattended meant either skipping 2FA, which defeats the purpose, or keeping a tester on standby at all hours.</p>
-          </div>
-          <div class="usecase__part usecase__part--sol">
-            <span class="usecase__lab">With Q-Bot</span>
-            <p>The companion app monitors the 2FA app. The moment a notification arrives, Q-Bot executes the approval scenario automatically. The entire login flow, including 2FA, runs unattended on a real device, any time of day.</p>
-          </div>
-        </div>
-      </article>
-      <article class="usecase">
-        <span class="usecase__cat">CI/CD regression suite</span>
-        <h3>Fully automated nightly runs</h3>
-        <div class="usecase__grid">
-          <div class="usecase__part">
-            <span class="usecase__lab">The challenge</span>
-            <p>A regression suite runs on every pull request and nightly. Several flows gate on 2FA: at authentication, at sensitive operations, or at session escalation. One manual step breaks the entire pipeline.</p>
-          </div>
-          <div class="usecase__part usecase__part--sol">
-            <span class="usecase__lab">With Q-Bot</span>
-            <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. Q-Bot handles it. The build passes or fails on actual application logic, not on a missing human.</p>
-          </div>
-        </div>
-      </article>
-      <article class="usecase">
-        <span class="usecase__cat">LuxTrust OTP retrieval</span>
-        <h3>Live OTP in your test assertions</h3>
-        <div class="usecase__grid">
-          <div class="usecase__part">
-            <span class="usecase__lab">The challenge</span>
-            <p>Flows using LuxTrust, common in Luxembourg-based financial, government and enterprise environments, require the current OTP to complete a form or verify an authentication response. Retrieving it manually interrupts the automated flow.</p>
-          </div>
-          <div class="usecase__part usecase__part--sol">
-            <span class="usecase__lab">With Q-Bot</span>
-            <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. Q-Bot reads the live OTP from the LuxTrust app running on the connected Android device and returns it in the response. Your test framework uses it directly.</p>
-          </div>
-        </div>
-      </article>
-      <article class="usecase">
-        <span class="usecase__cat">Enterprise SSO</span>
-        <h3>Multi-step authentication flows</h3>
-        <div class="usecase__grid">
-          <div class="usecase__part">
-            <span class="usecase__lab">The challenge</span>
-            <p>Enterprise applications often use multi-step authentication: password, then a push approval, then a TOTP code. Automating this end to end requires orchestrating multiple screens. Doing it with scripts is fragile, doing it manually is slow.</p>
-          </div>
-          <div class="usecase__part usecase__part--sol">
-            <span class="usecase__lab">With Q-Bot</span>
-            <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. Q-Bot handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
-          </div>
-        </div>
-      </article>
-      <article class="usecase">
-        <span class="usecase__cat">QR code-based 2FA</span>
-        <h3>Display, scan, continue</h3>
-        <div class="usecase__grid">
-          <div class="usecase__part">
-            <span class="usecase__lab">The challenge</span>
-            <p>Some 2FA flows require the mobile device to scan a QR code: to confirm a transaction, pair an authenticator, or approve a session. Presenting a QR code to a device under automated test is a step that has no obvious automated solution.</p>
-          </div>
-          <div class="usecase__part usecase__part--sol">
-            <span class="usecase__lab">With Q-Bot</span>
-            <p>The test pipeline sends the QR code image to Q-Bot via <code>POST /display-image</code>. Q-Bot renders it fullscreen on its small attached screen. A scenario then instructs the Android device to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
-          </div>
-        </div>
-      </article>
+    <div style="margin-top:32px;">
+      <a href="use-cases.html" class="btn btn--outline">See the five use cases
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 </section>
@@ -580,6 +514,7 @@
         <ul role="list">
           <li><a href="index.html">Home</a></li>
           <li><a href="technical-specs.html">Technical Specs</a></li>
+          <li><a href="use-cases.html">Use Cases</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="faq.html">FAQ</a></li>
           <li><a href="blog.html">Blog</a></li>
@@ -616,6 +551,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=2026.13-08-23" defer></script>
+<script src="../assets/js/main.js?v=2026.14-08-23" defer></script>
 </body>
 </html>

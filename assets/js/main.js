@@ -1281,3 +1281,47 @@ backToTop.addEventListener('click', () => {
     if (item) io.observe(item);
   });
 }());
+
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     17. CAS D'USAGE — le schéma suit la lecture
+     ══════════════════════════════════════════════════════════════════════════
+     Le module ne fait qu'une chose : écrire sur la section le numéro du cas en
+     cours de lecture. Tout le reste (le calage collant, le fondu entre schémas,
+     l'effacement sous 900 px) est dans la feuille de style.
+
+     AUCUNE ÉCOUTE DU DÉFILEMENT. Un observateur d'intersection avec des marges
+     négatives haut et bas ne déclenche que lorsqu'un pas croise la bande centrale
+     de l'écran : c'est exactement « quel cas suis-je en train de lire ». La
+     séquence 3D de l'accueil, elle, doit mesurer des positions à chaque image
+     parce qu'elle scrube une caméra ; ici il n'y a rien à interpoler.
+
+     L'ÉTAT AU REPOS EST DÉJÀ JUSTE : `data-uc="0"` est écrit dans le HTML, donc
+     sans JavaScript le premier schéma reste affiché et les cinq cas se lisent
+     quand même. Ce module ne fait que suivre. */
+  (function () {
+    var ucs = document.querySelector('.ucs');
+    if (!ucs || !window.IntersectionObserver) return;
+    var pas = [].slice.call(ucs.querySelectorAll('.ucs__step'));
+    if (!pas.length) return;
+
+    /* On garde la trace de tous les pas visibles dans la bande, et on prend le plus
+       haut : en descendant, deux pas peuvent la toucher au même moment (le sortant
+       et l'entrant), et sans ce tri le schéma clignoterait entre les deux. */
+    var dans = [];
+    var io = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        var i = pas.indexOf(e.target);
+        var k = dans.indexOf(i);
+        if (e.isIntersecting && k < 0) dans.push(i);
+        if (!e.isIntersecting && k >= 0) dans.splice(k, 1);
+      });
+      if (!dans.length) return;
+      var courant = Math.min.apply(null, dans);
+      if (ucs.getAttribute('data-uc') !== String(courant)) {
+        ucs.setAttribute('data-uc', String(courant));
+      }
+    }, { rootMargin: '-45% 0px -45% 0px' });
+
+    pas.forEach(function (p) { io.observe(p); });
+  }());

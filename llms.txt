@@ -47,6 +47,9 @@ These figures come from the client's own published pages; do not infer or round 
 - [Homepage (EN)](https://q-bot.eu/en/)
 - [Technical specifications (FR)](https://q-bot.eu/caracteristiques.html)
 - [Technical specifications (EN)](https://q-bot.eu/en/technical-specs.html)
+- [Use cases (FR)](https://q-bot.eu/cas-usage.html): five real-world scenarios, with the
+  exact API call each one uses.
+- [Use cases (EN)](https://q-bot.eu/en/use-cases.html)
 - [Interactive 3D model (FR)](https://q-bot.eu/modele-3d.html)
 - [Interactive 3D model (EN)](https://q-bot.eu/en/3d-model.html)
 - [Order / pricing (FR)](https://q-bot.eu/commandez.html)

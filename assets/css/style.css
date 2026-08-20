@@ -4483,3 +4483,171 @@ label > input[type="checkbox"] {
 @media (prefers-reduced-motion: reduce) {
   .compat__item.is-visible::before { animation: none; }
 }
+
+
+/* ══ CAS D'USAGE : LA SÉQUENCE LÉGÈRE ══════════════════════════════════════
+   Une séquence de lecture, pas une mise en scène : la colonne de gauche défile
+   normalement, celle de droite reste à l'écran et change de schéma au fil des cinq
+   cas. Tout tient dans `position: sticky` et un observateur d'intersection (module
+   17 de main.js). AUCUNE hauteur n'est calculée, aucune écoute du défilement,
+   aucune image par image — la séquence 3D de l'accueil a coûté trois passes de
+   corrections de géométrie, celle-ci n'a rien à mesurer.
+
+   L'ÉTAT AU REPOS EST LISIBLE : `data-uc="0"` est écrit dans le HTML, donc le
+   premier schéma s'affiche sans JavaScript, et les cinq cas restent lus dans
+   l'ordre. Le JS ne fait que changer ce numéro.
+
+   SOUS 900 PX LE SCHÉMA DISPARAÎT et les cinq cas redeviennent une simple liste.
+   C'est délibéré : la séquence 3D a montré qu'un panneau épinglé sur un écran de
+   téléphone finit toujours par recouvrir le texte, et le contenu des schémas est
+   déjà dans la prose (les trois points d'entrée y sont nommés). */
+.ucs__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 440px);
+  gap: 56px;
+  align-items: start;
+}
+.ucs__step {
+  min-height: 78vh;
+  display: flex;
+  align-items: center;
+}
+/* Le premier et le dernier n'ont pas besoin de leur pleine réserve : elle ne sert
+   qu'à laisser au schéma le temps de changer entre deux cas. */
+.ucs__step:first-child, .ucs__step:last-child { min-height: 62vh; }
+
+.ucs__stage {
+  position: sticky;
+  /* Le schéma se centre verticalement, comme la carte qu'il illustre : calé en haut
+     il se lisait 400 px au-dessus du texte auquel il répond. Le plancher de 104 px
+     est la barre de navigation (72) plus une respiration, pour les écrans courts.
+     170 px est la moitié de la hauteur réservée ci-dessous. */
+  top: max(104px, calc(50vh - 170px));
+}
+.ucs__panels {
+  position: relative;
+  /* Hauteur imposée par le plus haut des cinq panneaux (mesuré : 335 px à 940 comme
+     à 1440) : sans elle, le bloc collant change de taille à chaque cas et le schéma
+     sautille. */
+  min-height: 340px;
+}
+.ucs__panel {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s var(--ease-out), transform 0.55s var(--ease-out);
+  pointer-events: none;
+}
+.ucs[data-uc="0"] .ucs__panel[data-i="0"],
+.ucs[data-uc="1"] .ucs__panel[data-i="1"],
+.ucs[data-uc="2"] .ucs__panel[data-i="2"],
+.ucs[data-uc="3"] .ucs__panel[data-i="3"],
+.ucs[data-uc="4"] .ucs__panel[data-i="4"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Le schéma : trois étapes, deux liens légendés. Le trait court à gauche, comme
+   sur un diagramme de séquence, et le libellé se lit à sa droite : centré sur le
+   trait, il l'aurait masqué. */
+.ucs__flow { display: flex; flex-direction: column; }
+.ucs__node {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
+  color: var(--black);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.ucs__node--fort {
+  border-color: var(--teal);
+  background: linear-gradient(135deg, rgba(0, 203, 190, 0.14), rgba(0, 203, 190, 0.04));
+  font-weight: 700;
+}
+.ucs__link {
+  position: relative;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  padding-left: 42px;
+}
+.ucs__link::before {
+  content: '';
+  position: absolute;
+  left: 21px;
+  top: 0;
+  bottom: 9px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--teal-dark), var(--teal));
+}
+/* La pointe : un carré tourné, deux côtés seulement. */
+.ucs__link::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  bottom: 2px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
+  transform: rotate(45deg);
+}
+.ucs__link-lab {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--gray);
+}
+.ucs__cap {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Les trois exemples d'appel, côte à côte tant que la place existe. */
+.ucs__snippets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+  gap: 20px;
+  /* `stretch` et non `start` : les trois exemples n'ont pas le même nombre de
+     lignes (10, 12, 13) et alignés en haut, leurs cadres finissaient en escalier. */
+  align-items: stretch;
+}
+.ucs__snippet {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ucs__snippet .code-block { flex: 1; }
+.ucs__snippet figcaption {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal-text);
+  margin-bottom: 10px;
+}
+.ucs__note {
+  margin-top: 20px;
+  max-width: 760px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+@media (max-width: 939px) {
+  .ucs__inner { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .ucs__stage { display: none; }
+  .ucs__step { min-height: 0; }
+  .ucs__step:first-child, .ucs__step:last-child { min-height: 0; }
+  .ucs__step + .ucs__step { margin-top: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ucs__panel { transition: none; }
+}

@@ -1528,3 +1528,64 @@ WebKit (installer le navigateur avec `python3 -m playwright install webkit`). Au
 donc aucun artéfact. Ce qui avait été signalé était bien les deux états corrigés
 précédemment (le plan coté qui apparaissait pendant le balayage, les bagues d'éclatement
 sur un boîtier fermé).
+
+
+## La page « cas d'usage » (2026-08-20)
+
+Cinquième page de contenu, reprise de `Documentations/website/use-cases.html` : cinq
+situations réelles, chacune en deux volets (le blocage, puis ce que Q-Bot en fait), puis
+l'API en trois exemples d'appel et le tableau d'intégration par outil.
+
+`cas-usage.html` et `en/use-cases.html` sont **générées par un script unique** (gabarit
+commun, deux jeux de textes). C'est délibéré : les passes d'audit ont reproché plusieurs
+fois aux pages écrites l'une après l'autre d'avoir divergé de structure. Le français
+n'est pas une traduction littérale (règle du dépôt) ; l'anglais reprend leurs textes mot
+pour mot.
+
+**Ce qui a été retiré des autres pages**, puisque ce contenu vit maintenant ici :
+
+- `commandez` / `en/order` : les cinq cas d'usage (environ 4 000 caractères). Le chapeau
+  de section reste, avec un lien vers la nouvelle page — une page de commande doit dire le
+  prix et ce qui est inclus, pas dérouler cinq scénarios ;
+- `caracteristiques` / `en/technical-specs` : l'exemple d'appel unique et le tableau des
+  sept outils. Ce qui reste relève d'une fiche technique — les trois points d'entrée et
+  les quatre faits d'intégration — plus un lien vers les exemples.
+
+**« Cas d'usage » entre dans la navigation et le pied de page des 25 pages.** Une page sans
+entrée de menu n'est atteignable que par le plan du site. Vérifié : la barre tient de 901 à
+1440 px sans recouvrement ni débordement (elle porte maintenant quatre entrées, un bouton
+et le sélecteur de langue).
+
+### La séquence de lecture : `position: sticky` et rien d'autre
+
+La colonne de gauche défile normalement, celle de droite reste à l'écran et change de
+schéma au fil des cinq cas. **Aucune hauteur n'est calculée, aucune écoute du défilement,
+aucun rendu image par image** : un `position: sticky` et un observateur d'intersection
+(module 17 de `main.js`) suffisent. C'est le contraire de la séquence 3D de l'accueil, qui
+doit scruber une caméra et qui a coûté trois passes de corrections de géométrie ; ici il
+n'y a rien à interpoler.
+
+Trois décisions à ne pas défaire :
+
+- **`data-uc="0"` est écrit dans le HTML.** Sans JavaScript, le premier schéma s'affiche et
+  les cinq cas se lisent quand même. Le module ne fait que changer ce numéro. (Vérifié en
+  mouvement réduit : panneau 0 à l'opacité 1, cinq cartes visibles.)
+- **Les marges de l'observateur sont négatives en haut et en bas** (`-45%`) : il ne
+  déclenche que lorsqu'un pas croise la bande centrale de l'écran, ce qui est exactement
+  « quel cas suis-je en train de lire ». Quand deux pas la touchent en même temps (le
+  sortant et l'entrant), on prend le plus haut, sinon le schéma clignote entre les deux.
+- **Sous 900 px le schéma disparaît** et les cinq cas redeviennent une liste. La séquence 3D
+  a montré qu'un panneau épinglé sur un écran de téléphone finit toujours par recouvrir le
+  texte ; et le contenu des schémas est déjà dans la prose, qui nomme les trois points
+  d'entrée.
+
+Deux réglages mesurés : la hauteur réservée aux panneaux vaut 340 px (le plus haut des cinq
+en fait 335, à 940 comme à 1440 px) — sans elle le bloc collant change de taille à chaque
+cas et le schéma sautille ; et le calage vertical est `max(104px, calc(50vh - 170px))`, donc
+le schéma se centre comme la carte qu'il illustre. Calé en haut, il se lisait 400 px
+au-dessus du texte auquel il répond (écart des centres ramené de 400 à 126 px).
+
+Contrôlé : 25 pages × (normal, mouvement réduit) × (1440, 390) sans anomalie, 0 défaut de
+contraste sur les deux nouvelles pages, un seul `h1`, aucun saut de niveau de titre, aucun
+lien interne cassé, hreflang auto-référent des deux côtés, `sitemap.xml` et `llms.txt` à
+jour.
