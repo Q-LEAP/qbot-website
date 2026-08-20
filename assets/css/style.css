@@ -4952,33 +4952,38 @@ body:has(.orbz)::after { content: none; }
   /* 58vw et non 46 : à opacité plafonnée, c'est la TAILLE qui fait la présence. Un
      halo de 660 px sur un écran de 1440 se lit comme une nuance ; à 835 px il se lit
      comme une lumière. */
-  width: 58vw;
-  height: 58vw;
+  width: 68vw;
+  height: 68vw;
   border-radius: 50%;
-  /* LES TROIS OPACITÉS SONT UN BUDGET, PAS UN GOÛT. Les trois calques se
-     superposent au coeur du parcours, donc l'opacité résultante est
-     1 − (1−a1)(1−a2)(1−a3). Le plafond est fixé par le contraste : à 30 % de teal
-     sur le noir de la page, le gris clair `--gray` tombe à 4,67:1, juste au-dessus
-     du seuil AA. Avec 0,27 / 0,09 / 0,045 le total fait 0,366 : c'est le maximum
-     utilisable APRÈS avoir éclairci les deux gris de la page (voir la règle
-     `body:has(.orbz)` plus haut), et il est utilisé. */
-  /* Trois arrêts et non deux : le coeur reste au plafond mais la décroissance est
-     plus lente, donc une plus grande surface est réellement colorée. C'est ce qui
-     donne une boule plutôt qu'un lavis. */
+  /* LES OPACITÉS SONT UN BUDGET, ET LE PLAFOND EST ATTEINT. Les calques se
+     superposent, donc l'opacité résultante vaut 1 − ∏(1−ai). Le facteur limitant
+     n'est pas le gris mais LE TEAL SUR LE TEAL : les libellés de section et les
+     catégories des cas sont en `#00CBBE`, et à mesure que le fond tend vers cette
+     même couleur, leur contraste s'effondre deux fois plus vite que celui d'un gris.
+     Calculé : 5,4:1 à 0,30 d'opacité cumulée, 4,5:1 à 0,366, 3,9:1 à 0,42. Le
+     maximum lisible est donc 0,37, et non un chiffre plus haut qu'on choisirait.
+
+     Ce qui reste possible sans dépasser le plafond, c'est de REDISTRIBUER : un coeur
+     un peu moins fort, une décroissance beaucoup plus lente et une boule plus large
+     donnent une surface éclairée nettement plus grande à luminosité de crête égale.
+     C'est ce qui est fait ici, plus une traîne le long du bord gauche : le pire
+     recouvrement (coeur de la boule sur la traîne) vaut 0,363, soit 4,53:1 pour le
+     teal. */
   background: radial-gradient(closest-side,
-              rgba(0, 203, 190, 0.27), rgba(0, 203, 190, 0.16) 38%, transparent 74%);
+              rgba(0, 203, 190, 0.22), rgba(0, 203, 190, 0.17) 45%,
+              rgba(0, 203, 190, 0.07) 68%, transparent 84%);
   will-change: transform;
   animation: orbzDrift 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 /* La traîne : plus petite, plus pâle, et en retard. */
 .orbz span:nth-child(2) {
   width: 38vw; height: 38vw;
-  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.09), transparent 74%);
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.07), rgba(0, 203, 190, 0.04) 60%, transparent 82%);
   animation-delay: -2.4s;
 }
 .orbz span:nth-child(3) {
   width: 30vw; height: 30vw;
-  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.045), transparent 74%);
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.035), transparent 80%);
   animation-delay: -4.8s;
 }
 /* Un parcours fermé, en pourcentages de la fenêtre : il traverse la page en
@@ -5000,16 +5005,44 @@ body:has(.orbz)::after { content: none; }
   83%  { transform: translate3d(46vw, 34vh, 0) scale(1.12); }
   100% { transform: translate3d(4vw, 10vh, 0) scale(1); }
 }
+/* ── La traîne du bord gauche ───────────────────────────────────────────────
+   Demandée en plus de la boule. C'est une ellipse haute et étroite qui longe le bord
+   gauche et remonte et descend sur son propre cycle, plus lent que celui de la boule
+   (38 s contre 24) : les deux ne sont donc jamais en phase, et la page ne prend jamais
+   un rythme régulier. C'est ce qui distingue une ambiance d'une animation.
+   Son opacité (0,09) est calculée pour que le pire recouvrement avec le coeur de la
+   boule reste sous le plafond de lisibilité du teal. */
+.orbz b {
+  position: absolute;
+  left: -16vw;
+  top: -10vh;
+  width: 34vw;
+  height: 92vh;
+  border-radius: 50%;
+  background: radial-gradient(closest-side,
+              rgba(0, 203, 190, 0.09), rgba(0, 203, 190, 0.05) 52%, transparent 82%);
+  will-change: transform;
+  animation: orbzEdge 38s cubic-bezier(0.42, 0, 0.58, 1) infinite alternate;
+}
+@keyframes orbzEdge {
+  from { transform: translate3d(0, -14vh, 0) scaleY(0.92); }
+  to   { transform: translate3d(6vw, 46vh, 0) scaleY(1.12); }
+}
+
 /* Sur téléphone la boule occuperait presque tout l'écran : on la réduit et on
    ralentit encore, pour qu'elle reste un fond et pas un événement. */
 @media (max-width: 700px) {
-  .orbz span { width: 96vw; height: 96vw; animation-duration: 32s; }
+  .orbz span { width: 108vw; height: 108vw; animation-duration: 32s; }
+  /* La traîne du bord n'a plus de bord à longer sur un écran de téléphone : elle
+     ferait un voile sur toute la largeur. */
+  .orbz b { display: none; }
   .orbz span:nth-child(2) { width: 80vw; height: 80vw; }
   .orbz span:nth-child(3) { width: 64vw; height: 64vw; }
 }
 @media (prefers-reduced-motion: reduce) {
-  /* Elle ne bouge plus, mais elle reste : c'est de la lumière, pas une animation
-     décorative, et la page en a besoin. */
+  /* Elles ne bougent plus, mais elles restent : c'est de la lumière, pas une
+     animation décorative, et la page en a besoin. */
+  .orbz b { animation: none; transform: translate3d(3vw, 16vh, 0); }
   .orbz span { animation: none; transform: translate3d(30vw, 30vh, 0); }
   .orbz span:nth-child(2) { transform: translate3d(58vw, 62vh, 0); }
   .orbz span:nth-child(3) { transform: translate3d(14vw, 74vh, 0); }

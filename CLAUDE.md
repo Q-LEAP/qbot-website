@@ -1774,9 +1774,28 @@ opaque : c'est la fin de la page.
 - **la taille fait la présence** autant que l'opacité : 58vw au lieu de 46, soit 835 px sur un
   écran de 1440 au lieu de 660.
 
-Vérifié en forçant le fond de page à la couleur du coeur du halo sur les 25 pages (`#064F4B`
-là où la boule existe, `#0A3330` ailleurs, qui est le pire cas du calque ambiant) : **0 défaut
-de contraste**. C'est la seule façon de contrôler un halo en `position: fixed` — un audit qui
+**LE PLAFOND EST ATTEINT, ET IL EST FIXÉ PAR LE TEAL SUR LE TEAL.** Demande suivante :
+« augmente encore, jusqu'au maximum lisible ». Le facteur limitant n'est pas le gris mais les
+libellés de section et les catégories des cas, en `#00CBBE` : à mesure que le fond tend vers
+cette même couleur, leur contraste s'effondre deux fois plus vite que celui d'un gris. Calculé :
+5,4:1 à 0,30 d'opacité cumulée, **4,5:1 à 0,366**, 3,9:1 à 0,42. Le maximum lisible est donc
+0,37, et c'est un calcul, pas un choix. Aller au-delà demanderait d'éclaircir le teal des
+libellés (il existe `--teal-tint`), ce qui touche à la charte, ou d'amener les gris secondaires
+au niveau des titres, ce qui supprime la hiérarchie. Les deux ont été écartés.
+
+Ce qui reste possible à plafond constant, et qui a été fait : **redistribuer**. Un coeur un peu
+moins fort (0,22 au lieu de 0,27), une décroissance beaucoup plus lente (quatre arrêts au lieu
+de trois, jusqu'à 84 % du rayon) et une boule plus large (68vw) donnent une surface éclairée
+nettement plus grande à luminosité de crête égale. Plus **une traîne le long du bord gauche**,
+demandée en plus : une ellipse haute et étroite sur son propre cycle de 38 s, donc jamais en
+phase avec les 24 s de la boule — c'est ce qui évite que la page prenne un rythme régulier.
+Son opacité (0,09) est calculée pour que le pire recouvrement, coeur de la boule sur la traîne,
+vaille 0,363, soit 4,53:1 pour le teal. Elle disparaît sous 700 px : sur un téléphone, une
+traîne de bord n'a plus de bord à longer, elle ferait un voile.
+
+Vérifié en forçant le fond de page à la couleur du pire recouvrement sur les 25 pages
+(`#065450` là où la boule existe, `#0A3330` ailleurs, qui est le pire cas du calque ambiant) :
+**0 défaut de contraste**. C'est la seule façon de contrôler un halo en `position: fixed` — un audit qui
 remonte l'arbre des fonds ne le voit pas.
 
 En mouvement réduit la boule ne bouge plus mais **reste allumée** : c'est de la lumière, pas
