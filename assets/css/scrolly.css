@@ -227,6 +227,15 @@
 }
 .scrolly__count b { color: var(--teal); }
 
+/* LA FORME CHIFFRÉE NE S'AFFICHE QUE LÀ OÙ LES PASTILLES SONT ABSENTES.
+   Au-dessus de 900 px, les quatre pastilles numérotées disent déjà où l'on en est,
+   juste au-dessus : « 01 / 04 » répétait l'information (signalé par le client).
+   Ce qui reste dans les deux cas, c'est l'annonce `role="status"` du parent, qui
+   porte la phrase « Étape 2 sur 4 » pour les lecteurs d'écran : c'est elle qui rend
+   la progression perceptible sans la voir, et elle n'a pas de doublon. Sous 900 px
+   les pastilles sont masquées, la forme chiffrée revient donc (cf. plus bas). */
+.scrolly__count > [aria-hidden="true"] { display: none; }
+
 /* ── Les pas de texte ─────────────────────────────────────────────────── */
 .scrolly__steps {
   position: relative;
@@ -516,6 +525,9 @@
     z-index: 3;
     font-size: 0.6875rem;
   }
+  /* Ici les pastilles n'existent pas : le compteur redevient le seul indicateur
+     visible de progression. */
+  .scrolly__count > [aria-hidden="true"] { display: inline; }
 }
 @media (max-width: 520px) {
   .scrolly__step-inner { padding: 18px 20px 20px; }
