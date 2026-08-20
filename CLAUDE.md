@@ -1140,6 +1140,23 @@ pose au lieu d'apparaître.
 jamais qu'il s'affiche de travers. Et en mouvement réduit la classe est vraie par défaut, donc
 rien n'est perdu (la séquence n'y dépasse de toute façon pas le pas 0).
 
+**ET UN SECOND DÉFAUT AU MÊME ENDROIT, MONTRÉ PAR LE CLIENT EN CAPTURE : les repères
+d'assemblage restaient sur le boîtier fermé.** Le calque `hud-burst` était allumé sur tout le
+pas 3, or l'éclatement s'y ouvre PUIS se referme. À la fin du pas, les traits pointillés ont
+une longueur nulle donc ils disparaissent, mais les quatre anneaux restent dessinés, rayon 2,5.
+Mesuré : de 0,520 à 0,555 du parcours, quatre ronds teal posés sur le produit assemblé, plus le
+fondu de sortie par-dessus.
+
+L'opacité du calque suit désormais l'ouverture réelle (`--sc-burst`, écrite depuis le `kt` de
+la boucle de dessin) et non le numéro du pas. Sans transition : la valeur est déjà scrubbée par
+le défilement, une transition ne ferait que la mettre en retard. Valeur de repli 0, donc un
+moteur muet laisse le calque éteint, jamais allumé de travers. Mesuré après : 0,95 à
+l'éclatement maximal, 0,001 puis 0 dès que le boîtier est refermé.
+
+**La leçon est la même dans les deux cas** : sur cette séquence, un calque d'annotations ne
+doit pas dépendre du NUMÉRO du pas mais de l'état qu'il annote. Le plan coté dépend de
+l'arrivée de la caméra, les repères d'assemblage dépendent de l'ouverture.
+
 Pistes explorées et écartées, pour ne pas les refaire : les coordonnées du calque SVG (aucun
 NaN, aucun emballement sur 275 images), l'alpha de la coque (monotone, bond maximal 0,098),
 l'ombre portée de model-viewer (forcée à 0, l'agitation du sol est identique : ce sont les

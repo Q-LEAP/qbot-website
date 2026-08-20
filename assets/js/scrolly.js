@@ -710,6 +710,17 @@
 
       /* ── Pas 3 : les repères d'assemblage ────────────────────────────── */
       var kt = Math.max(0, Math.min(1, t / BURST_END));
+      /* LES REPÈRES D'ASSEMBLAGE N'EXISTENT QUE S'IL Y A QUELQUE CHOSE À REPÉRER.
+         Le calque était allumé sur tout le pas 3, or l'éclatement s'y ouvre PUIS se
+         referme : à la fin du pas, les traits ont une longueur nulle mais les quatre
+         anneaux restent dessinés, rayon 2,5, sur un boîtier fermé. Mesuré : de 0,520
+         à 0,555 du parcours, quatre ronds teal posés sur le produit, puis le fondu
+         de sortie du calque par-dessus. C'est le défaut signalé par le client, celui
+         qu'on voyait entre deux positions de défilement.
+         L'opacité du calque suit donc l'ouverture. Elle est écrite ici plutôt que
+         déduite d'un pas, parce que c'est la seule grandeur qui dise s'il y a un
+         écartement à montrer. */
+      root.style.setProperty('--sc-burst', kt.toFixed(3));
       for (i = 0; i < PARTS.length; i++) {
         var s0 = PARTS[i].seat, now = add(s0, PARTS[i].v, kt);
         burst[i].line.setAttribute('d', seg(s0, now));

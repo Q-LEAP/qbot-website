@@ -652,7 +652,13 @@ main .section-label::before {
 .hud-l { opacity: 0; transition: opacity 0.55s var(--ease-out); }
 .hud-floor { opacity: 1; }
 .scrolly[data-step="1"] .hud-dock  { opacity: 1; }
-.scrolly[data-step="2"] .hud-burst { opacity: 1; }
+/* Les repères d'assemblage suivent l'ouverture, pas le pas : l'éclatement s'ouvre
+   puis se referme à l'intérieur du pas 3, et un repère sur un boîtier fermé n'est
+   qu'un rond posé sur le produit. Pas de transition : la valeur est déjà scrubbée
+   par le défilement, une transition ne ferait que la mettre en retard. Valeur de
+   repli 0 : si le moteur n'écrit rien, le calque reste éteint, jamais allumé de
+   travers. */
+.scrolly[data-step="2"] .hud-burst { opacity: var(--sc-burst, 0); transition: none; }
 /* Le plan coté attend que la caméra soit arrivée : `is-cam-posee` est posée par
    scrolly.js quand l'angle réel est à moins de 10° de l'angle nominal du pas. Le
    balayage du pas 3 au pas 4 fait 86°, et un plan dessiné pour l'angle d'arrivée
