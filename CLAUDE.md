@@ -1422,6 +1422,13 @@ quand `p >= 1`, c'est-à-dire pile quand le bloc collant se décroche), qui l'ef
 n'est utilisé que sous 900 px : au-dessus, le texte est à côté de la scène et part
 normalement avec elle.
 
+Dernier croisement du même effet, corrigé dans la foulée : l'indication de défilement,
+calée à 26 px du bas, se retrouvait derrière la carte fixée (96 × 6 px à 390, 96 × 16 px à
+360). Elle se pose maintenant au-dessus de la zone de texte, au ras du bord bas de la
+scène, là où il n'y a que du fond — le boîtier est centré dans sa zone et ne descend pas
+jusque-là (vérifié : 79 à 151 px d'écart avec la carte, et l'indication s'efface dès le
+premier geste de défilement).
+
 ### Le repère de progression passe à l'horizontale jusqu'à 1300 px
 
 Les pastilles numérotées recouvraient le texte de **940 à 1200 px, 26 px de recouvrement

@@ -531,6 +531,13 @@
     bottom: 5svh;
     margin: 0 clamp(24px, 7vw, 96px);
   }
+  /* L'indication de défilement passe AU-DESSUS de la zone de texte. Depuis que la
+     carte y est posée en `fixed`, l'indication, calée à 26 px du bas, se retrouvait
+     derrière elle (mesuré : 96 × 6 px à 390, 96 × 16 px à 360). Elle se pose donc au
+     ras du bord bas de la scène, là où il n'y a que du fond : le boîtier est centré
+     dans sa zone et ne descend pas jusque-là. */
+  .scrolly__hint { bottom: calc(var(--sc-card-zone) + 14px); }
+
   /* Les quatre cartes se superposent : sans ça la dernière, invisible, capterait
      les appuis destinés à celle qu'on lit — son bouton « Demander une démo »
      compris. */
