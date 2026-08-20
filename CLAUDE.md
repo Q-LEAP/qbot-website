@@ -980,9 +980,28 @@ Ce qui a été corrigé ici :
 - au passage, un doublon du français : « le déclenchement du scénario peut être automatiquement
   déclenché ».
 
-Reste une asymétrie mineure et assumée : les questions 6 et 7 sont dans l'ordre inverse entre
-les deux langues. Les réaligner obligerait à renuméroter les identifiants et l'index pour un
-gain nul.
+**Les questions 6 et 7 sont alignées (2026-08-20).** C'est l'ANGLAIS qui a suivi le français,
+pas l'inverse : « à qui s'adresse » enchaîne après « pourquoi Q-Bot est l'allié des testeurs »,
+et cela regroupe les trois questions de conversion (présentation, prix, acquisition). La
+manœuvre échange le CONTENU des deux blocs et laisse les identifiants en place, donc aucune
+renumérotation, aucune ancre cassée : `faq-q6` reste la sixième question lue. Trois endroits à
+échanger ensemble, sans quoi l'index pointe à côté : le bloc visible, le libellé d'index, et
+l'objet du JSON-LD. Vérifié : les 16 entrées d'index de chaque langue mènent à la bonne
+question, et les deux listes sont identiques dans l'ordre.
+
+**Et la queue du lot 2 y était restée.** Ma recherche d'alors portait sur « token », or le
+français dit « dispositif » : la question 8 française annonçait encore « avec quels types de
+DISPOSITIFS d'authentification », décrivait la première version de Q-Bot conçue pour les
+boîtiers LuxTrust, et portait une coquille (« Aujoud'hui »). Repris, plus quatre revendications
+de compatibilité matérielle ailleurs : « d'autres dispositifs similaires déployés dans
+différents pays » sur l'accueil, « les nouveaux dispositifs 2FA du marché », « vos dispositifs
+2FA », « votre dispositif spécifique » sur les pages commande, et l'ouverture de la FAQ et de
+l'accueil (« qu'elle s'appuie sur des applications mobiles ou sur d'autres dispositifs
+sécurisés »). Contrôle : 0 revendication matérielle restante.
+
+**Leçon de méthode** : un contrôle de vocabulaire doit porter sur les mots des DEUX langues.
+Chercher « token » ne trouve rien dans un texte français qui dit « dispositif », et le défaut
+survit à un contrôle qui annonce zéro.
 
 ## Audit d'après refonte (2026-08-20)
 
