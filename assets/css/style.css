@@ -4778,23 +4778,52 @@ label > input[type="checkbox"] {
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
+/* LE BOUTON « COPIER » PASSE DANS UN BANDEAU, il n'est plus posé SUR le code.
+   Signalé : les lignes de code passaient dessous. C'était structurel — le bouton
+   était en absolu dans le `pre`, donc au-dessus du texte, et il défilait avec lui
+   dès qu'une ligne dépassait. Un rembourrage à droite n'aurait rien réglé : sur un
+   bloc à défilement horizontal, la ligne repasse sous le bouton dès qu'on fait
+   glisser. Le bandeau supprime le problème par construction, et il donne au bloc
+   l'allure d'un panneau : le nom de l'outil à gauche, l'action à droite. */
 .ucs__snippet {
   margin: 0;
   width: var(--api-card);
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+          backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  transition: border-color 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+}
+/* Le sélecteur porte le thème parce que la règle générale du verre en fait autant
+   (`[data-theme="dark"] .code-block pre`) : à poids égal c'est l'ordre qui tranche, et
+   le bloc du verre est écrit plus loin dans le fichier. Sans cela, un rectangle plus
+   sombre réapparaissait à l'intérieur du cadre. Et le `pre` doit remplir la carte,
+   sinon le verre du cadre déborde autour du code. */
+/* `align-self: stretch` annule le `align-self: start` de la règle de base de
+   `.code-block` : dans la colonne flex de la figure, il faisait rétrécir le bloc à la
+   largeur de son texte, et le verre du cadre débordait autour du code. */
+[data-theme="dark"] .ucs__snippet .code-block { display: flex; align-self: stretch; }
+[data-theme="dark"] .ucs__snippet .code-block pre {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
 }
 /* La carte en cours de lecture. `data-panel` est écrit par le moteur de mouvement,
-   qui découpe la course en autant de parts qu'il y a de cartes. */
-.ucs__snippet .code-block {
-  transition: border-color 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out),
-              transform 0.5s var(--ease-out);
-}
-.ucs-api[data-panel="0"] .ucs__snippet:nth-child(1) .code-block,
-.ucs-api[data-panel="1"] .ucs__snippet:nth-child(2) .code-block,
-.ucs-api[data-panel="2"] .ucs__snippet:nth-child(3) .code-block,
-.ucs-api[data-panel="3"] .ucs__snippet:nth-child(4) .code-block,
-.ucs-api[data-panel="4"] .ucs__snippet:nth-child(5) .code-block {
+   qui découpe la course en autant de parts qu'il y a de cartes. Le relief est porté
+   par la figure, qui est le cadre depuis que le bandeau existe. */
+.ucs-api[data-panel="0"] .ucs__snippet:nth-child(1),
+.ucs-api[data-panel="1"] .ucs__snippet:nth-child(2),
+.ucs-api[data-panel="2"] .ucs__snippet:nth-child(3),
+.ucs-api[data-panel="3"] .ucs__snippet:nth-child(4),
+.ucs-api[data-panel="4"] .ucs__snippet:nth-child(5) {
   border-color: rgba(0, 203, 190, 0.34);
   /* Pas d'ombre ici : sur un fond noir, une grande ombre floue autour d'un cadre
      sombre se lit comme un rectangle plus clair, pas comme un relief. Le liseré et
@@ -4803,13 +4832,22 @@ label > input[type="checkbox"] {
 }
 .ucs__snippet .code-block { flex: 1; }
 .ucs__snippet figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px 9px 16px;
+  border-bottom: 1px solid var(--glass-line);
+  background: rgba(255, 255, 255, 0.022);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--teal-text);
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
+/* Dans le bandeau, le bouton reprend sa place dans le flux. */
+.ucs__snippet figcaption .code-copy-btn { position: static; flex: none; }
 .ucs__note {
   margin-top: 20px;
   max-width: 760px;
@@ -5046,4 +5084,78 @@ body:has(.orbz)::after { content: none; }
   .orbz span { animation: none; transform: translate3d(30vw, 30vh, 0); }
   .orbz span:nth-child(2) { transform: translate3d(58vw, 62vh, 0); }
   .orbz span:nth-child(3) { transform: translate3d(14vw, 74vh, 0); }
+}
+
+
+/* ══ VERRE ══════════════════════════════════════════════════════════════════
+   Les surfaces de carte passent du noir plein au verre sombre : un fond
+   translucide plus un flou d'arrière-plan. Le halo qui dérive derrière la page
+   traverse alors les cartes, en flou, ce qui donne la couleur et la profondeur
+   demandées.
+
+   POURQUOI DU VERRE SOMBRE ET NON DU VERRE CLAIR. Le glassmorphisme habituel pose
+   du blanc translucide. Calculé sur ce site : une carte en blanc à 4,5 % posée sur
+   le coeur du halo donne un fond à `#115C58`, où le teal des catégories tombe à
+   3,8:1 et le gris sourd à 4,3 — sous le seuil AA, et ce sont précisément les deux
+   couleurs qui vivent DANS les cartes. Une base sombre à 62 % fait l'inverse : le
+   fond de carte reste à `#0F2A28` au pire, le teal tient 7,5:1 et le gris sourd
+   8,4, et l'aurore se voit quand même puisque 38 % du halo passe au travers.
+
+   LE FLOU EST CE QUI FAIT LE VERRE, pas la transparence : sans lui on verrait le
+   halo net derrière un voile, ce qui ressemble à une erreur d'opacité. Avec lui, la
+   carte a une épaisseur. `saturate(130%)` compense la désaturation du flou.
+
+   REPLI SANS `backdrop-filter` : fond opaque, comme avant. La propriété est
+   supportée partout depuis longtemps, mais une carte translucide sans flou serait
+   moins lisible qu'une carte opaque, donc le repli est explicite. */
+:root {
+  --glass:        rgba(20, 20, 20, 0.62);
+  --glass-strong: rgba(16, 16, 16, 0.72);
+  --glass-line:   rgba(255, 255, 255, 0.10);
+  --glass-blur:   blur(18px) saturate(130%);
+}
+
+[data-theme="dark"] .usecase,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .guarantee-item,
+[data-theme="dark"] .pricing-card,
+[data-theme="dark"] .faq-item,
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .spec-item--card,
+[data-theme="dark"] .sidebar-card,
+[data-theme="dark"] .contact-map__card,
+[data-theme="dark"] .problem-callout,
+[data-theme="dark"] .blog-card,
+[data-theme="dark"] .compat__item {
+  background: var(--glass);
+  border-color: var(--glass-line);
+  -webkit-backdrop-filter: var(--glass-blur);
+          backdrop-filter: var(--glass-blur);
+  /* Le liseré de lumière d'un pixel en haut : c'est lui qui donne l'arête. */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+/* Les blocs de code sont plus opaques : on y lit du texte à 13 px en chasse fixe,
+   c'est la surface la moins tolérante de la page. */
+[data-theme="dark"] .code-block pre,
+[data-theme="dark"] .article-body pre {
+  background: var(--glass-strong);
+  border-color: var(--glass-line);
+  -webkit-backdrop-filter: var(--glass-blur);
+          backdrop-filter: var(--glass-blur);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  [data-theme="dark"] .usecase,
+  [data-theme="dark"] .feature-card,
+  [data-theme="dark"] .guarantee-item,
+  [data-theme="dark"] .pricing-card,
+  [data-theme="dark"] .faq-item,
+  [data-theme="dark"] .product-card,
+  [data-theme="dark"] .spec-item--card,
+  [data-theme="dark"] .sidebar-card,
+  [data-theme="dark"] .contact-map__card,
+  [data-theme="dark"] .problem-callout,
+  [data-theme="dark"] .blog-card,
+  [data-theme="dark"] .compat__item,
+  [data-theme="dark"] .code-block pre,
+  [data-theme="dark"] .article-body pre { background: #141414; }
 }

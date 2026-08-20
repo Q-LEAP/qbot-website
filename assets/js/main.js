@@ -530,8 +530,19 @@ backToTop.addEventListener('click', () => {
           }, 2000);
         }).catch(function () { /* silencieux si refusé */ });
       });
-      pre.style.position = 'relative';
-      pre.appendChild(copyBtn);
+      /* Le bouton va dans le BANDEAU du bloc quand il y en a un (les exemples
+         d'appel de la page des cas d'usage) : posé dans le `pre`, il se retrouvait
+         au-dessus des lignes de code, qui passaient dessous — et il défilait avec
+         elles dès qu'une ligne dépassait. Ailleurs (un bloc de code d'article), on
+         garde le coin supérieur droit, faute de bandeau où le mettre. */
+      var fig = pre.closest('figure');
+      var bandeau = fig && fig.querySelector(':scope > figcaption');
+      if (bandeau) {
+        bandeau.appendChild(copyBtn);
+      } else {
+        pre.style.position = 'relative';
+        pre.appendChild(copyBtn);
+      }
     });
   }());
 

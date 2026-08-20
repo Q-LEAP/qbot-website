@@ -1827,3 +1827,58 @@ respire.
 épinglée**, qui doit tenir dans un écran. Vérifié à 1440×900, 1280×720, 1024×768, 1440×700 et
 1366×640 : la pile fait 352 à 359 px et il reste au minimum 141 px de marge au-dessus comme
 en dessous.
+
+
+## Verre sombre sur les cartes, et le bouton « Copier » sort du code (2026-08-20)
+
+### Le bouton était posé SUR le code
+
+Signalé : les lignes de code passaient sous le bouton « Copier ». C'était structurel, pas un
+défaut de marge : le bouton était en `position: absolute` dans le `pre`, donc au-dessus du
+texte, **et il défilait avec lui** dès qu'une ligne dépassait. Un rembourrage à droite n'aurait
+rien réglé — sur un bloc à défilement horizontal, la ligne repasse sous le bouton dès qu'on
+fait glisser.
+
+Le bloc a désormais un **bandeau** : le nom de l'outil à gauche, l'action à droite, le code en
+dessous. Le problème disparaît par construction et le bloc a l'allure d'un panneau. Le module
+7 bis pose le bouton dans le bandeau quand il en trouve un (`figure > figcaption`), et garde
+le coin supérieur droit ailleurs, faute de bandeau où le mettre. Relevé après : recouvrement
+de −28 px (donc aucun) sur les cinq blocs.
+
+Deux réglages qu'il a fallu chercher :
+
+- le sélecteur du `pre` transparent doit porter `[data-theme="dark"]`, parce que la règle
+  générale du verre en fait autant : à poids égal c'est l'ordre qui tranche, et le bloc du
+  verre est écrit plus loin dans le fichier. Sans cela un rectangle plus sombre réapparaissait
+  à l'intérieur du cadre ;
+- `align-self: stretch` annule le `align-self: start` de la règle de base de `.code-block` :
+  dans la colonne flex de la figure, il faisait rétrécir le bloc à la largeur de son texte
+  (282 px sur 460) et le verre du cadre débordait autour du code.
+
+### Le verre : sombre, et c'est un calcul
+
+Demandé « un peu de Glassmorphic-Aurora sur le site au global et les blocs de code ». Les
+surfaces de carte passent du noir plein au **verre sombre** : fond translucide plus flou
+d'arrière-plan, si bien que le halo qui dérive derrière la page traverse les cartes, en flou.
+
+**POURQUOI SOMBRE ET NON CLAIR.** Le glassmorphisme habituel pose du blanc translucide.
+Calculé sur ce site : une carte en blanc à 4,5 % posée sur le coeur du halo donne un fond à
+`#115C58`, où le teal des catégories tombe à **3,8:1** et le gris sourd à 4,3 — sous le seuil
+AA, et ce sont précisément les deux couleurs qui vivent DANS les cartes. Une base sombre à
+62 % fait l'inverse : le fond de carte reste à `#0F2A28` au pire, le teal tient **7,5:1** et le
+gris sourd 8,4, et l'aurore se voit quand même puisque 38 % du halo passe au travers.
+
+**LE FLOU EST CE QUI FAIT LE VERRE**, pas la transparence : sans lui on verrait le halo net
+derrière un voile, ce qui ressemble à une erreur d'opacité. `saturate(130%)` compense la
+désaturation du flou. Les blocs de code sont plus opaques (72 %) : on y lit du texte à 13 px
+en chasse fixe, c'est la surface la moins tolérante de la page.
+
+Repli explicite en `@supports not (backdrop-filter)` : fond opaque, comme avant. Une carte
+translucide sans flou serait moins lisible qu'une carte opaque.
+
+**Contrôles.** Contraste : fond de page ET fond de carte forcés à leur pire composite
+(`#065450` / `#0F2A28` là où la boule existe, `#0A3330` / `#101D1C` ailleurs) sur les
+25 pages → **0 défaut**. Rendu : médiane 16,7 ms et p95 17,6 ms avec et sans verre sur
+`cas-usage`, l'accueil (canevas 3D compris) et `caracteristiques`, donc **aucun coût en
+régime**. Une seule image longue apparaît avec le verre (150 ms contre 50) : c'est la
+création des couches de flou, une fois, à l'entrée en scène.
