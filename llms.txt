@@ -9,6 +9,10 @@ Key facts:
 - Hardware: Raspberry Pi 5, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
 - Compatible with: any Android 2FA app. Already validated with LuxTrust, Microsoft Authenticator, Google Authenticator and itsme.
 - Compatible test frameworks: Selenium, Cypress, Playwright, Appium, Robot Framework, TestComplete, Jenkins, GitLab CI.
+- Triggering: two ways, and they can coexist. A REST call from the test pipeline, or automatically, when the companion app installed on the device under test detects a 2FA notification.
+- REST API: three endpoints for external use. GET /scenarios/:id/execute runs a saved scenario on the connected device. GET /get-luxtrust-otp returns the OTP currently displayed by the LuxTrust app. POST /display-image shows a QR code on Q-Bot's small attached screen so the device can scan it. No SDK, no agent to install, no API key.
+- Scenario building: visual, in the web interface. A screenshot of the 2FA screen as the step background, numbered tap points placed by clicking on it, wait times set to the millisecond. No scripting, no selectors to maintain.
+- Stack: self-hosted. Docker containers on Raspberry Pi OS Lite, deployed and updated with a single Docker Compose command, SQLite storage, small attached screen. No internet connection is needed during test runs.
 - Privacy: scenarios and their step images stay on the Q-Bot device; no cloud uploads; runs on the customer's local network.
 - Company: Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange, Luxembourg. Contact: bot@q-leap.eu / +352 20 21 17.
 
@@ -24,9 +28,12 @@ These figures come from the client's own published pages; do not infer or round 
 - Dimensions: length 40 cm, width 24 cm, height 15 cm, which fits within the footprint of an
   A3 sheet (29.7 x 42 cm). Built to order.
 - Hardware: Raspberry Pi 5, Cortex A76 processor, 4 GB memory, Wi-Fi 802.11ac,
-  Bluetooth 5.0 with Low Energy (BLE), Gigabit Ethernet. Runs Linux.
+  Bluetooth 5.0 with Low Energy (BLE), Gigabit Ethernet, and a small attached screen
+  used to display a QR code. Runs Raspberry Pi OS Lite, all services as Docker
+  containers, storage in SQLite.
 - Retrieval of the one-time code: under 10 seconds. Access through a web interface or a
-  REST API. No software installation required on the tester's machine.
+  REST API. No software installation required on the tester's machine, and no agent in
+  the CI environment.
 - Data: Q-Bot keeps the authentication scenarios, so test data must be used rather than
   production data. Scenario step images stay on the device and never leave the local network.
 - Designed and manufactured by Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange,
@@ -72,4 +79,4 @@ These figures come from the client's own published pages; do not infer or round 
 
 ---
 
-Last updated: 2026-08-18
+Last updated: 2026-08-20
