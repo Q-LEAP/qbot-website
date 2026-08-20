@@ -1608,30 +1608,56 @@ un cas est inséré. La carte que l'on lit prend un liseré teal, pour s'accorde
 pastille ; les autres ne sont PAS assombries, un assombrissement coûterait du contraste sur
 du texte.
 
-### Le panneau du schéma : un objet de produit, pas une maquette filaire
+### Le schéma « chemin de l'appel » est retiré, la séquence est épinglée
 
-Deuxième reprise, sur le même retour (« niveau UX/UI, SaaS/premium, c'est pas top »). Ce qui
-n'allait pas dans la version d'avant, dans l'ordre d'importance :
+Troisième forme, et la bonne. Le schéma a été **retiré à la demande du client** (« il
+gêne ») : trois boîtes et deux flèches occupaient la moitié de l'écran pour redire ce que
+le texte disait déjà. Et le reproche de fond était ailleurs : « la page est sombre et on n'a
+pas la sensation d'être scrollytellé ».
 
-1. **trois grands cadres identiques empilés**, donc aucune hiérarchie : rien ne disait lequel
-   des trois est le produit ;
-2. **la chasse fixe employée pour tout**, y compris des phrases. La chasse fixe dit « ceci est
-   du code » ; sur de la prose, elle dit « sortie de console » ;
-3. **beaucoup de vide** : trois boîtes de 440 px pour trois mots chacune.
+Ce qui est en place :
 
-Le panneau est maintenant fait comme un objet d'interface : un en-tête (« le chemin de
-l'appel » à gauche, la catégorie du cas en teal à droite), trois lignes d'acteurs avec leur
-icône, la ligne du milieu marquée comme le pivot (surface et liseré teal, c'est la seule),
-et une note en pied. Les transitions sont rendues **selon leur nature** : pastille de code
-pour un appel HTTP (verbe en teal), légende sobre pour une action physique. C'est cette
-distinction qui fait lire le schéma comme une trace d'exécution.
+- **la section est épinglée cinq écrans, un cas à l'écran**, et le défilement fait avancer
+  la séquence. C'est cela, la sensation qui manquait : les deux formes précédentes
+  faisaient défiler cinq cartes sous un panneau qui changeait, ce qui se lit comme une
+  page, pas comme un récit ;
+- **le mécanisme est celui de l'acte épinglé de la page Caractéristiques** : le moteur de
+  mouvement écrit `--ucs-p` (progression de la course de collage) et `data-panel` (le
+  numéro du cas), modèle « rail épinglé » de `.pin-modes`. Une seule grandeur gouverne la
+  carte affichée, le halo, l'index et le rail, donc rien ne peut se désynchroniser. Le
+  module 17 (observateur d'intersection) a été **supprimé**, il n'avait plus d'objet ;
+- **le sens de sortie compte** : un cas déjà lu sort par le haut, un cas à venir attend en
+  dessous. Vingt combinaisons possibles, dix à écrire, et sans cela la pile se lit comme un
+  jeu de cartes qu'on repose au même endroit ;
+- **un index de cinq pastilles numérotées dans la gouttière** : on voit les cinq, donc on
+  sait où l'on en est. Il demande 26 px plus 16 d'écart, donc il n'apparaît qu'au-delà de
+  1 260 px ; en dessous c'est un rail de progression au ras du bas de l'écran épinglé qui
+  prend le relais (même arbitrage que sur la séquence 3D, où le client avait signalé le
+  doublon entre les deux formes) ;
+- **de la lumière** : un halo teal dont la position se déduit de `--ucs-p`, donc sans une
+  écriture JavaScript de plus. C'est ce qui répond au « la page est sombre » ;
+- **le chiffre-clé est DANS la carte**, pas dans une colonne à part. La version d'avant le
+  mettait à droite en très grand : joli, mais il disparaissait sous 940 px (la colonne
+  n'existe plus) en emportant une information que la carte ne dit pas (« moins de dix
+  secondes »). Dans la carte, il est lu partout, et la scène n'a plus de demi-colonne vide.
 
-Deux relevés qui comptent : le rail tombe **au pixel** sur l'axe des icônes (888 px, comme
-les trois icônes) et les libellés de transition sur le nom des acteurs (915 px) ; et la
-hauteur du panneau est **constante sur les cinq cas** (356 px), parce que les libellés d'un
-même emplacement sont empilés dans une seule cellule de grille. La tête du tracé s'arrête
-14 px au-dessus de la pointe : à 9 px elles se chevauchaient et faisaient une flèche épaisse
-et sale.
+Trois pièges rencontrés, tous mesurés :
+
+1. **SANS JAVASCRIPT, QUATRE CAS SUR CINQ ÉTAIENT INVISIBLES.** L'épinglage est du CSS pur
+   (`sticky` plus `data-panel` écrit dans le HTML), donc il s'appliquait même quand le
+   moteur ne tournait pas : la section restait collée sur le premier cas, pour toujours. Le
+   moteur pose désormais une classe **`mx-scrubbed`** sur chaque élément qu'il scrube, et
+   toute la mise en scène épinglée en dépend. Sans la classe, la section est une liste.
+   C'est la règle du dépôt appliquée à une mise en page, et non plus seulement à une
+   animation.
+2. **Les règles de repli doivent reprendre `.mx-scrubbed`**, sinon elles ne pèsent pas
+   assez lourd : la section gardait ses cinq écrans à 390 px, soit trois écrans et demi de
+   vide sous les cartes.
+3. **Un `.container` dans un conteneur flex ne s'étire pas.** La scène est un `flex` en
+   ligne : `.container` prenait la largeur de son contenu et son `margin: 0 auto` le
+   centrait. La carte commençait à 270 px au lieu des 154 de la gouttière, donc plus alignée
+   sous le logo. Corrigé par `flex: 1 1 auto`. Relevé après : écart 0 avec le logo à 940,
+   1024, 1280, 1440, 1920 et 2560 px.
 
 ### La bande d'exemples d'appel qui glisse
 
@@ -1657,6 +1683,16 @@ et **aucun débordement horizontal de la page** à aucune largeur.
 Deux exemples ont été ajoutés (Robot Framework, JUnit/RestAssured) : à trois cartes il n'y avait
 presque rien à faire glisser, et ces deux outils sont déjà annoncés comme compatibles dans le
 tableau juste en dessous, avec ces mécanismes exacts.
+
+**Ce qui manquait pour que ce soit fluide et « premium »** (deuxième retour) : une inertie
+courte. Le moteur écrit la progression sans lissage, donc la piste suivait le défilement au
+pixel ; avec une molette, qui avance par crans, cela se voit comme des saccades. Une
+transition de 0,28 s en sortie exponentielle transforme les crans en glissement sans jamais
+décrocher du doigt. S'y ajoutent un masque de bords (les cartes se dissolvent au lieu d'être
+coupées net, ce qui dit qu'il y a une suite et non un cadre), un halo qui glisse avec la
+piste, et un relief de trois pixels sur la carte courante. Pas d'ombre sur cette carte : sur
+un fond noir, une grande ombre floue autour d'un cadre sombre se lit comme un rectangle plus
+clair, pas comme un relief.
 
 Trois pièges rencontrés, tous corrigés :
 

@@ -35,7 +35,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=2026.28-08-29b">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2026.34-08-29b">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -139,18 +139,19 @@
 </div>
 
 <!-- ======= LES CINQ CAS, EN SÉQUENCE ═══════════════════════════════════════
-     Une séquence légère : la colonne de droite reste à l'écran et change de
-     schéma au fil de la lecture, la colonne de gauche défile normalement. Rien
-     n'est épinglé à la fenêtre et aucune hauteur n'est calculée en JavaScript —
-     un `position: sticky` et un observateur d'intersection suffisent. Sous 900 px
-     le schéma disparaît et les cinq cas redeviennent une liste : c'est le
-     compromis qui évite tous les pièges de recouvrement de la séquence 3D. -->
-<section class="section ucs" aria-labelledby="ucs-title" data-uc="0">
-  <div class="container">
-    <h2 class="sr-only" id="ucs-title">Five situations where the pipeline unblocks</h2>
-    <div class="ucs__inner">
-      <div class="ucs__steps">
-      <article class="ucs__step" data-i="0">
+     Section épinglée : un cas à l'écran, et le défilement fait avancer la séquence.
+     Le numéro de l'étape et la progression sont écrits par le moteur de mouvement
+     (`--ucs-p` et `data-panel`), le même mécanisme que l'acte épinglé de la page
+     Caractéristiques. Sous 940 px et en mouvement réduit, plus d'épinglage du tout :
+     les cinq cas redeviennent une liste, ce qui est aussi l'état sans JavaScript. -->
+<section class="section ucs" aria-labelledby="ucs-title" data-panel="0">
+  <h2 class="sr-only" id="ucs-title">Five situations where the pipeline unblocks</h2>
+  <div class="ucs__stage">
+    <span class="ucs__glow" aria-hidden="true"></span>
+    <div class="container">
+      <div class="ucs__inner">
+        <div class="ucs__cards">
+          <article class="ucs__case" data-i="0">
         <div class="usecase">
           <span class="usecase__cat">Banking &amp; fintech</span>
           <h3>End-to-end login with 2FA</h3>
@@ -164,9 +165,10 @@
               <p>The companion app monitors the 2FA app. The moment a notification arrives, Q-Bot executes the approval scenario automatically. The entire login flow, 2FA included, runs unattended on a real device, any time of day.</p>
             </div>
           </div>
+          <p class="usecase__fig"><b>0</b><span>human intervention, at any hour</span></p>
         </div>
-      </article>
-      <article class="ucs__step" data-i="1">
+          </article>
+          <article class="ucs__case" data-i="1">
         <div class="usecase">
           <span class="usecase__cat">CI/CD regression suite</span>
           <h3>Fully automated nightly runs</h3>
@@ -180,9 +182,10 @@
               <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. Q-Bot handles it. The build passes or fails on actual application logic, not on a missing human.</p>
             </div>
           </div>
+          <p class="usecase__fig"><b>1 call</b><span>per 2FA gate in the pipeline</span></p>
         </div>
-      </article>
-      <article class="ucs__step" data-i="2">
+          </article>
+          <article class="ucs__case" data-i="2">
         <div class="usecase">
           <span class="usecase__cat">LuxTrust OTP retrieval</span>
           <h3>Live OTP in your test assertions</h3>
@@ -196,9 +199,10 @@
               <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. Q-Bot reads the live OTP from the LuxTrust app running on the connected Android device and returns it in the response. Your test framework uses it directly.</p>
             </div>
           </div>
+          <p class="usecase__fig"><b>&lt; 10 s</b><span>to retrieve the live code</span></p>
         </div>
-      </article>
-      <article class="ucs__step" data-i="3">
+          </article>
+          <article class="ucs__case" data-i="3">
         <div class="usecase">
           <span class="usecase__cat">Enterprise SSO</span>
           <h3>Multi-step authentication flows</h3>
@@ -212,9 +216,10 @@
               <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. Q-Bot handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
             </div>
           </div>
+          <p class="usecase__fig"><b>3 scenarios</b><span>chained in order, no script</span></p>
         </div>
-      </article>
-      <article class="ucs__step" data-i="4">
+          </article>
+          <article class="ucs__case" data-i="4">
         <div class="usecase">
           <span class="usecase__cat">QR code-based 2FA</span>
           <h3>Display, scan, continue</h3>
@@ -228,83 +233,16 @@
               <p>The test pipeline sends the QR code image to Q-Bot via <code>POST /display-image</code>. Q-Bot renders it fullscreen on its small attached screen. A scenario then instructs the Android device to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
             </div>
           </div>
+          <p class="usecase__fig"><b>1 screen</b><span>the device shows, the phone scans</span></p>
         </div>
-      </article>
+          </article>
+        </div>
       </div>
-      <aside class="ucs__stage" aria-hidden="true">
-        <figure class="ucs__panel">
-          <div class="ucs__panel-head">
-            <span class="ucs__panel-eyebrow">The path of the call</span>
-            <span class="ucs__panel-cat">
-              <span class="ucs__lbl" data-i="0">Banking &amp; fintech</span>
-              <span class="ucs__lbl" data-i="1">CI/CD regression suite</span>
-              <span class="ucs__lbl" data-i="2">LuxTrust OTP retrieval</span>
-              <span class="ucs__lbl" data-i="3">Enterprise SSO</span>
-              <span class="ucs__lbl" data-i="4">QR code-based 2FA</span>
-            </span>
-          </div>
-          <ol class="ucs__flow" role="img" aria-label="The path of the call">
-            <li class="ucs__row">
-              <span class="ucs__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h13"/><path d="M11 6l6 6-6 6"/></svg></span>
-              <span class="ucs__actor">
-              <span class="ucs__lbl" data-i="0">2FA app</span>
-              <span class="ucs__lbl" data-i="1">CI/CD pipeline</span>
-              <span class="ucs__lbl" data-i="2">Test in progress</span>
-              <span class="ucs__lbl" data-i="3">Test in progress</span>
-              <span class="ucs__lbl" data-i="4">Test pipeline</span>
-              </span>
-            </li>
-            <li class="ucs__seg">
-              <span class="ucs__seg-rail" aria-hidden="true"><i class="ucs__seg-head"></i></span>
-              <span class="ucs__seg-lab">
-              <span class="ucs__lbl ucs__lbl--prose" data-i="0">the notification arrives, the companion app sees it</span>
-              <span class="ucs__lbl ucs__lbl--code" data-i="1"><b>GET</b>/scenarios/42/execute</span>
-              <span class="ucs__lbl ucs__lbl--code" data-i="2"><b>GET</b>/get-luxtrust-otp</span>
-              <span class="ucs__lbl ucs__lbl--code" data-i="3"><b>GET</b>/scenarios/12 → 13 → 14</span>
-              <span class="ucs__lbl ucs__lbl--code" data-i="4"><b>POST</b>/display-image</span>
-              </span>
-            </li>
-            <li class="ucs__row ucs__row--pivot">
-              <span class="ucs__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M10 3v3M14 3v3M10 18v3M14 18v3M3 10h3M3 14h3M18 10h3M18 14h3"/></svg></span>
-              <span class="ucs__actor">
-              <span class="ucs__lbl" data-i="0">Q-Bot</span>
-              <span class="ucs__lbl" data-i="1">Q-Bot</span>
-              <span class="ucs__lbl" data-i="2">Q-Bot reads the LuxTrust app</span>
-              <span class="ucs__lbl" data-i="3">Q-Bot</span>
-              <span class="ucs__lbl" data-i="4">The device screen</span>
-              </span>
-            </li>
-            <li class="ucs__seg">
-              <span class="ucs__seg-rail" aria-hidden="true"><i class="ucs__seg-head"></i></span>
-              <span class="ucs__seg-lab">
-              <span class="ucs__lbl ucs__lbl--prose" data-i="0">Q-Bot taps the screen, over ADB</span>
-              <span class="ucs__lbl ucs__lbl--prose" data-i="1">tap on the screen, over ADB</span>
-              <span class="ucs__lbl ucs__lbl--code" data-i="2"><b>200</b>the one-time code</span>
-              <span class="ucs__lbl ucs__lbl--prose" data-i="3">password, push approval, TOTP code</span>
-              <span class="ucs__lbl ucs__lbl--prose" data-i="4">the phone camera scans the screen</span>
-              </span>
-            </li>
-            <li class="ucs__row ucs__row--out">
-              <span class="ucs__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8,12.4 11,15.4 16,9.4"/></svg></span>
-              <span class="ucs__actor">
-              <span class="ucs__lbl" data-i="0">Login approved</span>
-              <span class="ucs__lbl" data-i="1">The build carries on</span>
-              <span class="ucs__lbl" data-i="2">The test fills the form</span>
-              <span class="ucs__lbl" data-i="3">Session open</span>
-              <span class="ucs__lbl" data-i="4">2FA step resolved</span>
-              </span>
-            </li>
-          </ol>
-          <figcaption class="ucs__cap">
-              <span class="ucs__lbl" data-i="0">No call from the test suite: the notification itself is the trigger.</span>
-              <span class="ucs__lbl" data-i="1">A 2FA gate becomes an HTTP call, like any other step.</span>
-              <span class="ucs__lbl" data-i="2">The code comes back in the HTTP response: nothing to copy, nothing to wait for.</span>
-              <span class="ucs__lbl" data-i="3">Step order and wait times live in Q-Bot, not in your scripts.</span>
-              <span class="ucs__lbl" data-i="4">The screen does the work: the phone reads a real QR code, not an injected image.</span>
-          </figcaption>
-        </figure>
-      </aside>
     </div>
+    <ol class="ucs__index" aria-hidden="true">
+      <li></li><li></li><li></li><li></li><li></li>
+    </ol>
+    <span class="ucs__rail" aria-hidden="true"></span>
   </div>
 </section>
 
@@ -512,6 +450,6 @@ assertTrue(
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=2026.16-08-23" defer></script>
+<script src="../assets/js/main.js?v=2026.18-08-23" defer></script>
 </body>
 </html>

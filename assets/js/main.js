@@ -616,7 +616,12 @@ backToTop.addEventListener('click', () => {
        les cinq cas. Premier usage réel de ce tableau depuis le retrait de
        `.timeline`. Le modèle de la ligne de lecture est le bon ici — le bloc
        TRAVERSE le viewport, il n'est pas épinglé (seul le schéma l'est). */
-    ['.ucs__inner', '--ucs-p'],
+    /* La séquence des cas d'usage : rail épinglé, cinq états. Le moteur écrit la
+       progression ET le numéro du cas, comme pour l'acte épinglé de la page
+       Caractéristiques. C'est ce qui a permis de supprimer l'observateur
+       d'intersection qui s'en chargeait : une seule grandeur gouverne la carte
+       affichée, le halo, l'index et le rail, donc rien ne peut se désynchroniser. */
+    ['.ucs', '--ucs-p', 5],
     /* La bande d'exemples d'appel : le troisième argument dit au moteur que c'est
        un rail ÉPINGLÉ (mesuré à sa course de collage et non à la ligne de lecture)
        et lui fait écrire `data-panel`, qui sert ici à marquer la carte en cours. */
@@ -649,6 +654,11 @@ backToTop.addEventListener('click', () => {
   var progressEls = [];
   PROGRESS.forEach(function (entry) {
     document.querySelectorAll(entry[0]).forEach(function (el) {
+      /* La classe dit « cet élément est scrubbé par le moteur ». Elle permet à la
+         feuille de style de ne poser une mise en scène épinglée QUE si le moteur
+         tourne : sans JavaScript, une section épinglée dont le numéro d'état ne
+         bouge jamais cache tout son contenu sauf le premier état. */
+      el.classList.add('mx-scrubbed');
       progressEls.push({ el: el, name: entry[1], states: entry[2] || 0, panel: -1 });
     });
   });
@@ -1298,45 +1308,3 @@ backToTop.addEventListener('click', () => {
 }());
 
 
-  /* ══════════════════════════════════════════════════════════════════════════
-     17. CAS D'USAGE — le schéma suit la lecture
-     ══════════════════════════════════════════════════════════════════════════
-     Le module ne fait qu'une chose : écrire sur la section le numéro du cas en
-     cours de lecture. Tout le reste (le calage collant, le fondu entre schémas,
-     l'effacement sous 900 px) est dans la feuille de style.
-
-     AUCUNE ÉCOUTE DU DÉFILEMENT. Un observateur d'intersection avec des marges
-     négatives haut et bas ne déclenche que lorsqu'un pas croise la bande centrale
-     de l'écran : c'est exactement « quel cas suis-je en train de lire ». La
-     séquence 3D de l'accueil, elle, doit mesurer des positions à chaque image
-     parce qu'elle scrube une caméra ; ici il n'y a rien à interpoler.
-
-     L'ÉTAT AU REPOS EST DÉJÀ JUSTE : `data-uc="0"` est écrit dans le HTML, donc
-     sans JavaScript le premier schéma reste affiché et les cinq cas se lisent
-     quand même. Ce module ne fait que suivre. */
-  (function () {
-    var ucs = document.querySelector('.ucs');
-    if (!ucs || !window.IntersectionObserver) return;
-    var pas = [].slice.call(ucs.querySelectorAll('.ucs__step'));
-    if (!pas.length) return;
-
-    /* On garde la trace de tous les pas visibles dans la bande, et on prend le plus
-       haut : en descendant, deux pas peuvent la toucher au même moment (le sortant
-       et l'entrant), et sans ce tri le schéma clignoterait entre les deux. */
-    var dans = [];
-    var io = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (e) {
-        var i = pas.indexOf(e.target);
-        var k = dans.indexOf(i);
-        if (e.isIntersecting && k < 0) dans.push(i);
-        if (!e.isIntersecting && k >= 0) dans.splice(k, 1);
-      });
-      if (!dans.length) return;
-      var courant = Math.min.apply(null, dans);
-      if (ucs.getAttribute('data-uc') !== String(courant)) {
-        ucs.setAttribute('data-uc', String(courant));
-      }
-    }, { rootMargin: '-45% 0px -45% 0px' });
-
-    pas.forEach(function (p) { io.observe(p); });
-  }());
