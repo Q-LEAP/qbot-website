@@ -4904,6 +4904,32 @@ label > input[type="checkbox"] {
    POUR L'INSTANT SUR LA SEULE PAGE DES CAS D'USAGE : le balisage n'existe que là.
    L'accueil a déjà son canevas 3D et ses deux orbes de hero, et y ajouter un
    troisième mouvement de fond serait de trop. */
+/* CE QUI RENDAIT LA BOULE INVISIBLE : LES FONDS OPAQUES. Elle est en `z-index: -1`,
+   donc derrière tout ce qui peint un fond. Relevé sur la page : l'en-tête de page
+   (320 px de noir plein), la section de l'API (3 001 px de `#121212`) et le pied de
+   page la masquaient entièrement — soit la moitié de la page, dont tout le haut, là
+   où le visiteur arrive. D'où « je ne vois aucun halo ».
+   Sur les pages à boule, ces deux blocs deviennent donc translucides : le fond de
+   page (`#0A0A0A`) reste visible dessous, la bande grise garde sa nuance (2,2 % de
+   blanc donne `#101010`, à deux points de l'ancien `#121212`), et la boule passe.
+   Le pied de page reste opaque : c'est la fin, et une lumière qui traverse le pied
+   d'une page ne sert plus rien. */
+/* LE HALO PLUS LUMINEUX SE PAIE EN GRIS PLUS CLAIRS, et c'est un échange, pas un
+   réglage. Un fond plus clair sous un texte gris clair, c'est moins de contraste :
+   il n'y a aucun moyen de contourner cela (un mode de fusion éclaircit aussi le fond
+   sous le texte). Le halo demandé plus lumineux monte à 0,366 d'opacité cumulée, où
+   `--gray` d'origine (#A7A9AC) tomberait à 3,9:1. Les deux gris secondaires de CETTE
+   page montent donc d'un cran : 5,8:1 et 5,2:1 au coeur du halo, et la hiérarchie
+   avec les titres (#E6E7E8) reste lisible. Contrôlé en forçant le fond de page à la
+   couleur du coeur. */
+body:has(.orbz) {
+  --gray:  #C9CBCE;
+  --muted: #BFC1C4;
+}
+
+body:has(.orbz) .page-hero { background: transparent; }
+body:has(.orbz) .section--gray { background: rgba(255, 255, 255, 0.022); }
+
 /* UN SEUL SYSTÈME DE FOND PAR PAGE. Le calque ambiant du site (`body::before` et
    `::after`) est neutralisé là où la boule existe : sinon les halos s'additionnent,
    et là où ils se superposent tous le fond monte à 30 % de teal, ce qui fait tomber
@@ -4923,47 +4949,63 @@ body:has(.orbz)::after { content: none; }
   position: absolute;
   top: -18vh;
   left: -14vw;
-  width: 46vw;
-  height: 46vw;
+  /* 58vw et non 46 : à opacité plafonnée, c'est la TAILLE qui fait la présence. Un
+     halo de 660 px sur un écran de 1440 se lit comme une nuance ; à 835 px il se lit
+     comme une lumière. */
+  width: 58vw;
+  height: 58vw;
   border-radius: 50%;
   /* LES TROIS OPACITÉS SONT UN BUDGET, PAS UN GOÛT. Les trois calques se
      superposent au coeur du parcours, donc l'opacité résultante est
      1 − (1−a1)(1−a2)(1−a3). Le plafond est fixé par le contraste : à 30 % de teal
      sur le noir de la page, le gris clair `--gray` tombe à 4,67:1, juste au-dessus
-     du seuil AA. Avec 0,21 / 0,065 / 0,03 le total fait 0,283, la tête est plus
-     lumineuse qu'avant et le budget est respecté. */
-  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.21), transparent 72%);
+     du seuil AA. Avec 0,27 / 0,09 / 0,045 le total fait 0,366 : c'est le maximum
+     utilisable APRÈS avoir éclairci les deux gris de la page (voir la règle
+     `body:has(.orbz)` plus haut), et il est utilisé. */
+  /* Trois arrêts et non deux : le coeur reste au plafond mais la décroissance est
+     plus lente, donc une plus grande surface est réellement colorée. C'est ce qui
+     donne une boule plutôt qu'un lavis. */
+  background: radial-gradient(closest-side,
+              rgba(0, 203, 190, 0.27), rgba(0, 203, 190, 0.16) 38%, transparent 74%);
   will-change: transform;
-  animation: orbzDrift 34s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: orbzDrift 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 /* La traîne : plus petite, plus pâle, et en retard. */
 .orbz span:nth-child(2) {
   width: 38vw; height: 38vw;
-  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.065), transparent 72%);
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.09), transparent 74%);
   animation-delay: -2.4s;
 }
 .orbz span:nth-child(3) {
   width: 30vw; height: 30vw;
-  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.03), transparent 72%);
+  background: radial-gradient(closest-side, rgba(0, 203, 190, 0.045), transparent 74%);
   animation-delay: -4.8s;
 }
 /* Un parcours fermé, en pourcentages de la fenêtre : il traverse la page en
    diagonale, remonte par la droite et revient. Les valeurs sont volontairement
    larges — un halo qui reste au centre ne se remarque pas, et un halo qui va vite
    se remarque trop. */
+/* SIX ÉTAPES ET NON QUATRE, et 24 s au lieu de 34. Le client demande des passages
+   plus fréquents. Deux façons de l'obtenir : accélérer, ou allonger le parcours à
+   durée égale. On fait les deux à moitié — la vitesse apparente reste celle d'une
+   ambiance (le hero de l'accueil avait dû être ralenti à 22-26 s pour cette raison),
+   mais le parcours traverse maintenant la fenêtre trois fois par tour au lieu
+   d'une. */
 @keyframes orbzDrift {
-  0%   { transform: translate3d(6vw, 12vh, 0) scale(1); }
-  25%  { transform: translate3d(62vw, 34vh, 0) scale(1.12); }
-  50%  { transform: translate3d(78vw, 82vh, 0) scale(0.94); }
-  75%  { transform: translate3d(22vw, 66vh, 0) scale(1.08); }
-  100% { transform: translate3d(6vw, 12vh, 0) scale(1); }
+  0%   { transform: translate3d(4vw, 10vh, 0) scale(1); }
+  17%  { transform: translate3d(58vw, 26vh, 0) scale(1.1); }
+  33%  { transform: translate3d(84vw, 68vh, 0) scale(0.95); }
+  50%  { transform: translate3d(38vw, 88vh, 0) scale(1.06); }
+  67%  { transform: translate3d(2vw, 58vh, 0) scale(0.98); }
+  83%  { transform: translate3d(46vw, 34vh, 0) scale(1.12); }
+  100% { transform: translate3d(4vw, 10vh, 0) scale(1); }
 }
 /* Sur téléphone la boule occuperait presque tout l'écran : on la réduit et on
    ralentit encore, pour qu'elle reste un fond et pas un événement. */
 @media (max-width: 700px) {
-  .orbz span { width: 82vw; height: 82vw; animation-duration: 44s; }
-  .orbz span:nth-child(2) { width: 68vw; height: 68vw; }
-  .orbz span:nth-child(3) { width: 54vw; height: 54vw; }
+  .orbz span { width: 96vw; height: 96vw; animation-duration: 32s; }
+  .orbz span:nth-child(2) { width: 80vw; height: 80vw; }
+  .orbz span:nth-child(3) { width: 64vw; height: 64vw; }
 }
 @media (prefers-reduced-motion: reduce) {
   /* Elle ne bouge plus, mais elle reste : c'est de la lumière, pas une animation

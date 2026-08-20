@@ -1750,9 +1750,34 @@ Deux conséquences :
 - **deux textes ont changé de gris** parce qu'ils sont posés sur le fond de page, donc sur la
   boule : la note de l'API et le fil d'Ariane passent de `--muted` à `--gray`.
 
-Vérifié en forçant le fond de page à la couleur du coeur du halo (`#08342F`) sur les
-25 pages : **0 défaut de contraste**. C'est la seule façon de contrôler un halo en
-`position: fixed` — un audit qui remonte l'arbre des fonds ne le voit pas.
+**CE QUI LE RENDAIT INVISIBLE : LES FONDS OPAQUES.** Premier signalement : « je ne vois
+aucun halo ». La boule est en `z-index: -1`, donc derrière tout ce qui peint un fond. Relevé
+sur la page : l'en-tête de page (320 px de noir plein), la section de l'API (3 001 px de
+`#121212`) et le pied de page la masquaient entièrement, soit la moitié de la page dont tout
+le haut, là où le visiteur arrive. Sur les pages à boule, ces deux blocs sont donc devenus
+translucides : la bande grise garde sa nuance (2,2 % de blanc sur le fond de page donne
+`#101010`, à deux points de l'ancien `#121212`) et la boule passe. Le pied de page reste
+opaque : c'est la fin de la page.
+
+**PUIS LE HALO A ÉTÉ DEMANDÉ PLUS LUMINEUX ET PLUS FRÉQUENT**, et cela s'est payé :
+
+- **plus lumineux se paie en gris plus clairs.** Un fond plus clair sous un texte gris clair,
+  c'est moins de contraste, et il n'y a aucun moyen de contourner cela (un mode de fusion
+  éclaircit aussi le fond sous le texte). Le halo est monté à **0,366** d'opacité cumulée, où
+  `--gray` d'origine tomberait à 3,9:1. Les deux gris secondaires de CETTE page montent donc
+  d'un cran (`--gray: #C9CBCE`, `--muted: #BFC1C4`) : 5,8:1 et 5,2:1 au coeur du halo, et la
+  hiérarchie avec les titres (`#E6E7E8`) reste lisible ;
+- **plus fréquent, à moitié par la vitesse et à moitié par le parcours** : 24 s au lieu de 34,
+  et six étapes au lieu de quatre, donc la boule traverse la fenêtre trois fois par tour au
+  lieu d'une. La vitesse apparente reste celle d'une ambiance : les orbes du hero de l'accueil
+  avaient dû être ralentis à 22-26 s pour cette raison précise ;
+- **la taille fait la présence** autant que l'opacité : 58vw au lieu de 46, soit 835 px sur un
+  écran de 1440 au lieu de 660.
+
+Vérifié en forçant le fond de page à la couleur du coeur du halo sur les 25 pages (`#064F4B`
+là où la boule existe, `#0A3330` ailleurs, qui est le pire cas du calque ambiant) : **0 défaut
+de contraste**. C'est la seule façon de contrôler un halo en `position: fixed` — un audit qui
+remonte l'arbre des fonds ne le voit pas.
 
 En mouvement réduit la boule ne bouge plus mais **reste allumée** : c'est de la lumière, pas
 une animation décorative. Sous 700 px elle est réduite et ralentie (44 s), pour rester un
