@@ -938,6 +938,40 @@ réduit : opacité 1, aucun masque.
 
 Les trois propositions issues de l'audit d'animation (M, N, O) sont donc faites.
 
+## Les deux FAQ sont alignées, et la garantie reste ouverte (2026-08-20)
+
+**« Six questions manquent au français » était faux, et la note de juillet en était la
+cause.** Elle comparait le live (12 questions FR contre 16 EN) à une époque où notre FR en
+avait 12 ; quatre ont été ajoutées depuis. Relevé ce jour : **nos deux FAQ ont 16 questions
+chacune**, et une seule question du live EN n'a jamais été reprise, celle de la garantie.
+
+**Elle ne peut pas l'être en l'état** : sur le live, la réponse à « What are the warranty
+conditions of Q-Bot? » ne parle pas de garantie, elle explique comment utiliser Q-Bot. Notre
+copie avait hérité de ce défaut. Deux issues, et aucune n'est de notre ressort : soit le
+client fournit de vraies conditions (durée, couverture, exclusions), soit la question reste
+absente, ce qui se défend puisque la question 15 (« Que faire en cas de dysfonctionnement »)
+énonce déjà la réparation à distance puis le remplacement par un robot neuf, et que la page
+commande porte la carte « Remplacement garanti ».
+
+Ce qui a été corrigé ici :
+
+- **la question 12 anglaise était mal intitulée** : « What are the warranty conditions of
+  Q-Bot? » sur une réponse d'utilisation. Elle devient « How do I use Q-Bot? », comme son
+  pendant français à la même position, dans le bouton, dans l'index et dans le JSON-LD ;
+- **sa réponse était périmée** : elle parlait encore de récupérer la valeur d'un token et
+  ignorait l'app compagnon. Elle dit maintenant les deux chemins de déclenchement ;
+- **deux restes de l'ancien récit avaient échappé au lot 1** : la carte « Confidentialité
+  totale » des pages commande affirmait encore « les photos sont supprimées après
+  traitement ». Mon contrôle d'alors cherchait « photo est supprimée » et « Photos
+  supprimées » et ne pouvait pas voir « les photos SONT supprimées ». Un motif de contrôle
+  doit couvrir le singulier ET le pluriel, l'actif ET le passif ;
+- au passage, un doublon du français : « le déclenchement du scénario peut être automatiquement
+  déclenché ».
+
+Reste une asymétrie mineure et assumée : les questions 6 et 7 sont dans l'ordre inverse entre
+les deux langues. Les réaligner obligerait à renuméroter les identifiants et l'index pour un
+gain nul.
+
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en
