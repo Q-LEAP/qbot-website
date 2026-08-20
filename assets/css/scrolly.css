@@ -482,20 +482,91 @@
     transform: scale(calc(1 + (var(--sc-zoom, 1) - 1) * 0.5));
   }
   /* Le texte occupe le bas de l'écran, sous l'objet : superposé, il masquerait le
-     boîtier sur une largeur de téléphone. */
-  .scrolly__step { align-content: end; padding-bottom: 5svh; max-width: none; }
+     boîtier sur une largeur de téléphone.
+
+     ET IL FAUT QU'IL Y RESTE. Réserver la zone ne suffit pas si la carte la
+     traverse : les cartes accompagnaient leur pas dans une colonne de quatre
+     écrans qui défile, donc chacune montait dans la scène entre deux calages.
+     Mesuré au balayage fin, modèle 3D chargé : jusqu'à 303 px de recouvrement à
+     390 px de large, 243 px à 375, 282 px à 414 — c'est-à-dire le tiers bas du
+     boîtier sous la carte pendant l'essentiel du parcours. Le relevé précédent
+     concluait « zéro recouvrement » parce qu'il ne mesurait qu'aux quatre
+     positions de calage, les seules où la carte est effectivement en bas.
+
+     Donc sur téléphone la carte colle au bas de l'écran pendant tout son pas.
+     Ce qui NE change pas : le pas lui-même garde sa hauteur d'un écran et défile
+     comme avant. C'est volontaire — `nearest()` et `fraction()` lisent la
+     position des pas pour savoir lequel est actif et où en est l'éclatement.
+     Épingler le CONTENEUR (essayé) gèle ces boîtes : la séquence reste au pas 1,
+     la caméra ne tourne plus. Seule la carte est épinglée, la mécanique est
+     intacte.
+
+     `position: sticky` a été essayé deux fois et ne peut pas y arriver, pour une
+     raison géométrique : un élément collant reste dans sa boîte parente, et le pas
+     fait exactement un écran de haut. La course d'épinglage vaut donc
+     `écran − hauteur de carte`, soit 498 px à 390 — alors que la fenêtre où le pas
+     est actif en fait 844. Dans les 376 px restants la carte remonte dans la
+     scène, et l'on retrouve le recouvrement au pixel près (mesuré). Aucun réglage
+     de `top` ou de `bottom` n'élargit cette course.
+
+     Donc la carte est posée en `fixed`, dans la zone réservée. Ce qui compte :
+     les PAS, eux, continuent de défiler comme avant. `nearest()` et `fraction()`
+     lisent leur position pour savoir quel pas est actif et où en est
+     l'éclatement ; les figer (essayé) laisse la séquence au pas 1, caméra
+     immobile. Ici seule la carte quitte le flux, la mécanique est intacte.
+
+     `body.is-scrolly` conditionne le calage : sans ce garde-fou, une carte fixe
+     resterait collée à l'écran une fois la séquence passée. Le drapeau existe
+     déjà, il dit exactement « la séquence est à l'écran ». */
+  .scrolly__step {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 clamp(24px, 7vw, 96px) 5svh;
+    max-width: none;
+  }
+  body.is-scrolly .scrolly__step-inner {
+    position: fixed;
+    left: 0; right: 0;
+    bottom: 5svh;
+    margin: 0 clamp(24px, 7vw, 96px);
+  }
+  /* Les quatre cartes se superposent : sans ça la dernière, invisible, capterait
+     les appuis destinés à celle qu'on lit — son bouton « Demander une démo »
+     compris. */
+  .scrolly__step > * { pointer-events: none; }
+  .scrolly__step.is-active > * { pointer-events: auto; }
+  /* Dernière hauteur d'écran de la section : la scène s'en va, la carte doit
+     partir avec elle. Fixée, elle ne peut pas suivre le mouvement, donc elle
+     s'effface — sinon on la retrouve posée sur la section suivante, par-dessus son
+     titre (constaté). Le drapeau vient de scrolly.js, qui sait quand le bloc
+     collant se décroche. */
+  /* Sélecteur volontairement long : `.scrolly__step.is-active .scrolly__step-inner`
+     pèse trois classes et l'emporterait sur deux classes plus un type. */
+  body.is-scrolly-exit .scrolly__step.is-active .scrolly__step-inner { opacity: 0; }
 
 
-  /* ── Repère de progression ────────────────────────────────────────────────
-     Les quatre cases de saisie sont retirées (quatre cibles de plus par-dessus le
-     produit sur un écran de 390 px, et le clavier de la métaphore 2FA n'a pas la
-     place de se lire), mais le visiteur se retrouvait alors à traverser quatre
-     écrans épinglés SANS aucune indication : rien ne disait qu'une séquence était
-     en cours ni combien il en restait. On garde donc la même information, sous la
-     forme qui convient à un téléphone — un trait fin au ras du bas de l'écran et
-     le numéro du pas. Aucune donnée nouvelle, aucun JS de plus : le trait réutilise
-     `--sc-p`, déjà écrit à chaque image, et le compteur son propre texte.
-     Le bas de l'écran est libre : la carte de texte s'arrête à 8vh du bord. */
+}
+
+/* ── Repère de progression : la forme horizontale, jusqu'à 1300 px ─────────
+   Ces règles étaient sous 900 px. Elles montent à 1300 parce que la colonne de
+   pastilles n'a pas la place d'exister en dessous : le texte se cale sur la
+   gouttière du site (24 px quand la fenêtre est plus étroite que le conteneur) et
+   les pastilles, larges de 26 px, se retrouvaient dessous. Mesuré : 26 px de
+   recouvrement constant de 940 à 1200 px, avec en plus la carte qui dépassait de
+   4 px à gauche de l'écran. Signalé par le client sur une fenêtre de cette taille.
+
+   Plutôt que d'inventer une troisième position, on reprend la forme déjà validée
+   pour le téléphone : un trait fin au ras du bas de l'écran et le numéro du pas.
+   Elle ne coûte aucune largeur, donc le texte garde sa gouttière.
+
+   Origine de cette forme (téléphone) : les quatre cases de saisie ont été retirées
+   — quatre cibles de plus par-dessus le produit sur un écran de 390 px, et le
+   clavier de la métaphore 2FA n'a pas la place de se lire — mais le visiteur se
+   retrouvait alors à traverser quatre écrans épinglés SANS aucune indication.
+   Aucune donnée nouvelle, aucun JS de plus : le trait réutilise `--sc-p`, déjà
+   écrit à chaque image, et le compteur son propre texte. */
+@media (max-width: 1299px) {
   .scrolly__nav {
     display: block;
     position: absolute;
@@ -526,7 +597,8 @@
     font-size: 0.6875rem;
   }
   /* Ici les pastilles n'existent pas : le compteur redevient le seul indicateur
-     visible de progression. */
+     visible de progression. Au-delà de 1300 px elles reviennent, et c'est lui qui
+     s'efface (cf. la règle de base) : le client a signalé le doublon. */
   .scrolly__count > [aria-hidden="true"] { display: inline; }
 }
 @media (max-width: 520px) {
@@ -549,6 +621,12 @@
   .scrolly__stage { position: relative; height: auto; padding: 40px 0; }
   .scrolly__steps { margin-top: 0; }
   .scrolly__step { min-height: 0; padding: 32px clamp(24px, 7vw, 96px); }
+  /* Rien ne défile plus : une carte fixée au bas de l'écran n'aurait aucun sens et
+     se poserait sur le texte suivant. (`is-scrolly` n'est de toute façon jamais
+     posé en mouvement réduit — ceinture et bretelles.) */
+  .scrolly__step-inner,
+  body.is-scrolly .scrolly__step-inner { position: static; margin: 0; }
+  .scrolly__step > * { pointer-events: auto; }
   .scrolly__step-inner,
   .scrolly__step-inner > * { opacity: 1; transform: none; transition: none; }
   .scrolly__hint, .scrolly__nav, .scrolly__count { display: none; }
@@ -899,6 +977,31 @@ main .section-label::before {
      deux colonnes ne démarrent qu'à 940), donc les étiquettes lui passeraient
      dessus.
    Au-delà, la carte est à gauche et la scène à droite : plus de collision. */
+/* ── La carte ne dépasse plus de l'écran par la gauche ─────────────────────
+   La mise en page à deux colonnes cale le TEXTE sur la gouttière du site en tirant
+   la carte vers la gauche : elle porte 2 px de filet teal et 26 px de marge
+   intérieure, donc son bord doit partir 28 px avant la gouttière. Quand la fenêtre
+   est plus étroite que le conteneur, la gouttière tombe à son plancher de 24 px et
+   ces 4 px passent hors écran — avec eux le filet teal, qui est l'accroche
+   visuelle de la carte (mesuré : bord à −4 px de 940 à 1180 px).
+
+   Les 4 px manquants sont pris sur la marge intérieure : 0 + 2 + 22 = 24, le texte
+   reste sur la gouttière et rien ne sort de l'écran.
+
+   POURQUOI UNE BORNE FIXE ET PAS UN CALCUL. La version calculée
+   (`min(0px, var(--sc-gut) - 28px)` posé sur la carte) donnait 22 px partout, y
+   compris à 1299 px où la gouttière en fait 84 : `--sc-gut` contient un
+   pourcentage, et un pourcentage se résout SUR L'ÉLÉMENT QUI S'EN SERT — la carte
+   fait 456 px de large, pas la largeur de la section. C'est le piège déjà rencontré
+   sur `--sc-gut-scene`. Or le calcul n'est pas nécessaire : dès que la fenêtre est
+   plus étroite que le conteneur, la gouttière vaut exactement son plancher, donc le
+   manque vaut exactement 4 px. La borne est celle du conteneur (1180 px, son
+   plancher de `clamp`), plus les 8 px où le manque décroît de 4 à 0. */
+@media (min-width: 940px) and (max-width: 1187px) {
+  .scrolly__step { margin-left: 0; }
+  .scrolly__step-inner { padding-left: 22px; }
+}
+
 @media (max-width: 939px) {
   .hud-lab { display: none; }
 }
@@ -1040,11 +1143,15 @@ main .section-label::before {
     width: calc(50vw / var(--sc-zoom-max));
     height: calc(84svh / var(--sc-zoom-max));
   }
+  /* Deux colonnes : la carte ne recouvre plus rien, elle n'a pas à quitter le flux
+     (cf. le calage en portrait). */
   .scrolly__step {
-    align-content: center;
+    justify-content: center;
     max-width: 40vw;
     padding: 0 0 0 4vw;
   }
+  body.is-scrolly .scrolly__step-inner { position: static; margin: 0; }
+  .scrolly__step > *, .scrolly__step.is-active > * { pointer-events: auto; }
   .scrolly__step-cta { margin-top: 14px; min-height: 42px; }
   /* Les cotes reviennent : la scène est assez large pour les porter. */
   .hud-lab { display: block; font-size: 9px; }

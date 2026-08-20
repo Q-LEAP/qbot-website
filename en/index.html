@@ -36,7 +36,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css?v=2026.13-08-29b">
-  <link rel="stylesheet" href="../assets/css/scrolly.css?v=55">
+  <link rel="stylesheet" href="../assets/css/scrolly.css?v=66">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -224,7 +224,7 @@
       disable-pan
       disable-tap
       touch-action="pan-y"
-      loading="lazy"
+      loading="eager"
     ></model-viewer>
 
     <!-- Le modèle pèse 571 Ko et son décodeur autant : sur une liaison lente il
@@ -306,7 +306,6 @@
       <g class="hud-l hud-size">
         <path class="hud-sheet" mask="url(#hudSheetM)"/>
         <path class="hud-sheet-marks" mask="url(#hudSheetM)"/>
-        <text class="hud-lab hud-lab--sheet">A3 SHEET · 297 × 420 MM</text>
         <g class="hud-dim" data-dim="depth"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">40 cm</text></g>
         <g class="hud-dim" data-dim="width"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">24 cm</text></g>
         <g class="hud-dim" data-dim="height"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">15 cm</text></g>
@@ -355,9 +354,9 @@
       <div class="scrolly__step" data-step="3" id="qbot-step-4">
         <div class="scrolly__step-inner">
           <span class="scrolly__label">The footprint</span>
-          <h2 class="scrolly__title">It all fits on an A3 sheet</h2>
-          <p class="scrolly__text">40 × 24 × 15 cm, designed and manufactured at Q-Leap's headquarters in Bertrange. The format is meant not to clutter a desk.</p>
-          <p class="scrolly__fig"><b>A3</b> <span>29.7 × 42 cm footprint</span></p>
+          <h2 class="scrolly__title">It will not take over your desk</h2>
+          <p class="scrolly__text">The format is meant to sit beside the tester's screen and be forgotten, not to take up half the desk.</p>
+          <p class="scrolly__fig"><b>Bertrange</b> <span>designed and built at Q-Leap's headquarters</span></p>
         
           <a class="scrolly__step-cta" href="contact.html">Book a demo<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
@@ -444,8 +443,8 @@
         <div class="feature-card__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
         </div>
-        <h3>100% effective</h3>
-        <p>100% effective: every tap lands on the real app, so there is nothing to recognise. Zero false positives.</p>
+        <h3>Zero false positives</h3>
+        <p>The tap lands on the real application. Nothing is guessed from an image, so nothing can be misread.</p>
       </article>
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true">
@@ -704,6 +703,6 @@
 </footer>
 
 <script src="../assets/js/main.js?v=2026.12-08-23" defer></script>
-<script src="../assets/js/scrolly.js?v=62" defer></script>
+<script src="../assets/js/scrolly.js?v=66" defer></script>
 </body>
 </html>

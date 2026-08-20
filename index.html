@@ -41,7 +41,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css?v=2026.13-08-29b">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=55">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=66">
   <!-- Google model-viewer : web component autonome, aucun build requis -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
   <script type="application/ld+json">
@@ -235,7 +235,7 @@
       disable-pan
       disable-tap
       touch-action="pan-y"
-      loading="lazy"
+      loading="eager"
     ></model-viewer>
 
     <!-- Le modèle pèse 571 Ko et son décodeur autant : sur une liaison lente il
@@ -317,7 +317,6 @@
       <g class="hud-l hud-size">
         <path class="hud-sheet" mask="url(#hudSheetM)"/>
         <path class="hud-sheet-marks" mask="url(#hudSheetM)"/>
-        <text class="hud-lab hud-lab--sheet">FEUILLE A3 · 297 × 420 MM</text>
         <g class="hud-dim" data-dim="depth"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">40 cm</text></g>
         <g class="hud-dim" data-dim="width"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">24 cm</text></g>
         <g class="hud-dim" data-dim="height"><path class="hud-dim-ext"/><path class="hud-dim-line"/><text class="hud-val">15 cm</text></g>
@@ -366,9 +365,9 @@
       <div class="scrolly__step" data-step="3" id="qbot-etape-4">
         <div class="scrolly__step-inner">
           <span class="scrolly__label">L'encombrement</span>
-          <h2 class="scrolly__title">Tout tient sur une feuille A3</h2>
-          <p class="scrolly__text">40 × 24 × 15 cm, conçu et fabriqué au siège de Q-Leap à Bertrange. Le format est pensé pour ne pas encombrer un bureau.</p>
-          <p class="scrolly__fig"><b>A3</b> <span>29,7 × 42 cm d'emprise au sol</span></p>
+          <h2 class="scrolly__title">Il ne prend pas votre bureau</h2>
+          <p class="scrolly__text">Le format est pensé pour se poser à côté de l'écran du testeur et se faire oublier, pas pour occuper la moitié du plan de travail.</p>
+          <p class="scrolly__fig"><b>Bertrange</b> <span>conçu et fabriqué au siège de Q-Leap</span></p>
         
           <a class="scrolly__step-cta" href="contact.html">Réserver une démo<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
@@ -463,8 +462,8 @@
         <div class="feature-card__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
         </div>
-        <h3>100%</h3>
-        <p>Efficace à 100&nbsp;%&nbsp;: l'appui arrive sur la vraie application, il n'y a rien à reconnaître.</p>
+        <h3>Zéro faux positif</h3>
+        <p>L'appui se fait sur la vraie application. Rien n'est deviné à l'image, donc rien ne peut être mal lu.</p>
       </article>
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true">
@@ -733,6 +732,6 @@
 </footer>
 
 <script src="assets/js/main.js?v=2026.12-08-23" defer></script>
-<script src="assets/js/scrolly.js?v=62" defer></script>
+<script src="assets/js/scrolly.js?v=66" defer></script>
 </body>
 </html>

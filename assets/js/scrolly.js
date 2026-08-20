@@ -620,7 +620,6 @@
     var burstG  = svg.querySelector('.hud-burst');
     var sheet   = svg.querySelector('.hud-sheet');
     var marks   = svg.querySelector('.hud-sheet-marks');
-    var labShee = svg.querySelector('.hud-lab--sheet');
     var dims    = {};
     [].slice.call(svg.querySelectorAll('.hud-dim')).forEach(function (g) {
       dims[g.getAttribute('data-dim')] = {
@@ -702,11 +701,16 @@
          est stable par construction, pas par comparaison. */
       var top = proj(face[3]);
       var away = -1;
-      var lx = top[0] + away * 34, ly = top[1] - 30;
+      /* Longueurs raccourcies de 16 unités au total (34→24, 22→18, 28→22) : le
+         libellé était « légèrement trop à gauche », il se recentre vers le produit
+         sans changer de côté ni de point d'accroche. Relevé après coup : il reste
+         de 10 à 20 px du bord du boîtier pendant tout le pas, et le trait de
+         rappel garde sa forme en L. */
+      var lx = top[0] + away * 24, ly = top[1] - 30;
       lead.setAttribute('d', 'M' + top[0].toFixed(1) + ' ' + top[1].toFixed(1) +
                              'L' + lx.toFixed(1) + ' ' + ly.toFixed(1) +
-                             'h' + (away * 22));
-      label(labDock, lx + away * 28, ly, away > 0 ? 'start' : 'end', 150);
+                             'h' + (away * 18));
+      label(labDock, lx + away * 22, ly, away > 0 ? 'start' : 'end', 150);
 
       /* ── Pas 3 : les repères d'assemblage ────────────────────────────── */
       var kt = Math.max(0, Math.min(1, t / BURST_END));
@@ -740,25 +744,11 @@
         mk4 += seg(c, [c[0] - sx * L, 0, c[2]]) + seg(c, [c[0], 0, c[2] - sz * L]);
       }
       marks.setAttribute('d', mk4);
-      /* L'étiquette de la feuille se pose sur celui de ses quatre coins dont la
-         projection s'éloigne le plus du produit : c'est le seul critère qui
-         garantisse à la fois qu'elle ne tombe pas SUR le boîtier et qu'elle reste
-         dégagée des deux cotes au sol. Un choix figé (« le coin le plus bas »,
-         « le plus haut ») marchait pour un angle et échouait pour le suivant. */
-      var iLab = 0, ld = -1;
-      for (i = 0; i < 4; i++) {
-        p = projN(sh[i]);
-        var pd = Math.hypot(p[0] - midHiN[0], p[1] - midHiN[1]);
-        if (pd > ld) { ld = pd; iLab = i; }
-      }
-      var lab = proj(sh[iLab]);   // choix au nominal, position au réel
-      /* Le libellé se pose À L'INTÉRIEUR de la feuille, en retrait du coin, comme
-         le cartouche d'un plan. Posé à l'extérieur il tombait entre le bord de la
-         feuille et les lignes de cote, qui sont déportées plus loin encore (3,4 cm
-         de l'objet, donc au-delà de la feuille) : le trait de cote traversait le
-         texte. À l'intérieur, la zone est vide — le boîtier n'atteint pas le coin. */
-      var lvx = lab[0] - midHi[0], lvy = lab[1] - midHi[1], lvl = Math.hypot(lvx, lvy) || 1;
-      label(labShee, lab[0] - lvx / lvl * 22, lab[1] - lvy / lvl * 22, 'middle', 110);
+      /* La feuille n'est plus légendée : la mention « feuille A3 » a été retirée du
+         site à la demande du client, qui la juge inutile puisque les trois cotes
+         disent déjà l'encombrement. Le tracé de la feuille reste — c'est lui qui
+         donne aux cotes au sol un cadre où se poser. Avec l'étiquette part le choix
+         du coin le plus dégagé, qui n'existait que pour elle. */
 
       var OFF = 0.034;
       var sxSide = nearSide([-BOX.x[1], 0, 0], [BOX.x[1], 0, 0]);
@@ -1013,6 +1003,16 @@
        et le lien pour sortir de la séquence, qui n'existait qu'au focus clavier —
        donc pas du tout sur un téléphone. Un seul drapeau les gouverne. */
     document.body.classList.toggle('is-scrolly', onScreen);
+    /* SORTIE DE SÉQUENCE. `p` atteint 1 pile au moment où le bloc collant se
+       décroche : la dernière hauteur d'écran de la section sert à l'évacuer, et
+       pendant ce temps le produit s'en va vers le haut. Sur téléphone la carte de
+       texte est posée en `fixed` dans la zone du bas (cf. scrolly.css) : sans ce
+       drapeau elle resterait accrochée à l'écran pendant que la scène part, et se
+       retrouverait posée sur la section suivante. On la fait disparaître, ce qui
+       clôt la séquence au lieu de la laisser traîner. Le drapeau n'est utilisé que
+       sous 900 px : au-dessus, le texte est à côté de la scène et part avec elle,
+       ce qui est le comportement voulu. */
+    document.body.classList.toggle('is-scrolly-exit', onScreen && p >= 1);
     /* CTA contextuel. Le même bouton affichait « Demander une démo » du premier au
        dernier pas, en doublon de celui de la barre de navigation — les deux
        étaient visibles en même temps. Il accompagne maintenant le propos : il mène
@@ -1077,8 +1077,26 @@
        de parier sur la disponibilité d'un tiers, on borne l'attente : passé le
        délai, le repli statique prend la place, et la séquence garde son récit.
        Le même filet couvre n'importe quelle autre panne — CDN indisponible,
-       fichier corrompu, WebGL qui échoue après coup. */
-    var giveUp = setTimeout(function () {
+       fichier corrompu, WebGL qui échoue après coup.
+
+       DEUX PRÉCAUTIONS, sans lesquelles le filet étrangle ce qu'il devait protéger
+       (constaté : sous 1440 px de large, la séquence tombait TOUJOURS sur son
+       affiche, sur toutes les liaisons, y compris rapides) :
+
+       1. Le compte à rebours part de l'ARRIVÉE près de la séquence, pas du
+          chargement de la page. La balise porte `loading="lazy"` : tant que la
+          séquence est sous la ligne de flottaison, model-viewer ne demande même
+          pas le fichier. Or sur un écran étroit le hero occupe le premier écran
+          entier, donc la scène est toujours hors champ au chargement : le délai
+          expirait avant la première requête, et le visiteur n'a jamais vu le
+          modèle. Vérifié : aucune requête `qbot.glb` à 390, 768 et 1024 px, et
+          `data-fallback="modele indisponible"` à chaque fois.
+       2. Le délai est relancé à chaque signe de vie. Un téléchargement qui
+          progresse n'est pas une panne : 12 s comptent l'ABSENCE de progrès, pas
+          la durée totale. Sinon une liaison lente est déclarée en panne alors que
+          le fichier arrive. */
+    var giveUp = null;
+    function abandonner() {
       if (viewer.model) return;
       loader.hidden = true;
       if (fallback) {
@@ -1086,8 +1104,28 @@
         viewer.style.display = 'none';
         root.setAttribute('data-fallback', 'modele indisponible');
       }
-    }, 12000);
+    }
+    function armer() {
+      if (viewer.model) return;
+      clearTimeout(giveUp);
+      giveUp = setTimeout(abandonner, 12000);
+    }
+    viewer.addEventListener('progress', armer);
     viewer.addEventListener('load', function () { clearTimeout(giveUp); });
+    /* Aucune marge sur l'observateur : il faut que la scène soit RÉELLEMENT à
+       l'écran. Une marge de 400 px suffisait à armer le délai au chargement sur un
+       téléphone (la séquence commence juste sous le hero), et on retombait sur le
+       même défaut. */
+    if (window.IntersectionObserver) {
+      var veille = new IntersectionObserver(function (entrees) {
+        for (var i = 0; i < entrees.length; i++) {
+          if (entrees[i].isIntersecting) { armer(); veille.disconnect(); return; }
+        }
+      });
+      veille.observe(stage || viewer);
+    } else {
+      armer();
+    }
   }
 
   var STACKED = window.matchMedia('(max-width: 900px) and (not ((orientation: landscape) and (max-height: 520px)))');
