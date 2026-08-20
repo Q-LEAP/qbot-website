@@ -984,6 +984,34 @@ Reste une asymétrie mineure et assumée : les questions 6 et 7 sont dans l'ordr
 les deux langues. Les réaligner obligerait à renuméroter les identifiants et l'index pour un
 gain nul.
 
+## Audit d'après refonte (2026-08-20)
+
+Passe mesurée sur les 23 pages après deux jours de réécriture (mécanisme, compatibilité, API,
+app compagnon, éditeur, matériel, cas d'usage, tarif, cadratins, trois lots d'animation).
+Instrumentée comme les précédentes : contraste calculé sur le fond réellement composité,
+hiérarchie des titres, cibles tactiles à 390 px, liens internes, longueurs d'affichage en
+recherche, poids transféré.
+
+**Résultat : aucun défaut réel.** Le détail, parce que les chiffres bruts trompent :
+
+- **contraste** : une seule remontée, un `span.visually-hidden` à 1,65. Un élément réservé aux
+  lecteurs d'écran n'a pas de contraste à respecter. Tout le contenu neuf passe, y compris les
+  libellés de cas d'usage, les points d'entrée en teal et les faits à coche ;
+- **titres** : 0 saut de niveau, exactement un `h1` par page, sur les 23 ;
+- **cibles tactiles** : 45 remontées à moins de 24 px, toutes exemptées. Ce sont le lien
+  d'évitement (1×1 hors focus) et des liens **en ligne dans une phrase** (adresses, téléphones,
+  renvois), cas que WCAG 2.5.8 exclut explicitement. La case de consentement mesure 20×20 mais
+  son label cliquable fait 342×87 : la cible utile est de 87 px de haut ;
+- **longueurs d'affichage** : 0 titre au-delà de 62 caractères, 0 description au-delà de 158 ;
+- **poids** : accueil 2 369 Ko (modèle 3D compris), page 3D 1 783 Ko. Le client a accepté ce
+  poids d'accueil le 2026-08-11, ne pas y revenir sans nouvelle demande.
+
+**Et la divergence avec la brochure est close.** Elle était signalée depuis le 2026-08-19 : la
+brochure décrivait un pilotage d'application Android réelle (appuis, code à usage unique, QR
+code, validation, « sans mock ni simulation », « aucun SDK aucun agent », itsme, stockage
+local) alors que le site racontait l'actionneur et la caméra. Après les lots 1 à 7, le site dit
+exactement ce que dit la brochure. Plus aucun écart à arbitrer sur le mécanisme.
+
 ## Matière du modèle 3D livré (2026-08-11)
 
 Le client voulait sur le viewer interactif la matière mise au point pour les visuels — « le Q-BOT en
