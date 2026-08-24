@@ -1119,12 +1119,16 @@ function generateArticleHTML(a) {
        <a href="${specsHref}" class="btn btn--outline" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Discover Q-Bot</a>`;
 
   const sidebarB = fr
-    ? `<div style="font-size:1.625rem;font-weight:800;color:#00CBBE;margin-bottom:6px;">850€<span style="font-size:.875rem;font-weight:400;color:rgba(255,255,255,.4);">/mois HT</span></div>
-       <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Abonnement mensuel tout inclus.</p>
-       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Commander</a>`
-    : `<div style="font-size:1.625rem;font-weight:800;color:#00CBBE;margin-bottom:6px;">€850<span style="font-size:.875rem;font-weight:400;color:rgba(255,255,255,.4);">/month excl. VAT</span></div>
-       <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">All-inclusive monthly subscription.</p>
-       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Order now</a>`;
+    /* Plus de prix dans la barre latérale des articles : arbitrage client du
+       2026-08-24, le tarif n'est plus prononcé sur le site. Ce qui le remplace
+       est ce qui reste vrai et vérifiable, la location tout compris, et
+       l'action, qui est de demander une démonstration. */
+    ? `<div style="font-size:1.0625rem;font-weight:700;color:#00CBBE;margin-bottom:6px;">Location tout compris</div>
+       <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Assistance et remplacement inclus, sans engagement de durée.</p>
+       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Demandez une démo</a>`
+    : `<div style="font-size:1.0625rem;font-weight:700;color:#00CBBE;margin-bottom:6px;">All-inclusive rental</div>
+       <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Support and replacement included, no long-term commitment.</p>
+       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Request a demo</a>`;
 
   const footerCols = fr
     ? `<div class="footer__col"><h4>Ressources</h4><ul role="list"><li><a href="#">Conditions de vente</a></li><li><a href="#">Confidentialité</a></li></ul></div>
@@ -1133,7 +1137,7 @@ function generateArticleHTML(a) {
          <li><a href="${nav0}caracteristiques.html">Caractéristiques</a></li>
          <li><a href="${nav0}a-propos.html">À propos</a></li>
          <li><a href="${blogHref}">Blog</a></li>
-         <li><a href="${orderHref}">Commandez</a></li>
+         <li><a href="${orderHref}">Démo</a></li>
          <li><a href="${nav0}faq.html">FAQ</a></li>
          <li><a href="${nav0}contact.html">Contact</a></li>
        </ul></div>`
@@ -1143,7 +1147,7 @@ function generateArticleHTML(a) {
          <li><a href="${nav0}technical-specs.html">Technical Specs</a></li>
          <li><a href="${nav0}about.html">About</a></li>
          <li><a href="${blogHref}">Blog</a></li>
-         <li><a href="${orderHref}">Order</a></li>
+         <li><a href="${orderHref}">Demo</a></li>
          <li><a href="${nav0}faq.html">FAQ</a></li>
          <li><a href="${nav0}contact.html">Contact</a></li>
        </ul></div>`;

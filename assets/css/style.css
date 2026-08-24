@@ -532,6 +532,34 @@ p { color: var(--gray); }
   box-shadow: inset 0 0 60px 18px rgba(0, 0, 0, 0.45);
 }
 
+/* ---- .hero__shot : une PHOTO du produit dans le hero ----
+   Même traitement que le film, et pour la même raison : la photo a un fond clair
+   (mur blanc, bureau en bois) posé sur une page noire, et sans vignette ses bords
+   se lisent comme un rectangle collé. Deux écarts avec .hero__film :
+   1. pas d'`aspect-ratio` imposé : c'est l'image qui donne le sien (1,99), un
+     16/9 en `cover` rognerait la plante à gauche et l'écran à droite ;
+   2. aucun mouvement. Ni parallaxe (le cadre n'est pas dans la table du moteur)
+     ni inclinaison au pointeur (module 10 ne vise que `.hero__image img`) : la
+     leçon du film est qu'un cadre qui dérive se lit comme un cadre instable. */
+.hero__shot {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(0, 203, 190, 0.22);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(0, 203, 190, 0.10);
+  background: var(--dark);
+}
+.hero__shot img { display: block; width: 100%; height: auto; }
+.hero__shot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 60px 18px rgba(0, 0, 0, 0.45);
+}
+
 .hero__image {
   position: relative;
   display: flex;
@@ -627,6 +655,31 @@ p { color: var(--gray); }
 /* Le film produit est en 16/9 comme le cadre : `cover` évite un liseré si
    l'encodage arrondit d'un pixel, sans rien rogner de visible. */
 .video__wrapper .video__player { object-fit: cover; background: var(--dark); }
+
+/* ---- .video__wrapper--film : le film dans une colonne, pas au centre ----
+   Le cadre de base est centré et plafonné à 800 px, ce qui convient à une
+   section pleine largeur. Ici il est la moitié droite d'un `.intro__grid` : le
+   plafond et le centrage sautent, sinon la colonne de gauche et lui ne
+   commencent pas sur la même ligne de base.
+   Filet teal + vignette : même raison que `.hero__shot`. Le film est un rendu
+   CAO sur fond gris CLAIR, et sans vignette ses bords se lisent comme un
+   rectangle collé sur la page. `pointer-events: none` sur la vignette, sans
+   quoi elle avalerait les clics destinés aux contrôles de lecture. */
+.video__wrapper--film {
+  max-width: none;
+  margin: 0;
+  border: 1px solid rgba(0, 203, 190, 0.22);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(0, 203, 190, 0.10);
+}
+.video__wrapper--film::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 60px 18px rgba(0, 0, 0, 0.45);
+}
 
 /* ---- Pricing ---- */
 .pricing-card {
@@ -1669,6 +1722,7 @@ p { color: var(--gray); }
   .hero__image { order: -1; }
   .hero__image img { max-height: 300px; }
   .hero__film { order: -1; }
+  .hero__shot { order: -1; }
 
   .intro__grid,
   .specs__grid,
@@ -1760,7 +1814,8 @@ p { color: var(--gray); }
 /* fill-mode `backwards` : `both` figerait `transform: scale(1)` après coup et
    neutraliserait l'inclinaison au pointeur posée plus bas. */
 .hero__image img,
-.hero__film { animation: mediaIn 1.25s var(--ease-out) 0.30s backwards; }
+.hero__film,
+.hero__shot { animation: mediaIn 1.25s var(--ease-out) 0.30s backwards; }
 
 /* ── Page hero sous-pages — entrance ── */
 .page-hero .section-label { animation: riseInSoft 0.70s var(--ease-out) 0.00s both; }
@@ -2155,18 +2210,10 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .related-articles h2 { font-size: 1.375rem; margin-bottom: 32px; }
 
 /* ---- Order / Commandez page ---- */
-.order-hero-price {
-  display: inline-block;
-  background: var(--teal);
-  color: #001A18;   /* cf. la note sur le teal : le blanc n'y passe pas AA */
-  font-size: 2.5rem;
-  font-weight: 700;
-  padding: 12px 32px;
-  border-radius: var(--radius);
-  margin: 16px 0 8px;
-  line-height: 1.2;
-}
-.order-hero-price span { font-size: 1.125rem; font-weight: 500; opacity: .72; }
+/* `.order-hero-price` a été retiré : le tarif n'est plus prononcé sur le site
+   (arbitrage client du 2026-08-24), la pastille teal du hero de commande n'a
+   donc plus rien à afficher. Ce qui l'a remplacée est le calculateur de ROI,
+   plus bas dans ce fichier. */
 .order-process {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2195,7 +2242,10 @@ a:focus-visible { border-radius: var(--radius-sm); }
   width: 56px;
   height: 56px;
   background: var(--teal);
-  color: var(--white);
+  /* Pas de blanc sur le teal : il plafonne à 2,04:1 (mesuré). Le teal de charte
+     est une couleur CLAIRE, c'est le noir qui va dessus, même règle que pour la
+     bande newsletter et l'ancienne pastille de prix, cf. la note plus haut. */
+  color: #001A18;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2239,14 +2289,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   max-width: 540px;
   margin: 0;
 }
-.pricing-highlight__price {
-  font-size: 4rem;
-  font-weight: 700;
-  color: var(--teal);
-  line-height: 1;
-  margin: 16px 0 4px;
-}
-.pricing-highlight__price span { font-size: 1.5rem; font-weight: 500; color: rgba(255,255,255,0.6); }
 .pricing-highlight ul {
   list-style: none;
   text-align: left;
@@ -2550,7 +2592,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .blog__grid { grid-template-columns: 1fr; }
   .guarantee-grid { grid-template-columns: 1fr; }
   .pricing-highlight { padding: 32px 24px; }
-  .pricing-highlight__price { font-size: 3rem; }
   .order-process { grid-template-columns: 1fr 1fr; }
 
   /* ── Visionneuse 3D sur téléphone : la barre d'outils sort du plateau ──────
@@ -2622,6 +2663,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   }
   .hero__image img { animation: none !important; }
   .hero__film { animation: none !important; transform: none; }
+  .hero__shot { animation: none !important; transform: none; }
   .reveal { transition: none !important; }
 }
 
@@ -5126,7 +5168,8 @@ body:has(.orbz)::after { content: none; }
 [data-theme="dark"] .contact-map__card,
 [data-theme="dark"] .problem-callout,
 [data-theme="dark"] .blog-card,
-[data-theme="dark"] .compat__item {
+[data-theme="dark"] .compat__item,
+[data-theme="dark"] .roi__panel {
   background: var(--glass);
   border-color: var(--glass-line);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -5156,6 +5199,156 @@ body:has(.orbz)::after { content: none; }
   [data-theme="dark"] .problem-callout,
   [data-theme="dark"] .blog-card,
   [data-theme="dark"] .compat__item,
+  [data-theme="dark"] .roi__panel,
   [data-theme="dark"] .code-block pre,
   [data-theme="dark"] .article-body pre { background: #141414; }
+}
+
+
+/* ══ CALCULATEUR DE ROI ══════════════════════════════════════════════════════
+   Le bloc qui remplace le prix sur commandez / order. Arbitrage client du
+   2026-08-24 : le tarif n'est plus prononcé, il est retourné en ROI.
+
+   CE QU'IL AFFICHE, ET CE QU'IL N'AFFICHE PAS. Deux curseurs, deux chiffres du
+   visiteur, un résultat en HEURES puis en JOURNÉES DE TEST. Jamais d'euros :
+   convertir demanderait un coût horaire, donc soit un troisième curseur (le
+   client a tranché pour deux), soit une hypothèse inventée de notre part. Et
+   aucun tarif Q-Bot n'apparaissant, la page ne peut pas promettre un délai de
+   rentabilisation, et c'est précisément ce qui la rend défendable.
+
+   L'ÉTAT AU REPOS EST L'ÉTAT COMPLET. Les valeurs du HTML (3 testeurs, 35 min,
+   36 h 45, 5,3 journées) sont exactement celles que produit le calcul avec les
+   positions par défaut des curseurs, et `--roi-p` est écrite en style en ligne
+   pour que la portion remplie du rail soit juste elle aussi. Sans JavaScript le
+   bloc se lit donc correctement, il ne réagit simplement plus.
+
+   LE RAIL REMPLI, DEUX MOTEURS, DEUX MÉCANIQUES. Firefox a
+   `::-moz-range-progress`, qui remplit tout seul. WebKit et Chromium n'ont rien
+   d'équivalent : la portion teal y est un dégradé sur la piste, dont la borne
+   est la propriété `--roi-p` écrite par le module 18. Les deux blocs de
+   pseudo-éléments ne peuvent PAS être groupés dans une même règle : un sélecteur
+   inconnu invalide la déclaration entière pour le moteur qui ne le connaît pas.
+
+   CIBLE TACTILE. Le rail visible fait 4 px, mais l'`<input>` en fait 24 : c'est
+   la hauteur de l'élément qui est cliquable, pas celle de la piste peinte. La
+   poignée fait 20 px. WCAG 2.5.8 est donc tenu sans agrandir le trait. */
+.roi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+.roi__panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.roi__field + .roi__field { margin-top: 32px; }
+.roi__label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal-text);
+  margin-bottom: 12px;
+}
+.roi__row { display: flex; align-items: center; gap: 20px; }
+.roi__val {
+  flex: 0 0 auto;
+  min-width: 84px;
+  text-align: right;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--black);
+  font-variant-numeric: tabular-nums;
+}
+.roi__hint { font-size: 0.875rem; color: var(--muted); margin: 24px 0 0; }
+
+/* ---- le curseur ---- */
+.roi__range {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 24px;
+  background: transparent;
+  -webkit-appearance: none;
+          appearance: none;
+  cursor: pointer;
+}
+.roi__range:focus-visible { outline: 2px solid var(--teal); outline-offset: 6px; border-radius: 4px; }
+
+.roi__range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg,
+      var(--teal) 0 var(--roi-p, 0%),
+      rgba(255, 255, 255, 0.16) var(--roi-p, 0%) 100%);
+}
+.roi__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -8px;
+  width: 20px; height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+.roi__range::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.roi__range::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--teal);
+}
+.roi__range::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+/* ---- le résultat ---- */
+.roi__result { display: flex; flex-direction: column; align-items: flex-start; }
+.roi__lead {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal-text);
+  margin-bottom: 8px;
+}
+.roi__figure {
+  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+  font-weight: 700;
+  color: var(--teal-text);
+  line-height: 1;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.roi__unit { font-size: 0.9375rem; color: var(--gray); margin: 8px 0 0; }
+.roi__equiv { margin: 24px 0 0; }
+.roi__equiv strong { color: var(--black); font-variant-numeric: tabular-nums; }
+/* La formule est affichée à dessein : un grand nombre sans son calcul est un
+   argument publicitaire, avec son calcul c'est une mesure. En chasse fixe pour
+   qu'elle se lise comme une opération et pas comme une phrase. */
+.roi__formula {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin: 8px 0 0;
+}
+.roi__result .btn { margin-top: auto; }
+.roi__result .roi__formula + .btn { margin-top: 32px; }
+.roi__note { font-size: 0.9375rem; color: var(--gray); margin: 32px 0 0; max-width: 68ch; }
+
+@media (max-width: 900px) {
+  .roi { grid-template-columns: 1fr; gap: 24px; }
+  .roi__panel { padding: 28px 24px; }
 }

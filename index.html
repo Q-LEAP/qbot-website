@@ -22,7 +22,7 @@
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Le robot Q-Bot, boîtier d'automatisation de la double authentification">
+  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone Android inséré dans son socle, l'interface web à l'écran">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Q-Bot by Q-Leap">
   <meta name="twitter:card" content="summary_large_image">
@@ -103,16 +103,8 @@
   "offers": {
     "@type": "Offer",
     "url": "https://q-bot.eu/commandez.html",
-    "priceCurrency": "EUR",
-    "price": "850",
     "availability": "https://schema.org/InStock",
-    "priceSpecification": {
-      "@type": "UnitPriceSpecification",
-      "price": "850",
-      "priceCurrency": "EUR",
-      "unitText": "month",
-      "valueAddedTaxIncluded": false
-    }
+    "businessFunction": "https://schema.org/LeaseOut"
   }
 }
   </script>
@@ -171,20 +163,22 @@
           <a href="contact.html" class="btn btn--outline-white btn--lg">Demander une démo</a>
         </div>
       </div>
-      <!-- Variante Q-BOTAlt — le film de 2,9 Mo est retiré de cette branche.
-           La page montrait le produit deux fois de suite en mouvement : le film
-           ici, puis la séquence 3D juste dessous. Le hero garde un visuel fixe
-           et léger (49 Ko), la mise en scène est portée par la séquence, qui est
-           elle contrôlée par le visiteur. Sur `main`, le film reste en place. -->
-      <div class="hero__image">
-        <!-- Dimensions réelles du fichier. Elles étaient déclarées 900×900 pour une
-             image 900×710 : le navigateur réservait un carré, puis remettait la
-             page en page au chargement — un décalage de 190 px sur le plus gros
-             visuel de la page, et c'est le premier écran. -->
+      <!-- Une PHOTO du produit, pas un rendu. Extraite de la brochure officielle
+           (Documentations/Brochure Q-Bot-FR.pdf, page 3, 300 dpi) : le boîtier sur
+           un bureau, un smartphone Android docké, l'interface web à l'écran. Le
+           cadre reprend le traitement du film (angles arrondis, filet teal,
+           vignette) : la photo a un fond clair, la vignette raccorde ses bords au
+           noir de la page. Il ne bouge pas : ni parallaxe ni inclinaison au
+           pointeur : sur un visuel déjà encadré, un cadre qui dérive se lit comme
+           un cadre instable, cf. la note du film dans CLAUDE.md.
+           Le film, lui, est plus bas dans la page (section « Made in Luxembourg »),
+           en lecture à la demande : la page montrerait sinon le produit deux fois
+           de suite en mouvement, le film ici puis la séquence 3D juste dessous. -->
+      <div class="hero__shot">
         <img
-          src="assets/img/qbot-hero.webp"
-          alt="Le robot Q-Bot, boîtier d'automatisation de la double authentification"
-          width="900" height="710"
+          src="assets/img/qbot-photo-poste.jpg"
+          alt="Le boîtier Q-Bot posé sur un bureau, un smartphone Android inséré dans son socle, l'interface web affichée sur l'écran voisin"
+          width="1400" height="840"
           fetchpriority="high"
         >
       </div>
@@ -402,10 +396,12 @@
         </a>
       </div>
       <div class="intro__image">
+        <!-- Rendu de la géométrie réelle (assets/models/qbot.glb, lui-même issu du
+             FBX v3), pas une image générée : cf. tools/render/. -->
         <img
-          src="assets/img/qbot-solution.jpg"
-          alt="Q-Bot, robot d'automatisation de la 2FA"
-          width="560" height="368"
+          src="assets/img/qbot-specs.jpg"
+          alt="Le boîtier Q-Bot vu de trois quarts"
+          width="1400" height="1050"
           loading="lazy"
         >
       </div>
@@ -418,10 +414,13 @@
   <div class="container">
     <div class="intro__grid">
       <div class="intro__image">
+        <!-- Photo (brochure officielle, page 1, 300 dpi) : le smartphone docké
+             affiche une vraie demande de transaction LuxTrust, avec ses boutons
+             Accept / Reject. C'est exactement ce que décrit la section. -->
         <img
-          src="assets/img/qbot-luxtrust.jpg"
-          alt="Boîtier Q-Bot en lévitation, cerclé d'anneaux lumineux teal"
-          width="560" height="315"
+          src="assets/img/qbot-photo-dock.jpg"
+          alt="Un smartphone inséré dans le socle du Q-Bot, affichant une demande de validation de transaction dans l'application LuxTrust"
+          width="699" height="860"
           loading="lazy"
         >
       </div>
@@ -514,14 +513,38 @@
 <!-- ======= VIDÉO ======= -->
 <section class="section section--gray" aria-labelledby="video-title">
   <div class="container">
-    <div>
-      <h2 class="section-label" id="video-title">Un produit 100&nbsp;% conçu et développé au Luxembourg</h2>
-      <p style="max-width:680px; margin:16px 0 0;">
-        Q-Bot est le fruit du savoir-faire de l'équipe Q-Leap. Imaginée et développée dans nos locaux par des experts passionnés du test logiciel, cette solution est née d'un besoin concret rencontré sur le terrain : le nôtre, mais aussi celui de nos clients.
-      </p>
-      <p style="max-width:680px; margin:16px 0 0;">
-        Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.
-      </p>
+    <div class="intro__grid">
+      <div>
+        <h2 class="section-label" id="video-title">Un produit 100&nbsp;% conçu et développé au Luxembourg</h2>
+        <p style="margin:16px 0 0;">
+          Q-Bot est le fruit du savoir-faire de l'équipe Q-Leap. Imaginée et développée dans nos locaux par des experts passionnés du test logiciel, cette solution est née d'un besoin concret rencontré sur le terrain : le nôtre, mais aussi celui de nos clients.
+        </p>
+        <p style="margin:16px 0 0;">
+          Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.
+        </p>
+      </div>
+      <!-- Le film produit (assets/video/qbot-home.mp4, 2,9 Mo) est de retour dans la
+           page. C'est une animation de la CAO maison, pas une image générée, et
+           c'est le seul film dont nous disposons.
+           EN LECTURE À LA DEMANDE, ET C'EST VOULU : `preload="none"` + affiche, donc
+           zéro octet transféré tant que le visiteur ne clique pas. En lecture
+           automatique il ajouterait 2,9 Mo aux 2,4 Mo déjà acceptés pour l'accueil
+           le 2026-08-11, soit un doublement du poids de la page pour un film muet de
+           8,7 s. C'est aussi ce qui rend le module 14 (garde-fou mouvement réduit /
+           économiseur de données) sans objet ici : rien ne part tout seul.
+           L'affiche est une vraie image du film, pas un rendu à part. -->
+      <div class="video__wrapper video__wrapper--film">
+        <video
+          class="video__player"
+          src="assets/video/qbot-home.mp4"
+          poster="assets/img/qbot-film-poster.jpg"
+          preload="none"
+          controls
+          muted
+          playsinline
+          aria-label="Film de présentation du boîtier Q-Bot, 9 secondes, sans son"
+        ></video>
+      </div>
     </div>
   </div>
 </section>
@@ -706,7 +729,7 @@
         <h3>Produit</h3>
         <ul role="list">
           <li><a href="modele-3d.html">Modèle 3D</a></li>
-          <li><a href="commandez.html">Commander</a></li>
+          <li><a href="commandez.html">Démo</a></li>
           <li><a href="contact.html">Démo gratuite</a></li>
         </ul>
       </div>

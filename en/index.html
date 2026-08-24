@@ -21,7 +21,7 @@
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Q-Bot robot, two-factor authentication automation device">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="Q-Bot by Q-Leap">
   <meta name="twitter:card" content="summary_large_image">
@@ -98,16 +98,8 @@
   "offers": {
     "@type": "Offer",
     "url": "https://q-bot.eu/en/order.html",
-    "priceCurrency": "EUR",
-    "price": "850",
     "availability": "https://schema.org/InStock",
-    "priceSpecification": {
-      "@type": "UnitPriceSpecification",
-      "price": "850",
-      "priceCurrency": "EUR",
-      "unitText": "month",
-      "valueAddedTaxIncluded": false
-    }
+    "businessFunction": "https://schema.org/LeaseOut"
   }
 }
   </script>
@@ -163,16 +155,14 @@
           <a href="contact.html" class="btn btn--outline-white btn--lg">Request a demo</a>
         </div>
       </div>
-      <!-- Variante Q-BOTAlt — le film de 2,9 Mo est retiré, comme côté français :
-           la page montrait le produit deux fois de suite en mouvement, le film ici
-           puis la séquence 3D juste dessous. Le hero garde un visuel fixe et léger
-           (49 Ko), la mise en scène est portée par la séquence, elle-même contrôlée
-           par le visiteur. Sur `main`, le film reste en place. -->
-      <div class="hero__image">
+      <!-- Photo du produit (brochure officielle, page 3, 300 dpi), pas un rendu.
+           Cf. la note détaillée côté français : cadre fixe, film plus bas dans la
+           page en lecture à la demande. -->
+      <div class="hero__shot">
         <img
-          src="../assets/img/qbot-hero.webp"
-          alt="The Q-Bot robot, two-factor authentication automation device"
-          width="900" height="710"
+          src="../assets/img/qbot-photo-poste.jpg"
+          alt="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface shown on the adjacent screen"
+          width="1400" height="840"
           fetchpriority="high"
         >
       </div>
@@ -388,7 +378,9 @@
         </a>
       </div>
       <div class="intro__image">
-        <img src="../assets/img/qbot-solution.jpg" alt="Q-Bot, the 2FA automation robot" width="560" height="368" loading="lazy">
+        <!-- Rendu de la géométrie réelle (assets/models/qbot.glb), pas une image
+             générée : cf. tools/render/. -->
+        <img src="../assets/img/qbot-specs.jpg" alt="Three-quarter view of the Q-Bot enclosure" width="1400" height="1050" loading="lazy">
       </div>
     </div>
   </div>
@@ -399,10 +391,12 @@
   <div class="container">
     <div class="intro__grid">
       <div class="intro__image">
+        <!-- Photo (brochure officielle, page 1, 300 dpi) : une vraie demande de
+             transaction LuxTrust sur le téléphone docké. -->
         <img
-          src="../assets/img/qbot-luxtrust.jpg"
-          alt="The Q-Bot enclosure levitating, ringed with glowing teal circles"
-          width="560" height="315"
+          src="../assets/img/qbot-photo-dock.jpg"
+          alt="A smartphone docked in the Q-Bot cradle, showing a transaction approval request in the LuxTrust application"
+          width="699" height="860"
           loading="lazy"
         >
       </div>
@@ -488,14 +482,38 @@
 <!-- ======= VIDEO ======= -->
 <section class="section section--gray" aria-labelledby="video-title">
   <div class="container">
-    <div>
-      <h2 class="section-label" id="video-title">A product 100&nbsp;% designed and developed in Luxembourg</h2>
-      <p style="max-width:680px; margin:16px 0 0;">
-        Q-Bot is the result of the Q-Leap team's expertise. Imagined and developed in-house by software testing experts, this solution was born from a real need encountered in the field: our own, but also our clients'.
-      </p>
-      <p style="max-width:680px; margin:16px 0 0;">
-        Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.
-      </p>
+    <div class="intro__grid">
+      <div>
+        <h2 class="section-label" id="video-title">A product 100&nbsp;% designed and developed in Luxembourg</h2>
+        <p style="margin:16px 0 0;">
+          Q-Bot is the result of the Q-Leap team's expertise. Imagined and developed in-house by software testing experts, this solution was born from a real need encountered in the field: our own, but also our clients'.
+        </p>
+        <p style="margin:16px 0 0;">
+          Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.
+        </p>
+      </div>
+      <!-- Le film produit (assets/video/qbot-home.mp4, 2,9 Mo) est de retour dans la
+           page. C'est une animation de la CAO maison, pas une image générée, et
+           c'est le seul film dont nous disposons.
+           EN LECTURE À LA DEMANDE, ET C'EST VOULU : `preload="none"` + affiche, donc
+           zéro octet transféré tant que le visiteur ne clique pas. En lecture
+           automatique il ajouterait 2,9 Mo aux 2,4 Mo déjà acceptés pour l'accueil
+           le 2026-08-11, soit un doublement du poids de la page pour un film muet de
+           8,7 s. C'est aussi ce qui rend le module 14 (garde-fou mouvement réduit /
+           économiseur de données) sans objet ici : rien ne part tout seul.
+           L'affiche est une vraie image du film, pas un rendu à part. -->
+      <div class="video__wrapper video__wrapper--film">
+        <video
+          class="video__player"
+          src="../assets/video/qbot-home.mp4"
+          poster="../assets/img/qbot-film-poster.jpg"
+          preload="none"
+          controls
+          muted
+          playsinline
+          aria-label="Q-Bot product film, 9 seconds, no sound"
+        ></video>
+      </div>
     </div>
   </div>
 </section>
@@ -677,7 +695,7 @@
         <h3>Product</h3>
         <ul role="list">
           <li><a href="3d-model.html">3D Model</a></li>
-          <li><a href="order.html">Order Q-Bot</a></li>
+          <li><a href="order.html">Demo</a></li>
           <li><a href="contact.html">Free Demo</a></li>
         </ul>
       </div>

@@ -1882,3 +1882,177 @@ translucide sans flou serait moins lisible qu'une carte opaque.
 `cas-usage`, l'accueil (canevas 3D compris) et `caracteristiques`, donc **aucun coût en
 régime**. Une seule image longue apparaît avec le verre (150 ms contre 50) : c'est la
 création des couches de flou, une fois, à l'entrée en scène.
+
+## Le prix quitte le site, les rendus IA aussi (2026-08-24)
+
+Deux retours client, traités ensemble : « modifier le prix et/ou l'enlever », et
+« changer les images du site, mettre des photos et vidéos, faire des choses plus handmade
+et enlever les versions IA ».
+
+### 1. Le tarif n'est plus prononcé, il est retourné en ROI
+
+**ARBITRÉ PAR LE CLIENT LE 2026-08-24, deux décisions.** Le montant disparaît des
+40 emplacements où il vivait, et les deux blocs tarifaires de `commandez` / `order`
+sont remplacés par un **calculateur de ROI à deux curseurs**. La page, elle, **devient
+la page « Démo »** : sans prix, une page « Commandez » se lit comme une page inachevée.
+
+Trois options ont été proposées et écartées, il ne faut pas les ressortir :
+
+- **un calculateur à trois curseurs** (testeurs, minutes, coût horaire), qui donnait un
+  résultat en euros. Le client a tranché pour deux ;
+- **une carte « ce que ça vous rend »** (0 intervention humaine, les suites tournent la
+  nuit, 2FA franchie en moins de 10 s) ;
+- **l'ancrage « moins de deux jours de test manuel par mois »**, que j'avais signalé comme
+  à écarter : il laisse déduire l'ordre de grandeur, donc il prononce le prix quand même.
+
+**Le calculateur ne montre AUCUN chiffre de Q-Bot.** Il demande deux chiffres au visiteur
+(testeurs mobilisés par la 2FA, temps perdu par jour et par personne) et lui rend ce que
+la 2FA lui coûte déjà : `testeurs × minutes × 21 jours ouvrés`, en heures puis en journées
+de test (`÷ 7 h`). Quatre choses à ne pas défaire :
+
+- **le résultat est en heures et en journées, jamais en euros.** Convertir demanderait un
+  coût horaire, donc un troisième curseur (écarté par le client) ou une hypothèse inventée
+  de notre part. Le lecteur applique son propre taux s'il le veut : ce sera SON chiffre ;
+- **aucun tarif affiché, donc aucune promesse de « rentabilisé en X mois ».** C'est
+  précisément ce qui rend le bloc défendable ;
+- **la formule est affichée sous le résultat.** Un grand nombre sans son calcul est un
+  argument publicitaire ; avec son calcul, c'est une mesure ;
+- **les bornes sont plausibles** (1-20 testeurs, 5-120 min). Sans bornes, un visiteur
+  atteint des totaux absurdes et le calculateur devient invérifiable.
+
+**L'état au repos est l'état complet** : les valeurs écrites dans le HTML (3 testeurs,
+35 min, 36 h 45, 5,3 journées) sont exactement celles que produit le calcul aux positions
+par défaut, et `--roi-p` est posée en style en ligne pour que la portion remplie du rail
+soit juste elle aussi. Sans JavaScript le bloc se lit correctement, il ne réagit plus.
+Module **17** de `main.js` (le numéro était libre : l'ancien module 17, l'observateur des
+bandes d'outils, avait été supprimé le 2026-08-20).
+
+Un piège de moteur à connaître : **la portion teal du rail se code deux fois.** Firefox a
+`::-moz-range-progress`, qui remplit seul ; WebKit et Chromium n'ont pas d'équivalent, la
+portion y est un dégradé sur la piste borné par `--roi-p`, écrite en JavaScript. Les deux
+blocs de pseudo-éléments ne peuvent PAS être groupés : un sélecteur inconnu invalide la
+déclaration entière pour le moteur qui ne le connaît pas.
+
+Ce qui a été repris ailleurs, parce que le prix y vivait aussi :
+
+- **JSON-LD, 8 pages** : `Offer` perd `price`, `priceCurrency` et tout
+  `priceSpecification`, et gagne `"businessFunction": "https://schema.org/LeaseOut"`. Un
+  `Offer` sans prix reste valide ; il n'est simplement plus éligible au résultat enrichi,
+  ce qui est exactement l'intention. `LeaseOut` remplace l'information au lieu de la
+  supprimer : c'est la propriété schema.org qui dit « location, pas vente » ;
+- **titres et métadonnées sociales** de `commandez` / `order` (6 champs chacune) ;
+- **la FAQ**, question 9 des deux langues. La question « Combien coûte Q-Bot ? » RESTE :
+  c'est celle qu'on pose, et la supprimer ne ferait pas disparaître la curiosité. C'est la
+  réponse qui change, et elle dit ce qui est vrai : location mensuelle tout compris, sans
+  engagement, tarif donné en démonstration. Texte visible et JSON-LD partagent la même
+  phrase, donc un seul remplacement corrige les deux ;
+- `llms.txt`, où le prix devient **« NOT PUBLISHED, on purpose »** avec la consigne
+  explicite de ne pas l'inférer : un agent qui lit ce fichier doit savoir que tout montant
+  attribué à Q-Bot est une invention ;
+- le **gabarit d'article de `admin/index.html`**, dont la barre latérale affichait le prix ;
+- les libellés de navigation des 25 pages : « Commander » / « Order Q-Bot » → « Démo » /
+  « Demo », et les appels à l'action des pages contact et 3D. **Les URL ne changent pas**
+  (`commandez.html`, `en/order.html`), donc aucun lien cassé, aucun `hreflang` à reprendre.
+
+Contrôle : `grep -rn '850'` ne remonte plus rien hors du sidecar base64 du modèle 3D, et
+`document.body.innerText` des 25 pages ne contient plus le montant.
+
+### 2. Les rendus IA sont partis, deux vraies photos les remplacent
+
+Tous les visuels produit du site étaient des rendus génératifs, y compris les deux
+« visuels fournis par le client » du 2026-08-18. Le signe est net sur chacun : le mot
+**Q-BOT gravé sur le boîtier est illisible ou déformé**, ce qu'aucun rendu de la CAO ne
+fait.
+
+**LA SOURCE DES VRAIES PHOTOS EST `Documentations/Brochure Q-Bot-FR.pdf`.** Elle en contient
+deux, et personne ne les avait vues : les pages du PDF sont **aplaties en une seule image
+raster de 2481 × 3510 (300 dpi)**, donc `get_images()` ne rend que des pages entières et il
+faut découper dedans. `pymupdf` suffit ; inutile de demander un rendu à plus de 300 dpi,
+c'est la résolution réelle du fichier et au-delà on ne fait qu'agrandir.
+
+| Fichier produit | Découpe | Où |
+|---|---|---|
+| `qbot-photo-poste.jpg` (1400 × 840) | page 3, x 130-2353 y 286-1404, recadré en 5/3 | hero des deux accueils, section produits de `a-propos` / `about` |
+| `qbot-og.jpg` (1200 × 630) | la même, cadre entier ramené en 1,905 | `og:image` / `twitter:image` / JSON-LD des 25 pages |
+| `qbot-photo-dock.jpg` (699 × 860) | page 1, x 1566-2225 y 438-1238 | section LuxTrust des accueils, section « Fonctionnement » de `commandez` / `order` |
+
+La photo du poste de travail est **recadrée en 5/3 et non laissée en 1,99** : au ratio
+d'origine le cadre du hero ne faisait plus que 266 px de haut dans une colonne de 533, le
+premier écran se vidait. En 5/3 le boîtier est deux fois plus grand et l'écran du téléphone
+devient lisible ; ce qui sort du cadre est le bord droit du moniteur, qui n'a pas de bordure
+visible à cet endroit et se lit donc comme continuant hors champ.
+
+Trois pièges rencontrés sur ces découpes :
+
+- **le liseré teal des angles arrondis.** La carte de la page 1 est posée sur la bande teal
+  de la brochure : le recadrage emporte quatre triangles teal. Les repeindre en blanc
+  demande un masque **serré ET limité au pourtour**. Un premier essai à seuil large
+  (distance somme < 190, sur toute l'image) a **blanchi une partie du logo LuxTrust** du
+  téléphone, dont le bleu est à 174 de distance du teal. Le bon réglage est seuil < 90 et
+  26 px de marge : 1 211 pixels touchés, logo intact ;
+- **la sur-échelle de `.intro__image` rognait la pastille « MADE IN LUXEMBOURG ».** Le cadre
+  agrandit son image de 8 % au repos et de 13 % au survol pour masquer ses bords pendant le
+  parallaxe, ce qui, sur une photo dont un coin porte une étiquette, coupe l'étiquette. Le
+  correctif n'est PAS de désactiver la sur-échelle (le contre-parallaxe interne en a besoin,
+  cf. `.intro__image:not(.intro__image--product) img`) mais **d'ajouter la marge qui manque
+  dans le fichier** : 20 px à gauche et à droite, 60 px en bas, par **réplication de bord**
+  et non par aplat, la marge de la carte étant un dégradé lisse ;
+- **une photo à fond clair sur une page noire a besoin d'une vignette.** D'où
+  `.hero__shot`, qui reprend le traitement de `.hero__film` (angles arrondis, filet teal,
+  vignette intérieure) sans imposer d'`aspect-ratio` : c'est l'image qui donne le sien. Et
+  **il ne bouge pas** : ni parallaxe ni inclinaison au pointeur, c'est la leçon déjà écrite
+  pour le film (un cadre qui dérive se lit comme un cadre instable).
+
+**Le film produit est de retour dans la page.** `assets/video/qbot-home.mp4` n'était plus
+référencé nulle part depuis que le hero avait repris un visuel fixe. Il revient dans la
+section « 100 % conçu et développé au Luxembourg », qui passe de bloc de texte pleine
+largeur à deux colonnes. **En lecture à la demande, et c'est le point** : `preload="none"`
+plus une affiche, donc **zéro octet transféré tant que le visiteur ne clique pas**. En
+lecture automatique il ajouterait 2,9 Mo aux 2,4 Mo acceptés le 2026-08-11 pour l'accueil,
+soit un doublement du poids pour un film muet de 8,7 s. C'est aussi ce qui rend le
+**module 14** (garde-fou mouvement réduit / économiseur de données) sans objet sur cette
+page : rien ne part tout seul. L'affiche est une vraie image du film.
+
+Le cadre `.video__wrapper--film` annule le `max-width: 800px` et le `margin: 0 auto` de la
+règle de base : dans une colonne de `.intro__grid`, le centrage empêcherait les deux
+colonnes de commencer sur la même ligne de base. Sa vignette est en `pointer-events: none`,
+sans quoi elle avalerait les clics destinés aux contrôles de lecture.
+
+**Fichiers supprimés** (aucun n'était plus référencé) : `qbot-hero.webp`,
+`qbot-solution.jpg`, `qbot-luxtrust.jpg`, `products-lineup.jpg`, `qbot-video-poster.jpg`,
+`QBIllu1.png`. Les masters IA restent archivés sous `Documentations/assets-sources/`
+(`qbot-render-a/b/c-source.png`, `qbot-luxtrust-client-source.png`,
+`qleap-products-client-source.png`) parce qu'ils documentent ce qui a été fourni : **ne pas
+les remettre en ligne.**
+
+**Ce qui reste et n'est PAS de l'IA**, pour ne pas le « corriger » par excès de zèle :
+`qbot-specs.jpg` et `qbot-gen-actuelle.webp` sont des rendus de `assets/models/qbot.glb`,
+donc de la géométrie authentique (cf. `tools/render/`) ; `qbot-proto-gen1.png` et
+`device-photo.jpg` sont de vraies photographies du prototype à portique ;
+`qbot-interface.jpg` est une maquette HTML/CSS capturée, signalée comme telle depuis le
+2026-08-11 ; les images des articles de blog viennent du live WordPress. Il n'y a plus qu'un
+seul visuel de synthèse par page d'accueil, contre trois avant.
+
+### 3. Défaut de contraste trouvé au passage : blanc sur teal, encore
+
+Le balayage de contraste (fonds forcés au pire composite, méthode du 2026-08-20) a remonté
+**16 défauts à 2,04:1** sur `commandez` / `order` : les ronds numérotés des sections
+« Opérationnel en 4 étapes » et « Comment Q-Bot automatise votre 2FA », en `--white` sur
+`--teal`. Antérieurs à cette passe, et c'est exactement le piège documenté depuis le
+2026-08-11 (**le teal de charte est une couleur CLAIRE, le blanc plafonne à 2:1 dessus**),
+qui avait déjà été corrigé sur la bande newsletter et l'ancienne pastille de prix. Passés au
+noir `#001A18` (≈ 11:1), dans la feuille de style pour `.order-step__number` et dans les
+huit styles en ligne des deux pages.
+
+Les 18 remontées restantes sont expliquées et laissées : dix boutons « Copier » (artefact de
+la sonde, qui compose mal deux couches translucides ; les valeurs réelles donnent ≈ 8:1),
+six numéros d'étape encore à venir de la séquence 3D (état inactif volontairement estompé,
+exempté par la WCAG) et deux libellés teal des pages de cas d'usage, à 4,3 contre le plafond
+de 4,5 calculé pour le halo ; l'écart est celui du modèle, la sonde forçant partout un pire
+cas qui ne se produit jamais sur toute la page.
+
+**Contrôles de la passe** : 25 pages × (normal, mouvement réduit). Aucun débordement
+horizontal, aucun `.reveal` resté invisible, aucune erreur console, aucune requête en échec,
+un seul `h1` par page. Calage vérifié à 1280 / 1440 / 1920 / 2560 px : le titre et les
+panneaux du calculateur tombent au pixel sur le logo. Mise en page contrôlée à 375, 390,
+768, 900, 901, 1024, 1280, 1920 et 2560 px.

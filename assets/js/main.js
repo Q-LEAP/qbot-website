@@ -1319,3 +1319,88 @@ backToTop.addEventListener('click', () => {
 }());
 
 
+
+
+/* ════════════════════════════════════════
+   17. CALCULATEUR DE ROI : ce que la 2FA coûte déjà
+   Deux curseurs sur commandez / order, en remplacement du prix (arbitrage
+   client du 2026-08-24 : le tarif n'est plus prononcé, il est retourné en ROI).
+
+   LE CALCUL EST UNE MULTIPLICATION, ET IL EST AFFICHÉ. testeurs × minutes par
+   jour × 21 jours ouvrés = minutes par mois. Puis, pour l'équivalence,
+   ÷ 7 heures = journées de test. Aucun euro : convertir demanderait un coût
+   horaire, donc un troisième curseur ou une hypothèse inventée. Le lecteur fait
+   la multiplication par son propre taux s'il le veut, et ce sera son chiffre.
+
+   TROIS POINTS À NE PAS DÉFAIRE :
+   1. le module ne CRÉE rien. Les valeurs du HTML sont déjà celles des positions
+     par défaut, curseurs et rails compris. Sans JavaScript le bloc se lit juste,
+     il ne réagit plus. C'est la règle du dépôt appliquée à un calcul ;
+   2. `--roi-p` est écrite ici parce que WebKit et Chromium n'ont pas
+     l'équivalent de `::-moz-range-progress`. Firefox remplit son rail seul et
+     n'a donc pas besoin de cette écriture, mais on la fait quand même : elle
+     n'y sert à rien et ne coûte rien ;
+   3. les libellés au singulier (« 1 testeur ») ne sont pas un détail : la
+     formule est LUE, c'est tout son intérêt, et « 1 testeurs » la décrédibilise.
+
+   L'espace insécable est celui du reste du site : « 36 h 45 », « 35 min » ne
+   doivent pas se couper en fin de ligne.
+════════════════════════════════════════ */
+(function () {
+  var bloc = document.querySelector('[data-roi]');
+  if (!bloc) return;
+
+  var JOURS  = 21;   /* jours ouvrés par mois, arrondi usuel */
+  var HEURES = 7;    /* une journée de test */
+  var NBSP   = ' ';
+
+  var EN = (document.documentElement.lang || 'fr').slice(0, 2) === 'en';
+  var T = EN ? {
+    tester: 'tester', testers: 'testers', jours: 'working days', min: 'min'
+  } : {
+    tester: 'testeur', testers: 'testeurs', jours: 'jours ouvrés', min: 'min'
+  };
+
+  var inputs = {};
+  var outs   = {};
+  Array.prototype.forEach.call(bloc.querySelectorAll('[data-roi-in]'), function (el) {
+    inputs[el.getAttribute('data-roi-in')] = el;
+  });
+  Array.prototype.forEach.call(bloc.querySelectorAll('[data-roi-out]'), function (el) {
+    outs[el.getAttribute('data-roi-out')] = el;
+  });
+  if (!inputs.people || !inputs.min) return;
+
+  /* Une décimale, mais jamais un « ,0 » traînant : « 24,0 journées » se lit
+     comme un défaut d'affichage, « 24 journées » comme une mesure. */
+  function decimal(n) {
+    var s = n.toFixed(1).replace(/\.0$/, '');
+    return EN ? s : s.replace('.', ',');
+  }
+
+  function rail(el) {
+    var min = parseFloat(el.min), max = parseFloat(el.max), v = parseFloat(el.value);
+    el.style.setProperty('--roi-p', ((v - min) / (max - min) * 100).toFixed(1) + '%');
+  }
+
+  function rendre() {
+    var p = parseInt(inputs.people.value, 10);
+    var m = parseInt(inputs.min.value, 10);
+    var total = p * m * JOURS;                  /* minutes par mois */
+    var h = Math.floor(total / 60), r = total % 60;
+
+    rail(inputs.people); rail(inputs.min);
+
+    if (outs.people)  outs.people.textContent = String(p);
+    if (outs.min)     outs.min.textContent    = m + NBSP + T.min;
+    if (outs.hours)   outs.hours.textContent  =
+      r ? h + NBSP + 'h' + NBSP + (r < 10 ? '0' + r : r) : h + NBSP + 'h';
+    if (outs.days)    outs.days.textContent   = decimal(total / 60 / HEURES);
+    if (outs.formula) outs.formula.textContent =
+      p + ' ' + (p > 1 ? T.testers : T.tester) + ' × ' + m + ' min × ' + JOURS + ' ' + T.jours;
+  }
+
+  inputs.people.addEventListener('input', rendre);
+  inputs.min.addEventListener('input', rendre);
+  rendre();
+}());
