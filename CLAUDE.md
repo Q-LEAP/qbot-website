@@ -2146,3 +2146,84 @@ dans ce fichier.
 Contrôlé : 65 blocs JSON-LD valides, `document.body.innerText` des 10 pages touchées contient
 bien les nouvelles formulations, aucune erreur console, et les quatorze motifs fautifs
 remontent tous à zéro occurrence.
+
+## Étape 2 de l'audit : les réponses-capsules (2026-08-24)
+
+La faille 2 de l'audit RosoAI : le site pose des titres formulés en question, ce qui est le
+bon format pour être cité, mais aucun n'est suivi d'une réponse autonome de 40 à 60 mots.
+Mesuré avant : **26 titres en question, zéro conforme.** L'audit avance que 72,4 % des pages
+citées par ChatGPT contiennent une telle réponse.
+
+**SEIZE DE CES VINGT-SIX SONT DES APPELS À L'ACTION**, et il ne faut PAS leur écrire de
+capsule : « Prêt à en finir avec la dernière étape manuelle ? », « Vous souhaitez en savoir
+plus ? ». Une invitation n'a pas de réponse de cinquante mots, et lui en coller une la
+transformerait en paragraphe au milieu d'un bloc de conversion. Restent **dix questions
+informatives**, dont huit sont traitées ici.
+
+Les huit capsules sont posées **sans un octet de balisage ni de CSS nouveau** : dans sept cas
+sur huit elles remplacent le contenu d'un `.section-subtitle` ou d'un `<p>` existant. C'est
+volontaire, l'accroche d'une section n'a aucune raison d'être un fragment décoratif quand elle
+peut être la réponse à la question qui la surplombe. Vérifié après : 8 sur 8 entre 42 et
+55 mots, 5 lignes à 600 px de mesure, alignées au pixel sur la gouttière du logo.
+
+Deux exclusions assumées : les deux dernières questions informatives sont des **titres de
+carte** sur les index de blog, suivis de l'accroche de la carte (25 et 19 mots). Allonger
+l'accroche d'une carte à cinquante mots casserait la grille et ne répond pas à l'intention de
+l'audit. La question elle-même est traitée là où elle se pose vraiment, dans l'article.
+
+### Les FAQ : la capsule, c'est le PREMIER paragraphe
+
+Les 32 réponses de FAQ ne sont pas des titres, elles ont donc échappé au comptage de l'audit,
+mais elles sont le contenu le plus citable du site. Ce qui compte y est différent : c'est le
+premier paragraphe qui doit se suffire, parce que c'est lui qui sera recopié. Mesuré sur les
+deux langues : la moitié des réponses ouvrent sur moins de 30 mots pour un total qui va
+jusqu'à 169.
+
+Deux ont été reprises, les deux plus citables :
+
+- **« Qu'est-ce que Q-Bot ? »**, ouverture à 25 mots pour 100 au total. C'est la question la
+  plus citable du site entier. Portée à 51 mots, avec le comment (boîtier sur un bureau,
+  téléphone Android en USB, déclenchement par appel HTTP) ;
+- **« Pourquoi Q-Bot est le parfait allié des testeurs ? »**, ouverture à 17 mots pour 169, et
+  surtout une ouverture qui **ne répondait pas à la question** (elle définissait le métier de
+  testeur). Une capsule de 47 mots est posée devant, l'ancienne ouverture devient le deuxième
+  paragraphe : rien n'est perdu.
+
+**LE PIÈGE DE LA FAQ, DEUX FOIS DANS LA MÊME PASSE.** Chaque réponse existe en double, texte
+visible et `FAQPage` JSON-LD. En français les deux copies partagent la même chaîne, donc un
+seul remplacement les tient synchronisées ; **en anglais elles ne partagent RIEN**, parce que
+le texte visible porte des `<strong>` et que le JSON-LD a un espacement différent
+(« device . » avec une espace avant le point). Il faut donc deux remplacements distincts, et
+c'est exactement l'écart qui désynchronise une FAQ si on l'oublie. Contrôle ajouté : un
+relevé qui compare, question par question, les 60 premiers caractères du JSON-LD à ceux du
+texte rendu. **32 sur 32 alignées.**
+
+Le même fragment de Q1 vit aussi dans l'aperçu FAQ de la page d'accueil française : le
+remplacement partagé l'a mis à jour du même coup, ce qui est le comportement voulu.
+
+### Deux défauts trouvés en mesurant, et corrigés
+
+- **LA COQUILLE DE L'ÉTAPE 1 AVAIT UN HUITIÈME EMPLACEMENT, INVISIBLE À MA RECHERCHE.** Le
+  `<h2>` du corps de l'article 2FA écrit « Qu’est-ce qu’est » avec des **apostrophes
+  typographiques** (U+2019), alors que le titre et les métadonnées les écrivaient droites
+  (U+0027). Une recherche de la version droite ne pouvait pas le voir, et annonçait donc zéro
+  occurrence restante. C'est la troisième fois que ce dépôt se fait prendre par la même
+  famille de piège : le cadratin écrit `&mdash;`, l'emoji écrit `&#128272;`, et maintenant
+  l'apostrophe typographique. **Un contrôle de texte doit porter sur toutes les graphies du
+  même caractère**, pas seulement sur celle qu'on a tapée.
+- **les six encadrés d'article revendiquaient encore du matériel** : « automatiser la 2FA, y
+  compris via des dispositifs physiques comme LuxTrust ». Le lot 2 du 2026-08-19 avait retiré
+  cette revendication du site et annoncé 0 occurrence ; elle avait survécu dans les barres
+  latérales, que sa recherche ne couvrait pas. Ce n'est pas de la prose d'article datée, c'est
+  un argument produit, donc il se corrige : « le seul robot du marché à piloter la vraie
+  application 2FA sur un téléphone Android resté sur votre réseau ». La formulation garde
+  l'exclusivité, que l'audit établit par ailleurs, mais sur le bon objet.
+
+Au passage, le sous-titre « Quels sont les facteurs d'authentification ? » de l'article 2FA
+reçoit lui aussi sa capsule, dans les deux langues.
+
+**Ce qui reste ouvert pour une étape 2 bis** : les quatorze autres réponses de FAQ dont
+l'ouverture fait moins de 35 mots, dont trois qui font moins de 25 mots au total
+(« Puis-je bénéficier d'une assistance technique ? » en fait 7). Ce sont des réponses justes
+mais trop courtes pour être reprises telles quelles. À faire quand le client le voudra ; ce
+n'est plus une correction de défaut, c'est de la rédaction.
