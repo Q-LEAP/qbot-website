@@ -2086,3 +2086,63 @@ horizontal, aucun `.reveal` resté invisible, aucune erreur console, aucune requ
 un seul `h1` par page. Calage vérifié à 1280 / 1440 / 1920 / 2560 px : le titre et les
 panneaux du calculateur tombent au pixel sur le logo. Mise en page contrôlée à 375, 390,
 768, 900, 901, 1024, 1280, 1920 et 2560 px.
+
+## Étape 1 de l'audit RosoAI : les erreurs de contenu (2026-08-24)
+
+`Documentations/Audit_Q-Bot_Note_Strategique.pdf` (RosoAI, 24 août 2026) est un audit SEO
+et visibilité IA en 21 pages. Il est traité par étapes ; celle-ci corrige les erreurs
+factuelles, qui ne demandaient aucune décision de contenu neuf. Chaque constat a été
+revérifié dans le dépôt avant correction, parce que l'audit a été produit à 8h45 et que la
+passe prix / images de l'après-midi l'a partiellement périmé.
+
+**UN POINT DE L'AUDIT EST À ÉCARTER, ET IL FAUT LE SAVOIR.** Sa « faille 4 » demande
+d'afficher « 850 €/mois HT » sur la page d'accueil, au motif que le prix n'existait que
+dans le JSON-LD. Le client a tranché l'inverse le même jour : le tarif ne doit plus être
+prononcé, et il a été retiré du JSON-LD aussi. La prémisse de cette faille n'est donc plus
+vraie non plus. **Ne pas la « corriger » en republiant le prix** ; le calculateur de ROI
+répond d'ailleurs à la ligne P3 du plan de contenu de l'audit, « Combien coûte l'étape
+manuelle d'authentification ? ».
+
+Ce qui a été corrigé :
+
+- **la carte Q-Bot de « À propos » décrivait Q-Guard**, mot pour mot, depuis le commit
+  initial. Elle décrit maintenant Q-Bot, alignée sur la carte anglaise (qui, elle, était
+  juste) ;
+- **l'ancienneté se contredisait** : « plus de 10 ans » à cinq endroits, « plus de 13 ans » à
+  un sixième. Tout passe à **« depuis 2012 »** (date confirmée par le client le
+  2026-08-24). Une date fixe ne périme pas, un nombre d'années vieillit à chaque janvier.
+  L'anglais avait le même défaut plus un oubli : `en/technical-specs.html` disait encore
+  « for over 10 years », hors du périmètre où j'avais cherché d'abord ;
+- **trois délais de mise en service coexistaient** : « le jour même » dans le hero de la page
+  démo, « 24h » dans les trois métadonnées sociales, « 48 à 72 heures » dans le processus et
+  dans la FAQ. Tout passe à **48 à 72 heures** (arbitrage client, la valeur la plus prudente
+  et déjà la plus présente). **Attention à ne pas confondre avec le délai de réponse de
+  l'assistance, « sous 24h ouvrées »** : c'est une autre grandeur, elle est juste, elle reste ;
+- **deux sur-promesses en « 100 % »**. La page d'accueil annonçait « Automatiser la double
+  authentification dans 100 % des cas de tests » alors que Q-Bot pilote un appareil ANDROID,
+  ce que sa propre FAQ dit. Remplacé par le périmètre réel, qui est déjà assez fort :
+  « Toutes vos applications Android, y compris LuxTrust, itsme, Microsoft Authenticator et
+  Google Authenticator. » Et `en/index.html` promettait encore « 100% effective (perfect
+  recognition rate) » ;
+- **deux restes du récit caméra que les lots 1 et 2 du 2026-08-19 avaient laissés** :
+  « La précision est parfaite, au pixel près » dans la FAQ française (texte visible ET
+  JSON-LD) et « une précision parfaite » dans l'aperçu FAQ de l'accueil. Il n'y a plus rien
+  à reconnaître, donc plus de précision à revendiquer : c'est le déterminisme qui est
+  l'argument. L'anglais avait déjà été repris, le français y avait échappé, **encore une
+  fois parce que le motif de contrôle portait sur le vocabulaire anglais**.
+- **une coquille dans un titre d'article** : « Qu'est-ce qu'**est** l'authentification à deux
+  facteurs ? ». Elle vivait à **huit endroits** et non un seul : le `<title>` de l'article,
+  ses trois métadonnées sociales, son `headline` JSON-LD, son `h1`, l'index du blog, les deux
+  blocs « articles liés » des autres articles, et `llms.txt`. Corriger le plus visible aurait
+  laissé la faute dans l'onglet du navigateur et dans tous les partages.
+
+**`llms.txt` gagne deux faits qui manquaient**, et c'est le fichier que les IA lisent en
+premier : le périmètre **énoncé comme une limite** (« drives an ANDROID device, does not
+automate 2FA on iOS », avec la consigne de ne jamais écrire « 100% of test cases ») et le
+délai de 48 à 72 heures, avec la mise en garde sur les 24 heures du support. L'audit relève
+justement que le périmètre Android n'était présenté comme une limite nulle part, et zéro fois
+dans ce fichier.
+
+Contrôlé : 65 blocs JSON-LD valides, `document.body.innerText` des 10 pages touchées contient
+bien les nouvelles formulations, aucune erreur console, et les quatorze motifs fautifs
+remontent tous à zéro occurrence.

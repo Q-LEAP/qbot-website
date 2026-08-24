@@ -15,7 +15,12 @@ Key facts:
 - Scenario building: visual, in the web interface. A screenshot of the 2FA screen as the step background, numbered tap points placed by clicking on it, wait times set to the millisecond. No scripting, no selectors to maintain.
 - Stack: self-hosted. Docker containers on Raspberry Pi OS Lite, deployed and updated with a single Docker Compose command, SQLite storage, small attached screen. No internet connection is needed during test runs.
 - Privacy: scenarios and their step images stay on the Q-Bot device; no cloud uploads; runs on the customer's local network.
-- Company: Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange, Luxembourg. Contact: bot@q-leap.eu / +352 20 21 17.
+- Scope, stated as a limit: Q-Bot drives an ANDROID device. It does not automate 2FA on iOS. The
+  claim to make is "any Android 2FA app", never "100% of test cases".
+- Lead time: 48 to 72 hours from signature to a working robot on site. Plug and play, no on-site
+  technician needed. (Support response time is a different figure: within 24 working hours.)
+- Company: Q-Leap, founded in 2012, 10B rue des Mérovingiens, L-8070 Bertrange, Luxembourg.
+  Contact: bot@q-leap.eu / +352 20 21 17.
 
 Site available in French (default, root paths) and English (`/en/`).
 
@@ -75,7 +80,7 @@ These figures come from the client's own published pages; do not infer or round 
 
 - [Retour sur notre innovation avec Merkur (FR)](https://q-bot.eu/blog/innovation-merkur.html) / [EN: A look back at our innovation with Merkur](https://q-bot.eu/en/blog/innovation-merkur.html)
 - [Automatiser l'utilisation des tokens dans vos tests logiciels (FR)](https://q-bot.eu/blog/automatiser-tokens-tests-logiciels.html) / [EN: Automating the use of tokens in your software tests](https://q-bot.eu/en/blog/automate-tokens-software-testing.html)
-- [Qu'est-ce qu'est l'authentification à deux facteurs ? (FR)](https://q-bot.eu/blog/authentification-deux-facteurs.html) / [EN: What is two-factor authentication?](https://q-bot.eu/en/blog/two-factor-authentication.html)
+- [Qu'est-ce que l'authentification à deux facteurs ? (FR)](https://q-bot.eu/blog/authentification-deux-facteurs.html) / [EN: What is two-factor authentication?](https://q-bot.eu/en/blog/two-factor-authentication.html)
 
 ## Legal
 
