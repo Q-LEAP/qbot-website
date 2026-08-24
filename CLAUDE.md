@@ -2006,12 +2006,42 @@ Trois pièges rencontrés sur ces découpes :
 **Le film produit est de retour dans la page.** `assets/video/qbot-home.mp4` n'était plus
 référencé nulle part depuis que le hero avait repris un visuel fixe. Il revient dans la
 section « 100 % conçu et développé au Luxembourg », qui passe de bloc de texte pleine
-largeur à deux colonnes. **En lecture à la demande, et c'est le point** : `preload="none"`
-plus une affiche, donc **zéro octet transféré tant que le visiteur ne clique pas**. En
-lecture automatique il ajouterait 2,9 Mo aux 2,4 Mo acceptés le 2026-08-11 pour l'accueil,
-soit un doublement du poids pour un film muet de 8,7 s. C'est aussi ce qui rend le
-**module 14** (garde-fou mouvement réduit / économiseur de données) sans objet sur cette
-page : rien ne part tout seul. L'affiche est une vraie image du film.
+largeur à deux colonnes. **En lecture à la demande, et c'est le point** : zéro octet
+transféré tant que le visiteur ne clique pas. En lecture automatique le film ajouterait
+2,9 Mo aux 2,4 Mo acceptés le 2026-08-11 pour l'accueil, soit un doublement du poids pour
+un film muet de 8,7 s. C'est aussi ce qui rend le **module 14** (garde-fou mouvement
+réduit / économiseur de données) sans objet sur cette page : rien ne part tout seul.
+L'affiche est une vraie image du film, capturée du film lui-même à 7,4 s.
+
+**IL N'Y A PAS DE BALISE `<video>` DANS LA PAGE, ET C'EST DÉLIBÉRÉ.** Première version :
+un `<video preload="none" controls>` sans `autoplay` ni `loop`. Signalé le 2026-08-24 :
+chez le client **le film démarrait seul et tournait en boucle**. Irreproductible ici,
+mesuré sur les deux moteurs (`paused: true`, `readyState: 0`, `loop: false`,
+`autoplay: false` pendant six secondes sous Chromium comme sous WebKit), donc la cause est
+un réglage de navigateur ou une extension. Ajouter des attributs n'aurait servi à rien :
+l'absence de `autoplay` est déjà la façon la plus explicite de dire non, un booléen absent
+ne peut pas l'être davantage.
+
+Ce qui règle la question pour de bon, c'est **qu'il n'y ait rien à démarrer** : le balisage
+porte un LIEN vers le fichier, habillé de l'affiche, d'une pastille de lecture et de la
+durée. Le **module 18** de `main.js` le remplace par un `<video>` au clic, et **remet
+l'affiche à la fin de la lecture**, ce qui exclut aussi la boucle. Trois conséquences :
+
+1. la lecture partant d'un clic, `autoplay` sur l'élément créé est légitime et fonctionne
+   partout : c'est un geste utilisateur, aucune politique de lecture automatique ne s'y
+   oppose ;
+2. la promesse de poids devient structurelle et non plus une indication au navigateur.
+   Vérifié : aucune requête vers le `.mp4` avant le clic, sur les deux moteurs ;
+3. **sans JavaScript le lien reste un lien** et le film s'ouvre dans le lecteur natif. La
+   règle du dépôt (l'état au repos est un état complet) vaut aussi pour un média.
+
+Le focus passe sur le lecteur à sa création et revient sur l'affiche à la fin : sans cela,
+un visiteur au clavier active un lien qui disparaît et son focus retombe sur le document.
+
+Un défaut introduit puis corrigé dans la même passe : la mention de durée était en blanc
+avec une ombre portée, posée sur le gris CLAIR du rendu, soit **1,2:1**. Une ombre de texte
+améliore la perception et ne change rien à la mesure. Elle est désormais sur une pastille
+noire à 66 %, ce qui donne **8,43:1** mesuré.
 
 Le cadre `.video__wrapper--film` annule le `max-width: 800px` et le `margin: 0 auto` de la
 règle de base : dans une colonne de `.intro__grid`, le centrage empêcherait les deux

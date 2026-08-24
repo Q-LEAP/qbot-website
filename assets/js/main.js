@@ -1404,3 +1404,67 @@ backToTop.addEventListener('click', () => {
   inputs.min.addEventListener('input', rendre);
   rendre();
 }());
+
+
+/* ════════════════════════════════════════
+   18. LE FILM, À LA DEMANDE ET SANS BOUCLE
+   La section « 100 % conçu et développé au Luxembourg » ne contient PAS de
+   balise <video> : elle contient un lien vers le fichier, portant l'affiche.
+   Ce module remplace ce lien par un lecteur au clic.
+
+   POURQUOI CE DÉTOUR. Signalé le 2026-08-24 : chez le client le film démarrait
+   seul et tournait en boucle, alors que le balisage ne portait ni `autoplay` ni
+   `loop`. Irreproductible sous Chromium comme sous WebKit (`paused: true`,
+   `readyState: 0` pendant six secondes), donc cela vient d'un réglage de
+   navigateur ou d'une extension. Ajouter des attributs n'aurait rien changé :
+   l'absence de `autoplay` est déjà la façon la plus explicite de dire non.
+   Ce qui règle le problème pour de bon, c'est qu'il n'y ait rien à démarrer.
+
+   TROIS POINTS :
+   1. la lecture part d'un CLIC, donc `autoplay` sur l'élément créé est légitime
+      et fonctionne partout : c'est un geste utilisateur, aucune politique de
+      lecture automatique ne s'y oppose ;
+   2. à la fin, on remet l'affiche. Pas de `loop`, et le visiteur peut relancer.
+      C'est aussi ce qui garantit qu'aucune boucle ne peut apparaître, quel que
+      soit le navigateur ;
+   3. le focus passe sur le lecteur. Sans cela, un visiteur au clavier vient
+      d'activer un lien qui disparaît, et son focus retombe sur le document.
+
+   SANS JAVASCRIPT le lien reste un lien : le film s'ouvre dans le lecteur natif
+   du navigateur. L'état au repos est un état complet, comme partout ici.
+════════════════════════════════════════ */
+(function () {
+  var lien = document.querySelector('.video__play[data-film]');
+  if (!lien) return;
+
+  var cadre = lien.parentNode;
+  var src   = lien.getAttribute('href');
+  var label = lien.getAttribute('aria-label') || '';
+
+  lien.addEventListener('click', function (e) {
+    /* On laisse passer les ouvertures volontaires dans un autre onglet. */
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+
+    var v = document.createElement('video');
+    v.className = 'video__player';
+    v.src = src;
+    v.controls = true;
+    v.muted = true;          /* le film est muet de toute façon */
+    v.playsInline = true;
+    v.setAttribute('aria-label', label);
+    v.tabIndex = 0;
+
+    v.addEventListener('ended', function () {
+      if (cadre.contains(v)) cadre.replaceChild(lien, v);
+      lien.focus();
+    });
+
+    cadre.replaceChild(v, lien);
+    v.focus();
+    var p = v.play();
+    /* Si le navigateur refuse malgré le geste, on ne laisse pas un cadre noir :
+       les contrôles sont là, le visiteur appuie lui-même. */
+    if (p && p.catch) p.catch(function () {});
+  });
+}());

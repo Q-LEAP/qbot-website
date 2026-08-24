@@ -492,27 +492,35 @@
           Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.
         </p>
       </div>
-      <!-- Le film produit (assets/video/qbot-home.mp4, 2,9 Mo) est de retour dans la
-           page. C'est une animation de la CAO maison, pas une image générée, et
-           c'est le seul film dont nous disposons.
-           EN LECTURE À LA DEMANDE, ET C'EST VOULU : `preload="none"` + affiche, donc
-           zéro octet transféré tant que le visiteur ne clique pas. En lecture
-           automatique il ajouterait 2,9 Mo aux 2,4 Mo déjà acceptés pour l'accueil
-           le 2026-08-11, soit un doublement du poids de la page pour un film muet de
-           8,7 s. C'est aussi ce qui rend le module 14 (garde-fou mouvement réduit /
-           économiseur de données) sans objet ici : rien ne part tout seul.
-           L'affiche est une vraie image du film, pas un rendu à part. -->
+      <!-- Le film produit (assets/video/qbot-home.mp4, 2,9 Mo) est une animation de
+           la CAO maison, pas une image générée, et c'est le seul film dont nous
+           disposons.
+           PAS DE BALISE <video> DANS LA PAGE, ET C'EST LE POINT. Signalé le
+           2026-08-24 : chez le client le film partait tout seul et tournait en
+           boucle, alors que le balisage ne portait ni `autoplay` ni `loop`.
+           Irreproductible sous Chromium comme sous WebKit (`paused: true`,
+           `readyState: 0` pendant six secondes), donc c'est un réglage de
+           navigateur ou une extension. Plutôt que de discuter du réglage, on
+           retire la prise : il n'y a rien à lire tant que le visiteur n'a pas
+           cliqué, donc aucun moteur ne PEUT rien démarrer. Le module 18 remplace
+           l'affiche par un <video> au clic, et remet l'affiche à la fin de la
+           lecture, ce qui exclut aussi la boucle.
+           Cela rend en prime structurelle la promesse de poids : zéro octet
+           transféré tant qu'on ne clique pas. En lecture automatique le film
+           ajouterait 2,9 Mo aux 2,4 Mo acceptés le 2026-08-11 pour l'accueil,
+           soit un doublement du poids de la page pour un film muet de 8,7 s.
+           SANS JAVASCRIPT L'AFFICHE RESTE UN LIEN vers le fichier : le visiteur
+           voit le film, dans son lecteur natif. C'est la règle du dépôt (l'état
+           au repos est un état complet) appliquée à un média. -->
       <div class="video__wrapper video__wrapper--film">
-        <video
-          class="video__player"
-          src="../assets/video/qbot-home.mp4"
-          poster="../assets/img/qbot-film-poster.jpg"
-          preload="none"
-          controls
-          muted
-          playsinline
-          aria-label="Q-Bot product film, 9 seconds, no sound"
-        ></video>
+        <a class="video__play" href="../assets/video/qbot-home.mp4"
+           data-film aria-label="Play the Q-Bot product film, 9 seconds, no sound">
+          <img src="../assets/img/qbot-film-poster.jpg" alt="" width="1280" height="720">
+          <span class="video__play-badge" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+          <span class="video__play-txt" aria-hidden="true">Watch the film&nbsp;· 9&nbsp;s, no sound</span>
+        </a>
       </div>
     </div>
   </div>

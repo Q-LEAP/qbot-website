@@ -679,6 +679,75 @@ p { color: var(--gray); }
   inset: 0;
   pointer-events: none;
   box-shadow: inset 0 0 60px 18px rgba(0, 0, 0, 0.45);
+  /* La vignette est peinte AU-DESSUS de l'affiche comme du lecteur, donc au-dessus
+     du lien : sans z-index elle passerait derrière lui et les bords clairs
+     reviendraient. Et sans `pointer-events: none` elle avalerait le clic. */
+  z-index: 2;
+}
+
+/* ---- L'affiche cliquable ----
+   Il n'y a pas de <video> dans le balisage : c'est un lien vers le fichier, que
+   le module 18 remplace par un lecteur au clic. Cf. la note dans les deux pages
+   d'accueil. Le lien porte l'affiche, une pastille de lecture et une mention de
+   durée, pour qu'on sache ce qu'on déclenche avant de le déclencher. */
+.video__play {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+}
+.video__play img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.001);   /* évite un liseré d'un pixel au recadrage */
+  transition: transform 0.6s var(--ease-out), filter 0.3s ease;
+  filter: brightness(0.92);
+}
+.video__play:hover img { transform: scale(1.04); filter: brightness(1); }
+
+.video__play-badge {
+  position: absolute;
+  top: 50%; left: 50%;
+  z-index: 3;               /* au-dessus de la vignette du cadre */
+  transform: translate(-50%, -50%);
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--teal);
+  /* Pas de blanc sur le teal : il plafonne à 2:1. Même règle que partout. */
+  color: #001A18;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 0 8px rgba(0, 203, 190, 0.14);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.video__play-badge svg { margin-left: 3px; }   /* le triangle est optiquement décentré */
+.video__play:hover .video__play-badge,
+.video__play:focus-visible .video__play-badge {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 0 12px rgba(0, 203, 190, 0.2);
+}
+/* La mention est posée sur une pastille sombre, PAS sur une ombre portée.
+   L'affiche est un rendu sur fond gris CLAIR : du blanc dessus mesure 1,2:1, et
+   une ombre de texte améliore la perception sans rien changer à la mesure. Sur
+   du noir à 66 % le fond composité tombe à ~#555 et le blanc y tient ~6:1. */
+.video__play-txt {
+  position: absolute;
+  left: 16px; bottom: 14px;
+  z-index: 3;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.66);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+}
+.video__play:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .video__play img,
+  .video__play-badge { transition: none; }
+  .video__play:hover img { transform: scale(1.001); }
 }
 
 /* ---- Pricing ---- */
