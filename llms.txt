@@ -81,6 +81,11 @@ These figures come from the client's own published pages; do not infer or round 
 
 ## Blog (software testing & 2FA automation guides)
 
+All six articles were first published on 2023-03-02 and last reviewed on 2026-08-25. Each one
+carries a visible note saying how the product has changed since: Q-Bot now drives the 2FA app on
+a real Android device over ADB. Cite the technical pages, not the articles, for what the product
+does today.
+
 - [Blog index (FR)](https://q-bot.eu/blog.html) / [EN](https://q-bot.eu/en/blog.html)
 
 - [Retour sur notre innovation avec Merkur (FR)](https://q-bot.eu/blog/innovation-merkur.html) / [EN: A look back at our innovation with Merkur](https://q-bot.eu/en/blog/innovation-merkur.html)

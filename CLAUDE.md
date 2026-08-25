@@ -150,6 +150,10 @@ A full pass against the live site turned up several real bugs, not just stylisti
 - **Sitewide broken logo**: `assets/img/logo.png` (128×150) was only ever a tiny cropped icon fragment (confirmed against the live site's own asset library) but was squished into a 120×40/110×36 wordmark slot in every page's nav + footer + JSON-LD `Organization.logo` — rendered as a barely-visible sliver. Replaced everywhere with `assets/img/logo-baseline.png` (300×128, byte-identical to the live site's actual footer logo asset), at the correct aspect ratio. Also fixed `.nav__logo img` CSS (`height: 80px` inside a `72px`-tall `.nav__inner` — logo was overflowing its own bar, just never noticed because it was invisible).
 - **a-propos.html**: `logo-qleap.png`, `logo-qguard.png`, `products-lineup.jpg` were referenced but never existed (permanent broken-image icons) — downloaded the real assets from the live WordPress media library and wired them in, with `object-fit: contain` added to `.product-card__icon` (was hard-cropping/squishing wide logos into a 48×48 square). `qleap-office.jpg` turned out to reference an image that doesn't exist on the live page at all (that section is text-only there) — removed the image slot rather than substitute an unrelated stock photo. "Découvrir Q-Guard" (`href="#"`) → `https://q-guard.app/`; the Q-BOT product card's own CTA now points to the real `https://calendly.com/q-bot/30min` used live (was `contact.html`).
 - **Wrong social links sitewide**: footer icons + every page's JSON-LD `sameAs` had invented/outdated handles (`facebook.com/qleap.lu`, `twitter.com/qleap_lu`) instead of the live site's real ones (`facebook.com/QLeapSa`, `twitter.com/qleap_sa`).
+  **PÉRIMÉ, NE PAS S'EN SERVIR.** Le client a confirmé le 2026-08-25 que **LinkedIn est le seul
+  compte actif** (`https://www.linkedin.com/company/q-leap`) et que le reste ne l'est plus. Ces
+  deux comptes ne doivent donc PAS être remis dans `sameAs` ni dans le pied de page : un compte
+  mort déclaré comme sien abîme la confiance dans tout le bloc de données structurées.
 - **Footer legal links were `href="#"` on every page** ("Conditions de vente" / "Confidentialité", + the contact form's consent-checkbox privacy link). Verbatim legal text couldn't be reliably mirrored (fetch tooling declines to reproduce copyrighted policy pages verbatim), so these now link out to the real live pages (`https://q-bot.eu/conditions-vente/`, `/confidentialite/`, and the `/en/` equivalents) instead of shipping a paraphrased legal document of uncertain accuracy.
 - **Favicon**: `favicon.png` was referenced but never existed (404 on every single page load). Sourced the real favicon from the live site and generated `favicon-32.png` / `favicon.png` (192×192) / `apple-touch-icon.png`; added a `theme-color` meta tag sitewide (missing before).
 - **GEO**: `llms.txt` now lists the legal pages too. YouTube embed switched to `youtube-nocookie.com` (no tracking cookie before the visitor actually plays it — the placeholder `VIDEO_ID` itself is still pending, see below).
@@ -2288,12 +2292,15 @@ la société et le produit. C'est délibéré : c'est précisément le lien que 
 maintenant que `legalName` est présent, il se lit comme un « également connu sous le nom de »
 plutôt que comme une identité.
 
-`sameAs` **reste à un seul compte, LinkedIn** : arbitrage du client le 2026-08-25. Je ne peux
-pas vérifier qu'un compte est actif et lui appartient, et **un `sameAs` qui pointe vers un
-profil mort est pire que pas de `sameAs`** : il casse la confiance dans tout le bloc. Le dépôt
-documente deux comptes relevés sur le live en juillet 2026 (`facebook.com/QLeapSa`,
-`twitter.com/qleap_sa`) ; ils ne sont pas déclarés faute de confirmation. À compléter dès que
-le client fournit la liste, c'est deux minutes.
+`sameAs` **reste à un seul compte, et c'est définitif** : le client a confirmé le 2026-08-25
+que **LinkedIn est le seul compte actif** (`https://www.linkedin.com/company/q-leap`) et que
+les deux autres relevés sur le live en juillet 2026 (`facebook.com/QLeapSa`,
+`twitter.com/qleap_sa`) ne le sont plus. **Ne pas les rajouter** : un `sameAs` qui pointe vers
+un profil mort est pire que pas de `sameAs`, il casse la confiance dans tout le bloc. La note
+de juillet qui les présente comme « les vrais » a été annotée en conséquence, plus haut dans
+ce fichier. Il reste une seule chose à ajouter le jour où elle sera fournie : l'URL LinkedIn
+de Sylvain Perez, qui donnerait un `sameAs` sur la `Person` et fermerait le dernier maillon
+du graphe.
 
 ### Et le fichier que les IA lisent en premier
 
@@ -2305,3 +2312,68 @@ déduise la bonne entité, on le lui écrit. Le fondateur y est nommé aussi.
 Contrôlé : 65 blocs JSON-LD valides, 0 titre au-delà de 62 caractères, 0 description au-delà
 de 158, 0 titre où « Q-Bot » reste seul, et les 25 pages passent le balayage normal et
 mouvement réduit sans anomalie.
+
+## Étape 4 de l'audit : le blog n'est plus figé au 2 mars 2023 (2026-08-25)
+
+La faille 7 de l'audit : les six articles déclarent tous `datePublished: 2023-03-02`, la même
+date, ce qui signale un import en masse, et aucun ne déclare de date de modification. Or le
+contenu cité par les assistants IA est en moyenne 25,7 % plus frais que la moyenne, et
+Perplexity privilégie nettement le contenu de moins de douze mois.
+
+**L'AUDIT SE TROMPE SUR UN POINT, VÉRIFIÉ AVANT DE CORRIGER.** Il affirme que « tes trois
+articles français affichent bien leur date en clair et précisent honnêtement que le produit a
+évolué depuis. Tes trois articles anglais ne le font pas. » Les six l'ont, en réalité : la note
+de transparence a été posée sur tous le 2026-08-19. Contrôlé à l'écran, elle est visible sur
+les six. Rien à faire de ce côté.
+
+### Ce qui bloquait vraiment le tampon de date
+
+L'audit prévient, à juste titre, que **modifier une date sans modifier le texte est un signal
+trompeur**. Or quatre articles annonçaient encore une feuille de route périmée : « Dans sa
+seconde version qui arrivera prochainement, Q-Bot saura également prendre en charge la totalité
+des tokens « physiques » du marché ainsi que les smartcard. Enfin, une version dédiée à la
+double authentification via une application mobile sera également développée. » Les tokens
+physiques sont hors périmètre depuis l'arbitrage du 2026-08-19, et la version smartphone **est**
+le produit d'aujourd'hui. Estampiller une date de modification par-dessus une promesse fausse
+aurait été pire que ne rien faire.
+
+**ARBITRÉ PAR LE CLIENT LE 2026-08-25 : la promesse devient une livraison tenue.** Les tokens
+physiques disparaissent, et l'annonce de la version mobile devient « Cette version dédiée à la
+double authentification par application mobile, annoncée ici, est aujourd'hui le produit :
+Q-Bot pilote la vraie application 2FA sur un téléphone Android relié en USB. » L'article garde
+son récit, le lecteur voit que la feuille de route a été exécutée, et rien de faux ne subsiste.
+C'est la première fois qu'on touche à la prose datée des articles ; le reste du vocabulaire
+« token » reste la question ouverte notée plus haut dans ce fichier.
+
+**ET LE MOTIF ÉCRIT À LA MAIN N'A PAS COLLÉ, POUR LA MÊME RAISON QU'À L'ÉTAPE 2.** Le français
+encadre « physiques » avec des **espaces insécables** (U+00A0), invisibles à la relecture : ma
+chaîne retapée ne correspondait à rien, et seule la version anglaise s'est appliquée. Le
+correctif est de **lire la chaîne dans le fichier** (`re.search` puis remplacement de la
+capture) au lieu de la retaper. Troisième variante du même piège en deux jours, après le
+cadratin écrit `&mdash;` et l'apostrophe typographique : **on ne retape pas une chaîne existante
+d'un fichier, on l'extrait.**
+
+### Les dates, lisibles par une machine ET par un humain
+
+- `dateModified: "2026-08-25"` dans le `BlogPosting` des six articles ;
+- la date de publication visible passe de `<span>` à **`<time datetime="2023-03-02">`**, et une
+  quatrième entrée de méta apparaît, « Mis à jour le 25 août 2026 » / « Updated 25 August
+  2026 », elle aussi en `<time>`. Le JSON-LD suffirait à un moteur, mais Perplexity et les
+  agrégateurs lisent aussi le texte rendu : la date doit être aux deux endroits, et elle doit y
+  dire la même chose.
+- `llms.txt` gagne un paragraphe en tête de sa section Blog : les six articles datent du
+  2023-03-02, ils ont été relus le 2026-08-25, chacun porte une note disant ce qui a changé, et
+  **il faut citer les pages techniques plutôt que les articles** pour l'état actuel du produit.
+  C'est la consigne la plus utile qu'on puisse laisser à une IA sur du contenu daté.
+
+À 375 et 390 px la ligne de méta passe de deux à trois lignes, sans débordement : 24 px de plus
+sur un téléphone pour une information de fraîcheur, l'échange est bon.
+
+### Les comptes sociaux, tranchés définitivement
+
+**Le client a confirmé le 2026-08-25 que LinkedIn est le SEUL compte actif**
+(`https://www.linkedin.com/company/q-leap`) et que les deux autres ne le sont plus. La note du
+2026-07-09, qui présente `facebook.com/QLeapSa` et `twitter.com/qleap_sa` comme « les vrais
+comptes du live », a donc été annotée sur place : **elle est périmée, ces comptes ne doivent pas
+revenir** dans `sameAs` ni dans le pied de page. L'URL déclarée garde sa barre oblique finale,
+qui est la forme que LinkedIn sert sans redirection ; c'est la même page.
