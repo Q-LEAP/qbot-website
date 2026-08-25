@@ -1432,12 +1432,29 @@ backToTop.addEventListener('click', () => {
               (co.effectiveType === '3g' && (co.downlink || 99) < 1.2);
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || lente) return;
 
-  function jouer() {
-    if (!film.getAttribute('src')) film.setAttribute('src', film.getAttribute('data-film'));
+  function essayer() {
     var p = film.play();
     /* Si le navigateur refuse malgré `muted`, on ne laisse pas un cadre noir :
        l'affiche est toujours là, elle fait le travail. */
     if (p && p.catch) p.catch(function () {});
+  }
+
+  function jouer() {
+    if (!film.getAttribute('src')) {
+      /* `preload` passe à `auto` AVANT le `src`. La balise n'en porte plus dans le
+         HTML : `preload="none"` y disait au navigateur de ne rien tamponner, ce qui
+         contrarie une lecture automatique dès que le fichier est branché. */
+      film.preload = 'auto';
+      film.setAttribute('src', film.getAttribute('data-film'));
+      /* `load()` explicite, et un second essai à `canplay`. Safari rejette un
+         `play()` appelé dans le même tour de boucle que l'affectation du `src`,
+         parce qu'aucune donnée n'est encore arrivée ; le `catch` avalait cet échec
+         en silence et l'affiche restait. Deux tentatives, dont une quand le
+         navigateur dit lui-même qu'il est prêt. */
+      film.load();
+      film.addEventListener('canplay', essayer, { once: true });
+    }
+    essayer();
   }
 
   if (!('IntersectionObserver' in window)) { jouer(); return; }

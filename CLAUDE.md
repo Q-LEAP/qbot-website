@@ -2779,3 +2779,65 @@ barre du bas, comme le site.
 **Leçon de méthode** : un gabarit qui génère des pages n'est pas vu par un balayage des pages
 publiées. Toute passe sitewide doit le traiter explicitement, et il vaut de le vérifier de
 temps en temps contre le site qu'il est censé imiter.
+
+## LE FILM NE DÉMARRAIT PAS, ET C'ÉTAIT LE CACHE (2026-08-25)
+
+Signalé par le client juste après la mise en place de la boucle : « elle se lance pas ».
+Irreproductible ici, sur les deux moteurs, en serveur local comme en `file://`. La cause
+n'était pas dans le code de la vidéo.
+
+**LES 29 PAGES CHARGENT `style.css?v=…` ET `main.js?v=…`, ET CE NUMÉRO ÉTAIT ÉCRIT À LA MAIN.**
+Il n'avait pas bougé depuis le commit qui précède toute la session : `style.css?v=2026.46-08-29b`
+et `main.js?v=2026.19-08-23`. Or `main.js` a été modifié une dizaine de fois dans la journée.
+Chez le client le navigateur servait donc **l'ancien script depuis son cache**, et cet ancien
+script cherchait l'affiche cliquable de la veille, qui n'existe plus dans le HTML. Rien ne
+démarrait, et rien n'apparaissait dans la console.
+
+**POURQUOI JE NE L'AI PAS VU.** Le serveur de développement ne met rien en cache, et un
+navigateur piloté part d'un profil vierge à chaque essai. Les deux environnements dans lesquels
+je vérifie sont précisément ceux où ce défaut ne peut pas se produire. C'est la pire catégorie
+de bug : invisible côté outillage, systématique côté visiteur qui revient.
+
+Et il ne concernait pas que la vidéo : **tout ce qui a été fait cette session dans `style.css`
+et `main.js` ne pouvait pas arriver chez le client** (le calculateur de ROI, le verre, la
+colonne des fiches techniques, le pied de page à 4 / 4 / 4, le rythme des titres).
+
+### Le correctif est une empreinte de contenu, pas un numéro à se rappeler
+
+`tools/bump-assets.py` remplace le `?v=` par les huit premiers caractères de l'empreinte
+SHA-256 du fichier. Une empreinte change **exactement** quand le fichier change, et jamais
+autrement : il n'y a plus rien à se rappeler, aucun moyen d'oublier, et pas d'incrément inutile
+qui ferait retélécharger 200 Ko de CSS pour rien.
+
+**À LANCER APRÈS TOUTE MODIFICATION D'UN CSS OU D'UN JS, AVANT DE COMMITER.**
+
+    python3 tools/bump-assets.py
+
+### Le même piège vaut pour les images réécrites en place
+
+Une image dont le contenu change sous un **nom de fichier inchangé** reste servie depuis le
+cache. C'est le cas de la maquette d'interface corrigée le même jour : le client voyait encore
+le trait qui traversait les icônes. Quatre fichiers réécrits en place cette session sont donc
+versionnés eux aussi : `qbot-interface.jpg`, `qbot-interface-en.jpg`, `qbot-og.jpg` et
+`qbot-film-poster.jpg`. Une image dont le NOM change (les deux photos ajoutées) n'en a pas
+besoin. Pour `qbot-og.jpg`, versionner l'URL est en plus le seul moyen de forcer les réseaux
+sociaux à relire l'aperçu.
+
+Le script versionne aussi les références du gabarit d'article de `admin/index.html`, qui reste
+donc à jour tant qu'on le relance.
+
+### Une seconde cause, indépendante, trouvée en relisant le module
+
+La balise portait `preload="none"`. Sans `src` c'est sans effet, mais **dès que le module
+branche le fichier, cet attribut dit au navigateur de ne rien tamponner**, ce qui contrarie une
+lecture automatique. Il est retiré du HTML, et le module met `preload = 'auto'` avant de poser
+le `src`.
+
+Le module appelle en outre `load()` explicitement et **retente la lecture à l'événement
+`canplay`** : Safari rejette un `play()` appelé dans le même tour de boucle que l'affectation du
+`src`, parce qu'aucune donnée n'est encore arrivée. Le `.catch()` avalait ce rejet en silence et
+l'affiche restait. Deux tentatives, dont une quand le navigateur dit lui-même qu'il est prêt.
+
+Contrôlé après : lecture et progression du temps vérifiées sur Chromium et WebKit, en français
+et en anglais, en serveur local et en `file://`, plus la boucle qui repart et la pause hors
+champ.
