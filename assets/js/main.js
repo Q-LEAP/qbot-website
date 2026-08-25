@@ -116,39 +116,83 @@ document.addEventListener('keydown', (e) => {
 
 /* ════════════════════════════════════════
    3. FAQ ACCORDION — hauteur dynamique + aria
+
+   Une réponse repliée l'était VISUELLEMENT seulement (`max-height: 0` +
+   `overflow: hidden`). Rien ne la retirait de l'arbre d'accessibilité : une
+   personne non-voyante s'entendait énoncer les dix-sept réponses d'affilée,
+   et un lien contenu dans une réponse fermée restait atteignable au clavier.
+   L'attribut `hidden` corrige les deux d'un coup.
+
+   POURQUOI `hidden` EST POSÉ ICI ET NON DANS LE HTML. C'est l'écart délibéré
+   avec le chantier 05 du plan de bascule. Le texte des réponses présent en
+   clair dans la source est ce qui rend cette FAQ citable par un moteur ou une
+   IA — l'audit le porte au crédit du site. Un `hidden` écrit dans le HTML le
+   servirait comme contenu masqué à tout le monde, y compris aux robots, et
+   retirerait les réponses du rendu pour un visiteur sans JavaScript. Posé par
+   le script, il ne s'applique qu'aux navigateurs qui savent aussi rouvrir :
+   sans JavaScript on retombe exactement sur l'état d'avant, pas plus mauvais.
 ════════════════════════════════════════ */
-document.querySelectorAll('.faq-item__question').forEach(btn => {
-  // Initialise aria-expanded
-  btn.setAttribute('aria-expanded', 'false');
+(function () {
+  const boutons = document.querySelectorAll('.faq-item__question');
+  if (!boutons.length) return;
 
-  btn.addEventListener('click', () => {
-    const item   = btn.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
+  /* Durée du repli, lue dans la feuille de style plutôt que recopiée : la
+     transition vaut 0.42s côté CSS, et deux constantes finiraient par diverger.
+     La marge de 60 ms couvre le décalage entre la fin de la transition et le
+     tour de boucle qui l'observe. */
+  const REPLI_MS = 480;
 
-    // Ferme tous les items ouverts
-    document.querySelectorAll('.faq-item.open').forEach(openItem => {
-      openItem.classList.remove('open');
-      openItem.querySelector('.faq-item__question')
+  const replier = (item, immediat) => {
+    const ans = item.querySelector('.faq-item__answer');
+    if (!ans) return;
+    ans.style.maxHeight = '0';
+    if (immediat) { ans.hidden = true; return; }
+    setTimeout(() => {
+      /* Rouverte entre-temps : on ne la referme pas dans le dos du visiteur. */
+      if (!item.classList.contains('open')) ans.hidden = true;
+    }, REPLI_MS);
+  };
+
+  boutons.forEach(btn => {
+    const item = btn.closest('.faq-item');
+    btn.setAttribute('aria-expanded', 'false');
+    /* État initial : toutes fermées. `immediat`, sinon les 17 réponses
+       resteraient énoncées pendant la demi-seconde qui suit le chargement. */
+    if (item) replier(item, true);
+
+    btn.addEventListener('click', () => {
+      const etaitOuvert = item.classList.contains('open');
+
+      document.querySelectorAll('.faq-item.open').forEach(ouvert => {
+        ouvert.classList.remove('open');
+        ouvert.querySelector('.faq-item__question')
               ?.setAttribute('aria-expanded', 'false');
-      const ans = openItem.querySelector('.faq-item__answer');
-      if (ans) ans.style.maxHeight = '0';
-    });
+        replier(ouvert, false);
+      });
 
-    // Ouvre le cliqué s'il était fermé
-    if (!isOpen) {
-      item.classList.add('open');
-      btn.setAttribute('aria-expanded', 'true');
+      if (!etaitOuvert) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
 
-      const answer = item.querySelector('.faq-item__answer');
-      if (answer) {
-        /* scrollHeight du conteneur entier (pas juste firstElementChild) :
-           une réponse avec plusieurs <p>/<ul> derrière voyait son max-height
-           calé sur le premier enfant seulement, tronquant tout le reste. */
-        answer.style.maxHeight = answer.scrollHeight + 'px';
+        const answer = item.querySelector('.faq-item__answer');
+        if (answer) {
+          /* L'ORDRE DE CES DEUX LIGNES EST LA CORRECTION. Un élément `hidden`
+             est en `display: none` et mesure zéro : mesurer avant de le
+             démasquer donnerait une réponse ouverte sur une hauteur nulle,
+             donc vide. La lecture de `scrollHeight` force au passage le calcul
+             de mise en page, ce qui est aussi ce qui permet à la transition
+             de partir de `max-height: 0` au lieu de sauter.
+
+             Et c'est `scrollHeight` du conteneur entier, pas de son premier
+             enfant : une réponse à plusieurs <p>/<ul> voyait tout le reste
+             tronqué. */
+          answer.hidden = false;
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
       }
-    }
+    });
   });
-});
+}());
 
 /* ════════════════════════════════════════
    4. SCROLL REVEAL — variantes typées + stagger

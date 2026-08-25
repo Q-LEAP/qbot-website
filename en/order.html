@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=a206d7d8">
+  <link rel="stylesheet" href="../assets/css/style.css?v=98b1652a">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -346,7 +346,7 @@
       <div class="order-step" role="listitem">
         <div class="order-step__number">1</div>
         <h3>Book an appointment</h3>
-        <p>Schedule a slot with Sylvain Perez via Calendly or by phone. Demo included.</p>
+        <p>Schedule a slot with Sylvain Perez <a href="https://calendly.com/q-bot/30min" target="_blank" rel="noopener">via Calendly</a> or <a href="tel:+352202117">by phone</a>. Demo included.</p>
       </div>
       <div class="order-step" role="listitem">
         <div class="order-step__number">2</div>
@@ -512,38 +512,38 @@
     </div>
     <div class="faq__list" style="max-width:800px;">
       <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b1" aria-controls="faq-a1">
           Is there a long-term commitment?
           <span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-item__answer" role="region">
+        <div class="faq-item__answer" id="faq-a1" role="region" aria-labelledby="faq-b1">
           <p>No, the Q-Bot subscription has no long-term commitment. You can cancel at any time by contacting us by email or phone.</p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b2" aria-controls="faq-a2">
           How long before I'm up and running?
           <span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-item__answer" role="region">
+        <div class="faq-item__answer" id="faq-a2" role="region" aria-labelledby="faq-b2">
           <p>Once the contract is signed, allow 48 to 72 hours to receive your Q-Bot and be operational. Installation is Plug &amp; Play: no on-site technician required.</p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b3" aria-controls="faq-a3">
           Does Q-Bot work with our specific application?
           <span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-item__answer" role="region">
+        <div class="faq-item__answer" id="faq-a3" role="region" aria-labelledby="faq-b3">
           <p>Q-Bot is compatible with all types of smartphones for two-factor authentication (LuxTrust, Google Authenticator, Microsoft Authenticator, etc.). To check compatibility with your own app, contact us for a personalised demo.</p>
         </div>
       </div>
       <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b4" aria-controls="faq-a4">
           Can we test Q-Bot before subscribing?
           <span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
-        <div class="faq-item__answer" role="region">
+        <div class="faq-item__answer" id="faq-a4" role="region" aria-labelledby="faq-b4">
           <p>Absolutely. Book an appointment with Sylvain Perez for a free, personalised demo. You'll be able to see Q-Bot working with your 2FA apps before any commitment.</p>
         </div>
       </div>
@@ -631,6 +631,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=b4d0df9a" defer></script>
+<script src="../assets/js/main.js?v=5eef00ff" defer></script>
 </body>
 </html>

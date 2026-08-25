@@ -1,0 +1,119 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# PUBLICATION DU SITE — et de LUI SEUL
+#
+# Pourquoi ce fichier existe. Jusqu'au 2026-08-25, GitHub Pages publiait la
+# RACINE du dépôt : tout ce qui est versionné était servi, y compris ce qui n'a
+# jamais été destiné à sortir d'ici. Mesuré ce jour-là sur
+# https://q-leap.github.io/qbot-website/ : CLAUDE.md répondait 200 (223 Ko de
+# notes internes, dont le tarif et les sept références clients), /admin/ aussi
+# (le gestionnaire de blog, mot de passe en clair), et Documentations/ servait
+# les PDF d'audit, la brochure et la charte.
+#
+# robots.txt ne protégeait rien de tout cela : il demande poliment aux moteurs
+# de ne pas regarder, il ne ferme aucune porte, et un fichier .md ne peut pas
+# porter de balise « noindex ».
+#
+# Ce workflow construit un dossier de publication qui ne contient QUE le site,
+# et c'est lui qui part sur Pages. Le dépôt garde sa structure : rien n'a été
+# déplacé, CLAUDE.md garde son historique, les chemins de tools/ sont intacts.
+#
+# CE QU'IL FAUT AVOIR RÉGLÉ UNE FOIS, À LA MAIN, POUR QUE CECI SERVE :
+#   Settings → Pages → Build and deployment → Source : « GitHub Actions »
+# Tant que la source reste « Deploy from a branch », c'est la racine qui est
+# servie et ce fichier ne change rien.
+#
+# POUR AJOUTER UN DOSSIER AU SITE : il n'y a rien à faire, tout est publié par
+# défaut. C'est la liste EXCLUS ci-dessous qui décide de ce qui reste privé.
+# ══════════════════════════════════════════════════════════════════════════════
+
+name: Publier le site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois ; on ne coupe pas celle qui est en cours.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assembler le dossier publié
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          # --exclude porte sur des motifs relatifs à la racine du dépôt.
+          # Chaque ligne est un choix, pas un réglage par défaut :
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.claude/' \
+            --exclude='_site/' \
+            --exclude='.gitignore' \
+            --exclude='._*' \
+            --exclude='.DS_Store' \
+            --exclude='CLAUDE.md' \
+            --exclude='claude.md.txt' \
+            --exclude='Documentations/' \
+            --exclude='admin/' \
+            --exclude='tools/' \
+            --exclude='Screen mod*/' \
+            --exclude='website 3/' \
+            ./ _site/
+
+      - name: Contrôler que rien de privé n'est parti
+        run: |
+          set -euo pipefail
+          # Ce contrôle est la raison d'être du workflow : si un jour la liste
+          # ci-dessus est modifiée par erreur, la publication échoue ici plutôt
+          # que de mettre le tarif en ligne en silence.
+          echec=0
+          # Motifs GLOB et non noms littéraux : « Screen modèle 3D » porte un
+          # « è », que macOS stocke décomposé (NFD) et Linux composé (NFC). Un
+          # motif littéral ne correspond pas des deux côtés — c'est exactement
+          # ce qui a fait passer ce dossier au premier essai de ce workflow.
+          for p in "CLAUDE.md" "claude.md.txt" "Documentations" "admin" "tools" "Screen mod"* "website 3"; do
+            if [ -e "_site/$p" ]; then echo "ERREUR : _site/$p ne doit pas être publié"; echec=1; fi
+          done
+          # Un contrôle de CONTENU en plus du contrôle de chemin : ces deux
+          # chaînes ne vivent que dans des fichiers de travail. Les trouver
+          # dans le site publié signifie qu'un de ces fichiers a été recopié
+          # quelque part, par un chemin que la liste d'exclusion ne couvre pas.
+          #
+          # Le tarif n'est plus prononcé nulle part sur le site (arbitrage du
+          # 2026-08-24) ; « CREDS = {' » est le mot de passe en clair de
+          # l'éditeur de blog. Volontairement PAS de contrôle sur « Cargolux » :
+          # le bandeau de références vit légitimement dans index.html, entouré
+          # d'un commentaire HTML, en attendant l'accord de la direction.
+          if grep -rlI -e '850 € / mois' -e "CREDS = {" _site/ 2>/dev/null | grep -q .; then
+            echo "ERREUR : contenu de travail trouvé dans le site publié :"
+            grep -rlI -e '850 € / mois' -e "CREDS = {" _site/ || true
+            echec=1
+          fi
+          [ "$echec" -eq 0 ] || exit 1
+          echo "Contrôle passé. Fichiers publiés : $(find _site -type f | wc -l)"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  publier:
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@v4

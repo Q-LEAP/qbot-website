@@ -1189,6 +1189,25 @@ p { color: var(--gray); }
 }
 .spec-item__value { font-size: 0.9375rem; color: var(--dark); }
 
+/* Un lien DANS un libellé de fiche. Le libellé est en capitales espacées et en
+   gris sourd : un lien teal souligné y ferait une tache et casserait la colonne
+   que `subgrid` aligne. Il garde donc la couleur du libellé et se signale par un
+   soulignement discret, qui passe en teal au survol et au focus. Le contour de
+   focus du site reste, lui, inchangé. */
+.spec-item__label a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 203, 190, 0.55);
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+.spec-item__label a:hover,
+.spec-item__label a:focus-visible {
+  color: var(--teal);
+  text-decoration-color: currentColor;
+}
+
 /* Variante "carte" (section Interface & API) : au lieu d'un fond forcé en
    inline style (invisible en dark mode), le fond suit le thème. */
 .spec-item--card {

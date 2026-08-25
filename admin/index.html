@@ -1175,13 +1175,18 @@ function generateArticleHTML(a) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${a.title} | Q-Bot by Q-Leap</title>
   <meta name="description" content="${(a.excerpt||'').slice(0,158)}">
-  <meta name="robots" content="index,follow">
+  <!-- PRÉ-LANCEMENT : à retirer le jour de la mise en ligne, comme sur les 28
+       pages du site. Chercher « PRÉ-LANCEMENT » pour tout retrouver d'un coup.
+       Sans cette balise, un article publié depuis cet éditeur serait la seule
+       page indexable du site, et casserait le compte « 28 pages, 28 balises »
+       inscrit dans robots.txt, qui sert de garde-fou le jour J. -->
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="${base}img/favicon.png" type="image/png">
   <!-- Roboto est hébergée dans le site (déclarations @font-face en tête de style.css).
        Ce gabarit appelait Inter chez Google : une police hors charte, sur un domaine
        tiers, dans des articles publics. -->
   <link rel="preload" href="${base}fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="${base}css/style.css?v=a206d7d8">
+  <link rel="stylesheet" href="${base}css/style.css?v=98b1652a">
 </head>
 <body>
 
@@ -1287,7 +1292,7 @@ function generateArticleHTML(a) {
   </div>
 </footer>
 
-<script src="${base}js/main.js?v=b4d0df9a" defer><\/script>
+<script src="${base}js/main.js?v=5eef00ff" defer><\/script>
 </body>
 </html>`;
   return html;
