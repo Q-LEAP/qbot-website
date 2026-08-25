@@ -3099,37 +3099,44 @@ point neuf est ailleurs : **ce que GitHub Pages sert en dehors des 28 pages du p
    soit lisible sans JavaScript, « ce qui permet aux moteurs et aux IA de citer tes réponses ».
    Voir la section FAQ ci-dessous.
 
-### Chantier 01 : `.github/workflows/pages.yml`
+### Chantier 01 : `_config.yml`, et le workflow qui n'a pas survécu à la journée
 
-Le site est assemblé dans un dossier de publication qui ne contient QUE lui, et c'est ce
-dossier qui part sur Pages. **Rien n'est déplacé** : le dépôt garde sa structure, `CLAUDE.md`
-garde son historique, les chemins de `tools/` sont intacts. C'est l'écart avec les trois
-options du plan (`/docs`, `git rm --cached`, `_config.yml`), qui demandaient toutes soit une
-restructuration, soit de désversionner un fichier.
+**C'est `_config.yml` qui ferme la porte, et lui seul.** GitHub Pages construit ce dépôt avec
+Jekyll (il n'y a pas de `.nojekyll`) et aucun fichier du site ne porte d'en-tête YAML ni de
+syntaxe Liquid : une liste `exclude` suffit donc, par simple commit, sans aucun réglage et sans
+rien déplacer. C'est l'option C du plan, et c'est la seule des trois qui s'applique le jour même.
 
-**IL FAUT UN RÉGLAGE MANUEL, UNE FOIS, SANS QUOI CE FICHIER NE SERT À RIEN :**
-`Settings → Pages → Build and deployment → Source : « GitHub Actions »`. Tant que la source
-reste « Deploy from a branch », c'est la racine qui est servie.
+**UN WORKFLOW A EXISTÉ QUELQUES HEURES, ET IL A ÉTÉ RETIRÉ.** `.github/workflows/pages.yml`
+portait la même liste plus un contrôle de chemin ET de contenu qui faisait ÉCHOUER la
+publication si un fichier de travail s'y glissait. Il demandait un réglage manuel
+(`Settings → Pages → Source : « GitHub Actions »`) qui n'a pas pu être fait, et **tant que la
+source reste la branche, les deux déployaient à chaque push sur la même cible, le dernier
+arrivé gagnant**. Relevé sur un même commit : branche à 12:30:03, workflow à 12:29:45 — c'était
+donc toujours Jekyll qui servait, et le garde-fou ne protégeait rien puisque son artefact était
+écrasé dix-huit secondes plus tard. Deux déployeurs pour une cible sont une course, pas une
+sécurité. Retiré sur décision du client. **Si on le remet un jour, basculer le réglage dans le
+même mouvement**, sinon on recrée la course.
+
+**CONSÉQUENCE À CONNAÎTRE : L'EXCLUSION EST DÉSORMAIS SILENCIEUSE.** Un dossier de travail
+ajouté plus tard et oublié dans `_config.yml` part en ligne sans un mot. Le contrôle est une
+commande, à passer avant la mise en ligne :
+`curl -s -o /dev/null -w '%{http_code}' https://q-bot.eu/CLAUDE.md` doit répondre 404, comme
+`/admin/` et `/Documentations/website/`.
 
 **Et passer le dépôt en privé est une décision séparée** : Pages sur un dépôt privé demande un
 plan GitHub Pro / Team / Enterprise. Sur le plan gratuit, passer en privé éteint Pages. À
 vérifier avant de basculer. Le contenu resterait de toute façon dans l'historique git.
 
-Deux garde-fous dans le workflow, et le second a servi tout de suite :
+Ce que le workflow a appris avant de partir, et qui vaut pour toute liste d'exclusion ici :
 
-- un contrôle de **chemin** (aucun dossier de travail dans le dossier publié) et un contrôle de
-  **contenu** (« 850 € / mois » et `CREDS = {`, qui ne vivent que dans des fichiers de travail).
-  La publication échoue plutôt que de mettre le tarif en ligne en silence. Volontairement
-  **pas** de contrôle sur « Cargolux » : le bandeau de références vit légitimement dans
-  `index.html`, entouré d'un commentaire HTML ;
 - **`Screen modèle 3D` passait au travers de son exclusion.** macOS stocke le « è » décomposé
-  (NFD), Linux composé (NFC) : un motif littéral ne correspond pas des deux côtés. Les motifs
-  sont donc des globs (`Screen mod*`). C'est un piège de la même famille que le cadratin écrit
-  `&mdash;`, l'apostrophe typographique et l'espace insécable, mais au niveau du système de
-  fichiers cette fois.
+  (NFD), Linux composé (NFC) : un motif littéral ne correspond pas des deux côtés. C'est un
+  piège de la même famille que le cadratin écrit `&mdash;`, l'apostrophe typographique et
+  l'espace insécable, mais au niveau du système de fichiers cette fois. Jekyll, lui, accepte le
+  nom tel quel dans `exclude` ; ne pas en conclure que le problème n'existe pas ailleurs.
 
-Contrôlé à blanc : 138 fichiers publiés, les 28 URL du sitemap toutes présentes, aucun dossier
-de travail.
+Contrôlé en ligne après construction : les 11 chemins de travail répondent 404, le site est
+entier (accueil, 28 pages, pages légales, 53 relais, modèle 3D, assets).
 
 ### Chantier 05 : `hidden` est posé par le script, jamais écrit dans le HTML
 

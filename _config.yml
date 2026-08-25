@@ -14,15 +14,21 @@
 # tout cela : il demande poliment aux moteurs de ne pas regarder, il ne ferme
 # aucune porte, et un fichier .md ne peut pas porter de balise « noindex ».
 #
-# DEUX MÉCANISMES FONT LA MÊME CHOSE, ET C'EST VOULU :
-#   - ce fichier agit sur la construction depuis la BRANCHE, celle qui est
-#     active aujourd'hui. Il ne demande aucun réglage, donc il s'applique tout
-#     de suite ;
-#   - `.github/workflows/pages.yml` fait la même sélection, avec en plus un
-#     contrôle qui fait ÉCHOUER la publication si un fichier de travail s'y
-#     glisse. Il ne prendra la main que le jour où
-#     Settings → Pages → Source passera à « GitHub Actions ».
-# Garder les deux listes identiques. Si l'une change, l'autre change.
+# CE FICHIER EST LE SEUL MÉCANISME, ET IL FAUT LE SAVOIR. Un workflow GitHub
+# Actions a existé quelques heures le 2026-08-25, avec la même liste plus un
+# contrôle qui faisait ÉCHOUER la publication si un fichier de travail s'y
+# glissait. Il a été retiré sur décision du client : tant que la source Pages
+# reste « Deploy from a branch », les deux déployaient à chaque push sur la même
+# cible et le dernier arrivé gagnait, ce qui est une course, pas une sécurité.
+# Relevé sur un même commit : construction depuis la branche à 12:30:03,
+# workflow à 12:29:45. C'était donc toujours ce fichier-ci qui servait.
+#
+# CONSÉQUENCE : L'EXCLUSION EST SILENCIEUSE. Un dossier de travail ajouté plus
+# tard et oublié dans la liste ci-dessous part en ligne sans un mot, et rien ne
+# le signale. À chaque ajout d'un dossier qui n'est pas du site, l'inscrire ici.
+# Le contrôle est une commande, à passer avant la mise en ligne :
+#   curl -s -o /dev/null -w '%{http_code}\n' https://q-bot.eu/CLAUDE.md
+# doit répondre 404, comme /admin/ et /Documentations/website/.
 #
 # CE QUI N'EST PAS RÉGLÉ ICI : le dépôt est PUBLIC, donc ces fichiers restent
 # lisibles sur github.com et dans l'historique git. Seul un passage en dépôt
