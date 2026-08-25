@@ -2469,3 +2469,109 @@ de dernière mise à jour.
 Le pied de page du live anglais porte encore une ancienne adresse (10 rue Mathias Hardt,
 L-1717 Luxembourg) et un copyright 2022 : sans effet ici, nos pages utilisent notre pied de
 page.
+
+## Le navigateur d'analyse repasse en mode invisible (2026-08-25)
+
+**Demande du client : ne plus ouvrir de fenêtre sur sa machine**, il ne peut pas travailler en
+parallèle. La note de méthode du 2026-08-20 avait fait passer tous les contrôles en
+`headless=False`, mais elle disait bien pourquoi : le mode invisible rend en SwiftShader, donc
+au processeur, et **tout défaut de rendu 3D doit être cherché en mode fenêtré**. Cette raison ne
+vaut que pour le rendu GPU.
+
+**Mesuré, pas supposé** : le relevé de contraste sur les 29 pages donne **exactement 18
+remontées dans les deux modes**, les mêmes. C'est logique, il lit le DOM et les styles
+calculés, pas des pixels. Idem pour le balayage des révélations, les liens internes, la
+hiérarchie des titres et les longueurs d'affichage.
+
+**Règle qui en découle.** Mode invisible par défaut pour tout ce qui se mesure dans le DOM.
+Mode fenêtré uniquement pour chasser un artefact de rendu 3D (`model-viewer`, la séquence
+épinglée de l'accueil), et dans ce cas seulement, en prévenant le client. Le piège de 2026-08-20
+reste vrai, il est simplement plus étroit qu'écrit.
+
+Un faux positif rencontré en le vérifiant, qui a coûté une minute : le relevé annonçait
+116 défauts en mode invisible. C'était le serveur statique démarré dans le mauvais dossier,
+répondant 404 partout, et la sonde mesurait consciencieusement le contraste de la page d'erreur
+de `http.server`. **Un contrôle qui remonte soudain six fois plus de défauts mesure autre chose
+que ce qu'on croit** : vérifier d'abord que la page servie est la bonne.
+
+## Étape 6 de l'audit : la mise en ligne est outillée, pas déclenchée (2026-08-25)
+
+Trois choses préparées, aucune tirée. **Le site n'est PAS public à l'issue de cette étape** :
+lever les verrous se fait en une commande, le jour où le domaine bascule, et pas avant.
+
+### Les 34 redirections des anciennes adresses
+
+L'audit signale que GitHub Pages ne sait pas renvoyer un 301, donc que `/faq/`, `/blog/`,
+`/about/` tomberont en erreur. Le relevé du `wp-sitemap.xml` du live donne la vraie liste :
+**59 URL publiées**, pas trois.
+
+Classées, et c'est le tri qui compte :
+
+- **15 pages de contenu** avec une correspondance directe (`/about/` → `a-propos.html`,
+  `/caracteristiques-techniques/`, `/contact/`, `/faq/`, `/en/about-us/`, `/en/contact-us/`,
+  `/en/technical-specifications/` **et son doublon `-2/`**, `/en/f/`, les trois articles, et
+  `/video/` + `/en/videos/` puisque le film vit maintenant dans la page d'accueil) ;
+- **12 billets de la frise datée**, retirée du site le 2026-08-12. Ils atterrissent sur
+  `index.html#evolution-title`, la section qui raconte la même histoire sans les dates devenues
+  fausses. Attention, leurs adresses ne disent pas leur contenu : `/qbot-token-luxtrust/` est le
+  billet « Juin 2022 » et `/prototype-fonctionnel/` le billet « Mai 2022 ». Il a fallu relever
+  leur `<title>` pour les classer, l'URL seule trompe ;
+- **7 archives WordPress** (catégories, étiquettes, deux pages d'auteur) → l'index du blog ;
+- **une trentaine d'adresses du thème de démonstration** (`/portfolio/…`, `/portfolio-cat/…`,
+  `?portfolio-filter=…`) : **volontairement laissées en 404.** Contenu factice jamais remplacé,
+  du même lot que l'équipe fictive « Colabrio ». Les rediriger fabriquerait trente fausses
+  correspondances, que les moteurs traitent en soft-404 et sanctionnent. Le 404 est le signal
+  honnête.
+
+Trois scripts : `tools/redirections_map.py` porte la carte (module à part, parce que deux
+scripts la lisent et qu'un nom de fichier à tiret n'est pas importable),
+`tools/gen-redirects.py` écrit les pages, `tools/verif-redirections.py` les contrôle.
+
+**Pas de balise `noindex` sur ces pages, et c'est volontaire** : leur seul rôle est de
+transmettre un signal, leur demander de ne pas être indexées reviendrait à demander qu'on
+l'ignore. Le site reste fermé par `robots.txt` jusqu'à la mise en ligne. C'est la seule
+exception à la règle « toutes les pages portent la balise PRÉ-LANCEMENT ».
+
+Chaque page porte **trois** chemins vers la même cible : le `meta refresh`, un lien visible et
+un `location.replace`. Le contrôle vérifie que les trois concordent, sinon une page pourrait
+rediriger un navigateur et un moteur vers deux endroits différents. Relevé : 34 sur 34
+concordantes, 34 sur 34 suivies dans un navigateur et aboutissant sur une page réelle, 0 lien
+interne cassé sur l'ensemble du site.
+
+### L'interrupteur
+
+`tools/go-live.py` lève les trois verrous **ensemble**, ce que l'audit demande explicitement :
+ouvrir `robots.txt` en laissant les balises `noindex` donne un site explorable mais invisible,
+et l'inverse un site indexable que personne n'explore. Fait à la main sur trente fichiers, on
+en oublie un, et le symptôme est silencieux.
+
+**La simulation est le comportement par défaut** ; il faut `--appliquer` pour écrire. Ce script
+rend le site public, cela ne doit pas pouvoir arriver par une faute de frappe.
+
+Un défaut de mon propre script, trouvé en le contrôlant : `admin/index.html` écrit
+`noindex,nofollow` **sans espace**, et mon remplacement littéral le ratait en silence. L'effet
+était heureux (le back-office ne doit jamais être indexé) mais accidentel. C'est maintenant
+explicite : la balise est cherchée par motif, et `admin/` figure dans une liste `JAMAIS`. Le
+piège est le même que le cadratin en entité, l'apostrophe typographique et l'espace insécable :
+**quatrième variante en trois jours.**
+
+### LE POINT QUI DEMANDE UNE DÉCISION DU CLIENT
+
+**Le WordPress bloque aujourd'hui TOUS les moteurs de réponse IA** : son `robots.txt` interdit
+Amazonbot, anthropic-ai, Applebot-Extended, Bytespider, CCBot, ClaudeBot, FacebookBot,
+Google-Extended, GPTBot, meta-externalagent, omgili, omgilibot, PerplexityBot et SentiBot.
+Autrement dit, **toute la stratégie de visibilité IA de l'audit est actuellement bloquée à la
+porte**, et le score de 10/100 s'explique en partie par là.
+
+Le `robots.txt` d'ouverture de ce dépôt les autorise. Ce n'est pas une correction de bug, c'est
+un **renversement de politique** : autoriser ces robots, c'est accepter que le contenu du site
+soit lu par ces modèles, en échange de la possibilité d'être cité. `go-live.py` l'affiche en
+clair au moment de l'exécution, et le fichier produit porte le commentaire qui l'explique.
+À confirmer par le client avant la bascule.
+
+### Ce qui reste manuel, et dans quel ordre
+
+Le script l'imprime : DNS et HTTPS, **puis vérifier les 34 redirections en ligne**, puis la
+Search Console, et **ne supprimer le WordPress qu'après cette vérification** (tant qu'il
+répond, une erreur est réparable ; après, l'adresse est perdue). Les six formulaires prennent
+leur endpoint en une option, `--endpoint`, ou restent sur le repli courrier.
