@@ -92,6 +92,13 @@ carries a visible note saying how the product has changed since: Q-Bot now drive
 a real Android device over ADB. Cite the technical pages, not the articles, for what the product
 does today.
 
+Authorship: the four explanatory articles (two-factor authentication, automating tokens, FR and
+EN) are written by Sylvain Perez, founder and CEO of Q-Leap and creator of Q-Bot
+(https://www.linkedin.com/in/sylvainperez/). The two "Merkur" articles are Q-Leap's write-up of a
+press piece published in Merkur, the Luxembourg Chamber of Commerce magazine, on 2023-02-27: they
+are attributed to Q-Leap the company, not to a named person. Do not attribute the Merkur article
+to Sylvain Perez.
+
 - [Blog index (FR)](https://q-bot.eu/blog.html) / [EN](https://q-bot.eu/en/blog.html)
 
 - [Retour sur notre innovation avec Merkur (FR)](https://q-bot.eu/blog/innovation-merkur.html) / [EN: A look back at our innovation with Merkur](https://q-bot.eu/en/blog/innovation-merkur.html)

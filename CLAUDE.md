@@ -2892,8 +2892,7 @@ l'inverse le 24 août, et le chantier 2 ci-dessous suit cette décision, pas la 
 - **`sameAs` passe de 1 à 3 entrées** sur les 29 pages : le LinkedIn de Q-Leap, plus
   `q-leap.eu` et `q-guard.app`. Ce sont ses propres sites, pas des comptes sociaux : la règle du
   25/08 (« LinkedIn est le seul compte actif, ne pas remettre Facebook ni Twitter ») n'est pas
-  touchée. **La signature des articles par une `Person` a été écartée par le client** pour
-  l'instant : les 6 `BlogPosting` gardent `author: Organization`.
+  touchée.
 
 ### Les trois dépendances extérieures, et le piège du module local
 
@@ -2994,19 +2993,63 @@ Deux choses à ne pas changer en l'activant :
 - **les noms sont du TEXTE, pas des logos.** Un nom dans une image est invisible pour un moteur
   comme pour une IA, et c'est la lecture par les machines qui est l'objet du bandeau.
 
+### Le graphe est fermé : Sylvain Perez est relié, et quatre articles sont signés
+
+**URL fournie par le client le 2026-08-25 : `https://www.linkedin.com/in/sylvainperez/`.** Celle
+du plan RosoAI (`lu.linkedin.com/in/sylvainperez`) n'avait pas été vérifiée et n'a jamais été
+posée : un `sameAs` faux fait plus de mal que pas de `sameAs`.
+
+- **le `founder` de l'`Organization` porte ce `sameAs` sur les 29 pages.** C'était le dernier
+  maillon manquant : le site le nommait en clair depuis longtemps, mais aucune machine ne pouvait
+  relier ce nom à un profil ;
+- **QUATRE articles sur SIX passent à `author: Person`**, avec son `jobTitle` et son `sameAs` :
+  les deux articles pédagogiques (2FA, automatisation des tokens) dans chaque langue. **Les deux
+  « Merkur » gardent `author: Organization`, et c'est délibéré** : ce sont la reprise d'un article
+  paru dans Merkur, le magazine de la Chambre de commerce, le 27.02.2023. Les attribuer
+  nominativement dirait quelque chose de faux sur lui ET sur le magazine. Arbitré avec le client,
+  qui a suivi cette recommandation. **Ne pas « compléter » les deux derniers par cohérence
+  apparente** ;
+- **la ligne visible suit le structuré**, sur décision du client : « Sylvain Perez, créateur de
+  Q-Bot » / « Sylvain Perez, creator of Q-Bot » remplace « Équipe Q-Leap » / « Q-Leap Team » sur
+  les quatre articles signés, et **sur la carte en vedette des deux index de blog**, seule carte
+  qui porte une ligne d'auteur (les autres n'en ont pas). Le visible et le JSON-LD qui divergent,
+  c'est le défaut qui a déjà coûté des corrections sur les FAQ. Vérifié à 390 px : la ligne de
+  méta fait **72 px sur les six articles**, signés ou non, donc le nom plus long n'ajoute aucune
+  ligne ;
+- `llms.txt` porte la même distinction, avec la consigne explicite de ne pas attribuer l'article
+  Merkur à Sylvain Perez.
+
+**Deux gabarits de `admin/index.html` restent en écart, sans effet aujourd'hui** : ses six
+entrées d'amorçage portent des slugs qui n'existent plus dans le site (`automatiser-2fa-tests`
+et autres) et gardent « Équipe Q-Leap », et son gabarit d'article **n'émet aucun `BlogPosting`
+JSON-LD** du tout. Un article généré par le back-office n'aurait donc pas de données
+structurées, ni de `noindex` (il écrit `index,follow`). À reprendre le jour où ce back-office
+sert vraiment.
+
+### « Depuis 10 ans » sur q-leap.eu : rien à changer chez nous
+
+Point 4 du plan, tranché le 2026-08-25 : le client a demandé de prendre l'année inscrite sur
+`q-leap.eu`, qui est le site principal. **Relevé dans un navigateur réel, avec l'en-tête de
+langue fixé : `q-leap.eu` n'inscrit AUCUNE année de création.** Son accueil et son À propos
+disent « Depuis 10 ans » / « For 10 years », un compte relatif, pas une date. La seule année du
+site est son copyright, **« Q-LEAP SA© 2012 – 2026 »**, présent en pied de page.
+
+Donc **2012 est confirmé**, et notre « depuis 2012 » est déjà juste : aucune modification ici. Ce
+qui reste faux est le « Depuis 10 ans » de `q-leap.eu` lui-même, qui vaudrait 2016 et contredit
+son propre copyright. C'est hors de ce dépôt. Ne pas « aligner » notre site sur ce chiffre : ce
+serait remplacer une date exacte par un compte périmé.
+
 ### Ce qui reste ouvert
 
 - **le lien Calendly de l'étape 1 de `commandez`/`order`** : la phrase nomme Calendly sans le
   lier, c'est un clic de trop sur la page où le visiteur est le plus près de décider. Reporté
   par le client ;
-- **le `sameAs` de Sylvain Perez et la signature des articles par une `Person`** : il manque
-  l'URL exacte de son profil. Celle du plan (`lu.linkedin.com/in/sylvainperez`) n'a pas été
-  vérifiée, donc pas posée : un `sameAs` faux fait plus de mal que pas de `sameAs` ;
-- **« Depuis 10 ans » sur `q-leap.eu`** : hors de ce dépôt. C'est la dernière moitié d'une
-  contradiction réglée ici, et deux sites de la même maison qui donnent deux âges différents
-  font hésiter un assistant au moment de citer ;
 - **les treize contenus du plan**, dont « Selenium a raison, pour les codes à usage unique ».
   L'audit établit que la niche « automatiser l'authentification LuxTrust » est toujours vide ;
+- **le bandeau des sept références**, écrit et en commentaire, en attente de l'accord des
+  clients nommés ;
+- **le « Depuis 10 ans » de `q-leap.eu`** : hors de ce dépôt, et contredit le copyright de ce
+  site-là. À corriger chez eux, pas ici ;
 - **la séquence du jour J** (`CNAME`, DNS, HTTPS, puis `go-live.py`, puis Search Console, puis
   seulement la suppression du WordPress). L'ordre est ce qui protège le référencement acquis.
   `tools/go-live.py` existe et lève les trois verrous ensemble ; il n'a PAS été lancé.
