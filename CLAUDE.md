@@ -2227,3 +2227,81 @@ l'ouverture fait moins de 35 mots, dont trois qui font moins de 25 mots au total
 (« Puis-je bénéficier d'une assistance technique ? » en fait 7). Ce sont des réponses justes
 mais trop courtes pour être reprises telles quelles. À faire quand le client le voudra ; ce
 n'est plus une correction de défaut, c'est de la rédaction.
+
+## Étape 3 de l'audit : le nom composé, et l'identité raccordée (2026-08-25)
+
+Les failles 6 et l'axe 3 de l'audit RosoAI. La faille 6 est mesurée, pas supposée : à la
+question « Qu'est-ce que Q-Bot ? », une IA décrit le produit **en quatrième position**,
+derrière un gestionnaire de file d'attente GitHub, une société britannique de robotique
+d'isolation primée par la reine, et l'ancien système de file d'attente de LEGOLAND. Sur
+YouTube, les dix premiers résultats pour « Q-Bot » sont tous la société britannique. Il n'y
+a pas à changer de nom, il y a à ne jamais l'employer seul.
+
+**CE QUI ÉTAIT DÉJÀ FAIT, ET QUE L'AUDIT DEMANDE POURTANT** : « tu nommes Sylvain Perez sur
+le site ». Il l'est déjà, dans le contenu visible des deux FAQ, des deux pages démo et de
+quatre articles, y compris comme « créateur de Q-Bot et CEO de Q-Leap ». Ce qui manquait,
+c'est uniquement sa présence dans les données structurées. Contrôler avant de corriger a
+évité une réécriture inutile.
+
+### Le nom, dans les titres
+
+**Cinq titres portaient « Q-Bot » seul**, sans Q-Leap ni LuxTrust : les deux index de blog
+et de cas d'usage, et les deux FAQ. Les quatre autres titres que ma première recherche avait
+signalés satisfont en fait la règle **par LuxTrust** (« Caractéristiques techniques de Q-Bot |
+Robot 2FA LuxTrust ») : l'audit accepte « Q-Bot by Q-Leap » **ou** « Q-Bot LuxTrust ». Le
+prédicat de contrôle est donc « contient Q-Bot ET ni Q-Leap ni LuxTrust », pas « ne contient
+pas Q-Leap ». Sans cette nuance on réécrit quatre titres pour rien.
+
+Les six titres d'article, eux, ne contiennent pas « Q-Bot » du tout : rien à qualifier.
+
+**Contrainte dure : 62 caractères d'affichage en recherche.** « Blog QA : tests logiciels,
+automatisation, 2FA | Q-Bot by Q-Leap » en fait 63, d'où une formulation raccourcie plutôt
+qu'un titre tronqué en SERP. Les métadonnées sociales des cinq pages suivent le titre, sans
+quoi le partage et la recherche raconteraient deux choses différentes.
+
+**Deux descriptions repassaient au-dessus de 158 caractères** (163 et 159), dont une que
+j'avais moi-même réécrite la veille en retirant le prix. Corrigées. La règle du dépôt vaut
+aussi pour mes propres réécritures.
+
+### Le nom, dans les données structurées
+
+Le `Product` des 8 pages qui en portent un s'appelait « Q-Bot ». Il s'appelle désormais
+**« Q-Bot by Q-Leap »**, avec `alternateName: "Q-Bot"`. Ce n'est pas une invention marketing :
+c'est le lockup de la charte, « Q-BOT / POWERED BY Q-LEAP ». `alternateName` garde le nom
+court trouvable.
+
+L'`Organization` des 25 pages gagne cinq choses, toutes vérifiables :
+
+- `legalName: "Q-Leap S.A."` (page de garde de l'audit) ;
+- `foundingDate: "2012"` et `foundingLocation` à Bertrange, ce qui ancre l'entité dans le
+  temps et dans un lieu. C'était l'incohérence corrigée à l'étape 1, désormais lisible par
+  une machine ;
+- `founder`, un `Person` nommé Sylvain Perez avec son `jobTitle`. C'est la pièce qui manquait
+  pour que le graphe se ferme : le site le nommait en clair, aucune machine ne pouvait le
+  relier à l'entreprise ;
+- `knowsAbout`, six domaines (test logiciel, automatisation de tests, assurance qualité,
+  double authentification, LuxTrust, Selenium). C'est la propriété qui dit à une IA de quoi
+  l'entité parle, et elle coûte six lignes.
+
+`alternateName: "Q-Bot"` est **conservé** sur l'Organization, alors qu'il confond en apparence
+la société et le produit. C'est délibéré : c'est précisément le lien que l'audit veut voir, et
+maintenant que `legalName` est présent, il se lit comme un « également connu sous le nom de »
+plutôt que comme une identité.
+
+`sameAs` **reste à un seul compte, LinkedIn** : arbitrage du client le 2026-08-25. Je ne peux
+pas vérifier qu'un compte est actif et lui appartient, et **un `sameAs` qui pointe vers un
+profil mort est pire que pas de `sameAs`** : il casse la confiance dans tout le bloc. Le dépôt
+documente deux comptes relevés sur le live en juillet 2026 (`facebook.com/QLeapSa`,
+`twitter.com/qleap_sa`) ; ils ne sont pas déclarés faute de confirmation. À compléter dès que
+le client fournit la liste, c'est deux minutes.
+
+### Et le fichier que les IA lisent en premier
+
+`llms.txt` reçoit une entrée **DISAMBIGUATION** qui nomme les trois homonymes et dit
+lequel est le bon, avec la consigne explicite de citer « Q-Bot by Q-Leap » et jamais « Q-Bot »
+seul. C'est l'endroit le plus direct pour régler la faille 6 : plutôt que d'espérer qu'une IA
+déduise la bonne entité, on le lui écrit. Le fondateur y est nommé aussi.
+
+Contrôlé : 65 blocs JSON-LD valides, 0 titre au-delà de 62 caractères, 0 description au-delà
+de 158, 0 titre où « Q-Bot » reste seul, et les 25 pages passent le balayage normal et
+mouvement réduit sans anomalie.
