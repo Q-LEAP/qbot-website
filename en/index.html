@@ -516,35 +516,15 @@
           Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.
         </p>
       </div>
-      <!-- Le film produit (assets/video/qbot-home.mp4, 2,9 Mo) est une animation de
-           la CAO maison, pas une image générée, et c'est le seul film dont nous
-           disposons.
-           PAS DE BALISE <video> DANS LA PAGE, ET C'EST LE POINT. Signalé le
-           2026-08-24 : chez le client le film partait tout seul et tournait en
-           boucle, alors que le balisage ne portait ni `autoplay` ni `loop`.
-           Irreproductible sous Chromium comme sous WebKit (`paused: true`,
-           `readyState: 0` pendant six secondes), donc c'est un réglage de
-           navigateur ou une extension. Plutôt que de discuter du réglage, on
-           retire la prise : il n'y a rien à lire tant que le visiteur n'a pas
-           cliqué, donc aucun moteur ne PEUT rien démarrer. Le module 18 remplace
-           l'affiche par un <video> au clic, et remet l'affiche à la fin de la
-           lecture, ce qui exclut aussi la boucle.
-           Cela rend en prime structurelle la promesse de poids : zéro octet
-           transféré tant qu'on ne clique pas. En lecture automatique le film
-           ajouterait 2,9 Mo aux 2,4 Mo acceptés le 2026-08-11 pour l'accueil,
-           soit un doublement du poids de la page pour un film muet de 8,7 s.
-           SANS JAVASCRIPT L'AFFICHE RESTE UN LIEN vers le fichier : le visiteur
-           voit le film, dans son lecteur natif. C'est la règle du dépôt (l'état
-           au repos est un état complet) appliquée à un média. -->
+      <!-- Film produit en lecture automatique et en boucle, sans interface.
+           Cf. la note détaillée côté français : chargé et lancé par le module 18
+           à l'entrée de la section, pour que le premier écran ne paie pas les
+           2,9 Mo du fichier. -->
       <div class="video__wrapper video__wrapper--film">
-        <a class="video__play" href="../assets/video/qbot-home.mp4"
-           data-film aria-label="Play the Q-Bot product film, 9 seconds, no sound">
-          <img src="../assets/img/qbot-film-poster.jpg" alt="" width="1280" height="720">
-          <span class="video__play-badge" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </span>
-          <span class="video__play-txt" aria-hidden="true">Watch the film&nbsp;· 9&nbsp;s, no sound</span>
-        </a>
+        <video class="video__player" data-film="../assets/video/qbot-home.mp4"
+               poster="../assets/img/qbot-film-poster.jpg"
+               muted loop playsinline preload="none"
+               aria-hidden="true" tabindex="-1"></video>
       </div>
     </div>
   </div>
@@ -716,24 +696,24 @@
         <h3>Q-Bot</h3>
         <ul role="list">
           <li><span aria-current="page">Home</span></li>
-          <li><a href="technical-specs.html">Technical Specs</a></li>
-          <li><a href="use-cases.html">Use Cases</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="faq.html">FAQ</a></li>
           <li><a href="blog.html">Blog</a></li>
+          <li><a href="faq.html">FAQ</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h3>Product</h3>
         <ul role="list">
+          <li><a href="technical-specs.html">Technical Specs</a></li>
+          <li><a href="use-cases.html">Use Cases</a></li>
           <li><a href="3d-model.html">3D Model</a></li>
           <li><a href="order.html">Demo</a></li>
-          <li><a href="contact.html">Free Demo</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h3>Contact</h3>
         <ul role="list">
+          <li><a href="contact.html">Contact us</a></li>
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
           <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
@@ -744,7 +724,7 @@
         </p>
       </div>
     </div>
-    <div class="footer__bottom">
+<div class="footer__bottom">
       <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Legal links">
         <a href="terms-and-conditions-of-sale/">Terms of Sale</a>

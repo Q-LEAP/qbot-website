@@ -2684,3 +2684,98 @@ Deux faux positifs coûteux, à ne pas refaire :
   de 0,88 px par index, et j'ai pris une grille de garanties parfaitement alignée pour un
   défaut. Trois secondes plus tard, ou en mouvement réduit, tout est à la même abscisse. **Toute
   sonde de disposition doit mesurer en `reduced_motion`**, l'animation n'est pas la mise en page.
+
+## Le film tourne en boucle, et le pied de page s'équilibre (2026-08-25)
+
+### Le film : lecture automatique, boucle, aucune interface
+
+**Demande du client, qui renverse celle de la veille** : « vraiment juste une vidéo loop ». Le
+25 août au matin il signalait que le film partait seul et bouclait, et la correction avait été
+de retirer la balise `<video>` au profit d'une affiche cliquable. L'après-midi il demande
+l'inverse, explicitement. Les deux demandes sont claires, la seconde l'emporte.
+
+Ce qui est en place : `muted loop playsinline`, **aucun `controls`**, et
+`pointer-events: none` sur le lecteur. Cette dernière ligne compte : sans contrôles, un
+navigateur n'affiche rien au survol, mais un **clic droit** ouvre son menu contextuel, avec
+« télécharger » et « boucle ». Ce serait une interface. Il n'y en a plus aucune.
+
+`aria-hidden="true"` et `tabindex="-1"` : c'est une boucle muette, décorative et sans commande.
+L'exposer annoncerait à un lecteur d'écran un média que son utilisateur ne peut ni lancer ni
+arrêter, et ce que le film montre est déjà dit par le texte de la section.
+
+**LE FICHIER N'EST PAS DANS `src` MAIS DANS `data-film`, ET C'EST TOUT L'INTÉRÊT.** Il pèse
+2,9 Mo et la section est à environ 5 000 px du haut de la page. Avec un `src` et `autoplay`, le
+navigateur le télécharge dès l'arrivée sur l'accueil, qu'on descende ou non. Le module 18 le
+demande quand la section approche, avec **200 px d'avance** (et pas 400 : la leçon du
+2026-08-20 sur le filet de la séquence 3D, une marge trop large arme l'observateur dès le
+chargement sur un téléphone). Résultat mesuré : **premier écran à 2 095 Ko, inchangé, et
+5 380 Ko une fois la section atteinte**, dont 2 959 Ko de film.
+
+Deux autres choses que fait le module 18, et qu'il faut garder :
+
+- **il met la boucle en pause hors champ.** Un `<video>` hors écran continue d'être décodé dans
+  plusieurs navigateurs : c'est de la batterie dépensée pour une boucle que personne ne
+  regarde. L'observateur n'est donc pas déconnecté après le premier passage ;
+- **il ne charge rien du tout** en mouvement réduit, en économiseur de données ou sur connexion
+  lente (2g, ou 3g sous 1,2 Mbit/s). L'affiche reste, et c'est une vraie image du film. Une
+  boucle décorative de 2,9 Mo n'a pas à s'imposer à quelqu'un qui a demandé le contraire.
+  **Sans JavaScript, c'est aussi l'affiche qui reste** : l'état au repos est un état complet.
+
+Contrôlé sur les deux moteurs : aucune requête vers le `.mp4` avant le défilement, puis
+`paused: false`, `loop: true`, `controls: false`, `pointer-events: none`, la boucle repart bien
+au bout des 8,72 s, pause à la sortie du champ, aucune erreur console.
+
+**Le module 14 est retiré.** Il coupait la lecture automatique pour le mouvement réduit et
+l'économiseur de données, mais visait `.hero__film-video`, une classe qu'aucune page ne porte
+depuis que le film a quitté le hero. Son garde-fou vit maintenant dans le module 18, là où le
+film se trouve. Le numéro n'est pas réattribué.
+
+**Reste ouvert, chiffré** : le film s'affiche dans un cadre de 526 px de large, alors qu'il est
+encodé en 1280 × 720, soit 2,4 fois trop. Un réencodage en 960 × 540 économiserait environ
+22 % (mesuré le 2026-08-10), en 640 × 360 beaucoup plus, au prix d'un rendu plus mou sur écran
+à forte densité. `avconvert` est le seul encodeur présent sur cette machine et il n'a pas de
+réglage de débit. À arbitrer si les 2,9 Mo gênent.
+
+### Le pied de page : 4 / 4 / 4
+
+Il valait 6 / 3 / 3, et le client a demandé de l'équilibrer en suggérant lui-même de déplacer
+Caractéristiques et Cas d'usage dans la colonne Produit. La répartition retenue :
+
+| Q-Bot | Produit | Contact |
+|---|---|---|
+| Accueil | Caractéristiques | Nous contacter |
+| À propos | Cas d'usage | bot@q-leap.eu |
+| Blog | Modèle 3D | +352 20 21 17 |
+| FAQ | Démo | q-leap.eu |
+
+La logique : « Q-Bot » garde la marque et ses ressources, « Produit » tout ce qui décrit le
+produit, « Contact » les façons de joindre. **Un doublon disparaît au passage** : la page
+contact était rangée sous « Produit » avec l'intitulé « Démo gratuite », à deux lignes d'une
+entrée « Démo » qui menait ailleurs. Elle est devenue « Nous contacter », dans la colonne
+Contact, où on la cherche. Mesuré : trois colonnes de 253 px à 1440, contre 6 / 3 / 3 avant.
+
+Réécrit par script sur les **29 pages**, en relisant dans chaque pied de page la profondeur
+(`../`) et l'entrée sans lien qui marque la page courante, plutôt qu'en les redéduisant du
+chemin du fichier.
+
+### Trois bugs du gabarit d'article, oubliés par trois passes précédentes
+
+`admin/index.html` génère les articles du blog. Son pied de page avait échappé à des
+corrections faites partout ailleurs :
+
+- **`assets/img/logo.png`** dans la barre de navigation ET dans le pied de page. C'est le
+  fragment rogné de 128 × 150 px remplacé partout le 2026-07-09 parce qu'il s'affichait en
+  sliver invisible. Tout article publié depuis embarquait donc le logo cassé. Passé à
+  `logo-baseline-neg.png` ;
+- **`tel:+35220211`**, le 7 final manquant : un clic pour appeler qui ne menait nulle part ;
+- **`facebook.com/qleap.lu`**, un identifiant signalé comme inventé le 2026-07-09 et retiré du
+  site à cette date. Le client a de plus confirmé le 2026-08-25 que **LinkedIn est le seul
+  compte actif**. Retiré ;
+- et un copyright figé à 2025 quand le site affiche 2026.
+
+Le gabarit adopte au passage la même structure 4 / 4 / 4 et descend ses liens légaux dans la
+barre du bas, comme le site.
+
+**Leçon de méthode** : un gabarit qui génère des pages n'est pas vu par un balayage des pages
+publiées. Toute passe sitewide doit le traiter explicitement, et il vaut de le vérifier de
+temps en temps contre le site qu'il est censé imiter.

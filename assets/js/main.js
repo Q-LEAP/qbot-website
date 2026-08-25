@@ -1129,26 +1129,13 @@ backToTop.addEventListener('click', () => {
 }());
 
 /* ════════════════════════════════════════
-   14. FILM DU HERO — respect de prefers-reduced-motion
-   L'attribut `autoplay` est dans le HTML (il doit l'être : sans lui la lecture
-   ne démarre pas assez tôt pour éviter un poster figé au chargement). Pour un
-   visiteur qui demande moins d'animation, on l'arrête et on lui rend la main
-   plutôt que de lui supprimer le contenu.
+   14. (retiré) : garde-fou du film du hero
+   Ce module coupait la lecture automatique du film pour `prefers-reduced-motion`
+   et pour l'économiseur de données. Il visait `.hero__film-video`, classe
+   qu'aucune page ne porte depuis que le film a quitté le hero, et son garde-fou
+   vit désormais dans le module 18, qui pilote le film là où il se trouve.
+   Le numéro n'est pas réattribué : deux ans de messages de commit y renvoient.
 ════════════════════════════════════════ */
-(function () {
-  var film = document.querySelector('.hero__film-video');
-  if (!film) return;
-  /* Même traitement pour « économiseur de données » : le film pèse ~3 Mo et
-     l'autoplay le télécharge immédiatement. */
-  var saveData = navigator.connection && navigator.connection.saveData;
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && !saveData) return;
-  film.autoplay = false;
-  film.loop     = false;
-  film.controls = true;
-  film.pause();
-  film.currentTime = 0;
-}());
-
 
 /* ════════════════════════════════════════
    15. FORMULAIRES — plus jamais d'envoi qui disparaît
@@ -1407,64 +1394,58 @@ backToTop.addEventListener('click', () => {
 
 
 /* ════════════════════════════════════════
-   18. LE FILM, À LA DEMANDE ET SANS BOUCLE
-   La section « 100 % conçu et développé au Luxembourg » ne contient PAS de
-   balise <video> : elle contient un lien vers le fichier, portant l'affiche.
-   Ce module remplace ce lien par un lecteur au clic.
+   18. LE FILM DE L'ACCUEIL : boucle automatique, aucune interface
+   Demandé par le client le 2026-08-25 : « vraiment juste une vidéo loop ». Le
+   balisage ne porte donc ni `controls` ni `src`, et le CSS coupe
+   `pointer-events` pour qu'il n'y ait rien non plus au clic droit.
 
-   POURQUOI CE DÉTOUR. Signalé le 2026-08-24 : chez le client le film démarrait
-   seul et tournait en boucle, alors que le balisage ne portait ni `autoplay` ni
-   `loop`. Irreproductible sous Chromium comme sous WebKit (`paused: true`,
-   `readyState: 0` pendant six secondes), donc cela vient d'un réglage de
-   navigateur ou d'une extension. Ajouter des attributs n'aurait rien changé :
-   l'absence de `autoplay` est déjà la façon la plus explicite de dire non.
-   Ce qui règle le problème pour de bon, c'est qu'il n'y ait rien à démarrer.
+   POURQUOI LE `src` EST DANS `data-film` ET NON DANS L'ATTRIBUT. Le fichier pèse
+   2,9 Mo et la section est à environ 5 000 px du haut de la page. Avec un `src`
+   et `autoplay`, le navigateur le télécharge dès l'arrivée sur l'accueil, qu'on
+   descende ou non : le premier écran paierait 2,9 Mo pour une boucle que la
+   plupart des visiteurs ne verront jamais. Ici le fichier est demandé quand la
+   section approche, avec 200 px d'avance, si bien qu'elle tourne déjà quand elle
+   entre dans le champ. Le visiteur voit exactement ce qu'il a demandé.
 
-   TROIS POINTS :
-   1. la lecture part d'un CLIC, donc `autoplay` sur l'élément créé est légitime
-      et fonctionne partout : c'est un geste utilisateur, aucune politique de
-      lecture automatique ne s'y oppose ;
-   2. à la fin, on remet l'affiche. Pas de `loop`, et le visiteur peut relancer.
-      C'est aussi ce qui garantit qu'aucune boucle ne peut apparaître, quel que
-      soit le navigateur ;
-   3. le focus passe sur le lecteur. Sans cela, un visiteur au clavier vient
-      d'activer un lien qui disparaît, et son focus retombe sur le document.
+   200 px D'AVANCE ET PAS 400 : la leçon du 2026-08-20 sur le filet de la séquence
+   3D. Une marge trop large arme l'observateur dès le chargement sur un téléphone,
+   ce qui annule tout le bénéfice.
 
-   SANS JAVASCRIPT le lien reste un lien : le film s'ouvre dans le lecteur natif
-   du navigateur. L'état au repos est un état complet, comme partout ici.
+   ELLE SE MET EN PAUSE HORS CHAMP. Un `<video>` hors écran continue d'être décodé
+   dans plusieurs navigateurs : c'est de la batterie dépensée pour une boucle que
+   personne ne regarde. L'observateur n'est donc pas déconnecté après le premier
+   passage, il pilote lecture et pause.
+
+   ON NE CHARGE RIEN DU TOUT en mouvement réduit, en économiseur de données ou sur
+   connexion lente : l'affiche reste, et c'est une vraie image du film. Une boucle
+   décorative de 2,9 Mo n'a pas à s'imposer à quelqu'un qui a dit le contraire.
+   Ce garde-fou remplace l'ancien module 14, qui visait `.hero__film-video`, une
+   classe qu'aucune page ne porte plus.
 ════════════════════════════════════════ */
 (function () {
-  var lien = document.querySelector('.video__play[data-film]');
-  if (!lien) return;
+  var film = document.querySelector('.video__player[data-film]');
+  if (!film) return;
 
-  var cadre = lien.parentNode;
-  var src   = lien.getAttribute('href');
-  var label = lien.getAttribute('aria-label') || '';
+  var co = navigator.connection || {};
+  var lente = co.saveData === true ||
+              co.effectiveType === '2g' || co.effectiveType === 'slow-2g' ||
+              (co.effectiveType === '3g' && (co.downlink || 99) < 1.2);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || lente) return;
 
-  lien.addEventListener('click', function (e) {
-    /* On laisse passer les ouvertures volontaires dans un autre onglet. */
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    e.preventDefault();
-
-    var v = document.createElement('video');
-    v.className = 'video__player';
-    v.src = src;
-    v.controls = true;
-    v.muted = true;          /* le film est muet de toute façon */
-    v.playsInline = true;
-    v.setAttribute('aria-label', label);
-    v.tabIndex = 0;
-
-    v.addEventListener('ended', function () {
-      if (cadre.contains(v)) cadre.replaceChild(lien, v);
-      lien.focus();
-    });
-
-    cadre.replaceChild(v, lien);
-    v.focus();
-    var p = v.play();
-    /* Si le navigateur refuse malgré le geste, on ne laisse pas un cadre noir :
-       les contrôles sont là, le visiteur appuie lui-même. */
+  function jouer() {
+    if (!film.getAttribute('src')) film.setAttribute('src', film.getAttribute('data-film'));
+    var p = film.play();
+    /* Si le navigateur refuse malgré `muted`, on ne laisse pas un cadre noir :
+       l'affiche est toujours là, elle fait le travail. */
     if (p && p.catch) p.catch(function () {});
-  });
+  }
+
+  if (!('IntersectionObserver' in window)) { jouer(); return; }
+
+  new IntersectionObserver(function (entrees) {
+    entrees.forEach(function (e) {
+      if (e.isIntersecting) jouer();
+      else if (film.getAttribute('src')) film.pause();
+    });
+  }, { rootMargin: '200px 0px' }).observe(film);
 }());

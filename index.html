@@ -547,35 +547,28 @@
           Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.
         </p>
       </div>
-      <!-- Le film produit (assets/video/qbot-home.mp4, 2,9 Mo) est une animation de
-           la CAO maison, pas une image générée, et c'est le seul film dont nous
-           disposons.
-           PAS DE BALISE <video> DANS LA PAGE, ET C'EST LE POINT. Signalé le
-           2026-08-24 : chez le client le film partait tout seul et tournait en
-           boucle, alors que le balisage ne portait ni `autoplay` ni `loop`.
-           Irreproductible sous Chromium comme sous WebKit (`paused: true`,
-           `readyState: 0` pendant six secondes), donc c'est un réglage de
-           navigateur ou une extension. Plutôt que de discuter du réglage, on
-           retire la prise : il n'y a rien à lire tant que le visiteur n'a pas
-           cliqué, donc aucun moteur ne PEUT rien démarrer. Le module 18 remplace
-           l'affiche par un <video> au clic, et remet l'affiche à la fin de la
-           lecture, ce qui exclut aussi la boucle.
-           Cela rend en prime structurelle la promesse de poids : zéro octet
-           transféré tant qu'on ne clique pas. En lecture automatique le film
-           ajouterait 2,9 Mo aux 2,4 Mo acceptés le 2026-08-11 pour l'accueil,
-           soit un doublement du poids de la page pour un film muet de 8,7 s.
-           SANS JAVASCRIPT L'AFFICHE RESTE UN LIEN vers le fichier : le visiteur
-           voit le film, dans son lecteur natif. C'est la règle du dépôt (l'état
-           au repos est un état complet) appliquée à un média. -->
+      <!-- Le film produit, en LECTURE AUTOMATIQUE ET EN BOUCLE, sans aucune
+           interface : ni contrôles, ni rien au survol. Demandé par le client le
+           2026-08-25, après la version à la demande de la veille.
+           `pointer-events: none` en CSS ferme aussi le menu contextuel : sans lui,
+           un clic droit proposerait « télécharger » et « boucle », donc une
+           interface quand même.
+           `aria-hidden` + `tabindex="-1"` : c'est une boucle muette, décorative et
+           sans commande. L'exposer annoncerait à un lecteur d'écran un média que
+           son utilisateur ne peut ni lancer, ni arrêter, ni comprendre. Ce que le
+           film montre est dit par le texte de la section.
+           LE FICHIER N'EST PAS DANS `src` MAIS DANS `data-film`, ET C'EST LE POINT :
+           il pèse 2,9 Mo, et la section est à ~5 000 px du haut de la page. Avec un
+           `src` et `autoplay`, le navigateur le télécharge dès l'arrivée sur
+           l'accueil, qu'on descende ou non. Le module 18 le charge et le lance
+           quand la section entre à l'écran : le visiteur voit donc bien une vidéo
+           déjà en train de tourner, sans que le premier écran paie 2,9 Mo.
+           SANS JAVASCRIPT il reste l'affiche, qui est une vraie image du film. -->
       <div class="video__wrapper video__wrapper--film">
-        <a class="video__play" href="assets/video/qbot-home.mp4"
-           data-film aria-label="Lire le film de présentation du boîtier Q-Bot, 9 secondes, sans son">
-          <img src="assets/img/qbot-film-poster.jpg" alt="" width="1280" height="720">
-          <span class="video__play-badge" aria-hidden="true">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </span>
-          <span class="video__play-txt" aria-hidden="true">Voir le film&nbsp;· 9&nbsp;s, sans son</span>
-        </a>
+        <video class="video__player" data-film="assets/video/qbot-home.mp4"
+               poster="assets/img/qbot-film-poster.jpg"
+               muted loop playsinline preload="none"
+               aria-hidden="true" tabindex="-1"></video>
       </div>
     </div>
   </div>
@@ -751,24 +744,24 @@
         <h3>Q-Bot</h3>
         <ul role="list">
           <li><span aria-current="page">Accueil</span></li>
-          <li><a href="caracteristiques.html">Caractéristiques</a></li>
-          <li><a href="cas-usage.html">Cas d'usage</a></li>
           <li><a href="a-propos.html">À propos</a></li>
-          <li><a href="faq.html">FAQ</a></li>
           <li><a href="blog.html">Blog</a></li>
+          <li><a href="faq.html">FAQ</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h3>Produit</h3>
         <ul role="list">
+          <li><a href="caracteristiques.html">Caractéristiques</a></li>
+          <li><a href="cas-usage.html">Cas d'usage</a></li>
           <li><a href="modele-3d.html">Modèle 3D</a></li>
           <li><a href="commandez.html">Démo</a></li>
-          <li><a href="contact.html">Démo gratuite</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h3>Contact</h3>
         <ul role="list">
+          <li><a href="contact.html">Nous contacter</a></li>
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
           <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
@@ -779,7 +772,7 @@
         </p>
       </div>
     </div>
-    <div class="footer__bottom">
+<div class="footer__bottom">
       <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Liens légaux">
         <a href="conditions-vente/">Conditions de vente</a>

@@ -1130,26 +1130,33 @@ function generateArticleHTML(a) {
        <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Support and replacement included, no long-term commitment.</p>
        <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Request a demo</a>`;
 
+  /* PIED DE PAGE DU GABARIT D'ARTICLE, aligné sur celui du site le 2026-08-25 :
+     trois colonnes de quatre entrées au lieu de 2 / 7 / 3. Les liens légaux
+     descendent dans la barre du bas, comme sur le site. */
   const footerCols = fr
-    ? `<div class="footer__col"><h4>Ressources</h4><ul role="list"><li><a href="${nav0}conditions-vente/">Conditions de vente</a></li><li><a href="${nav0}confidentialite/">Confidentialité</a></li></ul></div>
-       <div class="footer__col"><h4>Q-Bot</h4><ul role="list">
+    ? `<div class="footer__col"><h4>Q-Bot</h4><ul role="list">
          <li><a href="${nav0}index.html">Accueil</a></li>
-         <li><a href="${nav0}caracteristiques.html">Caractéristiques</a></li>
          <li><a href="${nav0}a-propos.html">À propos</a></li>
          <li><a href="${blogHref}">Blog</a></li>
-         <li><a href="${orderHref}">Démo</a></li>
          <li><a href="${nav0}faq.html">FAQ</a></li>
-         <li><a href="${nav0}contact.html">Contact</a></li>
+       </ul></div>
+       <div class="footer__col"><h4>Produit</h4><ul role="list">
+         <li><a href="${nav0}caracteristiques.html">Caractéristiques</a></li>
+         <li><a href="${nav0}cas-usage.html">Cas d'usage</a></li>
+         <li><a href="${nav0}modele-3d.html">Modèle 3D</a></li>
+         <li><a href="${orderHref}">Démo</a></li>
        </ul></div>`
-    : `<div class="footer__col"><h4>Resources</h4><ul role="list"><li><a href="${nav0}en/terms-and-conditions-of-sale/">Terms of Sale</a></li><li><a href="${nav0}en/privacy/">Privacy</a></li></ul></div>
-       <div class="footer__col"><h4>Q-Bot</h4><ul role="list">
+    : `<div class="footer__col"><h4>Q-Bot</h4><ul role="list">
          <li><a href="${nav0}index.html">Home</a></li>
-         <li><a href="${nav0}technical-specs.html">Technical Specs</a></li>
          <li><a href="${nav0}about.html">About</a></li>
          <li><a href="${blogHref}">Blog</a></li>
-         <li><a href="${orderHref}">Demo</a></li>
          <li><a href="${nav0}faq.html">FAQ</a></li>
-         <li><a href="${nav0}contact.html">Contact</a></li>
+       </ul></div>
+       <div class="footer__col"><h4>Product</h4><ul role="list">
+         <li><a href="${nav0}technical-specs.html">Technical Specs</a></li>
+         <li><a href="${nav0}use-cases.html">Use Cases</a></li>
+         <li><a href="${nav0}3d-model.html">3D Model</a></li>
+         <li><a href="${orderHref}">Demo</a></li>
        </ul></div>`;
 
   const ctaBtn = fr
@@ -1180,7 +1187,7 @@ function generateArticleHTML(a) {
 <header class="nav" role="banner">
   <div class="container">
     <nav class="nav__inner">
-      <a href="${nav0}index.html" class="nav__logo"><img src="${base}img/logo.png" alt="Q-Bot by Q-Leap" width="120" height="40"></a>
+      <a href="${nav0}index.html" class="nav__logo"><img src="${base}img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40"></a>
       <button class="nav__toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
       <ul class="nav__menu" id="nav-menu" role="list">${navLinks}</ul>
       <div class="nav__actions">
@@ -1246,22 +1253,35 @@ function generateArticleHTML(a) {
   <div class="container">
     <div class="footer__grid">
       <div>
-        <div class="footer__logo"><img src="${base}img/logo.png" alt="Q-Bot by Q-Leap" width="110" height="36"></div>
+        <div class="footer__logo"><img src="${base}img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36"></div>
         <p class="footer__desc">${fr ? "Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap." : "The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap."}</p>
+        <div class="footer__social" aria-label="${fr ? 'Réseaux sociaux' : 'Social networks'}">
+          <!-- LinkedIn seul : le client a confirmé le 2026-08-25 que les autres
+               comptes ne sont plus actifs. Le lien Facebook qui se trouvait ici
+               pointait en plus sur un identifiant déjà signalé comme inventé le
+               2026-07-09. -->
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        </div>
       </div>
       ${footerCols}
       <div class="footer__col"><h4>Contact</h4><ul role="list">
+        <li><a href="${nav0}contact.html">${fr ? 'Nous contacter' : 'Contact us'}</a></li>
         <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
-        <li><a href="tel:+35220211">+352 20 21 17</a></li>
+        <!-- Le numéro était tronqué (`tel:+35220211`, le 7 final manquait) : un
+             clic pour appeler qui ne menait nulle part. -->
+        <li><a href="tel:+352202117">+352 20 21 17</a></li>
         <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
       </ul><p style="margin-top:14px;font-size:.8125rem;line-height:1.5;">10B rue des Mérovingiens<br>L-8070 Bertrange, Luxembourg</p></div>
     </div>
     <div class="footer__bottom">
-      <p class="footer__copy">Copyright &copy;2025 Q-Bot powered by Q-Leap</p>
-      <div class="footer__social">
-        <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
-        <a href="https://www.facebook.com/qleap.lu" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-      </div>
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="${fr ? 'Liens légaux' : 'Legal links'}">
+        ${fr ? `<a href="${nav0}conditions-vente/">Conditions de vente</a>
+        <a href="${nav0}confidentialite/">Confidentialité</a>`
+             : `<a href="${nav0}en/terms-and-conditions-of-sale/">Terms of Sale</a>
+        <a href="${nav0}en/privacy/">Privacy</a>`}
+      </nav>
+    </div>
     </div>
   </div>
 </footer>
