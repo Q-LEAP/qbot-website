@@ -2578,7 +2578,14 @@ clair au moment de l'exécution, et le fichier produit porte le commentaire qui 
 
 ### Ce qui reste manuel, et dans quel ordre
 
-Le script l'imprime : DNS et HTTPS, **puis vérifier les 34 redirections en ligne**, puis la
+Le script l'imprime : DNS et HTTPS, **puis vérifier les 52 redirections en ligne**, puis la
 Search Console, et **ne supprimer le WordPress qu'après cette vérification** (tant qu'il
-répond, une erreur est réparable ; après, l'adresse est perdue). Les six formulaires prennent
-leur endpoint en une option, `--endpoint`, ou restent sur le repli courrier.
+répond, une erreur est réparable ; après, l'adresse est perdue).
+
+**L'ENDPOINT DES FORMULAIRES EST EN ATTENTE, ET LE CLIENT A DEMANDÉ QU'ON LUI RAPPELLE.** Le
+2026-08-25 : « on voit ça plus tard, rappelle-le moi tant qu'on n'a pas statué, je dois voir
+avec mes managers. » Ce n'est donc pas un point de vigilance de fin de projet mais un rappel
+actif, à faire en une ligne à la fin de chaque échange jusqu'à ce qu'il tranche. L'explication
+complète lui a été donnée ce jour-là (service tiers type Formspree ou Brevo, une URL à coller
+dans `--endpoint`, réserves RGPD, plafond de 50 envois par mois sur les offres gratuites) : ne
+pas la refaire, juste rappeler que le point est ouvert.
