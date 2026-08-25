@@ -3071,3 +3071,141 @@ avec un parcours par pas de 450 px (110 ms par pas, `behavior: 'instant'`), la m
 **0 partout**. L'observateur d'intersection n'a simplement jamais vu passer les éléments du
 milieu de page. C'est la même famille de piège que la note du 2026-08-20 sur `scroll-behavior:
 smooth`, et elle ressemble exactement au vrai défaut « un bloc reste invisible ».
+
+## La porte de côté : ce que l'hébergement servait à côté du site (2026-08-25)
+
+`Documentations/Audit_Q-Bot_Controle_Note_Strategique.pdf` (contrôle n°2, 16 pages, 6,2 → 6,5
+sur 10) et `Documentations/Plan_Bascule_Q-Bot.pdf` (révision 2, 10 chantiers) remplacent les
+versions du matin. Neuf des onze points du matin sont confirmés refermés dans le code. Le
+point neuf est ailleurs : **ce que GitHub Pages sert en dehors des 28 pages du plan de site.**
+
+**L'AUDIT SOUS-ESTIME LE SUJET SUR TROIS POINTS, MESURÉS AVANT CORRECTION.**
+
+1. **Le dépôt GitHub est PUBLIC**, et l'audit raisonne comme si le risque n'existait qu'au
+   jour J. Relevé sans authentification : `api.github.com/repos/Q-LEAP/qbot-website` répond
+   `"private": false`, `raw.githubusercontent.com/.../main/CLAUDE.md` répond 200, et
+   `q-leap.github.io/qbot-website/CLAUDE.md` et `/admin/` répondent 200. Le tarif et les sept
+   références clients sont donc **déjà lisibles publiquement**, là où le `robots.txt` de
+   q-bot.eu n'a aucune prise.
+2. **Il n'y a pas six documents hors plan, il y en a davantage.** L'audit a manqué
+   `claude.md.txt` (une consigne de développement plus ancienne), **`website 3/website/`** (une
+   SECONDE copie des quatre pages de maquette anglaises, différentes de celles de
+   `Documentations/website/`, donc huit pages concurrentes et non quatre),
+   `Documentations/assets-sources/` (les masters IA que ce fichier dit explicitement de ne pas
+   remettre en ligne, et qui sont en ligne), `Screen modèle 3D/` (12 rendus CAO) et `tools/`
+   (23 fichiers dont 2 pages HTML).
+3. **Le chantier 05 tel qu'écrit se retourne contre le site.** Il fait écrire `hidden` dans le
+   HTML de la FAQ, alors que le même audit porte au crédit du site que le texte des réponses
+   soit lisible sans JavaScript, « ce qui permet aux moteurs et aux IA de citer tes réponses ».
+   Voir la section FAQ ci-dessous.
+
+### Chantier 01 : `.github/workflows/pages.yml`
+
+Le site est assemblé dans un dossier de publication qui ne contient QUE lui, et c'est ce
+dossier qui part sur Pages. **Rien n'est déplacé** : le dépôt garde sa structure, `CLAUDE.md`
+garde son historique, les chemins de `tools/` sont intacts. C'est l'écart avec les trois
+options du plan (`/docs`, `git rm --cached`, `_config.yml`), qui demandaient toutes soit une
+restructuration, soit de désversionner un fichier.
+
+**IL FAUT UN RÉGLAGE MANUEL, UNE FOIS, SANS QUOI CE FICHIER NE SERT À RIEN :**
+`Settings → Pages → Build and deployment → Source : « GitHub Actions »`. Tant que la source
+reste « Deploy from a branch », c'est la racine qui est servie.
+
+**Et passer le dépôt en privé est une décision séparée** : Pages sur un dépôt privé demande un
+plan GitHub Pro / Team / Enterprise. Sur le plan gratuit, passer en privé éteint Pages. À
+vérifier avant de basculer. Le contenu resterait de toute façon dans l'historique git.
+
+Deux garde-fous dans le workflow, et le second a servi tout de suite :
+
+- un contrôle de **chemin** (aucun dossier de travail dans le dossier publié) et un contrôle de
+  **contenu** (« 850 € / mois » et `CREDS = {`, qui ne vivent que dans des fichiers de travail).
+  La publication échoue plutôt que de mettre le tarif en ligne en silence. Volontairement
+  **pas** de contrôle sur « Cargolux » : le bandeau de références vit légitimement dans
+  `index.html`, entouré d'un commentaire HTML ;
+- **`Screen modèle 3D` passait au travers de son exclusion.** macOS stocke le « è » décomposé
+  (NFD), Linux composé (NFC) : un motif littéral ne correspond pas des deux côtés. Les motifs
+  sont donc des globs (`Screen mod*`). C'est un piège de la même famille que le cadratin écrit
+  `&mdash;`, l'apostrophe typographique et l'espace insécable, mais au niveau du système de
+  fichiers cette fois.
+
+Contrôlé à blanc : 138 fichiers publiés, les 28 URL du sitemap toutes présentes, aucun dossier
+de travail.
+
+### Chantier 05 : `hidden` est posé par le script, jamais écrit dans le HTML
+
+Les réponses de FAQ n'étaient repliées que **visuellement** (`max-height: 0` + `overflow:
+hidden`) : un lecteur d'écran énonçait les dix-sept d'affilée et les liens d'une réponse fermée
+restaient atteignables au clavier. C'est réel et c'était à corriger.
+
+**MAIS L'ATTRIBUT NE DOIT PAS ÊTRE DANS LE HTML.** Écrit en dur, il servirait les 17 réponses
+comme contenu masqué à tout le monde, robots compris, et les retirerait du rendu pour un
+visiteur sans JavaScript. Posé par le module 3 à l'initialisation, il ne s'applique qu'aux
+navigateurs qui savent aussi rouvrir : sans JavaScript on retombe exactement sur l'état d'avant
+(déjà `max-height: 0`), pas plus mauvais, et le HTML servi ne contient aucun attribut masquant.
+Vérifié : `faq-item__answer" hidden` apparaît **0 fois** dans la source servie, les 17 réponses
+y sont.
+
+Trois choses à ne pas défaire dans le module 3 :
+
+- **l'ordre des deux lignes à l'ouverture.** `answer.hidden = false` AVANT
+  `answer.scrollHeight` : un élément `hidden` est en `display: none` et mesure zéro, donc
+  mesurer d'abord ouvrirait toutes les réponses sur une hauteur nulle. La lecture de
+  `scrollHeight` force au passage le calcul de mise en page, ce qui est aussi ce qui fait
+  partir la transition de `max-height: 0` au lieu de sauter. Mesuré : 314 px à l'ouverture ;
+- **le repli est différé de 480 ms** (transition CSS 0,42 s + marge) et vérifie
+  `!item.classList.contains('open')` avant de masquer : sinon une réponse rouverte entre-temps
+  se refermerait dans le dos du visiteur ;
+- **l'état initial est masqué immédiatement**, sans délai, sinon les 17 réponses restent
+  énoncées pendant la demi-seconde qui suit le chargement.
+
+Le balisage reçoit `id` / `aria-controls` / `aria-labelledby` sur les **48 questions des six
+pages** qui en portent (`faq`, `en/faq`, `commandez`, `en/order`, `index`, `en/index`), numérotés
+par page. Mesuré sur Chromium et WebKit : 17 boutons atteignables au clavier, **0 focus tombant
+dans une réponse fermée**, l'ouverture par l'index (module 16) fonctionne toujours.
+
+### Chantier 10 : trois liens sur quatre, et pourquoi
+
+- **L'article Merkur n'est plus atteignable.** Le live WordPress le liait vers
+  `corporatenews.lu/fr/archives-shortcut/…/automatiser-l-utilisation-des-tokens-dans-vos-tests-logiciels` ;
+  ce domaine **redirige aujourd'hui vers la page d'accueil de `merkur.lu`**, l'article n'y est
+  plus. Lier une preuve qui atterrit sur une page d'accueil générique est pire que ne rien
+  lier. C'est donc la **reprise ITnation du lendemain** (28.02.2023, vérifiée vivante, Q-Leap
+  et Q-Bot nommés) qui est liée, sur les deux articles Merkur. Attention : cet article décrit
+  l'ancien récit du token LuxTrust, ce qui est cohérent avec un billet de 2023 portant déjà sa
+  note de transparence, mais ne doit pas être repris comme description du produit ;
+  `www.corporatenews.lu` ne répond pas du tout, son certificat ne couvre que le domaine nu ;
+- **le profil LinkedIn de Sylvain Perez** rejoint ses quatre signatures d'article et les deux
+  cartes en vedette des index de blog, là où le JSON-LD le déclarait déjà seul ;
+- **ADB, Selenium, Cypress, Playwright, Robot Framework** sont liés à leur documentation
+  officielle. Un lien dans un `.spec-item__label` a demandé sa propre règle CSS : le libellé
+  est en capitales espacées et en gris sourd, un lien teal souligné y ferait une tache et
+  casserait la colonne que `subgrid` aligne. Il garde donc la couleur du libellé et se signale
+  par un soulignement pointillé.
+
+**Laissé ouvert, et c'est le seul écart du lot** : le lien LinkedIn sur `a-propos.html` /
+`en/about.html`. Le plan le demande, mais **ces pages ne nomment pas leur fondateur** : il n'y
+est que dans le JSON-LD. L'y ajouter demande d'écrire une phrase neuve sur une page dont le
+texte suit le live mot pour mot. À arbitrer avec le client.
+
+### Les autres chantiers
+
+- **02** : le modèle d'article de `admin/index.html` écrivait `index,follow`, il passe en
+  `noindex, nofollow` avec la marque « PRÉ-LANCEMENT » des 28 autres pages. Sans effet une fois
+  le chantier 01 appliqué, puisque `admin/` n'est plus publié ; gardé comme filet ;
+- **03** : le script d'atelier de l'éditeur (60 lignes, `localStorage` `qbot_articles`) est
+  retiré de `blog.html` et `en/blog.html`. Il remplaçait la liste du blog, donc les seuls liens
+  internes vers les trois articles, si le navigateur du visiteur en contenait. Vérifié après :
+  1 article en vedette + 2 cartes, les trois liens intacts dans les deux langues ;
+- **04** : « via Calendly » et « par téléphone » deviennent cliquables sur `commandez.html` et
+  `en/order.html`. Point reporté par le client depuis le 25/08 au matin, repris sur sa demande ;
+- **06** : le commentaire de l'index de la FAQ compte dix-sept questions et non plus seize.
+
+### Ce qui reste, et l'ordre du jour J
+
+L'ordre est la seule contrainte dure : **le chantier 01 avant `go-live.py`**. Un moteur qui a vu
+un fichier une fois peut le garder longtemps dans ses résultats. Reste ensuite inchangé : CNAME,
+DNS, HTTPS, les trois verrous ensemble, Search Console le jour même, vérifier cinq anciennes
+adresses, et seulement ensuite supprimer le WordPress.
+
+Hors périmètre de ce dépôt : le « Depuis 10 ans » de `q-leap.eu` (chantier 09), qui contredit le
+copyright 2012 de ce site-là.
