@@ -234,6 +234,15 @@
   <div class="container">
     <h2>Newsletter</h2>
     <p>Stay up to date with Q-Bot's latest features and QA insights.</p>
+    <!-- ROSOAI-EN-ATTENTE · form endpoint
+         `data-endpoint` is empty ON PURPOSE, this is not a forgotten form: the
+         submission service URL is awaiting the client's approval, an item opened on
+         2026-08-25. Nothing is lost meanwhile. Module 15 of main.js opens the
+         visitor's mail client pre-filled field by field, and the page says so in
+         plain words. On approval there is a single value to fill in: the script
+         switches to direct submission on its own.
+         Full site status: /llms.txt, section "Pre-launch status".
+         REMOVE ALONG WITH the value. Find them all: grep -rn ROSOAI-EN-ATTENTE -->
     <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Newsletter sign-up">
       <input type="email" name="email" placeholder="Enter your email address to subscribe" required aria-label="Email">
       <button type="submit" class="btn">SUBSCRIBE</button>

@@ -160,7 +160,15 @@
         <span class="section-label">Contact us</span>
         <h2 class="section-title" id="contact-form-title">More info</h2>
         <p style="margin-bottom:32px;">If you are interested in our solution and would like to obtain additional information, please complete the form below.</p>
-        <!-- Sendinblue/Brevo form embed — replace with actual Brevo embed code -->
+        <!-- ROSOAI-EN-ATTENTE · form endpoint
+             `data-endpoint` is empty ON PURPOSE, this is not a forgotten form: the
+             submission service URL is awaiting the client's approval, an item opened on
+             2026-08-25. Nothing is lost meanwhile. Module 15 of main.js opens the
+             visitor's mail client pre-filled field by field, and the page says so in
+             plain words. On approval there is a single value to fill in: the script
+             switches to direct submission on its own.
+             Full site status: /llms.txt, section "Pre-launch status".
+             REMOVE ALONG WITH the value. Find them all: grep -rn ROSOAI-EN-ATTENTE -->
         <form class="contact-form" data-form="contact" data-endpoint="" method="post" novalidate>
           <div class="form-row">
             <div class="form-group"><label for="firstname">First name <span>*</span></label><input type="text" id="firstname" name="firstname" required autocomplete="given-name" placeholder="John"></div>

@@ -203,7 +203,8 @@
   </div>
 </section>
 <!-- ═══════════════════════════════════════════════════════════════════════
-     TRUST STRIP — READY, DELIBERATELY INACTIVE
+     TRUST STRIP: READY, DELIBERATELY INACTIVE
+     ROSOAI-EN-ATTENTE · client references
      Cf. the detailed note on the French homepage. To activate: remove this
      opening comment line and the closing one after </section>. The CSS is
      already in style.css.
@@ -625,7 +626,15 @@
   <div class="container">
     <h2>Newsletter</h2>
     <p>If you want to get the latest news from Q-Bot, subscribe to our newsletter.</p>
-    <!-- Sendinblue/Brevo form embed — replace with the real Brevo embed -->
+    <!-- ROSOAI-EN-ATTENTE · form endpoint
+         `data-endpoint` is empty ON PURPOSE, this is not a forgotten form: the
+         submission service URL is awaiting the client's approval, an item opened on
+         2026-08-25. Nothing is lost meanwhile. Module 15 of main.js opens the
+         visitor's mail client pre-filled field by field, and the page says so in
+         plain words. On approval there is a single value to fill in: the script
+         switches to direct submission on its own.
+         Full site status: /llms.txt, section "Pre-launch status".
+         REMOVE ALONG WITH the value. Find them all: grep -rn ROSOAI-EN-ATTENTE -->
     <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Newsletter signup">
       <input type="email" name="email" placeholder="Please enter your email address to subscribe" required aria-label="Email" title="Please enter your email address to subscribe. E.g.: abc@xyz.com">
       <button type="submit" class="btn">SUBSCRIBE</button>

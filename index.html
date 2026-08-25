@@ -220,7 +220,8 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
-     BANDEAU DE CONFIANCE — PRÊT, VOLONTAIREMENT INACTIF
+     BANDEAU DE CONFIANCE : PRÊT, VOLONTAIREMENT INACTIF
+     ROSOAI-EN-ATTENTE · références clients
 
      Écrit à la demande du 2026-08-25, et laissé en commentaire sur décision du
      client : les sept noms sont ses références Q-Leap, publiques sur
@@ -684,7 +685,15 @@
   <div class="container">
     <h2>Newsletter</h2>
     <p>Si vous souhaitez bénéficier des dernières nouveautés de Q-Bot, inscrivez-vous à notre newsletter.</p>
-    <!-- Formulaire Sendinblue/Brevo — remplacer par l'embed Brevo -->
+    <!-- ROSOAI-EN-ATTENTE · endpoint des formulaires
+         `data-endpoint` est vide À DESSEIN, ce n'est pas un formulaire oublié :
+         l'adresse du service d'envoi est en attente d'approbation chez le client,
+         point ouvert le 2026-08-25. Rien ne se perd en attendant. Le module 15 de
+         main.js ouvre le logiciel de courrier du visiteur, prérempli champ par
+         champ, et la page le lui écrit noir sur blanc. Le jour de l'approbation il
+         n'y a qu'une valeur à renseigner : le script bascule seul en envoi direct.
+         Statut complet du site : /llms.txt, section « Pre-launch status ».
+         À RETIRER avec la valeur. Tout retrouver : grep -rn ROSOAI-EN-ATTENTE -->
     <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Inscription newsletter">
       <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
       <button type="submit" class="btn">S'INSCRIRE</button>

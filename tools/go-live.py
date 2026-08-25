@@ -49,6 +49,13 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 META = re.compile(r'[ \t]*<meta name="robots" content="noindex[^"]*">\n')
 COMMENTAIRE = re.compile(r'[ \t]*<!--\s*PRÉ-LANCEMENT.*?-->\n', re.S)
 
+# La note posée à côté des six formulaires pour dire que l'endpoint est en
+# attente d'approbation. Elle n'a plus d'objet dès que --endpoint est fourni,
+# et elle NE porte PAS la marque « PRÉ-LANCEMENT » à dessein : elle ne doit pas
+# disparaître avec les verrous d'indexation, qui se lèvent peut-être avant que
+# l'approbation n'arrive.
+NOTE_ENDPOINT = re.compile(r'[ \t]*<!--\s*ROSOAI-EN-ATTENTE · (?:endpoint des formulaires|form endpoint).*?-->\n', re.S)
+
 # CE QUI RESTE HORS INDEX POUR TOUJOURS. Ces balises ne sont PAS des verrous de
 # pré-lancement, elles ne doivent donc jamais être retirées :
 #   - admin/    : outil interne, que robots.txt ferme en plus par « Disallow: /admin/ » ;
@@ -151,7 +158,7 @@ def main():
     mode = 'APPLICATION' if ecrit else 'SIMULATION (rien n\'est écrit)'
     print(f"── Levée des verrous de pré-lancement — {mode}\n")
 
-    n_meta = n_form = 0
+    n_meta = n_form = n_note = 0
     for f in pages():
         rel = os.path.relpath(f, RACINE)
         if rel.startswith(JAMAIS):
@@ -165,6 +172,13 @@ def main():
             neuf = s.replace('data-endpoint=""', f'data-endpoint="{a.endpoint}"')
             n_form += s.count('data-endpoint=""')
             s = neuf
+            # La note qui explique que l'endpoint est en attente part AVEC la
+            # valeur qu'elle attendait. Sans ça elle survivrait au point qu'elle
+            # décrit, et une note qui ment est une note qu'on cesse de croire.
+            avant = s
+            s = NOTE_ENDPOINT.sub('', s)
+            if s != avant:
+                n_note += 1
         if s != o:
             n_meta += 1
             if ecrit:
@@ -172,6 +186,7 @@ def main():
     print(f"  balise noindex et commentaire PRÉ-LANCEMENT retirés de {n_meta} fichiers")
     if a.endpoint:
         print(f"  data-endpoint renseigné sur {n_form} formulaires → {a.endpoint}")
+        print(f"  note ROSOAI-EN-ATTENTE de l'endpoint retirée de {n_note} fichiers")
     else:
         print("  aucun endpoint fourni : les six formulaires restent sur le repli courrier")
 
