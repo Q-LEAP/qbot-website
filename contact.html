@@ -32,10 +32,11 @@
   <link rel="icon" href="assets/img/favicon.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <meta name="theme-color" content="#000000">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1531d539">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=a206d7d8">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -267,14 +268,16 @@
           </div>
         </div>
 
-        <!-- Carte Google Maps -->
-        <div class="contact-map contact-map--inline" role="complementary" aria-label="Localisation Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange">
-          <iframe class="contact-map__iframe"
-            src="https://maps.google.com/maps?q=10B+rue+des+M%C3%A9rovingiens%2C+L-8070+Bertrange%2C+Luxembourg&output=embed&z=16"
-            title="Q-Leap sur Google Maps"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            aria-hidden="true"></iframe>
+        <!-- Carte de contact — chargée SEULEMENT au clic -->
+        <div class="contact-map contact-map--inline is-differee" data-map-src="https://maps.google.com/maps?q=10B+rue+des+M%C3%A9rovingiens%2C+L-8070+Bertrange%2C+Luxembourg&amp;output=embed&amp;z=16"
+             data-map-title="Q-Leap sur Google Maps"
+             role="complementary" aria-label="Localisation Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange">
+          <div class="contact-map__ask">
+            <svg class="contact-map__ask-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <p class="contact-map__ask-addr">10B rue des Mérovingiens<br>L-8070 Bertrange, Luxembourg</p>
+            <button type="button" class="contact-map__ask-btn" data-map-load>Afficher la carte</button>
+            <p class="contact-map__ask-note">L'affichage de la carte charge un contenu Google, qui dépose ses propres cookies.</p>
+          </div>
           <a class="contact-map__open"
              href="https://maps.google.com/?q=10B+rue+des+M%C3%A9rovingiens+L-8070+Bertrange+Luxembourg"
              target="_blank" rel="noopener noreferrer"
@@ -365,6 +368,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=055a4821" defer></script>
+<script src="assets/js/main.js?v=b4d0df9a" defer></script>
 </body>
 </html>

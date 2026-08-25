@@ -18,6 +18,62 @@
    des gris utilisés par le document de charte lui-même.
    ====================================== */
 
+/* ======================================
+   POLICE — Roboto, hébergée chez nous
+
+   Elle était appelée chez Google : deux « preconnect » plus une feuille de style
+   BLOQUANTE sur un domaine tiers, donc résolution DNS, poignée de main TLS et un
+   aller-retour avant que le premier caractère ne s'affiche. Ici, la déclaration
+   vit dans cette feuille : le navigateur n'apprend rien de nouveau, il connaît
+   déjà l'origine et la connexion est ouverte.
+
+   Google sert désormais Roboto en police VARIABLE : un seul fichier couvre 100 à
+   900, d'où deux fichiers au lieu des cinq graisses qu'on croyait devoir prendre
+   (vérifié à l'axe « wght » dans le woff2). L'italique, lui, est resté statique
+   en 400 ; une italique gras est donc synthétisée par le navigateur, exactement
+   comme avant, puisque la requête d'origine ne demandait que l'italique 400.
+
+   Seuls « latin » et « latin-ext » sont embarqués : le site est en français et en
+   anglais. Les sous-ensembles cyrillique, grec, vietnamien et mathématique que
+   Google déclare ne seraient jamais téléchargés, mais chaque bloc déclaré coûte
+   des octets à lire sur les 29 pages.
+
+   « font-display: swap » est conservé : le texte s'affiche tout de suite dans la
+   police de repli, puis bascule. C'est le réglage que Google servait déjà.
+   ====================================== */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../fonts/roboto-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../fonts/roboto-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/roboto-latin-ext-italic.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/roboto-latin-italic.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ---- Reset & base ---- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -3227,6 +3283,118 @@ a:focus-visible { border-radius: var(--radius-sm); }
   transform: scale(0.96) !important;
   transition: transform 0.08s ease !important;
 }
+
+/* ── Bandeau de confiance ─────────────────────────────────────────────────
+   Utilisé par aucune page aujourd'hui : le balisage est en commentaire dans
+   les deux accueils, en attente de l'accord des clients nommés. Le CSS est
+   posé pour que l'activation ne demande que de retirer deux lignes.
+
+   Aligné à GAUCHE sur la gouttière du conteneur, comme tout bloc de texte du
+   site : jamais centré. Les noms sont sur une seule ligne qui passe à la
+   suivante, séparés par un point médian dessiné en pseudo-élément, pas par un
+   caractère dans le texte : un séparateur décoratif n'a rien à faire dans ce
+   qu'un lecteur d'écran énonce, ni dans ce qu'un moteur recopie.
+   ──────────────────────────────────────────────────────────────────────── */
+.trust-strip {
+  padding: 40px 0 48px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.trust-strip__title {
+  display: block;
+  margin-bottom: 20px;
+}
+.trust-strip__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 0;
+  margin: 0 0 16px;
+  padding: 0;
+}
+.trust-strip__list li {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--black);
+  white-space: nowrap;
+}
+.trust-strip__list li + li::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  margin: 0 14px;
+  vertical-align: 3px;
+}
+.trust-strip__note {
+  font-size: .8125rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+  max-width: 62ch;
+}
+@media (max-width: 600px) {
+  .trust-strip { padding: 32px 0 36px; }
+  .trust-strip__list li { font-size: 1rem; }
+  .trust-strip__list li + li::before { margin: 0 10px; }
+}
+
+/* ── Carte de contact — l'état AVANT le clic ──────────────────────────────
+   L'iframe Google n'existe pas encore (module 19 de main.js la crée au clic).
+   Ce cadre-ci est ce que le visiteur voit d'abord, et ce qu'il voit toujours
+   si le JavaScript ne tourne pas : l'adresse, le bouton, et la mention de ce
+   que le clic déclenche. Le bouton est en NOIR sur le teal, jamais en blanc :
+   le teal de charte est une couleur claire, le blanc y plafonne à 2:1.
+   ──────────────────────────────────────────────────────────────────────── */
+.contact-map.is-differee {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(120% 100% at 50% 0%, rgba(0,203,190,.10), transparent 62%),
+    var(--card);
+}
+.contact-map__ask {
+  text-align: center;
+  padding: 24px;
+  max-width: 320px;
+}
+.contact-map__ask-pin {
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+.contact-map__ask-addr {
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.contact-map__ask-btn {
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px 20px;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--teal);
+  color: #001A18;
+  transition: background .2s ease, transform .2s ease;
+}
+.contact-map__ask-btn:hover {
+  background: var(--teal-tint);
+  transform: translateY(-1px);
+}
+.contact-map__ask-note {
+  margin-top: 14px;
+  font-size: .75rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+/* Le lien « itinéraire » reste utile avant le clic : il ne charge rien. */
+.contact-map.is-differee .contact-map__open { z-index: 2; }
 
 /* ── Contact map — chip "Itinéraire" ── */
 .contact-map__open {

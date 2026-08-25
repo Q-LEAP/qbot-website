@@ -995,7 +995,30 @@ backToTop.addEventListener('click', () => {
     document.head.appendChild(dataScript);
   }
 
-  if (window.location.protocol === 'file:') loadSrc(STANDARD_SRC);
+  /* POURQUOI ON ATTEND LA DÉFINITION DU COMPOSANT.
+
+     `viewer.src = …` posé sur un <model-viewer> pas encore PROMU crée une
+     propriété propre sur l'élément. Quand le composant est défini ensuite, cette
+     propriété propre MASQUE l'accesseur du prototype : le setter ne s'exécute
+     jamais et le modèle ne charge plus, sans une ligne d'erreur.
+
+     Le cas s'est produit le 2026-08-25 en rapatriant la visionneuse : elle est
+     désormais chargée par un `import()` dynamique, donc définie strictement plus
+     tard qu'avec une balise statique. En file:// la source est le CDN, donc un
+     aller-retour réseau, pendant lequel ce fichier-ci (local, instantané) passait
+     devant. Chromium ne chargeait plus rien, WebKit s'en sortait par chance
+     d'ordonnancement : le pire des symptômes, un défaut qui dépend du moteur.
+
+     `whenDefined` supprime la classe entière de bug, quel que soit l'ordre. */
+  if (window.location.protocol === 'file:') {
+    if (window.customElements && customElements.whenDefined) {
+      customElements.whenDefined('model-viewer').then(function () {
+        loadSrc(STANDARD_SRC);
+      });
+    } else {
+      loadSrc(STANDARD_SRC);
+    }
+  }
 
   if (reduceMotion) {
     viewer.removeAttribute('auto-rotate');
@@ -1465,4 +1488,49 @@ backToTop.addEventListener('click', () => {
       else if (film.getAttribute('src')) film.pause();
     });
   }, { rootMargin: '200px 0px' }).observe(film);
+}());
+
+/* ═══════════════════════════════════════════════════════════════════════
+   19. LA CARTE DE CONTACT NE SE CHARGE QU'AU CLIC
+
+   L'iframe Google était servie au chargement de la page : elle dépose ses
+   cookies avant que le visiteur ait rien demandé, sur un site qui publie une
+   page Confidentialité juste en dessous. Le balisage porte désormais un cadre
+   avec l'adresse et un bouton ; l'iframe est CRÉÉE au clic, et le bouton dit
+   ce que ce clic déclenche.
+
+   Trois choses à ne pas défaire :
+
+   • l'adresse est dans le HTML, pas dans le script. Sans JavaScript, on lit
+     l'adresse et on a le lien « itinéraire » : l'état au repos est un état
+     complet, comme pour le film de l'accueil.
+   • l'iframe garde `loading="lazy"` : créée au clic, elle est de toute façon
+     dans le champ, mais l'attribut ne coûte rien et reste juste.
+   • le focus passe sur l'iframe une fois posée. Un visiteur au clavier vient
+     d'activer un bouton qui disparaît ; sans cela son focus retombe sur le
+     document et il perd sa place.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var cadres = document.querySelectorAll('.contact-map[data-map-src]');
+  if (!cadres.length) return;
+
+  Array.prototype.forEach.call(cadres, function (cadre) {
+    var btn = cadre.querySelector('[data-map-load]');
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+      var ask = cadre.querySelector('.contact-map__ask');
+      var f = document.createElement('iframe');
+      f.className = 'contact-map__iframe';
+      f.src = cadre.getAttribute('data-map-src');
+      f.title = cadre.getAttribute('data-map-title') || 'Google Maps';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      f.setAttribute('tabindex', '0');
+      cadre.insertBefore(f, cadre.firstChild);
+      cadre.classList.remove('is-differee');
+      if (ask) ask.remove();
+      f.focus();
+    });
+  });
 }());

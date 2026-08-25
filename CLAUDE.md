@@ -2841,3 +2841,190 @@ l'affiche restait. Deux tentatives, dont une quand le navigateur dit lui-même q
 Contrôlé après : lecture et progression du temps vérifiées sur Chromium et WebKit, en français
 et en anglais, en serveur local et en `file://`, plus la boucle qui repart et la pause hors
 champ.
+
+## Audit de contrôle RosoAI : les cinq chantiers de trente-cinq minutes (2026-08-25)
+
+`Documentations/Audit_Q-Bot_Controle_Note_Strategique.pdf` (second passage, 15 pages) et
+`Documentations/Plan_Bascule_Q-Bot.pdf` (13 chantiers, 27 pages) remplacent l'audit du 24 août.
+La note passe de 5,6 à 6,2 sur 10, et de 6,0 à 7,3 sur les sept dimensions réellement
+auditables : trois des dix mesures portent sur ce que le monde extérieur voit du site, et
+derrière un `Disallow: /` volontaire elles ne peuvent rien mesurer. **L'audit ne compte donc
+pas la fermeture comme un défaut**, et il ne faut pas la lever pour « débloquer » une note.
+
+**CHAQUE CONSTAT A ÉTÉ REVÉRIFIÉ DANS LE DÉPÔT AVANT CORRECTION.** Ils étaient tous exacts.
+Deux corrections à apporter à l'audit lui-même, en revanche :
+
+- il compte **28 pages**, le site en a **29**. La 29ᵉ est `admin/index.html`, qui ne doit
+  jamais être indexée (elle figure dans la liste `JAMAIS` de `go-live.py`). Son compte de
+  `noindex` et l'inventaire du `sitemap.xml` sont justes sur 28 ;
+- son point sur les formulaires est **déjà réglé** : le module 15 de `main.js` porte le repli
+  courrier, documenté. L'audit le reconnaît d'ailleurs et corrige son propre constat d'août.
+  **Le point endpoint reste ouvert chez les managers du client**, cf. la note du 2026-08-25.
+
+**UN POINT DE L'AUDIT PRÉCÉDENT RESTE À ÉCARTER** : republier le tarif. Le client a tranché
+l'inverse le 24 août, et le chantier 2 ci-dessous suit cette décision, pas la « faille 4 ».
+
+### Ce qui a été fait, et l'arbitrage derrière chaque chose
+
+- **les 4 pages légales passent en adresse complète.** Google ignore un cluster `hreflang`
+  écrit en relatif : sur ces quatre pages, l'appariement FR/EN ne comptait pas. Détail qui
+  compte pour la suite : **`tools/gen-legal.py` écrivait déjà les adresses absolues** ; ce sont
+  les fichiers qui ont été repassés en relatif à la main lors de la passe des liens internes du
+  25/08. Rien à corriger dans le générateur, une régénération redonne la bonne forme ;
+- **le bloc `offers` est retiré des 8 fiches produit** (option B du plan). Un `Offer` sans prix
+  ni fourchette est rejeté par Google (« champ obligatoire manquant : prix ») : c'était le seul
+  état qui ne rapportait rien. Le `Product` reste valide avec `name`, `description`, `image`,
+  `brand` et `manufacturer`. **Ne pas y remettre de prix** sans nouvelle décision du client ;
+- **les deux h1 sont ÉCHANGÉS, pas réécrits.** « Curiosité, créativité et analyse. » était le
+  seul titre du site sans rapport avec sa page ; il décrit une manière de travailler, donc il
+  part sur À propos, et Caractéristiques prend « Les caractéristiques techniques de Q-Bot ».
+  C'est l'arbitrage du client : l'échange respecte la règle « texte du live mot pour mot »
+  puisque la formule reste publiée, ailleurs. La sur-accroche « L'innovation by Q-Leap ! » reste ;
+- **les boutons du hero sont inversés, les LIBELLÉS conservés.** Le plan proposait aussi de les
+  réécrire (« Demander une démo gratuite »), écarté par le client : c'est du texte du live ;
+- **la 17ᵉ question de la FAQ dit ce que Q-Bot ne fait pas.** « iOS » n'apparaissait **0 fois**
+  sur les 29 pages alors que `llms.txt` énonçait la limite noir sur blanc, donc la seule
+  formulation publique était derrière la porte fermée. Intitulé « Q-Bot fonctionne-t-il avec
+  iOS (iPhone) ? » et non « avec iOS » seul, sur décision du client : les gens cherchent
+  « iPhone ». Réponse de 51 mots (FR) et 49 (EN), donc dans la fenêtre de 40 à 60 qui se fait
+  citer. **Trois emplacements par langue** : le bloc visible, l'index en tête de page, et le
+  `FAQPage`. En oublier un laisse la question hors du sommaire ou hors des données structurées ;
+- **`sameAs` passe de 1 à 3 entrées** sur les 29 pages : le LinkedIn de Q-Leap, plus
+  `q-leap.eu` et `q-guard.app`. Ce sont ses propres sites, pas des comptes sociaux : la règle du
+  25/08 (« LinkedIn est le seul compte actif, ne pas remettre Facebook ni Twitter ») n'est pas
+  touchée. **La signature des articles par une `Person` a été écartée par le client** pour
+  l'instant : les 6 `BlogPosting` gardent `author: Organization`.
+
+### Les trois dépendances extérieures, et le piège du module local
+
+Le site n'envoie plus **aucune** requête vers un domaine tiers. Trois rapatriements, dont deux
+qui avaient un piège chacun.
+
+**1. Roboto est hébergée chez nous.** Elle était appelée chez Google : deux `preconnect` plus
+une feuille de style BLOQUANTE sur un domaine tiers. Deux découvertes qui changent la forme de
+la solution :
+
+- **Google sert désormais Roboto en police VARIABLE.** Les cinq graisses demandées renvoient le
+  MÊME fichier (empreintes MD5 identiques, axe `wght` de 100 à 900 vérifié dans le woff2). Donc
+  **4 fichiers et non 10** : latin et latin-ext, en normal variable et en italique statique 400.
+  Une italique gras reste synthétisée par le navigateur, exactement comme avant, puisque la
+  requête d'origine ne demandait que l'italique 400 ;
+- **seuls `latin` et `latin-ext` sont embarqués.** Le site est FR/EN ; le cyrillique, le grec, le
+  vietnamien et le mathématique que Google déclare ne seraient jamais téléchargés, mais chaque
+  bloc déclaré coûte des octets à lire sur 29 pages.
+
+Les `@font-face` vivent **en tête de `style.css`** et non dans une feuille à part : zéro requête
+supplémentaire, et le navigateur connaît déjà l'origine. Un `preload` de la seule face que toute
+page utilise (`roboto-latin.woff2`) compense la découverte plus tardive. **L'attribut
+`crossorigin` est obligatoire sur ce `preload` même en même origine**, sinon la police est
+téléchargée deux fois. Mesuré : 1 seul woff2 par page, 200, Roboto prête sur les 10 pages testées.
+
+**2. La visionneuse 3D est chez nous, SAUF en `file://`, et ce n'est pas une préférence.**
+Mesuré sur les deux moteurs : un `<script type="module">` dont le `src` est un fichier local est
+REFUSÉ en `file://` (origine « null », et un fichier ne peut porter aucun en-tête CORS), alors
+que jsDelivr envoie `*`. Un simple échange aurait donc supprimé la 3D du mode double-clic, que
+`qbot.glb.data.js` existe précisément pour préserver. Le choix de la source se fait donc à
+l'exécution :
+
+    const local = location.protocol !== 'file:';
+    const m = await import(local ? './assets/js/model-viewer-4.3.1.min.js' : '<CDN>');
+    if (local) m.ModelViewerElement.dracoDecoderLocation = './assets/js/draco/';
+
+**Le spécificateur d'un `import()` dynamique doit commencer par `./` ou `../`.** Écrit
+`'assets/js/…'`, il est pris pour un nom de module nu et rejeté (« Failed to resolve module
+specifier »). C'est ce qui a cassé les deux pages de la racine au premier essai, et pas les
+pages `en/`, dont le préfixe `../` était déjà valide.
+
+**ET CE CHANGEMENT A CASSÉ LE MODE `file://` D'UNE FAÇON QU'IL FAUT CONNAÎTRE.** `viewer.src = …`
+posé sur un `<model-viewer>` pas encore PROMU crée une propriété propre sur l'élément ; quand le
+composant est défini ensuite, cette propriété propre **masque l'accesseur du prototype**, le
+setter ne s'exécute jamais et le modèle ne charge plus, **sans une ligne d'erreur**. Un `import()`
+définit le composant strictement plus tard qu'une balise statique : en `file://` la source est le
+CDN, donc un aller-retour réseau, pendant lequel `main.js` (local, instantané) passait devant.
+Symptôme mesuré : Chromium ne chargeait plus rien, WebKit s'en sortait par chance
+d'ordonnancement. Le pire des défauts, celui qui dépend du moteur. Le chargement `file://` de
+`main.js` est donc gardé par `customElements.whenDefined('model-viewer')`, ce qui supprime la
+classe entière quel que soit l'ordre. Vérifié après : `loaded: true` et aucune propriété propre
+`src`, sur les deux moteurs, en `file://` comme en http.
+
+Le viseur de l'ACCUEIL est un autre cas et n'a pas ce problème : son `src` est un ATTRIBUT du
+HTML, jamais réassigné, et il n'a jamais eu de repli base64 (il a son image de repli et le filet
+de 12 s de `scrolly.js`). Un `file://` sans modèle sur l'accueil est le comportement documenté,
+pas une régression.
+
+**3. Le décodeur Draco aussi.** C'étaient les deux dernières requêtes extérieures
+(`draco_wasm_wrapper.js` + `draco_decoder.wasm` chez gstatic, 100 Ko compressés). Même
+construction que ci-dessus, par `ModelViewerElement.dracoDecoderLocation`. Attention : le fichier
+brut pèse 344 Ko sur le disque pour 100 Ko sur le réseau, l'audit annonçait 40 Ko.
+
+**Le gabarit d'article de `admin/index.html` appelait Inter chez Google** : une police HORS
+CHARTE, sur un domaine tiers, dans des articles publics. Repris. C'est la troisième fois que ce
+gabarit est oublié par une passe sitewide : **il n'est pas vu par un balayage des pages
+publiées, il faut le traiter explicitement.** L'interface du back-office, elle, garde Inter :
+elle n'est jamais publique. À signaler : ce gabarit écrit aussi `<meta name="robots"
+content="index,follow">`, donc un article généré avant la mise en ligne échapperait au
+`noindex` des 29 pages.
+
+### La carte de contact ne se charge qu'au clic
+
+L'iframe Google était servie au chargement : elle dépose ses cookies avant que le visiteur ait
+rien demandé, sur un site qui publie une page Confidentialité. **La capture d'écran proposée par
+le plan a été écartée** : redistribuer une image de Google Maps hors API sort de ses conditions
+d'utilisation, et le chargement au clic règle le même problème sans cette question. Le cadre
+porte l'adresse, un bouton, et la mention de ce que le clic déclenche ; le module 19 de
+`main.js` crée l'iframe. Mesuré : **0 requête vers Google avant le clic, 22 après**, adresse
+lisible sans JavaScript. Le bouton est en noir sur le teal, jamais en blanc : le teal de charte
+est une couleur claire, le blanc y plafonne à 2:1.
+
+### Le bandeau de références est écrit, et volontairement inactif
+
+Les sept références (Cargolux, POST Luxembourg, CFL, LuxairGroup, Ekonoo, LuxairTours, Alac)
+sont publiques sur `q-leap.eu/references/` et n'apparaissaient nulle part ici : c'est le levier
+le plus fort de la dimension « Autorité et marque » (5,5/10). **Le client a demandé de le
+préparer sans le publier**, l'accord des clients nommés n'étant pas encore obtenu. Le balisage
+est donc dans les deux accueils, **entouré d'un commentaire HTML**, et `.trust-strip` est déjà
+dans `style.css`. Pour l'activer : retirer la ligne d'ouverture et celle de fermeture. Vérifié :
+0 `.trust-strip` rendu, « Cargolux » absent de `document.body.innerText`, un seul `h1`.
+
+Deux choses à ne pas changer en l'activant :
+
+- **la formulation est « Q-Leap accompagne les équipes qualité de… », PAS « ils utilisent
+  Q-Bot ».** Ce sont les clients de Q-Leap. La première phrase est exacte et défendable, la
+  seconde ne le serait pas, et c'est cette exactitude qui la rend citable plutôt que suspecte ;
+- **les noms sont du TEXTE, pas des logos.** Un nom dans une image est invisible pour un moteur
+  comme pour une IA, et c'est la lecture par les machines qui est l'objet du bandeau.
+
+### Ce qui reste ouvert
+
+- **le lien Calendly de l'étape 1 de `commandez`/`order`** : la phrase nomme Calendly sans le
+  lier, c'est un clic de trop sur la page où le visiteur est le plus près de décider. Reporté
+  par le client ;
+- **le `sameAs` de Sylvain Perez et la signature des articles par une `Person`** : il manque
+  l'URL exacte de son profil. Celle du plan (`lu.linkedin.com/in/sylvainperez`) n'a pas été
+  vérifiée, donc pas posée : un `sameAs` faux fait plus de mal que pas de `sameAs` ;
+- **« Depuis 10 ans » sur `q-leap.eu`** : hors de ce dépôt. C'est la dernière moitié d'une
+  contradiction réglée ici, et deux sites de la même maison qui donnent deux âges différents
+  font hésiter un assistant au moment de citer ;
+- **les treize contenus du plan**, dont « Selenium a raison, pour les codes à usage unique ».
+  L'audit établit que la niche « automatiser l'authentification LuxTrust » est toujours vide ;
+- **la séquence du jour J** (`CNAME`, DNS, HTTPS, puis `go-live.py`, puis Search Console, puis
+  seulement la suppression du WordPress). L'ordre est ce qui protège le référencement acquis.
+  `tools/go-live.py` existe et lève les trois verrous ensemble ; il n'a PAS été lancé.
+
+### Un piège d'outillage rencontré au passage
+
+**`python3 -m http.server` est mono-fil** : il s'étrangle sur les pages qui portent le modèle 3D
+et rend des `Timeout` qui ressemblent à un défaut du site. Les contrôles de cette passe tournent
+sur un `ThreadingTCPServer` de quatre lignes. Un balayage qui expire sur les pages 3D et nulle
+part ailleurs mesure le serveur, pas la page. Même en threadé, deux navigateurs qui chargent en
+parallèle 1 Mo de visionneuse, 571 Ko de modèle et 286 Ko de wasm font dépasser un délai de
+13 s : un `loaded: false` isolé se revérifie SEUL avant d'être appelé régression (mesuré ensuite :
+chargé à 5 s, aucune requête en échec).
+
+**ET LE BALAYAGE DES RÉVÉLATIONS DOIT PARCOURIR LA PAGE PAR PAS, PAS SAUTER AU BAS.** Une sonde
+qui fait un seul `scrollTo(bas)` puis compte les `.reveal` sous 0,9 d'opacité a signalé des
+invisibles sur les 28 pages, y compris intouchées et jusqu'à 55 sur `caracteristiques`. Reprise
+avec un parcours par pas de 450 px (110 ms par pas, `behavior: 'instant'`), la même sonde donne
+**0 partout**. L'observateur d'intersection n'a simplement jamais vu passer les éléments du
+milieu de page. C'est la même famille de piège que la note du 2026-08-20 sur `scroll-behavior:
+smooth`, et elle ressemble exactement au vrai défaut « un bloc reste invisible ».

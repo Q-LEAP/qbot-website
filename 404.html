@@ -13,10 +13,11 @@
   <link rel="icon" href="assets/img/favicon.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <meta name="theme-color" content="#000000">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=1531d539">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=a206d7d8">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -174,6 +175,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=055a4821" defer></script>
+<script src="assets/js/main.js?v=b4d0df9a" defer></script>
 </body>
 </html>

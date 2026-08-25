@@ -36,14 +36,26 @@
   <meta name="theme-color" content="#000000">
 
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=1531d539">
+  <link rel="stylesheet" href="assets/css/style.css?v=a206d7d8">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=faaf73c1">
-  <!-- Google model-viewer : web component autonome, aucun build requis -->
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
+  <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
+       pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
+       local est refusé : ouvert en file://, un script « module » local a l'origine
+       « null » et aucun en-tête CORS ne peut l'accompagner, alors que jsDelivr envoie
+       « * » ; et un fetch local y est interdit, ce qui vaut aussi pour le décodeur.
+       Vérifié sur Chromium et WebKit : local en http(s), extérieur au double-clic. -->
+  <script type="module">
+    const local = location.protocol !== 'file:';
+    const m = await import(local
+      ? './assets/js/model-viewer-4.3.1.min.js'
+      : 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js');
+    if (local) m.ModelViewerElement.dracoDecoderLocation = './assets/js/draco/';
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -205,6 +217,45 @@
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     BANDEAU DE CONFIANCE — PRÊT, VOLONTAIREMENT INACTIF
+
+     Écrit à la demande du 2026-08-25, et laissé en commentaire sur décision du
+     client : les sept noms sont ses références Q-Leap, publiques sur
+     q-leap.eu/references/, mais leur accord n'a pas encore été demandé pour ce
+     site. POUR L'ACTIVER : retirer cette ligne d'ouverture de commentaire et la
+     ligne de fermeture qui suit le </section>. Le CSS (.trust-strip) est déjà en
+     place dans style.css, il n'y a rien d'autre à faire.
+
+     DEUX CHOSES À NE PAS CHANGER EN L'ACTIVANT :
+
+     • la formulation est « Q-Leap accompagne les équipes qualité de… », PAS
+       « ils utilisent Q-Bot ». Ce sont les clients de Q-Leap, pas ceux de Q-Bot :
+       la première phrase est exacte et défendable, la seconde ne le serait pas.
+       C'est cette exactitude qui la rend citable par un assistant plutôt que
+       suspecte.
+     • les noms sont du TEXTE, pas des logos. Un nom dans une image est invisible
+       pour un moteur comme pour une IA, et c'est précisément la lecture par les
+       machines qui est l'objet de ce bandeau.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<!--
+<section class="trust-strip" aria-labelledby="trust-title">
+  <div class="container">
+    <h2 id="trust-title" class="section-label trust-strip__title">Q-Leap accompagne depuis 2012 les équipes qualité de&nbsp;:</h2>
+    <ul class="trust-strip__list">
+        <li>Cargolux</li>
+        <li>POST Luxembourg</li>
+        <li>CFL</li>
+        <li>LuxairGroup</li>
+        <li>Ekonoo</li>
+        <li>LuxairTours</li>
+        <li>Alac</li>
+    </ul>
+    <p class="trust-strip__note">Références Q-Leap. Q-Bot est conçu et fabriqué par Q-Leap à Bertrange, Luxembourg.</p>
+  </div>
+</section>
+-->
 
 <!-- Lien d'évitement de la séquence. Quatre écrans épinglés, c'est quatre
      hauteurs de fenêtre à traverser : à la souris on ne le sent pas, au clavier
@@ -778,7 +829,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=055a4821" defer></script>
+<script src="assets/js/main.js?v=b4d0df9a" defer></script>
 <script src="assets/js/scrolly.js?v=a93e153e" defer></script>
 </body>
 </html>
