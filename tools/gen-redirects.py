@@ -21,14 +21,18 @@ demander qu'on ignore ce signal. Le site reste de toute façon fermé par
 robots.txt jusqu'à la mise en ligne. C'est la seule exception à la règle
 « toutes les pages portent la balise PRÉ-LANCEMENT ».
 
-CE QUI N'EST PAS REDIRIGÉ, ET POURQUOI. Le live publie encore une trentaine
-d'adresses du thème WordPress de démonstration (`/portfolio/…`, `/portfolio-cat/…`,
-`/portfolio-tag/…`, `?portfolio-filter=…`) : contenu factice jamais remplacé,
-du même lot que l'équipe fictive « Colabrio ». Les rediriger vers des pages
-réelles fabriquerait une trentaine de fausses correspondances, ce que les moteurs
-traitent comme des soft-404 et sanctionnent. **Elles doivent tomber en 404**,
-c'est le signal honnête. Idem pour `?portfolio-filter=uncategorized`, qui est une
-requête et non un chemin : aucun fichier ne peut la servir.
+PLUS AUCUNE 404, ARBITRÉ PAR LE CLIENT LE 2026-08-25. La première version laissait
+volontairement tomber les dix-huit adresses du thème WordPress de démonstration
+(`/portfolio/…`, `/portfolio-cat/…`, `/portfolio-tag/…`) : contenu factice jamais
+remplacé, du même lot que l'équipe fictive « Colabrio ». Le client a tranché pour
+zéro page d'erreur, elles renvoient donc à l'accueil.
+Le compromis, énoncé une fois et pas rediscuté : un moteur peut lire dix-huit
+redirections sans rapport comme des soft-404, ce qui vaut à peu près une 404 côté
+référencement. En échange, un humain qui clique un vieux lien atterrit sur le
+produit. C'est l'humain qui a été privilégié.
+
+`?portfolio-filter=uncategorized` n'a besoin de rien : c'est une requête sur la
+racine, pas un chemin, et un hébergement statique sert l'accueil en l'ignorant.
 """
 
 import io

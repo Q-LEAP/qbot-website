@@ -2560,8 +2560,15 @@ piège est le même que le cadratin en entité, l'apostrophe typographique et l'
 **Le WordPress bloque aujourd'hui TOUS les moteurs de réponse IA** : son `robots.txt` interdit
 Amazonbot, anthropic-ai, Applebot-Extended, Bytespider, CCBot, ClaudeBot, FacebookBot,
 Google-Extended, GPTBot, meta-externalagent, omgili, omgilibot, PerplexityBot et SentiBot.
-Autrement dit, **toute la stratégie de visibilité IA de l'audit est actuellement bloquée à la
-porte**, et le score de 10/100 s'explique en partie par là.
+Autrement dit, **les robots que la stratégie de visibilité IA vise sont aujourd'hui refoulés à
+la porte du domaine**.
+
+**CORRECTION, RELEVÉE PAR LE CLIENT LE 2026-08-25 : ne pas attribuer le 10/100 à ce
+`robots.txt`.** L'audit porte sur le NOUVEAU site en migration et il désigne lui-même la cause,
+qui est ailleurs : ce site est volontairement fermé aux robots en attendant sa mise en ligne,
+et les 10 points existants viennent du site de la maison mère et d'un article de presse de
+2023. Le blocage du WordPress est un fait vérifiable et il compte pour la suite, mais en faire
+la cause du score était mon inférence, pas un constat de l'audit.
 
 Le `robots.txt` d'ouverture de ce dépôt les autorise. Ce n'est pas une correction de bug, c'est
 un **renversement de politique** : autoriser ces robots, c'est accepter que le contenu du site

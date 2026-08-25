@@ -60,4 +60,32 @@ REDIRECTIONS = {
     'author/marie-krust/':              ('blog.html', 'fr'),
     'author/sstefancic/':               ('blog.html', 'fr'),
     'en/category/timeline-en/':         ('en/blog.html', 'en'),
+
+    # ---- thème WordPress de démonstration ----
+    # ARBITRÉ PAR LE CLIENT LE 2026-08-25 : plus aucune 404. Ces dix-huit adresses
+    # sont du contenu factice jamais remplacé (même lot que l'équipe fictive
+    # « Colabrio ») et n'ont aucun équivalent sur le nouveau site. Elles renvoient
+    # donc à l'accueil.
+    # LE COMPROMIS, ÉNONCÉ UNE FOIS : un moteur peut lire dix-huit redirections
+    # sans rapport comme des soft-404, ce qui vaut à peu près une 404 côté
+    # référencement. En échange, un humain qui clique un vieux lien atterrit sur
+    # le produit au lieu d'une page d'erreur. C'est l'humain qui a été privilégié.
+    'portfolio/appearance-design-of-website-pages/':        ('index.html', 'fr'),
+    'portfolio/beautiful-design-of-mobile-application/':    ('index.html', 'fr'),
+    'portfolio/buy-and-sell-first-class-electronics/':      ('index.html', 'fr'),
+    'portfolio/designing-a-mobile-store-application/':      ('index.html', 'fr'),
+    'portfolio/graphic-design-of-mobile-pages/':            ('index.html', 'fr'),
+    'portfolio/implement-a-variety-of-internal-site-pages/':('index.html', 'fr'),
+    'portfolio/intersting-stories-about-it-world/':         ('index.html', 'fr'),
+    'portfolio/login-mobile-interface-illustrations/':      ('index.html', 'fr'),
+    'portfolio/providing-computer-services-to-companies/':  ('index.html', 'fr'),
+    'portfolio/responsive-design-for-a-variety-of-sizes/':  ('index.html', 'fr'),
+    'portfolio/some-new-ideas-for-branding/':               ('index.html', 'fr'),
+    'portfolio/store-advertising-banner-design/':           ('index.html', 'fr'),
+    'portfolio/the-difference-between-ui-and-ux-in-design/':('index.html', 'fr'),
+    'portfolio/the-future-of-food-delivery-app-ui-kit/':    ('index.html', 'fr'),
+    'portfolio-cat/ecommerce/':                             ('index.html', 'fr'),
+    'portfolio-cat/graphic-templates/':                     ('index.html', 'fr'),
+    'portfolio-cat/ux-and-ui-kits/':                        ('index.html', 'fr'),
+    'portfolio-tag/uncategorized/':                         ('index.html', 'fr'),
 }
