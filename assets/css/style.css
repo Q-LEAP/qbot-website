@@ -4464,6 +4464,21 @@ label > input[type="checkbox"] {
   .article-note { padding: 12px 14px; font-size: 0.875rem; }
 }
 
+/* Un lien EN LIGNE dans le corps de texte de la page À propos. La règle de base
+   du site est `a { color: inherit; text-decoration: none }`, faite pour les liens
+   de navigation et les cartes, où c'est le bloc entier qui est cliquable et où le
+   contexte suffit à le dire. Au milieu d'une phrase elle rend le lien
+   indistinguable du texte : même couleur, aucun soulignement, donc rien ne le
+   signale (WCAG 1.4.1, et ici il n'y a même pas de différence de couleur à
+   compenser). Même traitement que `.article-note a`, qui est la convention déjà
+   établie pour ce cas. Scopé au corps de texte : la règle ne doit pas atteindre
+   le bouton « Visiter q-leap.eu », qui n'est pas dans un <p>. */
+.about-section__content p a {
+  color: var(--teal-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ══ SECTION API ═══════════════════════════════════════════════════════════
    Bloc de code hors article, liste de faits à coches, et lignes de fiche dont
    le libellé est un point d'entrée HTTP.
