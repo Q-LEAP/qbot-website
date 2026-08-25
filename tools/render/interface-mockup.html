@@ -106,14 +106,27 @@
 
   /* ── Les étapes ── */
   .steps{position:relative;padding:0 18px}
-  /* Ce qui reste à faire : tireté. Le fil part du centre du premier disque et
-     s'arrête au centre du dernier. */
-  .steps::before{content:'';position:absolute;left:31px;top:calc(var(--step-h)/2);
-       height:calc(4 * var(--step-h));width:0;border-left:2px dashed #26292b}
-  /* Ce qui est fait : plein, jusqu'au centre EXACT de l'étape courante (la 4e). */
-  .steps::after{content:'';position:absolute;left:31px;top:calc(var(--step-h)/2);
-       height:calc(3 * var(--step-h));width:2px;
+  /* LE FIL NE TRAVERSE PLUS LES DISQUES. Première version : deux pseudo-éléments de
+     `.steps`, un trait continu du centre du premier disque au centre du dernier.
+     Les disques ont un fond TRANSLUCIDE (`rgba(0,203,190,.10)` sur une étape faite),
+     donc le trait se voyait au travers et paraissait passer par-dessus les icônes.
+     Signalé par le client le 2026-08-25, et c'était juste : ce n'est pas la
+     convention d'un indicateur d'étapes, où le trait relie les noeuds sans jamais
+     les traverser.
+     Désormais un segment par INTERVALLE, du bas d'un disque au haut du suivant. La
+     dernière étape n'en porte pas : il n'y a rien après elle. */
+  .step:not(:last-child)::after{content:'';position:absolute;left:20px;width:0;
+       top:calc(50% + 13px);height:calc(var(--step-h) - 26px);
+       border-left:2px dashed #26292b}
+  /* Fait : plein et teal. À faire : tireté et gris. */
+  .step.done:not(:last-child)::after{border-left:none;width:2px;
        background:linear-gradient(180deg,var(--teal),var(--teal-deep))}
+  /* L'arc « en cours » dépasse son disque de 5 px (`inset:-5px`). Le segment qui
+     arrive sur lui s'arrête donc 5 px plus tôt, et celui qui en part démarre 5 px
+     plus tard : sans cela les deux traits touchent l'arc et l'ensemble se lit comme
+     un tracé cassé, ce qui était déjà le reproche fait à une version antérieure. */
+  .step.pre-now::after{height:calc(var(--step-h) - 26px - 5px)}
+  .step.now::after{top:calc(50% + 18px);height:calc(var(--step-h) - 26px - 5px)}
   /* Les rangées sont séparées par un filet et l'étape courante porte un fond très
      léger : sans cela, les 650 px entre le libellé et son étiquette d'acteur se
      lisaient comme un trou au milieu du panneau, et non comme une ligne de tableau. */
@@ -222,7 +235,7 @@
         <div class="st"><b data-t="s2">Saisir les identifiants</b><span data-t="s2d">Depuis votre script de test</span></div>
         <div class="who">Script</div>
       </div>
-      <div class="step done">
+      <div class="step done pre-now">
         <div class="dot">
           <svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
           <span class="tick"><svg viewBox="0 0 24 24"><polyline points="5 13 10 18 19 6"/></svg></span>

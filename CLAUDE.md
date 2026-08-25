@@ -2589,3 +2589,98 @@ actif, à faire en une ligne à la fin de chaque échange jusqu'à ce qu'il tran
 complète lui a été donnée ce jour-là (service tiers type Formspree ou Brevo, une URL à coller
 dans `--endpoint`, réserves RGPD, plafond de 50 envois par mois sur les offres gratuites) : ne
 pas la refaire, juste rappeler que le point est ouvert.
+
+## Passe de disposition, et le trait qui traversait les icônes (2026-08-25)
+
+Trois signalements du client, tous exacts, et une passe mesurée sur les 29 pages pour la suite.
+
+### 1. Le trait de la maquette passait par-dessus les icônes
+
+`tools/render/interface-mockup.html` dessinait le fil de l'indicateur d'étapes en **deux
+pseudo-éléments de `.steps`** : un trait continu du centre du premier disque au centre du
+dernier. Les disques ont `z-index: 1`, donc en théorie ils le masquaient. En pratique le fond
+d'un disque « fait » est **translucide** (`rgba(0,203,190,.10)`) : le trait se voyait au travers
+et semblait passer par-dessus l'icône.
+
+Et le reproche de fond était juste au-delà du bug : **ce n'est pas la convention d'un
+indicateur d'étapes**, où le trait relie les noeuds sans jamais les traverser. Le fil est donc
+devenu **un segment par intervalle**, du bas d'un disque au haut du suivant, plein et teal pour
+ce qui est fait, tireté et gris pour ce qui reste. La dernière étape n'en porte pas : il n'y a
+rien après elle.
+
+Un détail qui compte : l'arc « en cours » dépasse son disque de 5 px (`inset: -5px`). Le
+segment qui arrive sur lui s'arrête 5 px plus tôt (classe `pre-now`) et celui qui en part
+démarre 5 px plus tard, sinon les deux traits touchent l'arc et l'ensemble se lit comme un
+tracé cassé, ce qui avait déjà été reproché à une version antérieure. Les deux images sont
+régénérées par `tools/render/shoot-interface.py`.
+
+### 2. « Connexion internet » ne s'alignait pas, et c'était un plancher pris pour une colonne
+
+`.spec-item__label` portait `min-width: 120px`. C'est un PLANCHER : dès qu'un libellé dépasse
+cette largeur, il fixe la sienne, et sa valeur commence plus à droite que toutes les autres.
+Mesuré avant correction : deux positions de départ à 1920 et à 768 px côté français, **trois
+sur presque toutes les largeurs côté anglais** (« INTERNET CONNECTION » et « MANUFACTURING »).
+
+La largeur ne pouvait pas se régler sur `.spec-item` : chaque ligne est son propre conteneur et
+ne sait rien des autres. **C'est la LISTE qui doit porter la mesure**, d'où `subgrid` : la
+colonne s'ajuste au libellé le plus long de sa propre liste, sans constante écrite à la main,
+et chaque liste garde la sienne (117 px pour la fiche matérielle, 213 px pour les points
+d'entrée API). Sous `@supports`, donc un moteur sans subgrid retrouve exactement le
+comportement d'avant. Vérifié : **une seule position de départ, 4 pages × 7 largeurs.**
+
+**ET SUR TÉLÉPHONE LA MÊME RÈGLE ÉTOUFFAIT LES VALEURS.** À deux colonnes, la valeur reçoit ce
+que laisse le libellé : 170 px pour la fiche matérielle à 390 px de large, et **123 px** pour
+la liste API dont les libellés sont des URL en chasse fixe. À 123 px on lit trois mots par
+ligne. Sous **560 px** le libellé passe donc au-dessus de sa valeur, qui récupère toute la
+largeur (285 à 350 px). Le seuil est calculé : le libellé le plus long fait 203 px et il faut
+environ 290 px pour la valeur.
+
+Piège rencontré : le bloc `@media` doit venir **après** le bloc `@supports` dans le fichier.
+Les deux ont la même spécificité (0,3,0), c'est donc l'ordre qui tranche, et posé avant il
+n'avait aucun effet.
+
+### 3. Le rythme d'un titre suivi d'un bloc était irrégulier
+
+`.section-title` porte 16 px de marge basse, ce qui est juste quand vient son chapeau : le
+titre et son chapeau sont une unité de lecture. Quand vient un BLOC de contenu, 16 px le
+collent au titre. Relevé sur les 23 pages : **16 px** sur les fiches techniques et les deux
+cadres 3D, **28 px** sur l'encadré de l'accueil, **32 px** sur les grilles de produits, et
+**16 px en français contre 32 en anglais pour le MÊME bloc de la page contact**.
+
+Une seule valeur désormais, 32 px, par une règle de voisinage (`.section-title + div|ul|ol|form`)
+et non par des styles en ligne, dont les deux qui traînaient sur `.products-grid` sont retirés.
+Les marges adjacentes fusionnent, donc le total est bien 32 et pas 16 + 32. Vérifié : 10 cas,
+une seule valeur.
+
+### 4. Un constant périmé sur le trait des « 4 étapes »
+
+`.order-process::before` reliait le centre du premier rond à celui du dernier avec
+`right: calc(25% - 46px)`, une valeur **calculée pour des gouttières de 24 px**. La passe
+d'aération du 2026-08-20 les a portées à 32 px : le trait dépassait donc le dernier rond de
+6 px et laissait un moignon à droite. La formule est maintenant dérivée et exprimée en fonction
+de `--op-gap` (`25% − 0,75 g − 28 px`, démonstration dans le fichier), donc elle suit la
+gouttière. Vérifié : **écart 0,0 px aux deux extrémités, 2 pages × 5 largeurs.** Le trait de la
+section évolution, lui, était déjà exprimé en fonction de sa gouttière et tombe juste.
+
+### 5. Deux noms pour une classe réservée aux lecteurs d'écran
+
+`.sr-only` vit dans `style.css`, `.visually-hidden` dans `scrolly.css`. Une page qui emploie la
+seconde sans charger ce fichier afficherait en clair un texte censé être invisible. Aucune ne le
+fait aujourd'hui, mais l'alias est posé dans `style.css` et ferme la porte.
+
+### Ce que la passe n'a PAS trouvé, et les deux sondes qui mentaient
+
+Sonde de disposition sur **29 pages × 5 largeurs** : aucun bloc de texte centré, aucun centrage
+par marges automatiques, aucune rangée de frères désalignée, aucun débordement horizontal.
+
+Deux faux positifs coûteux, à ne pas refaire :
+
+- **comparer les abscisses de frères dans une grille à plusieurs colonnes** produit un défaut à
+  chaque ligne. Le filtre doit exiger que TOUS les frères partagent la même gouttière, pas
+  seulement trois d'entre eux, et identifier une liste par son ÉLÉMENT et non par son nom de
+  classe (deux listes de même classe sur une page étaient fusionnées) ;
+- **mesurer pendant les révélations échelonnées.** La variante `card` applique un `scale()`
+  transitoire : une mesure prise 0,6 s après l'arrivée donnait des largeurs de cartes montant
+  de 0,88 px par index, et j'ai pris une grille de garanties parfaitement alignée pour un
+  défaut. Trois secondes plus tard, ou en mouvement réduit, tout est à la même abscisse. **Toute
+  sonde de disposition doit mesurer en `reduced_motion`**, l'animation n'est pas la mise en page.

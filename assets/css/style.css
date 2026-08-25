@@ -228,6 +228,22 @@ p { color: var(--gray); }
 
 .section-title { margin-bottom: 16px; }
 .section-subtitle { font-size: 1.0625rem; max-width: 600px; }
+
+/* ══ UN TITRE SUIVI D'UN BLOC RESPIRE ══════════════════════════════════════
+   `.section-title` porte 16 px de marge basse, ce qui est juste quand vient
+   ensuite son CHAPEAU : le titre et son chapeau forment une unité de lecture.
+   Quand vient un BLOC de contenu (une fiche, un cadre, une grille), 16 px le
+   collent au titre.
+   Relevé avant correction, sur les 23 pages : 16 px sur les fiches techniques
+   et les deux cadres 3D, 28 px sur l'encadré de l'accueil, 32 px sur les
+   grilles de produits, et 16 px en français contre 32 en anglais pour le MÊME
+   bloc de la page contact. Une seule valeur désormais, un cran de l'échelle
+   de 8 px.
+   Les marges adjacentes fusionnent : le total est 32 px, pas 16 + 32. */
+.section-title + div,
+.section-title + ul,
+.section-title + ol,
+.section-title + form { margin-top: 32px; }
 .section-header { margin-bottom: 64px; }
 /* Il n'y a plus de variante centrée : sur ce site un bloc de texte est aligné à
    gauche sur la gouttière du conteneur — celle de l'encre du logo — ou à droite,
@@ -1096,6 +1112,36 @@ p { color: var(--gray); }
 
 .specs__list { display: flex; flex-direction: column; gap: 24px; }
 
+/* ══ UNE SEULE COLONNE DE LIBELLÉS PAR FICHE ═══════════════════════════════
+   `.spec-item__label` avait `min-width: 120px`, c'est-à-dire un PLANCHER et non
+   une colonne : dès qu'un libellé dépassait cette largeur il fixait la sienne,
+   et sa valeur commençait plus à droite que toutes les autres. Signalé par le
+   client le 2026-08-25 sur « Connexion internet », et reproduit : deux positions
+   de départ à 1920 et à 768 px côté français, TROIS sur presque toutes les
+   largeurs côté anglais (« INTERNET CONNECTION » et « MANUFACTURING »).
+
+   La largeur ne pouvait pas être réglée sur `.spec-item` : chaque ligne est son
+   propre conteneur et ne sait rien des autres. C'est la LISTE qui doit porter la
+   mesure, d'où `subgrid` : la colonne s'ajuste au libellé le plus long de sa
+   propre liste, sans constante écrite à la main, et chaque liste garde la sienne
+   (117 px pour la fiche matérielle, 213 px pour celle des points d'entrée API).
+
+   Sous `@supports`, donc le comportement en flex reste le repli exact d'avant
+   pour un moteur sans subgrid : les libellés y débordent comme aujourd'hui, ce
+   qui est moins bien mais pas cassé. */
+@supports (grid-template-columns: subgrid) {
+  .specs__list {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 16px;   /* l'ancien `gap` de .spec-item, qui n'est plus un flex */
+  }
+  .specs__list > .spec-item:not(.spec-item--card) {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+  }
+}
+
 /* LE FILET DE SÉPARATION APPARTIENT À LA VARIANTE « LIGNE », PAS À LA VARIANTE
    « CARTE ». Il était posé sur `.spec-item` tout court, et retiré du dernier par
    `.spec-item:last-child` — dont la spécificité (0,1,1) dépasse celle de
@@ -1110,6 +1156,26 @@ p { color: var(--gray); }
   display: flex;
   gap: 16px;
 }
+
+/* ══ LES FICHES PASSENT EN UNE COLONNE SUR TÉLÉPHONE ═══════════════════════
+   À deux colonnes, la colonne des valeurs se réduit à ce que laisse le libellé
+   le plus long. Mesuré à 390 px : 170 px pour la fiche matérielle et **123 px**
+   pour celle des points d'entrée API, dont les libellés sont des URL en chasse
+   fixe. À 123 px on lit trois mots par ligne, ce qui n'est plus un tableau mais
+   une colonne de confettis.
+   Le libellé passe donc AU-DESSUS de sa valeur, qui récupère toute la largeur.
+   C'est le motif habituel d'un tableau de caractéristiques sur petit écran.
+   Le seuil est calculé : le libellé le plus long du site fait 203 px (API) et
+   il faut de quoi respirer à droite, donc on repasse à deux colonnes dès qu'il
+   reste environ 290 px pour la valeur, soit 560 px de fenêtre.
+   La spécificité doit ÉGALER celle du bloc `@supports` plus haut, sinon la
+   subgrid l'emporte : d'où le sélecteur répété à l'identique. */
+@media (max-width: 560px) {
+  .specs__list { display: flex; flex-direction: column; }
+  .specs__list > .spec-item:not(.spec-item--card) { display: block; }
+  .spec-item__label { display: block; min-width: 0; margin-bottom: 6px; }
+}
+
 .spec-item:not(.spec-item--card) {
   padding-bottom: 20px;
   border-bottom: 1px solid var(--border);
@@ -1694,7 +1760,14 @@ p { color: var(--gray); }
 .stat-item__label { font-size: 0.875rem; color: var(--muted); }
 
 /* ---- Accessibilité ---- */
-.sr-only {
+/* DEUX NOMS POUR LA MÊME CHOSE, et c'était un piège. `.sr-only` vit ici,
+   `.visually-hidden` dans assets/css/scrolly.css : une page qui emploie la
+   seconde sans charger ce fichier afficherait en clair un texte réservé aux
+   lecteurs d'écran. Aucune ne le fait aujourd'hui (seules les deux pages
+   d'accueil l'emploient, et elles chargent scrolly.css), mais l'alias ferme la
+   porte pour de bon. */
+.sr-only,
+.visually-hidden {
   position: absolute;
   width: 1px; height: 1px;
   padding: 0; margin: -1px;
@@ -2293,24 +2366,30 @@ a:focus-visible { border-radius: var(--radius-sm); }
    donc plus rien à afficher. Ce qui l'a remplacée est le calculateur de ROI,
    plus bas dans ce fichier. */
 .order-process {
+  --op-gap: 32px;
+  --op-rond: 56px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 32px;
+  gap: var(--op-gap);
   margin-top: 48px;
   position: relative;
 }
+/* LE TRAIT RELIE LE CENTRE DU PREMIER ROND À CELUI DU DERNIER, ET LA FORMULE EST
+   DÉRIVÉE, PAS DEVINÉE. Quatre colonnes de largeur c et trois gouttières g dans
+   une largeur W : c = (W − 3g)/4, la dernière colonne commence à 3c + 3g, soit
+   0,75 W + 0,75 g, et le centre de son rond est 28 px plus loin. La distance au
+   bord droit vaut donc 25 % − 0,75 g − 28 px.
+   POURQUOI ELLE EST ÉCRITE EN FONCTION DE `--op-gap` : la valeur figée
+   `25% − 46px` avait été calculée pour des gouttières de 24 px. La passe
+   d'aération du 2026-08-20 les a portées à 32 px, et le trait dépassait depuis
+   le dernier rond de 6 px, ce qui laissait un moignon à droite. Une constante
+   posée à la main périme à la première refonte d'espacement ; celle-ci suit. */
 .order-process::before {
   content: '';
   position: absolute;
-  top: 28px;
-  /* Le trait relie le CENTRE du premier rond à celui du dernier. Les 12,5 %
-     d'origine visaient le milieu de la première et de la dernière colonne, quand
-     les étapes étaient centrées. Elles sont maintenant alignées à gauche : le
-     rond fait 56 px, son centre est donc à 28 px du bord de sa colonne, et la
-     dernière colonne commence à 100 % − (25 % − 18 px) — d'où 25 % − 46 px à
-     droite. Les 3 gouttières de 24 px sont bien comptées. */
-  left: 28px;
-  right: calc(25% - 46px);
+  top: calc(var(--op-rond) / 2 - 1px);
+  left: calc(var(--op-rond) / 2);
+  right: calc(25% - 0.75 * var(--op-gap) - var(--op-rond) / 2);
   height: 2px;
   background: var(--teal-light);
   z-index: 0;
