@@ -2377,3 +2377,95 @@ sur un téléphone pour une information de fraîcheur, l'échange est bon.
 comptes du live », a donc été annotée sur place : **elle est périmée, ces comptes ne doivent pas
 revenir** dans `sameAs` ni dans le pied de page. L'URL déclarée garde sa barre oblique finale,
 qui est la forme que LinkedIn sert sans redirection ; c'est la même page.
+
+## Étape 5 de l'audit : les quatre pages légales sont dans le site (2026-08-25)
+
+La faille 1 de l'audit RosoAI, son seul P1 dont une partie est **irréversible** : les quatre
+pages légales ne répondaient que sur le WordPress, et les 24 pages du nouveau site pointaient
+dessus en absolu. Le jour où le WordPress disparaît, elles disparaissent avec lui, et les
+52 liens tombent en erreur.
+
+**LA NOTE DU 2026-07-09 EST DONC PÉRIMÉE.** Elle disait que ces pages ne pouvaient pas être
+reprises « mot pour mot » parce que l'outil de relevé refusait de reproduire des pages de
+politique. Deux choses ont changé : le client a demandé explicitement cette reprise le
+2026-08-25, et **ce sont ses propres pages, sur son propre domaine**. Ce n'est pas la reprise
+d'un texte tiers, c'est la migration de son contenu. Il n'y avait donc rien à paraphraser.
+
+### La chaîne, en deux scripts
+
+- `tools/fetch-legal.py` relève les quatre pages dans un navigateur réel et écrit
+  `tools/legal-source.json`. Deux précautions qui viennent de ce dépôt : l'en-tête
+  **`Accept-Language` est fixé par langue** (le live redirige `/` vers `/en/` selon cet
+  en-tête, et un relevé sans lui rapporte l'anglais sur les URL françaises), et seuls les
+  blocs **visibles** sont retenus (`offsetParent !== null`, la règle apprise sur l'afficheur
+  OLED repris par erreur d'une section désactivée) ;
+- `tools/gen-legal.py` reconstruit les quatre pages dans le gabarit du site. Elles sont
+  générées, pas écrites l'une après l'autre : c'est le même choix que pour les pages de cas
+  d'usage, et pour la même raison, deux pages écrites à la main divergent.
+
+Pour reprendre une mise à jour publiée sur le live : relancer les deux, dans cet ordre.
+
+### Ce qui est repris à l'identique, et ce qui ne l'est pas
+
+**Chaque mot.** Le contrôle qui compte n'est pas une relecture : c'est une comparaison
+automatisée du texte RENDU de nos pages contre celui du live, bloc par bloc, dans les deux
+navigateurs et avec la bonne langue. Relevé : **170 / 50 / 170 / 50 blocs, texte identique sur
+les quatre pages, zéro bloc en trop, zéro bloc manquant.**
+
+Trois écarts, et seulement ceux-là :
+
+- **le balisage.** Le live écrit ses sous-titres en `<p><strong>…</strong></p>`, parfois en
+  `<span style="font-weight: 600">` : un artefact d'Elementor. Ce sont des titres, ils
+  deviennent des `<h2>`. Les mots ne changent pas, la hiérarchie devient valide (0 saut de
+  niveau, 1 seul `h1`) et le texte devient citable. Les `<h4>` et `<h5>` des conditions de
+  vente deviennent `<h2>` et `<h3>` pour la même raison ;
+- **les liens.** `http://www.q-leap.eu` (44 occurrences) passe en `https://q-leap.eu`, même
+  cible sans contenu mixte, et les quatre variantes de lien vers la page contact du live
+  (`/contact/`, `/en/contact/`, `/en/contact-1/`, `/en/contact-us/`) pointent sur notre page
+  locale ;
+- **l'habillage** : notre en-tête, notre pied de page, notre fil d'Ariane, plus le bloc d'appel
+  à l'action que le live porte aussi.
+
+Aucune balise inattendue dans le contenu : l'inventaire ne trouve que `a`, `strong`, `em` et
+`span`.
+
+### L'ADRESSE DES PAGES EST CELLE DU LIVE, ET C'EST LE POINT LE PLUS IMPORTANT
+
+`conditions-vente/index.html` répond sur `https://q-bot.eu/conditions-vente/`, exactement
+comme aujourd'hui. Même chose pour `confidentialite/`, `en/privacy/` et
+`en/terms-and-conditions-of-sale/`. **GitHub Pages ne sait pas rediriger** (relevé par
+l'audit, et c'est exact pour un 301) : garder l'URL est donc le seul moyen de ne casser ni les
+liens entrants, ni les partages, ni le référencement acquis, le jour de la bascule. Les deux
+niveaux de profondeur (`../` en français, `../../` en anglais) sont ceux de `blog/` et
+`en/blog/`, donc l'en-tête et le pied de page de ces gabarits se réutilisent tels quels.
+
+Ne pas « corriger » ces pages en `conditions-vente.html` pour respecter la convention plate du
+reste du dépôt : l'écart est volontaire et c'est lui qui préserve les URL.
+
+### Les 52 liens
+
+68 liens repointés en relatif dans 28 fichiers : les 52 des pages existantes, plus les 16 des
+pieds de page des quatre nouvelles. Les liens légaux **perdent leur `target="_blank"` et leur
+`rel="noopener"`** : c'était juste tant qu'ils sortaient du site, ça n'a plus de sens pour un
+lien interne. Contrôle : **30 pages balayées, 0 lien interne cassé.**
+
+Au passage, le pied de page généré par `admin/index.html` pointait ses deux liens légaux sur
+`href="#"` : corrigé, il pointe sur les pages réelles.
+
+Et le reste de l'intendance : les quatre URL ajoutées au `sitemap.xml` avec leurs paires
+hreflang (28 URL au total), le décompte de `robots.txt` porté de 23 à 28 pages, et la section
+Legal de `llms.txt` qui dit désormais que ces pages vivent dans le site et donne leurs dates
+de dernière mise à jour.
+
+### Deux divergences du live, reproduites à dessein
+
+- **les dates de mise à jour ne concordent pas** : 7 juillet 2025 en français, 11 juin 2024 en
+  anglais. La politique de confidentialité anglaise a donc un an de retard sur la française.
+  C'est le contenu du client, il est repris tel quel ; **à lui de trancher s'il faut aligner
+  l'anglais**, et c'est une vraie question de conformité, pas de référencement ;
+- **la page conditions de vente française finit par « Notre politique générale de vente est en
+  cours »**. C'est ce que dit le live. Repris tel quel.
+
+Le pied de page du live anglais porte encore une ancienne adresse (10 rue Mathias Hardt,
+L-1717 Luxembourg) et un copyright 2022 : sans effet ici, nos pages utilisent notre pied de
+page.

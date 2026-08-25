@@ -1131,7 +1131,7 @@ function generateArticleHTML(a) {
        <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Request a demo</a>`;
 
   const footerCols = fr
-    ? `<div class="footer__col"><h4>Ressources</h4><ul role="list"><li><a href="#">Conditions de vente</a></li><li><a href="#">Confidentialité</a></li></ul></div>
+    ? `<div class="footer__col"><h4>Ressources</h4><ul role="list"><li><a href="${nav0}conditions-vente/">Conditions de vente</a></li><li><a href="${nav0}confidentialite/">Confidentialité</a></li></ul></div>
        <div class="footer__col"><h4>Q-Bot</h4><ul role="list">
          <li><a href="${nav0}index.html">Accueil</a></li>
          <li><a href="${nav0}caracteristiques.html">Caractéristiques</a></li>
@@ -1141,7 +1141,7 @@ function generateArticleHTML(a) {
          <li><a href="${nav0}faq.html">FAQ</a></li>
          <li><a href="${nav0}contact.html">Contact</a></li>
        </ul></div>`
-    : `<div class="footer__col"><h4>Resources</h4><ul role="list"><li><a href="#">Terms of Sale</a></li><li><a href="#">Privacy</a></li></ul></div>
+    : `<div class="footer__col"><h4>Resources</h4><ul role="list"><li><a href="${nav0}en/terms-and-conditions-of-sale/">Terms of Sale</a></li><li><a href="${nav0}en/privacy/">Privacy</a></li></ul></div>
        <div class="footer__col"><h4>Q-Bot</h4><ul role="list">
          <li><a href="${nav0}index.html">Home</a></li>
          <li><a href="${nav0}technical-specs.html">Technical Specs</a></li>

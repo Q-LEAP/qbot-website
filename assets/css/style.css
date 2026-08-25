@@ -2203,6 +2203,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
   margin: 32px 0 12px;
 }
 .article-body p { margin-bottom: 20px; line-height: 1.8; }
+/* La date de dernière mise à jour des pages légales. Le live l'écrit en
+   italique et un cran plus petit ; on garde cette présentation, elle sépare
+   la date du corps du texte. Le mot à mot, lui, vient du live. */
+.article-body .legal-date {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
 .article-body ul, .article-body ol {
   padding-left: 24px;
   margin-bottom: 20px;

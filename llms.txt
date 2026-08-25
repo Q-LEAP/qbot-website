@@ -94,8 +94,11 @@ does today.
 
 ## Legal
 
+The legal pages now live in this site, at the same addresses as before, and their text is the
+publisher's own, reproduced word for word.
+
 - [Terms of sale (FR)](https://q-bot.eu/conditions-vente/) / [EN](https://q-bot.eu/en/terms-and-conditions-of-sale/)
-- [Privacy policy (FR)](https://q-bot.eu/confidentialite/) / [EN](https://q-bot.eu/en/privacy/)
+- [Privacy policy (FR)](https://q-bot.eu/confidentialite/) / [EN](https://q-bot.eu/en/privacy/) -- last updated 2025-07-07 (FR), 2024-06-11 (EN)
 
 ---
 
