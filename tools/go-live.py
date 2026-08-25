@@ -49,10 +49,15 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 META = re.compile(r'[ \t]*<meta name="robots" content="noindex[^"]*">\n')
 COMMENTAIRE = re.compile(r'[ \t]*<!--\s*PRÉ-LANCEMENT.*?-->\n', re.S)
 
-# LE BACK-OFFICE RESTE HORS INDEX POUR TOUJOURS. Ce n'est pas un verrou de
-# pré-lancement, c'est un outil interne : sa balise ne doit jamais être retirée,
-# et robots.txt le ferme en plus par « Disallow: /admin/ ».
-JAMAIS = ('admin/',)
+# CE QUI RESTE HORS INDEX POUR TOUJOURS. Ces balises ne sont PAS des verrous de
+# pré-lancement, elles ne doivent donc jamais être retirées :
+#   - admin/    : outil interne, que robots.txt ferme en plus par « Disallow: /admin/ » ;
+#   - 404.html  : une page d'erreur n'a rien à faire dans un index. GitHub Pages la
+#                 sert avec un vrai statut 404, donc le risque est théorique, mais une
+#                 page d'erreur indexée est un défaut classique et la balise coûte zéro.
+# Attention : ces fichiers portent la marque « PRÉ-LANCEMENT » comme les autres, parce
+# qu'ils ont été écrits avec le même gabarit. C'est cette liste qui tranche, pas la marque.
+JAMAIS = ('admin/', '404.html')
 
 ROBOTS_OUVERT = """# https://q-bot.eu/robots.txt
 
@@ -150,7 +155,7 @@ def main():
     for f in pages():
         rel = os.path.relpath(f, RACINE)
         if rel.startswith(JAMAIS):
-            print(f"  {rel} : laissé hors index à dessein (outil interne)")
+            print(f"  {rel} : laissé hors index à dessein (hors du site public)")
             continue
         s = io.open(f, encoding='utf-8').read()
         o = s
