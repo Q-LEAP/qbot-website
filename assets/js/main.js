@@ -1257,15 +1257,28 @@ backToTop.addEventListener('click', () => {
 
   /* Corps du courrier : « Libellé : valeur », un champ par ligne. On prend le
      <label> associé quand il existe, sinon le nom du champ — le destinataire lit
-     ainsi le message dans les mots du formulaire. */
+     ainsi le message dans les mots du formulaire.
+
+     LE LIBELLÉ SE LIT DANS `el.labels`, PAS DANS UN `label[for=…]` CHERCHÉ À LA
+     MAIN, et la différence n'est pas cosmétique : `labels` reconnaît aussi le
+     libellé qui ENVELOPPE son champ, ce qui est la forme de toutes les mentions
+     de consentement du site. Sans ça, une case sans `id` retombait sur son
+     attribut `name` et le courrier portait « consent : oui » au lieu de la phrase
+     acceptée, or pour une trace de consentement c'est la phrase qui a de la
+     valeur, pas le mot. Les `id` ont été posés en plus, mais le repli ne doit pas
+     dépendre d'eux.
+
+     Les espaces sont ramenés à un seul : un libellé écrit sur plusieurs lignes de
+     source (les mentions de consentement le sont toutes) insérait ses retours à
+     la ligne dans le message et cassait le « un champ par ligne ». */
   function corps(form) {
     var lignes = [];
     Array.prototype.forEach.call(form.elements, function (el) {
       if (!el.name || el.type === 'submit' || el.type === 'button') return;
       var v = el.type === 'checkbox' ? (el.checked ? (FR ? 'oui' : 'yes') : (FR ? 'non' : 'no')) : el.value;
       if (!v) return;
-      var lab = form.querySelector('label[for="' + el.id + '"]');
-      var nom = (lab ? lab.textContent : el.name).replace(/\s*\*\s*$/, '').trim();
+      var lab = (el.labels && el.labels[0]) || form.querySelector('label[for="' + el.id + '"]');
+      var nom = (lab ? lab.textContent : el.name).replace(/\s+/g, ' ').replace(/\s*\*\s*$/, '').trim();
       lignes.push(nom + ' : ' + v);
     });
     return lignes.join('\n');

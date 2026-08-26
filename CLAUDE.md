@@ -3216,3 +3216,108 @@ adresses, et seulement ensuite supprimer le WordPress.
 
 Hors périmètre de ce dépôt : le « Depuis 10 ans » de `q-leap.eu` (chantier 09), qui contredit le
 copyright 2012 de ce site-là.
+
+## Contrôle n°3 : la case cochée qui ne partait nulle part (2026-08-26)
+
+`Documentations/Audit_Q-Bot_Controle3_Note_Strategique.pdf` (16 pages, 6,5 → 6,6 sur 10, et
+7,6 → 7,8 sur le périmètre auditable). **`Audit_Q-Bot_Controle_Note_Strategique.pdf` a été
+renversé en `…Controle2…` : c'est le MÊME fichier** (empreinte identique), déjà traité le
+2026-08-25. Le seul document neuf est le n°3.
+
+Sa méthode a changé, et c'est ce qui le rend utile : au lieu de sonder des adresses choisies à
+la main, il a demandé à GitHub la liste des 200 fichiers du dépôt et testé chacun contre ce que
+l'hébergement sert. Résultat : **138 fichiers servis, tous légitimes, 62 non servis, et la
+liste correspond exactement à `_config.yml`.** Le chantier 01 du 2026-08-25 est donc vérifié,
+pas seulement appliqué. Les cinq corrections courtes de la veille sont confirmées refermées,
+et l'audit donne raison au dépôt contre sa propre recommandation sur la FAQ (l'attribut
+`hidden` posé par le script et jamais écrit dans la page).
+
+**Deux points de l'audit sont à écarter, et il le dit lui-même.** Le dépôt public reste un
+arbitrage budgétaire (Pages sur dépôt privé demande un plan payant) : il ne le compte pas comme
+un défaut puisqu'il est documenté dans `llms.txt` et en tête de `_config.yml`. Et le « Depuis
+10 ans » de `q-leap.eu` est hors de ce dépôt.
+
+### QUATRE FORMULAIRES SUR SIX NE RECUEILLAIENT AUCUN CONSENTEMENT EXPLOITABLE
+
+Le point neuf, et le seul sérieux. Il est antérieur à l'audit précédent, qui ne l'avait pas vu.
+
+**Le cas le plus grave est celui des deux accueils, parce qu'il est invisible.** Le bloc de
+consentement était posé juste **après** `</form>` : la case s'affichait, portait sa phrase et
+son lien vers la politique de confidentialité, le visiteur la cochait et croyait avoir donné
+son accord. Elle n'appartenait à aucun des trois chemins du module 15, ce qui a été mesuré dans
+le navigateur avant correction :
+
+- **repli courrier** : le message est composé depuis `form.elements`, la case n'y est pas ;
+- **envoi direct** (après branchement) : `new FormData(form)` ne la contient pas ;
+- **validation** : `form.checkValidity()` ne la voit pas, et elle n'était pas `required`.
+
+Une case cochée dont l'état ne part nulle part est **pire que pas de case** : ni consentement
+recueilli, ni absence de consentement assumée, et aucune trace de ce que le visiteur a accepté.
+Les deux index de blog, eux, n'avaient **rien du tout** : un champ e-mail et un bouton, le seul
+endroit du site qui demandait une adresse sans dire ce qu'elle devient.
+
+Ce qui est en place, sur les six formulaires :
+
+- le bloc de consentement est **DANS** le `<form>`, et la case est **`required`**. Sans
+  `required` le déplacement ne suffit pas : la case part bien, mais vide ;
+- les deux index de blog reçoivent le bloc de l'accueil, **mot pour mot**, mention Sendinblue
+  comprise. Rien de neuf n'a été rédigé, et les chemins relatifs sont les mêmes
+  (`confidentialite/` à la racine, `privacy/` sous `en/`) ;
+- **les cases reçoivent un `id`, et le module 15 lit désormais `el.labels`.** C'était le
+  troisième défaut : la recherche se faisait par `label[for="…"]` construit à la main, or les
+  mentions de consentement du site ont un libellé qui **enveloppe** son champ. Sans `id`, on
+  retombait sur l'attribut `name` et le courrier portait « consent : oui » au lieu de la phrase
+  acceptée. Pour une trace de consentement c'est la phrase qui a de la valeur, pas le mot.
+  `el.labels` reconnaît les deux formes, donc le repli ne dépend plus des `id` ;
+- les espaces du libellé sont ramenés à un seul : une mention écrite sur plusieurs lignes de
+  source insérait ses retours à la ligne dans le corps du courrier et cassait le « un champ par
+  ligne ».
+
+**« AVANT LE BOUTON » N'A PAS ÉTÉ SUIVI À LA LETTRE, ET C'EST DÉLIBÉRÉ.** L'audit demande de
+placer le bloc avant le bouton d'envoi. Sur la bande newsletter, le champ et le bouton sont une
+**rangée** : insérer le consentement entre les deux le fait passer à la ligne et descend le
+bouton sur une troisième ligne, ce qui rallonge une bande dont la compacité a été travaillée
+(elle était passée de 450 à 325 px le 2026-08-10). Surtout, l'ordre visuel serait alors champ,
+consentement, bouton **à la lecture**, mais champ, bouton, consentement dans le DOM si l'on
+compense en CSS : c'est précisément le décalage entre ordre de focus et ordre visuel que
+WCAG 2.4.3 interdit. Le bloc est donc posé après la rangée, où **l'ordre de focus et l'ordre de
+lecture coïncident** (mesuré : `email → submit → consent`), et `required` rend l'ordre inoffensif.
+Vérifié dans le navigateur : envoyer sans cocher est **bloqué**, et le navigateur pose de
+lui-même le focus sur la case.
+
+Une seule ligne de CSS était nécessaire : `.newsletter__form .newsletter__consent
+{ flex-basis: 100%; margin-top: 2px; }`. La première moitié fait passer le bloc à la ligne au
+lieu de rétrécir le champ de saisie (même piège, même correctif que `.form-status` juste
+au-dessus) ; la seconde compense les 12 px de `gap` qu'apporte la rangée wrappée, sans quoi la
+bande gagnait 12 px de haut. Mesuré à 1440 / 900 / 390 px sur les quatre pages : rangée
+préservée, champ toujours à 490 px, consentement à 14 px sous la rangée comme avant, bande
+identique (414 px), case de 20 × 20 px dans un libellé cliquable, **0 débordement horizontal**.
+
+Contrôle final : les six formulaires transmettent la case dans les trois chemins, la ligne de
+courrier porte la phrase complète dans les deux langues, `go-live.py --endpoint` renseigne
+toujours **6 formulaires sur 6** et retire les 6 notes d'attente, et les six pages passent le
+balayage (normal et mouvement réduit) sans révélation invisible, sans défaut de contraste sur la
+bande, sans débordement et sans erreur console.
+
+### Les deux nombres périmés des scripts, désormais dérivés
+
+`go-live.py` annonçait « VÉRIFIER LES 34 REDIRECTIONS » et « Point de départ : 0 sur 29 » là où
+il y en a **52** et **28**. Les scripts, eux, étaient justes : ils lisent la vraie liste. C'était
+le texte destiné à l'humain qui avait vieilli, et c'est le pire endroit pour un chiffre faux,
+puisqu'il se lit le jour de la bascule.
+
+Ils ne sont plus écrits à la main : `RESTE_MANUEL` est une f-string alimentée par
+`len(REDIRECTIONS)` et par le compte de `<loc>` de `sitemap.xml`. Le docstring de
+`verif-redirections.py` **ne porte plus de nombre du tout** (un docstring de module ne peut pas
+être une f-string) : il renvoie à `redirections_map.py`, et le compte réel est imprimé à
+l'exécution. `bump-assets.py` parlait de 29 pages, il y en a 30 (les 28 du plan de site, plus
+`404.html` et `admin/index.html`).
+
+### Laissé au client
+
+**La parité des remerciements de l'article sur les tokens.** L'audit mesure −10 % de mots en
+anglais sur les 14 paires de pages, ce qui est l'écart naturel entre les deux langues et n'est
+pas un défaut. Une seule paire sort de la fourchette, à −31 % : « Remerciements » compte 236 mots
+et nomme **14 contributeurs**, « Acknowledgements » en compte 46 et ne nomme que Hubert
+Schumacher. Des personnes nommées construisent l'autorité d'une page, et le français le fait
+déjà. **À trancher, pas à corriger d'office** : si l'abrègement anglais est voulu, il reste.

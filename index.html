@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=1e214f82">
+  <link rel="stylesheet" href="assets/css/style.css?v=300af073">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=faaf73c1">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -698,18 +698,27 @@
       <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
       <button type="submit" class="btn">S'INSCRIRE</button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
+      <!-- Le consentement est DANS le formulaire, et ce n'est pas un détail de mise
+           en page : posé juste après `</form>`, il ne faisait partie d'AUCUN des
+           trois chemins. Ni le repli courrier (le message est composé à partir de
+           `form.elements`), ni l'envoi direct (`new FormData(form)`), ni la
+           validation ne voyaient la case. Le visiteur la cochait, croyait avoir
+           donné son accord, et il n'en restait aucune trace : le pire des cas, ni
+           consentement recueilli ni absence de consentement assumée.
+           `required` va avec : sans lui, la case reste facultative et l'envoi part
+           sans accord. Relevé par l'audit de contrôle n°3 du 2026-08-25. -->
+      <div class="newsletter__consent">
+        <label for="news-consent">
+          <input type="checkbox" name="consent" id="news-consent" required>
+          <span>J'accepte de recevoir vos e-mails et confirme avoir pris connaissance de votre <a href="confidentialite/">politique de confidentialité</a> et mentions légales.</span>
+        </label>
+        <!-- Une seule mention, et non deux paragraphes empilés : le texte est
+             identique mot pour mot, mais cinq lignes de petit texte en trois blocs
+             séparés donnaient à la bande l'aspect d'un pied de formulaire. -->
+        <p class="newsletter__legal">Vous pouvez vous désinscrire à tout moment en cliquant sur le lien présent dans nos emails. Nous utilisons Sendinblue en tant que plateforme marketing. En soumettant ce formulaire, vous reconnaissez que les informations que vous allez fournir seront transmises à Sendinblue en sa qualité de processeur de données&nbsp;; et ce conformément à ses conditions générales d'utilisation.</p>
+      </div>
       <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript est désactivé&nbsp;: écrivez-nous directement à <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a>.</p></noscript>
     </form>
-    <div class="newsletter__consent">
-      <label>
-        <input type="checkbox" name="consent">
-        <span>J'accepte de recevoir vos e-mails et confirme avoir pris connaissance de votre <a href="confidentialite/">politique de confidentialité</a> et mentions légales.</span>
-      </label>
-      <!-- Une seule mention, et non deux paragraphes empilés : le texte est
-           identique mot pour mot, mais cinq lignes de petit texte en trois blocs
-           séparés donnaient à la bande l'aspect d'un pied de formulaire. -->
-      <p class="newsletter__legal">Vous pouvez vous désinscrire à tout moment en cliquant sur le lien présent dans nos emails. Nous utilisons Sendinblue en tant que plateforme marketing. En soumettant ce formulaire, vous reconnaissez que les informations que vous allez fournir seront transmises à Sendinblue en sa qualité de processeur de données&nbsp;; et ce conformément à ses conditions générales d'utilisation.</p>
-    </div>
     <!-- Fin formulaire Sendinblue -->
   </div>
 </div>
@@ -839,7 +848,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=5eef00ff" defer></script>
+<script src="assets/js/main.js?v=0db193fe" defer></script>
 <script src="assets/js/scrolly.js?v=a93e153e" defer></script>
 </body>
 </html>

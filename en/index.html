@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=1e214f82">
+  <link rel="stylesheet" href="../assets/css/style.css?v=300af073">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=faaf73c1">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -639,16 +639,20 @@
       <input type="email" name="email" placeholder="Please enter your email address to subscribe" required aria-label="Email" title="Please enter your email address to subscribe. E.g.: abc@xyz.com">
       <button type="submit" class="btn">SUBSCRIBE</button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
+      <!-- Consent lives INSIDE the form, cf. index.html for the full reasoning:
+           placed right after `</form>` it belonged to none of the three paths
+           (mail fallback, direct submission, validation), so a ticked box left no
+           trace at all. `required` goes with it. -->
+      <div class="newsletter__consent">
+        <label for="news-consent">
+          <input type="checkbox" name="consent" id="news-consent" required>
+          <span>I agree to receive your e-mails and confirm that I have read your <a href="privacy/">privacy policy</a> and legal notice.</span>
+        </label>
+        <!-- Un seul paragraphe, texte inchangé, cf. index.html. -->
+        <p class="newsletter__legal">You can unsubscribe at any time by clicking on the link in our emails. We use Sendinblue as a marketing platform. By submitting this form, you acknowledge that the information you are about to provide will be transmitted to Sendinblue in its capacity as data processor; and in accordance with its terms and conditions of use.</p>
+      </div>
       <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript is disabled. Write to us directly at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a>.</p></noscript>
     </form>
-    <div class="newsletter__consent">
-      <label>
-        <input type="checkbox" name="consent">
-        <span>I agree to receive your e-mails and confirm that I have read your <a href="privacy/">privacy policy</a> and legal notice.</span>
-      </label>
-      <!-- Un seul paragraphe, texte inchangé — cf. index.html. -->
-      <p class="newsletter__legal">You can unsubscribe at any time by clicking on the link in our emails. We use Sendinblue as a marketing platform. By submitting this form, you acknowledge that the information you are about to provide will be transmitted to Sendinblue in its capacity as data processor; and in accordance with its terms and conditions of use.</p>
-    </div>
     <!-- End Sendinblue form -->
   </div>
 </div>
@@ -776,7 +780,7 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=5eef00ff" defer></script>
+<script src="../assets/js/main.js?v=0db193fe" defer></script>
 <script src="../assets/js/scrolly.js?v=a93e153e" defer></script>
 </body>
 </html>

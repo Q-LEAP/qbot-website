@@ -906,6 +906,13 @@ p { color: var(--gray); }
    Il prend maintenant toute la largeur, sous la rangée. */
 .newsletter__form { flex-wrap: wrap; }
 .newsletter__form .form-status { flex-basis: 100%; margin-top: 4px; }
+/* Le bloc de consentement a rejoint l'INTÉRIEUR du formulaire (dehors, il
+   n'était transmis nulle part, cf. le commentaire dans index.html). Il devient
+   donc un élément de cette rangée flex, et il lui faut la même base que le
+   message d'état pour passer à la ligne au lieu de rétrécir le champ.
+   `margin-top` retombe à 2 px : la rangée wrappée apporte déjà les 12 px de
+   `gap`, et sans ça la bande gagnait 12 px de haut pour rien. */
+.newsletter__form .newsletter__consent { flex-basis: 100%; margin-top: 2px; }
 /* Sur la bande newsletter, fond teal : le texte repasse au noir de charte. */
 .newsletter .form-status {
   color: #001A18;

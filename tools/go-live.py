@@ -42,6 +42,21 @@ import sys
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# LES DEUX NOMBRES DU RAPPEL DE FIN NE SONT PLUS ÉCRITS À LA MAIN, et c'est le
+# correctif d'un défaut réel, relevé par l'audit de contrôle n°3 du 2026-08-25 :
+# ils annonçaient « 34 redirections » et « 0 sur 29 » alors qu'il y en a 52 et 28.
+# Les scripts, eux, lisaient déjà la vraie liste. C'était le texte destiné à
+# l'humain qui avait vieilli, et c'est le pire endroit pour un chiffre faux : il
+# se lit le jour J, au moment où l'on a le moins envie de se demander lequel des
+# deux croire. Ils se dérivent donc de leur source, la carte de redirections et le
+# plan du site, et ne peuvent plus se désynchroniser.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from redirections_map import REDIRECTIONS  # noqa: E402
+
+NB_REDIRECTIONS = len(REDIRECTIONS)
+with io.open(os.path.join(RACINE, 'sitemap.xml'), encoding='utf-8') as _f:
+    NB_PAGES = _f.read().count('<loc>')
+
 # La balise est cherchée par MOTIF et non par chaîne littérale : `admin/index.html`
 # l'écrit « noindex,nofollow » sans espace, et un remplacement littéral la ratait
 # en silence. Même famille de piège que le cadratin en entité et l'apostrophe
@@ -116,17 +131,17 @@ Allow: /
 Sitemap: https://q-bot.eu/sitemap.xml
 """
 
-RESTE_MANUEL = """
+RESTE_MANUEL = f"""
 ────────────────────────────────────────────────────────────────────────────
 CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
 ────────────────────────────────────────────────────────────────────────────
  1. Rattacher le domaine q-bot.eu à GitHub Pages, basculer le DNS, activer
     HTTPS. Le site est alors public.
- 2. VÉRIFIER LES 34 REDIRECTIONS EN LIGNE avant toute chose :
+ 2. VÉRIFIER LES {NB_REDIRECTIONS} REDIRECTIONS EN LIGNE avant toute chose :
        python3 tools/verif-redirections.py --enligne
  3. Créer la propriété Search Console et demander l'indexation. Relever le
     nombre de pages indexées : c'est le seul indicateur qui dise si la mise en
-    ligne a réussi. Point de départ : 0 sur 29.
+    ligne a réussi. Point de départ : 0 sur {NB_PAGES}.
  4. NE SUPPRIMER LE WORDPRESS QU'APRÈS l'étape 2. Les quatre pages légales
     vivent désormais dans ce dépôt, aux mêmes adresses, donc rien ne se perd ;
     mais tant que le WordPress répond encore, on peut comparer.

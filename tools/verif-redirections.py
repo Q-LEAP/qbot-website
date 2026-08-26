@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Contrôle les 34 redirections des anciennes adresses WordPress.
+"""Contrôle TOUTES les redirections des anciennes adresses WordPress.
+
+Le nombre n'est pas écrit ici, à dessein : il a valu « 34 » pendant que la
+carte en contenait déjà 52, et un chiffre faux dans une consigne se lit le jour
+de la bascule, au plus mauvais moment. La liste qui fait foi est
+`tools/redirections_map.py`, et le compte réel est imprimé en fin d'exécution.
 
 Deux modes, et le second est celui qui compte le jour de la mise en ligne :
 

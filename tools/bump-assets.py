@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Recale le numéro de version des feuilles et des scripts sur leur CONTENU.
 
-LE PROBLÈME QU'IL RÈGLE, ET IL A COÛTÉ CHER. Les 29 pages chargent
+LE PROBLÈME QU'IL RÈGLE, ET IL A COÛTÉ CHER. Les 30 pages du dépôt chargent
 `style.css?v=…` et `main.js?v=…`. Ce paramètre est là pour forcer le navigateur
 à retélécharger le fichier quand il change. Il était écrit à la main, donc il
 n'était pas mis à jour : le 2026-08-25, après une dizaine de modifications de
