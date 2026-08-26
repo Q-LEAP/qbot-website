@@ -1240,8 +1240,13 @@ backToTop.addEventListener('click', () => {
     ok:      'Merci, votre message est parti. Nous revenons vers vous rapidement.',
     okNews:  'Merci, votre inscription est enregistrée.',
     manque:  'Merci de compléter les champs obligatoires.',
-    courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ».',
-    echecCourrier:'L’envoi direct a échoué. Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ». S’il ne s’est pas ouvert, écrivez-nous à {MAIL}.',
+    courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ». S’il ne s’est pas ouvert, copiez votre message ci-dessous.',
+    secours: 'Votre message, prêt à copier. À envoyer à ',
+    copier:  'Copier le message',
+    copie:   'Message copié',
+    aChamp:  'À',
+    objet:   'Objet',
+    echecCourrier:'L’envoi direct a échoué. Votre logiciel de courrier vient de s’ouvrir avec le message prérempli. S’il ne s’est pas ouvert, copiez votre message ci-dessous et envoyez-le à {MAIL}.',
     sujetC:  'Demande via le site Q-Bot',
     sujetN:  'Inscription à la newsletter Q-Bot'
   } : {
@@ -1249,8 +1254,13 @@ backToTop.addEventListener('click', () => {
     ok:      'Thank you, your message is on its way. We will get back to you shortly.',
     okNews:  'Thank you, your subscription is registered.',
     manque:  'Please fill in the required fields.',
-    courrier:'Your mail application just opened with the message prefilled: all that is left is to hit send.',
-    echecCourrier:'Direct submission failed. Your mail application just opened with the message prefilled: all that is left is to hit send. If it did not open, write to us at {MAIL}.',
+    courrier:'Your mail application just opened with the message prefilled: all that is left is to hit send. If it did not open, copy your message below.',
+    secours: 'Your message, ready to copy. Send it to ',
+    copier:  'Copy the message',
+    copie:   'Message copied',
+    aChamp:  'To',
+    objet:   'Subject',
+    echecCourrier:'Direct submission failed. Your mail application just opened with the message prefilled. If it did not open, copy your message below and send it to {MAIL}.',
     sujetC:  'Enquiry from the Q-Bot website',
     sujetN:  'Q-Bot newsletter subscription'
   };
@@ -1292,6 +1302,73 @@ backToTop.addEventListener('click', () => {
     var loc = form.getAttribute('data-locale');
     if (loc && !p.has('locale')) p.append('locale', loc);
     return p;
+  }
+
+  /* LE BLOC DE SECOURS, ET POURQUOI IL EXISTE. Un `mailto:` est le seul envoi
+     qu'un site statique sache faire sans sous-traitant, mais il a un défaut qui
+     ne se voit pas : sur un poste sans logiciel de courrier associé (webmail,
+     téléphone sans compte configuré), il ne se passe RIEN. Le visiteur a rempli
+     sept champs, cliqué, et son écran n'a pas bougé. C'est la famille de défauts
+     que ce module a été écrit pour supprimer, et il en restait un.
+
+     Le message composé est donc aussi PRÉSENTÉ, avec un bouton de copie et
+     l'adresse. Rien n'est envoyé, rien ne quitte la page : c'est le même texte
+     que le courrier, montré au lieu d'être seulement passé au système.
+
+     Il est construit ici et non écrit dans les six pages : c'est un état
+     d'exception, il n'a pas à peser sur le balisage servi. */
+  function secours(form, dest, sujet) {
+    var bloc = form.querySelector('.form-relay');
+    if (!bloc) {
+      bloc = document.createElement('div');
+      bloc.className = 'form-relay';
+      bloc.hidden = true;
+      bloc.innerHTML =
+          '<p class="form-relay__lead"></p>'
+        + '<textarea class="form-relay__text" readonly rows="7" spellcheck="false"></textarea>'
+        + '<button type="button" class="form-relay__copy"></button>';
+
+      var apres = form.querySelector('.form-status');
+      if (apres && apres.parentNode === form) form.insertBefore(bloc, apres.nextSibling);
+      else form.appendChild(bloc);
+    }
+
+    var lead = bloc.querySelector('.form-relay__lead');
+    var zone = bloc.querySelector('.form-relay__text');
+    var bout = bloc.querySelector('.form-relay__copy');
+
+    lead.textContent = T.secours;
+    var lien = document.createElement('a');
+    lien.href = 'mailto:' + dest;
+    lien.textContent = dest;
+    lead.appendChild(lien);
+
+    zone.value = T.aChamp + ' : ' + dest + '\n'
+               + T.objet  + ' : ' + sujet + '\n\n'
+               + corps(form);
+    bout.textContent = T.copier;
+    bloc.hidden = false;
+
+    if (!bout.getAttribute('data-lie')) {
+      bout.setAttribute('data-lie', '1');
+      bout.addEventListener('click', function () {
+        /* On sélectionne AVANT toute tentative : si les deux mécanismes de copie
+           échouent (contexte non sécurisé, permission refusée), le texte reste
+           sélectionné et il n'y a plus qu'à faire Cmd+C. Un plancher, jamais un
+           bouton qui ne fait rien. */
+        zone.focus();
+        zone.select();
+        var confirme = function () {
+          bout.textContent = T.copie;
+          setTimeout(function () { bout.textContent = T.copier; }, 2200);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(zone.value).then(confirme, function () {});
+          return;
+        }
+        try { if (document.execCommand('copy')) confirme(); } catch (e) {}
+      });
+    }
   }
 
   function dire(form, texte, type) {
@@ -1377,6 +1454,7 @@ backToTop.addEventListener('click', () => {
           + '?subject=' + encodeURIComponent(sujet)
           + '&body=' + encodeURIComponent(corps(form));
         dire(form, message.replace('{MAIL}', dest), etat);
+        secours(form, dest, sujet);
       }
 
       if (!url) {                                   // pas d'endpoint du tout

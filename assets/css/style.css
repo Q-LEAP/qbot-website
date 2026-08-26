@@ -919,6 +919,59 @@ p { color: var(--gray); }
    dans l'arbre d'accessibilité, où il n'a rien à faire. Un champ en
    `display:none` est bel et bien envoyé, seul `disabled` l'exclurait. */
 .form-honeypot { display: none; }
+
+/* BLOC DE SECOURS DU REPLI COURRIER (module 15). Il n'apparaît qu'après un envoi,
+   quand le message a été passé au logiciel de courrier : il montre ce texte, au
+   cas où rien ne se soit ouvert.
+   TOUT EST EN `currentColor` ET EN `inherit`, à dessein : ce bloc vit sur la bande
+   newsletter (fond teal, texte noir de charte) ET dans la carte du formulaire de
+   contact (fond sombre, texte clair). Une couleur écrite en dur serait juste dans
+   l'un des deux et illisible dans l'autre, ce qui est exactement le défaut relevé
+   16 fois par l'audit du 2026-08-11. Le bouton hérite donc du contraste déjà
+   validé de son conteneur. */
+.form-relay {
+  flex-basis: 100%;
+  margin-top: 12px;
+  color: inherit;
+}
+.form-relay__lead {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin: 0 0 8px;
+  color: inherit;
+}
+.form-relay__lead a { color: inherit; text-decoration: underline; }
+/* La zone de texte garde un fond clair et un texte sombre dans les deux
+   contextes : c'est un champ de formulaire, comme ceux au-dessus, et on y lit du
+   texte dense. Même traitement que `.form-group textarea`. */
+.form-relay__text {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--dark);
+  background: var(--white);
+  resize: vertical;
+}
+.form-relay__copy {
+  margin-top: 8px;
+  padding: 9px 16px;
+  /* 24 px de haut minimum : WCAG 2.2 (2.5.8). Mesuré ici à 38 px. */
+  min-height: 38px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font-family: var(--font);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.form-relay__copy:hover { background: rgba(0, 0, 0, 0.08); }
 /* Sur la bande newsletter, fond teal : le texte repasse au noir de charte. */
 .newsletter .form-status {
   color: #001A18;

@@ -3498,3 +3498,44 @@ corps liste les sept champs dans les mots du formulaire, phrase de consentement 
 
 Le jour où l'un des trois est choisi, c'est **un seul attribut** à renseigner
 (`tools/go-live.py --endpoint`), et le repli courrier reste le filet en cas de refus.
+
+### Le bloc de secours : le `mailto:` cesse d'échouer en silence (2026-08-26)
+
+Demande : « fais-moi la solution la plus simple où tu peux tout faire toi sans que je touche ».
+
+**RÉPONSE HONNÊTE, À REDONNER TELLE QUELLE SI LA QUESTION REVIENT : aucun relais ne peut être mis
+en place sans le client.** FormSubmit demande un clic de confirmation dans la boîte
+`contact@q-leap.eu`, Cloudflare et Formspree demandent un compte. Créer un compte auprès d'un
+sous-traitant de données au nom du client n'est pas une décision technique. Ce qui pouvait être
+fait seul, c'est rendre fiable le seul chemin qui ne dépend de personne.
+
+**Le défaut réparé était réel et invisible.** Sur un poste sans logiciel de courrier associé
+(webmail, téléphone sans compte configuré), un `mailto:` **ne fait rien du tout** : le visiteur a
+rempli sept champs, cliqué, et son écran n'a pas bougé. C'est exactement la famille de défauts
+que le module 15 avait été écrit pour supprimer, et il en restait un, au bout de la chaîne.
+
+Le message composé est donc désormais aussi **présenté** : un `.form-relay` avec le texte complet
+(destinataire, objet, les champs), un bouton de copie, et l'adresse en lien. Rien n'est envoyé,
+rien ne quitte la page, aucun tiers n'est appelé : c'est le même texte que le courrier, montré au
+lieu d'être seulement passé au système.
+
+Quatre points à ne pas défaire :
+
+- **le bloc est construit par le script, jamais écrit dans les six pages.** C'est un état
+  d'exception, il n'a pas à peser sur le balisage servi. Vérifié : `.form-relay` **absent** du
+  DOM avant tout envoi, et absent aussi après un succès ;
+- **la sélection du texte précède toute tentative de copie.** Si les deux mécanismes échouent
+  (contexte non sécurisé, permission refusée), le texte reste sélectionné et il n'y a plus qu'à
+  faire Cmd+C. Un plancher, jamais un bouton qui ne fait rien. Ordre : API presse-papier, puis
+  `execCommand`, puis la sélection seule ;
+- **tout est en `currentColor` et `inherit`.** Ce bloc vit sur la bande newsletter (fond teal,
+  texte noir de charte) ET dans la carte du formulaire de contact (fond sombre, texte clair). Une
+  couleur écrite en dur serait juste dans l'un et illisible dans l'autre : c'est le défaut relevé
+  16 fois par l'audit du 2026-08-11. Mesuré sur les deux fonds : **6,81 à 21:1**, tout passe AA ;
+- **la zone de texte garde un fond clair et un texte sombre** dans les deux contextes. C'est un
+  champ de formulaire comme ceux au-dessus, et on y lit du texte dense.
+
+Contrôlé : copie réellement présente dans le presse-papier (lue par `clipboard.readText`), les
+deux langues, libellé du bouton qui confirme puis revient, cible de 142 × 38 px, 0 débordement
+horizontal à 390 px, 0 erreur console. Le contenu copié est autonome : `À`, `Objet`, puis les
+champs, donc un collage dans n'importe quel webmail est complet.
