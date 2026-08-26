@@ -1258,9 +1258,12 @@ Un contrôle des centrages doit chercher les styles en ligne, et pas seulement l
 volontairement centré : le contenu des boutons, et le bouton flottant de la séquence, ancré à la
 fenêtre comme tout bouton flottant.
 
-**Ce qui n'est PAS traité** : le conteneur reste plafonné à 1180 px, donc à 2560 il y a 690 px de
-marge de chaque côté. L'élargir est une décision de charte qui toucherait les 23 pages ; à
-arbitrer avec le client.
+**CETTE NOTE ÉTAIT PÉRIMÉE, CORRIGÉE LE 2026-08-26.** Elle disait le conteneur « plafonné à
+1180 px » avec 690 px de marge à 2560, et proposait de l'élargir comme décision de charte. Le
+relevé montre qu'il vaut `clamp(1180px, 72vw, 1440px)` : il est FLUIDE, atteint 1440 dès 2000 px
+de large, et il l'est uniformément sur toutes les pages (pied de page compris). Il n'y a donc rien
+à arbitrer, et surtout : **on ne déduit pas la largeur d'un bloc de cette note.** Elle m'a fait
+dimensionner une vignette pour une carte de 398 px alors qu'elle en fait 441 à 2560. On mesure.
 
 ## Passe mobile du scrollytelling + modèle compressé (2026-08-19)
 
@@ -4206,3 +4209,59 @@ les huit guides listés dans `llms.txt` avec, pour chacun, ce qu'il ne faut pas 
 Contrôles : **97 pages balayées, 0 lien interne cassé**. Les deux audits sur les **45 pages** à
 1440 et 390 px : **0 constat**. 48 vues des pages neuves sans anomalie (un seul `h1`, 0 saut de
 niveau, 0 révélation invisible, 0 débordement, 0 défaut de contraste, 0 erreur console).
+
+## Les vignettes des guides : six schémas de charte, deux photos (2026-08-26)
+
+Demande initiale : « trouve des images libres de droit via Google Image ». **Refusé, et la raison
+vaut d'être gardée : Google Images est un index, pas une banque d'images libres.** Son filtre de
+droits d'usage remonte des métadonnées déclarées par les sites, et Google renvoie lui-même vers la
+source pour vérifier la licence. Publier ça sur le site commercial d'une société nommée exposerait
+Q-Leap à une réclamation pour une image dont la licence n'a pas été lue. Trois options ont été
+proposées à la place ; le client a répondu « tant que c'est cohérent peu m'importe ».
+
+**Retenu : six schémas et deux photos, et le partage n'est pas arbitraire.** Un schéma là où le
+sujet est conceptuel, une photo là où le sujet est l'objet :
+
+| Guide | Vignette |
+|---|---|
+| page pilier | schéma des quatre familles de second facteur |
+| LuxTrust | **photo** du téléphone docké affichant une validation LuxTrust |
+| désactiver la 2FA en test | schéma des trois voies, avec la troisième marquée |
+| sans clé secrète | schéma des deux chemins, avec clé et sans |
+| appareil réel | **photo** du boîtier sur un poste de travail |
+| sécurité et données | schéma de la frontière du réseau, rien ne sort |
+| campagnes de nuit | frise d'exécution qui bute sur la 2FA |
+| coût de l'étape manuelle | la formule posée, « jamais des euros » |
+
+Les schémas sont construits par `tools/render/guide-thumbs.html` et capturés par
+`tools/render/shoot-guide-thumbs.py`, exactement comme la maquette d'interface : teal et noir de
+charte, Roboto servie depuis le dépôt, pictogrammes en SVG au trait, aucun emoji, aucun cadratin.
+**Douze fichiers, deux langues**, 15 à 24 Ko chacun.
+
+Deux points de méthode :
+
+- **les libellés sont courts à dessein.** La vignette s'affiche à 354 px : un texte de 40 px dans
+  la source y tombe à 18 px. Au-delà de trois mots, plus rien n'est lisible, et cette contrainte
+  force la clarté du schéma ;
+- **densité 2 puis réduction Lanczos**, pas une capture directe : à densité 1 les diagonales des
+  pictogrammes crénellent.
+
+**ET LA TAILLE A ÉTÉ DIMENSIONNÉE DEUX FOIS SUR UNE MAUVAISE RÉFÉRENCE.** J'ai visé 768 px puis
+800 px en croyant la carte de blog large de 398 px, chiffre pris sur la carte d'ÉVOLUTION de
+l'accueil et conforté par une note périmée disant le conteneur plafonné à 1180. La carte de blog
+fait **441 px à 2560**, donc 882 px à densité 2 : la sortie est à **900 px**. Leçon, écrite aussi
+sur la note du conteneur plus haut : **on mesure la boîte qu'on remplit, on ne déduit pas sa
+largeur d'une note.**
+
+**Les deux doublons de vignettes sont résolus au passage** : `post-2fa.webp` et
+`post-tokens.webp` étaient chacune partagées entre un guide et un billet daté. Dix cartes, dix
+images distinctes.
+
+Restent trois agrandissements de 1,15 à 1,26 à 2560 en densité 2, sur `qbot-photo-dock.jpg` (699 px,
+découpe de brochure) et les deux vignettes d'article (768 px) : **leurs sources ne contiennent pas
+plus de pixels**, et 1,26 sur une vignette de 441 px n'a rien à voir avec le 2,03 d'un visuel de
+526 px qui avait motivé la correction du 2026-08-26.
+
+Contrôles : les six schémas nets à 1440, 1920 et 2560 px, `alt` descriptif et distinct du titre sur
+chaque vignette, 0 image cassée, 0 défaut de contraste, 0 débordement, 0 erreur console sur les
+deux index. Les deux audits sur les **45 pages** : 0 constat.

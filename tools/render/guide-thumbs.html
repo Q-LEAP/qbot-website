@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr" class="fr">
+<head>
+<meta charset="UTF-8">
+<title>Vignettes des guides</title>
+<!--
+  PLANCHE DE VIGNETTES DES GUIDES DU BLOG.
+  Rendue par tools/render/shoot-guide-thumbs.py, une capture par bloc, en 768x768.
+
+  POURQUOI DES SCHÉMAS ET PAS DES PHOTOS DE BANQUE. Une photo générique de clavier ou
+  de cadenas décore ; un schéma dit ce que le guide contient. Le dépôt a déjà retiré
+  deux visuels pour cette raison exacte (les rendus IA, et la coupe CAO qui illustrait
+  « Interface & API »). Et il n'y a aucune licence tierce à surveiller.
+
+  CONTRAINTES DE CHARTE, toutes vérifiables :
+   - teal #00CBBE et noir, plus la rampe de gris du document de charte. Pas d'autre teinte ;
+   - Roboto, servie depuis le dépôt ;
+   - aucun emoji : tout pictogramme est un SVG au trait, 24x24, stroke currentColor ;
+   - aucun cadratin.
+
+  LES LIBELLÉS SONT COURTS À DESSEIN. La vignette s'affiche à 354 px de large : un texte
+  de 40 px dans la source y tombe à 18 px. Au-delà de trois mots, plus rien n'est lisible.
+
+  Les deux langues cohabitent dans le DOM ; la classe de <html> décide laquelle s'affiche.
+-->
+<style>
+  @font-face { font-family: Roboto; src: url('../../assets/fonts/roboto-latin.woff2') format('woff2');
+               font-weight: 100 900; font-display: block; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --teal: #00CBBE; --teal-d: #00A79C;
+    --g1: #E6E7E8; --g2: #BCBEC0; --g3: #808285; --g4: #4C4B4C;
+    --fond: #0B0B0B;
+  }
+  body { background: #222; font-family: Roboto, system-ui, sans-serif; }
+  html.fr .en, html.en .fr { display: none; }
+
+  .thumb {
+    width: 768px; height: 768px; position: relative; overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, #14201F 0%, var(--fond) 62%);
+    color: var(--g1); display: flex; flex-direction: column;
+    padding: 74px 68px; gap: 40px;
+  }
+  /* Un halo teal très sourd : la vignette doit se distinguer du fond de la carte
+     sans jamais concurrencer le texte qui l'accompagne. */
+  .thumb::after {
+    content: ''; position: absolute; inset: auto -30% -45% -30%; height: 70%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(0,203,190,.16), transparent 70%);
+    pointer-events: none;
+  }
+  .kicker {
+    font-size: 26px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--teal); position: relative; padding-left: 22px; flex: none;
+  }
+  .kicker::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px; background: var(--teal); }
+  .zone { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+
+  /* ---- 1. quatre familles : une grille de quatre tuiles ---- */
+  .quad { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; width: 100%; }
+  .tile {
+    border: 2px solid rgba(255,255,255,.13); border-radius: 20px; padding: 30px 26px;
+    display: flex; flex-direction: column; gap: 18px; background: rgba(255,255,255,.028);
+  }
+  .tile.on { border-color: var(--teal); background: rgba(0,203,190,.08); }
+  .tile svg { width: 46px; height: 46px; stroke: var(--g2); }
+  .tile.on svg { stroke: var(--teal); }
+  .tile b { font-size: 34px; font-weight: 700; line-height: 1.2; }
+
+  /* ---- 2. l'embranchement de décision ---- */
+  .fork { width: 100%; }
+  .fork .top { text-align: center; font-size: 34px; font-weight: 700; margin-bottom: 30px; }
+  .fork .rows { display: flex; flex-direction: column; gap: 20px; }
+  .row {
+    display: flex; align-items: center; gap: 20px; padding: 24px 26px;
+    border-left: 5px solid var(--g4); background: rgba(255,255,255,.03); border-radius: 0 16px 16px 0;
+  }
+  .row.on { border-left-color: var(--teal); background: rgba(0,203,190,.08); }
+  .row span { font-size: 32px; font-weight: 500; }
+  .row i { font-size: 26px; color: var(--g3); font-style: normal; margin-left: auto; font-weight: 700; }
+
+  /* ---- 3. deux chemins, avec et sans clé ---- */
+  .paths { width: 100%; display: flex; flex-direction: column; gap: 34px; }
+  .path { display: flex; align-items: center; gap: 22px; }
+  .chip {
+    border: 2px solid rgba(255,255,255,.16); border-radius: 16px; padding: 22px 24px;
+    font-size: 30px; font-weight: 700; white-space: nowrap;
+  }
+  .path.on .chip { border-color: var(--teal); color: var(--teal); }
+  .arrow { flex: 1; height: 3px; background: var(--g4); position: relative; }
+  .path.on .arrow { background: var(--teal); }
+  .arrow::after {
+    content: ''; position: absolute; right: -2px; top: -8px;
+    border-left: 16px solid var(--g4); border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+  }
+  .path.on .arrow::after { border-left-color: var(--teal); }
+  .path svg { width: 44px; height: 44px; stroke: var(--g2); flex: none; }
+  .path.on svg { stroke: var(--teal); }
+
+  /* ---- 4. la frontière du réseau ---- */
+  .fence {
+    width: 100%; border: 3px dashed var(--teal); border-radius: 26px; padding: 40px 34px;
+    position: relative; background: rgba(0,203,190,.05);
+  }
+  .fence .lab {
+    position: absolute; top: -20px; left: 30px; background: var(--fond); padding: 0 14px;
+    font-size: 24px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal);
+  }
+  .fence .items { display: flex; gap: 18px; justify-content: center; }
+  .fence .items div {
+    border: 2px solid rgba(255,255,255,.16); border-radius: 16px; padding: 24px 18px;
+    font-size: 26px; font-weight: 500; text-align: center; flex: 1;
+  }
+  .out { margin-top: 34px; display: flex; align-items: center; justify-content: center; gap: 18px; }
+  .out span { font-size: 30px; font-weight: 700; color: var(--g3); }
+  .out svg { width: 46px; height: 46px; stroke: var(--g3); }
+
+  /* ---- 5. la frise d'exécution qui bute ---- */
+  .steps { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+  .step { display: flex; align-items: center; gap: 20px; font-size: 30px; font-weight: 500; }
+  .step .dot {
+    width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--teal);
+    display: flex; align-items: center; justify-content: center; flex: none;
+  }
+  .step .dot svg { width: 22px; height: 22px; stroke: var(--teal); }
+  .step.stop .dot { border-color: var(--teal); background: var(--teal); }
+  .step.stop .dot svg { stroke: #001A18; }
+  .step.stop { color: var(--teal); font-weight: 700; }
+  .step.off { color: var(--g4); }
+  .step.off .dot { border-color: var(--g4); border-style: dashed; }
+  .step.off .dot svg { display: none; }
+
+  /* ---- 6. la formule ---- */
+  .calc { width: 100%; text-align: left; }
+  .calc .line { font-size: 40px; font-weight: 700; line-height: 1.35; }
+  .calc .line em { font-style: normal; color: var(--teal); }
+  .calc .eq { margin-top: 30px; font-size: 34px; color: var(--g2); font-weight: 500; }
+  .calc .eq b { color: var(--g1); font-size: 44px; }
+</style>
+</head>
+<body>
+
+<!-- 1 ── page pilier : les quatre familles de second facteur -->
+<div class="thumb" id="t-pilier">
+  <div class="kicker"><span class="fr">Quatre familles</span><span class="en">Four families</span></div>
+  <div class="zone"><div class="quad">
+    <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h4M7 13h10"/></svg>
+      <b><span class="fr">Code calculé</span><span class="en">Computed code</span></b></div>
+    <div class="tile on"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <b><span class="fr">À approuver</span><span class="en">To approve</span></b></div>
+    <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 7h6"/></svg>
+      <b><span class="fr">Code affiché</span><span class="en">Displayed code</span></b></div>
+    <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></svg>
+      <b>QR code</b></div>
+  </div></div>
+</div>
+
+<!-- 2 ── désactiver la 2FA en test : les trois voies -->
+<div class="thumb" id="t-desactiver">
+  <div class="kicker"><span class="fr">Trois voies</span><span class="en">Three routes</span></div>
+  <div class="zone"><div class="fork">
+    <div class="top"><span class="fr">La 2FA est-elle dans le périmètre&nbsp;?</span><span class="en">Is 2FA in the test's scope?</span></div>
+    <div class="rows">
+      <div class="row"><span class="fr">Désactiver</span><span class="en">Disable</span><i><span class="fr">hors périmètre</span><span class="en">out of scope</span></i></div>
+      <div class="row"><span class="fr">Recalculer</span><span class="en">Recompute</span><i><span class="fr">secret détenu</span><span class="en">secret held</span></i></div>
+      <div class="row on"><span class="fr">Appareil réel</span><span class="en">Real device</span><i><span class="fr">aucun secret</span><span class="en">no secret</span></i></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- 3 ── sans clé secrète partagée : deux chemins -->
+<div class="thumb" id="t-sanscle">
+  <div class="kicker"><span class="fr">Avec ou sans clé</span><span class="en">With or without a key</span></div>
+  <div class="zone"><div class="paths">
+    <div class="path">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="5"/><path d="M11.5 11.5 21 21M17 17l2-2"/></svg>
+      <div class="chip"><span class="fr">Secret</span><span class="en">Secret</span></div>
+      <div class="arrow"></div>
+      <div class="chip"><span class="fr">Calcul</span><span class="en">Compute</span></div>
+    </div>
+    <div class="path on">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M9 11V6a2 2 0 1 1 4 0v5"/><path d="M13 11V9a2 2 0 1 1 4 0v6a6 6 0 0 1-6 6H9a5 5 0 0 1-5-5v-3a2 2 0 1 1 4 0"/></svg>
+      <div class="chip"><span class="fr">Aucun secret</span><span class="en">No secret</span></div>
+      <div class="arrow"></div>
+      <div class="chip"><span class="fr">Appui réel</span><span class="en">Real tap</span></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- 4 ── sécurité : la frontière du réseau -->
+<div class="thumb" id="t-securite">
+  <div class="kicker"><span class="fr">Rien ne sort</span><span class="en">Nothing leaves</span></div>
+  <div class="zone"><div style="width:100%">
+    <div class="fence">
+      <span class="lab"><span class="fr">Votre réseau</span><span class="en">Your network</span></span>
+      <div class="items">
+        <div><span class="fr">Scénarios</span><span class="en">Scenarios</span></div>
+        <div><span class="fr">Captures</span><span class="en">Screenshots</span></div>
+        <div><span class="fr">Base locale</span><span class="en">Local store</span></div>
+      </div>
+    </div>
+    <div class="out">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg>
+      <span><span class="fr">Aucun envoi</span><span class="en">No upload</span></span>
+    </div>
+  </div></div>
+</div>
+
+<!-- 5 ── campagnes de nuit : la frise qui bute -->
+<div class="thumb" id="t-nuit">
+  <div class="kicker"><span class="fr">La campagne bute</span><span class="en">The run stops</span></div>
+  <div class="zone"><div class="steps">
+    <div class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="fr">Ouvrir la page</span><span class="en">Open the page</span></div>
+    <div class="step"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="fr">Saisir l'identifiant</span><span class="en">Enter the username</span></div>
+    <div class="step stop"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg></span>2FA</div>
+    <div class="step off"><span class="dot"><svg viewBox="0 0 24 24"></svg></span><span class="fr">Le reste du parcours</span><span class="en">The rest of the journey</span></div>
+    <div class="step off"><span class="dot"><svg viewBox="0 0 24 24"></svg></span><span class="fr">Les assertions</span><span class="en">The assertions</span></div>
+  </div></div>
+</div>
+
+<!-- 6 ── le coût : la formule -->
+<div class="thumb" id="t-cout">
+  <div class="kicker"><span class="fr">Le calcul</span><span class="en">The calculation</span></div>
+  <div class="zone"><div class="calc">
+    <div class="line"><em><span class="fr">Testeurs</span><span class="en">Testers</span></em> ×
+      <em><span class="fr">minutes</span><span class="en">minutes</span></em> ×
+      <em>21</em></div>
+    <div class="eq"><span class="fr">soit</span><span class="en">gives</span> <b><span class="fr">des heures</span><span class="en">hours</span></b></div>
+    <div class="eq"><span class="fr">soit</span><span class="en">gives</span> <b><span class="fr">des journées de test</span><span class="en">testing days</span></b></div>
+    <div class="eq" style="margin-top:26px; font-size:26px; color:var(--g3)"><span class="fr">jamais des euros</span><span class="en">never money</span></div>
+  </div></div>
+</div>
+
+</body>
+</html>
