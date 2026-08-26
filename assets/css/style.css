@@ -972,6 +972,17 @@ p { color: var(--gray); }
   transition: background 0.2s ease;
 }
 .form-relay__copy:hover { background: rgba(0, 0, 0, 0.08); }
+
+/* Le bouton du formulaire de contact dit « Envoyer ma demande », or le site ne
+   poste rien : il compose un message et le passe au logiciel du visiteur, par
+   décision du client. Le dire AVANT le clic, et non le laisser découvrir après,
+   c'est la même exigence que le `<noscript>` juste en dessous. */
+.form-hint {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--gray);
+}
 /* Sur la bande newsletter, fond teal : le texte repasse au noir de charte. */
 .newsletter .form-status {
   color: #001A18;

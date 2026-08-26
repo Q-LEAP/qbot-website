@@ -3539,3 +3539,36 @@ Contrôlé : copie réellement présente dans le presse-papier (lue par `clipboa
 deux langues, libellé du bouton qui confirme puis revient, cible de 142 × 38 px, 0 débordement
 horizontal à 390 px, 0 erreur console. Le contenu copié est autonome : `À`, `Objet`, puis les
 champs, donc un collage dans n'importe quel webmail est complet.
+
+### ARBITRÉ PAR LE CLIENT LE 2026-08-26 : pas de sous-traitant tiers pour le contact
+
+« Ne me fais pas passer par des sites tiers pour contact, tant pis ça ouvrira une boîte mail. »
+
+**Le point n'est donc plus ouvert, il est TRANCHÉ.** Les deux formulaires de contact partent par
+le logiciel de courrier du visiteur, définitivement. `data-endpoint` reste vide **à dessein**, et
+il ne faut ni y remettre une URL, ni traiter cela comme une tâche du jour J, ni le rappeler au
+client comme un point en attente. La note `ROSOAI-EN-ATTENTE` de ces deux pages a été remplacée
+par la décision, `go-live.py` et `llms.txt` disent désormais que c'est un choix et non un oubli,
+et `--endpoint` reste disponible seulement au cas où la décision change.
+
+Ce que ce statut définitif a obligé à traiter, parce qu'un provisoire peut vivre avec un cas
+limite et un chemin permanent non :
+
+- **la longueur d'un `mailto:` n'est pas illimitée.** Mesuré sur ce formulaire : une demande de
+  1 000 caractères produit une URL de **1 964**, et Outlook comme les gestionnaires Windows
+  tronquent vers 2 048. Un message tronqué en silence est précisément le défaut que le module 15
+  existe pour supprimer. **On ne dégrade PAS pour autant** : envoyer un objet sans corps
+  pénaliserait tout le monde pour protéger une minorité. Le message part entier, et au-delà de
+  `MAILTO_MAX` (1900, marge prise sur l'objet, l'adresse et l'encodage du protocole) le visiteur
+  est **averti** qu'il doit vérifier, avec le texte copiable juste en dessous. Prévenir plutôt
+  que tronquer ;
+- **le bouton disait « Envoyer ma demande » alors que le site n'envoie rien.** Il compose un
+  message et le passe au logiciel du visiteur. Une ligne `.form-hint` le dit **avant** le clic
+  (« En envoyant, votre logiciel de courrier s'ouvre avec le message prérempli »), plutôt que de
+  le laisser découvrir après. Même exigence que le `<noscript>` juste en dessous. Le libellé du
+  bouton, lui, n'est pas touché : c'est du texte du live.
+
+Contrôlé sur les deux langues : ligne visible avant le clic, message court qui donne l'invite
+normale, message long qui déclenche l'avertissement, bloc copiable présent dans les deux cas,
+0 débordement, 0 erreur console. Et les notes « endpoint en attente » ne subsistent plus que sur
+le sujet des références clients, qui est un autre point, toujours ouvert lui.

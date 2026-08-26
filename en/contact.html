@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=034454a6">
+  <link rel="stylesheet" href="../assets/css/style.css?v=67edc8d7">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -160,15 +160,10 @@
         <span class="section-label">Contact us</span>
         <h2 class="section-title" id="contact-form-title">More info</h2>
         <p style="margin-bottom:32px;">If you are interested in our solution and would like to obtain additional information, please complete the form below.</p>
-        <!-- ROSOAI-EN-ATTENTE · form endpoint
-             `data-endpoint` is empty ON PURPOSE, this is not a forgotten form: the
-             submission service URL is awaiting the client's approval, an item opened on
-             2026-08-25. Nothing is lost meanwhile. Module 15 of main.js opens the
-             visitor's mail client pre-filled field by field, and the page says so in
-             plain words. On approval there is a single value to fill in: the script
-             switches to direct submission on its own.
-             Full site status: /llms.txt, section "Pre-launch status".
-             REMOVE ALONG WITH the value. Find them all: grep -rn ROSOAI-EN-ATTENTE -->
+        <!-- The visitor's own mail application sends this form, by the client's
+             decision of 2026-08-26: no third-party relay for contact. `data-endpoint`
+             stays empty on purpose and this is NOT a pending item. Cf. contact.html for
+             the full note. -->
         <form class="contact-form" data-form="contact" data-endpoint="" data-mailto="contact@q-leap.eu" method="post" novalidate>
           <div class="form-row">
             <div class="form-group"><label for="firstname">First name <span>*</span></label><input type="text" id="firstname" name="firstname" required autocomplete="given-name" placeholder="John"></div>
@@ -199,6 +194,7 @@
             Send my request
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
           </button>
+          <p class="form-hint">On sending, your mail application opens with the message prefilled: all that is left is to hit send.</p>
               <p class="form-status" role="status" aria-live="polite" hidden></p>
       <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript is disabled. Write to us directly at <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>.</p></noscript>
     </form>
@@ -318,6 +314,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=bcd4b80e" defer></script>
+<script src="../assets/js/main.js?v=710207f0" defer></script>
 </body>
 </html>

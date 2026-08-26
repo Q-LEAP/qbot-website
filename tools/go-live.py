@@ -21,13 +21,12 @@ CE QU'IL FAIT
      PRÉ-LANCEMENT qui l'accompagne, sur toutes les pages ;
   2. remplace robots.txt par son contenu d'ouverture ;
   3. si `--endpoint` est fourni, renseigne `data-endpoint` sur les formulaires
-     qui n'en ont pas encore. Depuis le 2026-08-26 les QUATRE newsletters
-     pointent sur le vrai endpoint Brevo du client (relevé sur son WordPress),
-     donc il n'en reste que DEUX : les formulaires de contact FR et EN. Ce qui
-     règle au passage un défaut de ce script, qui posait la même URL sur les six
-     alors qu'une inscription newsletter et une demande de démo ne vont pas au
-     même endroit. Sans endpoint, ces deux-là restent sur le repli courrier :
-     rien n'est perdu, mais le visiteur doit appuyer sur « envoyer ».
+     qui n'en ont pas encore. IL N'Y EN A PLUS AUCUN À BRANCHER : les quatre
+     newsletters pointent sur le Brevo du client depuis le 2026-08-26, et les deux
+     formulaires de CONTACT partent volontairement par le logiciel de courrier du
+     visiteur, sur décision du client du 2026-08-26 (pas de sous-traitant tiers
+     pour le contact). L'option reste en place au cas où cette décision change,
+     mais ce n'est plus une tâche du jour J.
 
 CE QU'IL NE FAIT PAS, ET QUI RESTE MANUEL : le DNS, HTTPS, la Search Console, et
 la suppression du WordPress. Il les rappelle en fin d'exécution.
@@ -149,11 +148,11 @@ CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
  4. NE SUPPRIMER LE WORDPRESS QU'APRÈS l'étape 2. Les quatre pages légales
     vivent désormais dans ce dépôt, aux mêmes adresses, donc rien ne se perd ;
     mais tant que le WordPress répond encore, on peut comparer.
- 5. Si aucun endpoint n'a été fourni : les deux formulaires de CONTACT restent
-    sur le repli courrier (les quatre newsletters, elles, sont branchées sur
-    Brevo). Chaque demande de démo demande alors un geste de plus au visiteur.
-    Le live traitait ce formulaire avec Contact Form 7, un plugin DANS le
-    WordPress : il n'y a rien à récupérer, et il meurt à l'étape 4.
+ 5. Rien à faire pour les formulaires. Les deux formulaires de contact passent
+    par le logiciel de courrier du visiteur, PAR DÉCISION DU CLIENT du 2026-08-26,
+    et ce n'est donc pas un point ouvert. Les quatre newsletters postent sur son
+    Brevo ; il lui reste à désactiver le reCAPTCHA de ce formulaire, sans quoi
+    elles retombent sur le même repli courrier.
 ────────────────────────────────────────────────────────────────────────────
 """
 

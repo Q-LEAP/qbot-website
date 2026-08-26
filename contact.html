@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=034454a6">
+  <link rel="stylesheet" href="assets/css/style.css?v=67edc8d7">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -175,15 +175,17 @@
         <h2 class="section-title" id="contact-form-title">Plus d'info</h2>
         <p style="margin-bottom:32px;">Vous êtes intéressés par notre solution et vous souhaitez obtenir des informations complémentaires, merci de compléter le formulaire ci-dessous.</p>
 
-        <!-- ROSOAI-EN-ATTENTE · endpoint des formulaires
-             `data-endpoint` est vide À DESSEIN, ce n'est pas un formulaire oublié :
-             l'adresse du service d'envoi est en attente d'approbation chez le client,
-             point ouvert le 2026-08-25. Rien ne se perd en attendant. Le module 15 de
-             main.js ouvre le logiciel de courrier du visiteur, prérempli champ par
-             champ, et la page le lui écrit noir sur blanc. Le jour de l'approbation il
-             n'y a qu'une valeur à renseigner : le script bascule seul en envoi direct.
-             Statut complet du site : /llms.txt, section « Pre-launch status ».
-             À RETIRER avec la valeur. Tout retrouver : grep -rn ROSOAI-EN-ATTENTE -->
+        <!-- ENVOI PAR LE LOGICIEL DE COURRIER DU VISITEUR, PAR DÉCISION DU CLIENT
+             (2026-08-26) : « ne me fais pas passer par des sites tiers pour contact,
+             tant pis ça ouvrira une boîte mail ». `data-endpoint` reste donc vide, et
+             CE N'EST PLUS UN POINT EN ATTENTE : c'est le choix arrêté.
+             La raison : un site statique ne peut pas envoyer de courrier lui-même, donc
+             tout envoi direct passerait par un sous-traitant de données (Formspree,
+             FormSubmit, une fonction serverless), ce que le client refuse ici.
+             Le module 15 compose le message champ par champ, ouvre le logiciel de
+             courrier, et montre en plus le message copiable (`.form-relay`) pour les
+             postes où un `mailto:` ne fait rien du tout.
+             NE PAS y remettre d'endpoint sans nouvelle décision du client. -->
         <form class="contact-form" data-form="contact" data-endpoint="" data-mailto="contact@q-leap.eu" method="post" novalidate aria-label="Formulaire de contact">
           <div class="form-row">
             <div class="form-group">
@@ -235,6 +237,7 @@
             Envoyer ma demande
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
           </button>
+          <p class="form-hint">En envoyant, votre logiciel de courrier s’ouvre avec le message prérempli&nbsp;: il reste à appuyer sur «&nbsp;envoyer&nbsp;».</p>
               <p class="form-status" role="status" aria-live="polite" hidden></p>
       <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript est désactivé&nbsp;: écrivez-nous directement à <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>.</p></noscript>
     </form>
@@ -377,6 +380,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=bcd4b80e" defer></script>
+<script src="assets/js/main.js?v=710207f0" defer></script>
 </body>
 </html>

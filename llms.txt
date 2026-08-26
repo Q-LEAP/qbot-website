@@ -38,16 +38,19 @@ This site is a staging build of a migration that has not gone live yet. `robots.
 all crawlers and all 28 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
 misconfiguration, and it will be lifted in one step on switch-over day.
 
-Three items are open and awaiting a decision by the client, not work left undone:
+Two items are open and awaiting a decision by the client, not work left undone,
+plus one settled choice recorded here so it is not mistaken for an omission:
 
-- Form endpoint. The four newsletter forms carry the client's own Brevo (Sendinblue) endpoint,
-  read off the form still present in their WordPress. It is REJECTED today: Brevo enforces a
-  reCAPTCHA server-side and answers HTTP 400 without a token, so in practice these four still
-  use the mail fallback. Disabling the captcha on that Brevo form makes them work with no code
-  change. The two contact forms have no endpoint at all and are the ones awaiting a decision:
-  the live site handled them with Contact Form 7, a plugin inside the WordPress, so there is
-  nothing to carry over and it disappears with it. Every form falls back to a pre-filled mail
-  client, which works today and loses nothing.
+- Forms. The two contact forms are sent by the visitor's own mail application, by an explicit
+  decision of the site owner on 2026-08-26: no third-party relay for contact requests. This is
+  a settled choice, not an unfinished item. A static site cannot send mail itself, so any direct
+  submission would route personal data through an external processor, which the owner declined.
+  The page says so above the button, the message is composed field by field, and it is also
+  shown on screen with a copy button for devices where a mailto: link does nothing.
+  The four newsletter forms carry the owner's own Brevo (Sendinblue) endpoint. It is rejected
+  today because Brevo enforces a reCAPTCHA server-side and answers HTTP 400 without a token, so
+  in practice they use the same mail path; disabling that captcha makes them work with no code
+  change.
 - Client reference strip. Seven named references are written and styled on both home pages,
   deliberately left inside an HTML comment until the named clients have agreed. Nothing is
   displayed.

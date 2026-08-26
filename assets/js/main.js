@@ -1235,6 +1235,9 @@ backToTop.addEventListener('click', () => {
 
   var FR = (document.documentElement.lang || 'fr').slice(0, 2) !== 'en';
   var MAIL = 'bot@q-leap.eu';
+  /* 1900 et non 2048 : marge pour l'objet, l'adresse et l'encodage du
+     protocole par le système, qui ne sont pas tous comptés pareil. */
+  var MAILTO_MAX = 1900;
   var T = FR ? {
     envoi:   'Envoi en cours…',
     ok:      'Merci, votre message est parti. Nous revenons vers vous rapidement.',
@@ -1242,6 +1245,7 @@ backToTop.addEventListener('click', () => {
     manque:  'Merci de compléter les champs obligatoires.',
     courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ». S’il ne s’est pas ouvert, copiez votre message ci-dessous.',
     secours: 'Votre message, prêt à copier. À envoyer à ',
+    longCourrier:'Votre message est long : certains logiciels de courrier le tronquent. Vérifiez qu’il est entier avant d’envoyer, ou copiez-le ci-dessous.',
     copier:  'Copier le message',
     copie:   'Message copié',
     aChamp:  'À',
@@ -1256,6 +1260,7 @@ backToTop.addEventListener('click', () => {
     manque:  'Please fill in the required fields.',
     courrier:'Your mail application just opened with the message prefilled: all that is left is to hit send. If it did not open, copy your message below.',
     secours: 'Your message, ready to copy. Send it to ',
+    longCourrier:'Your message is long, and some mail applications truncate it. Check that it arrived whole before sending, or copy it below.',
     copier:  'Copy the message',
     copie:   'Message copied',
     aChamp:  'To',
@@ -1450,10 +1455,23 @@ backToTop.addEventListener('click', () => {
           sujet += ' : ' + motif.options[motif.selectedIndex].text.trim();
         }
 
-        window.location.href = 'mailto:' + dest
+        var lien = 'mailto:' + dest
           + '?subject=' + encodeURIComponent(sujet)
           + '&body=' + encodeURIComponent(corps(form));
-        dire(form, message.replace('{MAIL}', dest), etat);
+
+        /* LA LONGUEUR D'UN `mailto:` N'EST PAS ILLIMITÉE, et ce chemin est
+           désormais le chemin DÉFINITIF du formulaire de contact, pas un
+           provisoire : le cas limite compte donc pour de vrai. Mesuré sur ce
+           formulaire, une demande de 1 000 caractères produit une URL de 1 964,
+           et plusieurs logiciels (Outlook, les gestionnaires Windows) tronquent
+           vers 2 048.
+           ON NE DÉGRADE PAS POUR AUTANT : envoyer un objet sans corps pénaliserait
+           tout le monde pour protéger une minorité. Le message part entier, et
+           au-delà du seuil le visiteur est AVERTI qu'il doit vérifier, avec le
+           texte copiable juste en dessous. Prévenir plutôt que tronquer en
+           silence. */
+        window.location.href = lien;
+        dire(form, (lien.length > MAILTO_MAX ? T.longCourrier : message).replace('{MAIL}', dest), etat);
         secours(form, dest, sujet);
       }
 
