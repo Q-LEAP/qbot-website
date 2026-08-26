@@ -3189,10 +3189,12 @@ dans une réponse fermée**, l'ouverture par l'index (module 16) fonctionne touj
   casserait la colonne que `subgrid` aligne. Il garde donc la couleur du libellé et se signale
   par un soulignement pointillé.
 
-**Laissé ouvert, et c'est le seul écart du lot** : le lien LinkedIn sur `a-propos.html` /
-`en/about.html`. Le plan le demande, mais **ces pages ne nomment pas leur fondateur** : il n'y
-est que dans le JSON-LD. L'y ajouter demande d'écrire une phrase neuve sur une page dont le
-texte suit le live mot pour mot. À arbitrer avec le client.
+**CETTE NOTE ÉTAIT PÉRIMÉE, CORRIGÉE LE 2026-08-26.** Elle disait le lien LinkedIn de
+`a-propos.html` / `en/about.html` laissé ouvert, au motif que ces pages ne nomment pas leur
+fondateur. Elles le nomment : « [Sylvain Perez](…), fondateur et CEO de Q-Leap » côté français,
+et son pendant anglais, tous deux avec le lien vers son profil. Le chantier 10 est donc complet
+sur ses quatre points. Leçon : une note qui dit « laissé ouvert » doit être revérifiée avant
+d'être citée, pas recopiée.
 
 ### Les autres chantiers
 
@@ -3662,3 +3664,35 @@ signale mort doit être rejoué seul avant qu'on y touche.
 Trois P1 (celui-ci est le troisième), trois P2, deux P3. Il manque encore la page « Faut-il
 désactiver la 2FA en environnement de test ? », la page pilier « Automatiser la double
 authentification dans vos tests », et la version itsme de ce guide pour le marché belge.
+
+### Contre-vérification des chantiers 05, 06 et 10 (2026-08-26)
+
+Demandés en correction, et les trois étaient déjà faits. **La cause était ma façon de les
+présenter** : dans le tableau de recoupement, j'avais écrit des mesures brutes (« 0 fois dans la
+source servie », « 6 cibles distinctes ») là où les autres lignes disaient « fait ». Un zéro se
+lit comme un manque. Une ligne de contrôle doit conclure, pas seulement mesurer.
+
+La contre-vérification a quand même valu, parce que mon contrôle d'origine était superficiel
+(des comptages `grep`) et que celui-ci exécute les contrôles que le plan prescrit :
+
+- **05, l'accessibilité de la FAQ, vérifié AU CLAVIER sur les six pages à accordéon** et non sur
+  la seule page FAQ : `faq`, `en/faq`, `commandez`, `en/order`, `index`, `en/index`. Relevé sur
+  **48 questions** : 0 réponse sans `id`, 0 bouton dont `aria-controls` ne désigne pas sa
+  réponse, 0 réponse sans `aria-labelledby`, 0 bouton sans `aria-expanded`, **0 réponse fermée
+  laissée non masquée**, et **0 focus tombant dans une réponse fermée** (48 boutons atteignables,
+  et rien d'autre). L'ouverture donne une hauteur réelle (314 px sur la FAQ française), donc le
+  piège de l'ordre des deux lignes n'est pas retombé ;
+- **06** : le contrôle que le plan prescrit lui-même, `grep seize faq.html en/faq.html`, ne
+  renvoie rien, et `sixteen` non plus côté anglais. Aucun décompte périmé ailleurs dans le dépôt ;
+- **10** : les quatre points, page par page. ITnation sur les deux articles Merkur, ADB sur les
+  deux fiches techniques, Selenium / Cypress / Playwright sur les deux pages de cas d'usage, et
+  le profil de Sylvain Perez sur `a-propos` / `en/about`, **dans le contenu visible** et pas
+  seulement dans le JSON-LD.
+
+**Un vrai défaut trouvé au passage, sur la page écrite le même jour.** Le guide LuxTrust nommait
+Selenium, Cypress et Playwright et **ne liait que Selenium**, alors que le chantier 10 demande un
+lien à la première mention de chacun. Les trois liens sont posés, dans le corps de la section qui
+les nomme, dans les deux langues. Le guide compte désormais six sources extérieures.
+
+Et la note du 2026-08-25 qui annonçait le lien LinkedIn « laissé ouvert » a été corrigée sur
+place : il avait été posé. Une note qui dit « laissé ouvert » se revérifie avant d'être citée.
