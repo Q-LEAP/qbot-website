@@ -3920,3 +3920,78 @@ y compris à la cadence grossière : ce n'était pas le pas de défilement mais 
 final de 350 ms**, trop court pour les révélations échelonnées de la variante `card`, qui durent
 plus de 400 ms avec leur décalage. Un balayage de révélations doit laisser **au moins 800 ms** au
 repos avant de mesurer, et une remontée doit être rejouée seule avant d'être appelée régression.
+
+## Le texte qui collait le filet, et une passe de lisibilité mesurée (2026-08-26)
+
+Signalé par le client sur les cartes de cas d'usage : le volet « Le blocage » vient coller le
+filet de séparation du chiffre-clé.
+
+**LA MARGE ÉTAIT DÉCLARÉE ET N'AVAIT JAMAIS EXISTÉ.** `.usecase__fig` est un `<p>` dans
+`.usecase`, et `.usecase p { margin: 0 }` vaut **(0,1,1)** contre **(0,1,0)** pour une classe
+seule : le `margin: 20px 0 0` écrit dans la feuille était écrasé depuis toujours. Sélecteur
+doublé en `.usecase .usecase__fig`, marge portée à 24 px. Relevé après, dans les deux langues et
+aux deux largeurs : **24 px au-dessus du filet, 18 en dessous.**
+
+**Deuxième occurrence du même piège** après `.newsletter .newsletter__legal`, et la passe en a
+trouvé deux autres du même genre, invisibles à l'œil :
+
+- **`.evo-card__link`** : la règle groupée de cibles tactiles (`.product-card a,
+  .blog-card__title a, .evo-card__link { display: inline-block; padding: 3px 0 }`) lui faisait
+  DEUX dégâts d'un coup. Le raccourci `padding: 3px 0` écrasait les 18 px séparant le lien du
+  paragraphe, et `display: inline-block` écrasait son `inline-flex`, dont il a besoin pour centrer
+  sa flèche. Il est sorti de la règle groupée et ne reçoit plus que la hauteur de cible manquante.
+  Mesuré : 45 px de haut, donc au-delà des 24 px de WCAG 2.5.8, et `display: flex` retrouvé ;
+- **`.guide-date`** : ma propre règle de la veille, écrasée par `.page-hero p`. Doublée.
+
+### La sonde, et pourquoi la première version mentait
+
+**SONDE A, l'espacement déclaré puis annulé.** On parcourt les RÈGLES une fois (pas les éléments,
+sinon c'est quadratique) et, pour chaque règle qui déclare une marge ou un remplissage sur un
+sélecteur à classe, on compare la valeur déclarée à la valeur calculée des éléments visés. 15
+remontées, dont 4 réelles et 11 surcharges volontaires (requêtes média, cibles tactiles, rails
+épinglés). C'est la sonde qui trouve cette famille entière.
+
+**DEUX PIÈGES DE SONDE, ET LE PREMIER M'A FAIT CROIRE À UNE FEUILLE DE STYLE CASSÉE.**
+
+1. **`if (r.cssRules)` est VRAI pour une règle de style ordinaire.** Depuis l'imbrication CSS,
+   `CSSStyleRule` porte un `cssRules` vide mais bien présent : un parcours qui teste `cssRules`
+   avant `selectorText` saute donc **toutes** les règles de style. Ma sonde annonçait « aucune
+   règle ne mentionne cette classe » sur une feuille parfaitement chargée, et j'ai perdu deux
+   étapes à vérifier qu'elle n'était pas tronquée. **On teste `selectorText` d'abord.**
+2. **une sonde d'espacement doit mesurer du TEXTE, pas des boîtes.** La première version de la
+   sonde B comparait le bord d'une carte au rectangle des éléments qu'elle contient : elle
+   remontait 20 cas, dont la FAQ, alors que `.faq-item__answer p` porte 20 px de remplissage bas
+   et que le texte est à 20 px du filet. Réécrite sur les rectangles réels des nœuds de texte
+   (`Range.getClientRects`), elle donne **0 cas sous 8 px** sur 14 pages × 2 largeurs, accordéons
+   ouverts.
+   Et une sonde qui ne trouve rien doit prouver qu'elle voit quelque chose : relancée à 30 px,
+   elle signale bien le `.usecase__fig` corrigé à 24. Sans ce contrôle de vivacité, « 0 défaut »
+   ne vaut rien.
+
+### La passe de lisibilité : cinq réglages, pas un redesign
+
+Sonde C sur le texte réellement peint : taille sous 13 px, et interligne sous 1,35 pour du texte
+de corps de 8 mots ou plus (les titres et les gros chiffres exclus, un interligne serré y est
+voulu).
+
+| Réglage | Avant | Après | Pourquoi |
+|---|---|---|---|
+| `h3, h4` interligne | 1,15 | **1,3** | à 20 et 16 px, 1,15 donne des lignes de 23 et 18 px, serré dès qu'un titre passe à la ligne, ce qu'il fait souvent dans une carte. Les h1 et h2 gardent 1,15 : à 32-56 px c'est justement ce qu'il faut |
+| `.section-label` interligne | 1,15 | **1,45** | capitales espacées ; promue en `<h2>` elle prend l'interligne des titres et deux lignes se touchent presque |
+| `.faq-item__question` interligne | 1,20 | **1,4** | un `<button>` n'hérite pas de l'interligne du corps et retombe sur le « normal » du navigateur |
+| `.mv-explode__value`, `.faq-index__num` | 11 px | **12 px** | plancher de lisibilité |
+| `.code-copy-btn` | 11,5 px | **12 px** | c'est une commande, pas une mention |
+
+Résultat : **plus aucun texte sous 12 px** et un seul interligne à 1,30, qui est le nouveau
+plancher. Les 12 px restants sont assumés (mention légale, badge, bouton de nav, code en chasse
+fixe, note de la carte).
+
+**UN CAS VÉRIFIÉ COMME VOULU, ET IL FAUT LE SAVOIR** : sous 400 px, `.nav__lang a` est en
+`font-size: 0`, donc le code « FR » disparaît et il ne reste que le globe. C'est délibéré et
+commenté dans la feuille (le remplissage porte alors la cible tactile de 24 px). Une sonde de
+lisibilité le remontera toujours : ce n'est pas un défaut.
+
+Contrôles : la contrainte dure de la carte épinglée est tenue (308 px au plus pour une fenêtre de
+640, donc 332 px de marge) aux sept tailles d'écran du contrôle habituel, et **32 vues** (16 pages
+× 390 et 1440 px) sans anomalie : un seul `h1`, 0 révélation invisible, 0 débordement, **0 défaut
+de contraste**, 0 erreur console.

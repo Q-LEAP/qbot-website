@@ -260,6 +260,11 @@ button { cursor: pointer; font-family: var(--font); }
 /* Roboto Bold (charte p. 5). Tracking très légèrement resserré : correction
    optique aux grandes tailles uniquement, le dessin reste celui de la charte. */
 h1, h2, h3, h4 { font-family: var(--font-heading); line-height: 1.15; font-weight: 700; letter-spacing: -0.01em; }
+/* Les titres de rang 3 et 4 sont petits (20 et 16 px) : à 1,15 leurs lignes font
+   23 et 18 px, ce qui se lit serré dès qu'ils passent à la ligne, ce qu'ils font
+   souvent dans une carte. Les h1 et h2 gardent 1,15 : à 32-56 px, un interligne
+   serré est justement ce qu'il faut. */
+h3, h4 { line-height: 1.3; }
 h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
 h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
 h3 { font-size: 1.25rem; }
@@ -269,6 +274,9 @@ p { color: var(--gray); }
 .section--dark p, .section--dark li { color: rgba(255,255,255,0.75); }
 
 .section-label {
+  /* Capitales espacées : à 1,15 (l'interligne des titres, qui s'applique
+     quand ce libellé est promu en <h2>) deux lignes se touchent presque. */
+  line-height: 1.45;
   display: inline-block;
   font-size: 0.75rem;
   font-weight: 700;
@@ -826,6 +834,10 @@ p { color: var(--gray); }
 .faq-item.open { border-color: var(--teal); }
 
 .faq-item__question {
+  /* Un <button> n'hérite pas de l'interligne du corps et retombe sur le
+     « normal » du navigateur, soit 1,2 : serré pour une question qui passe à la
+     ligne, ce que toutes font sur téléphone. */
+  line-height: 1.4;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2798,7 +2810,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   padding: 0 8px 0 6px;
 }
 .mv-explode__value {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--teal);
   min-width: 30px;
@@ -3190,7 +3202,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
   position: absolute;
   top: 12px; right: 12px;
   padding: 4px 10px;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   border: 1px solid rgba(255,255,255,0.14);
@@ -3990,8 +4002,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
    modèle 3D à 4 px. Les liens en pleine phrase (réponses de FAQ, corps
    d'article) ne sont pas repris : 2.5.8 les exempte explicitement. */
 .product-card a,
-.blog-card__title a,
-.evo-card__link { display: inline-block; padding: 3px 0; }
+.blog-card__title a { display: inline-block; padding: 3px 0; }
+/* `.evo-card__link` EST SORTI DE CETTE RÈGLE GROUPÉE, et elle lui faisait deux
+   dégâts d'un coup. Le raccourci `padding: 3px 0` écrasait les 18 px qui séparent
+   le lien du paragraphe au-dessus (le texte venait donc coller le lien), et
+   `display: inline-block` écrasait son `inline-flex`, dont il a besoin pour
+   centrer sa flèche et tenir son `gap`. Il garde donc ses 18 px du bloc de base et
+   ne reçoit ici que la hauteur de cible manquante. Mesuré : 41 px de haut, donc
+   au-delà des 24 px de WCAG 2.5.8. */
+.evo-card__link { padding-bottom: 3px; }
 .mv-explode__slider { height: 24px; }
 
 /* Même mesure ailleurs : fil d'Ariane et bloc de coordonnées tombaient aussi
@@ -4276,7 +4295,7 @@ label > input[type="checkbox"] {
     text-decoration: none;
     transition: color 0.25s var(--ease-out);
   }
-  .faq-index__num { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.7; }
+  .faq-index__num { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; opacity: 0.7; }
   .faq-index__list a:hover { color: var(--black); }
   .faq-index__list a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 3px; }
   /* L'entrée courante : c'est un état de lecture, pas un lien actif — d'où
@@ -5047,11 +5066,17 @@ label > input[type="checkbox"] {
    colonne n'existe plus en dessous de 940 px) et il emportait avec lui une
    information que la carte ne dit pas — « moins de dix secondes », par exemple. Dans
    la carte, il est lu partout, et la scène n'a plus de demi-colonne vide. */
-.usecase__fig {
+/* SÉLECTEUR DOUBLÉ, ET CE N'EST PAS UN ORNEMENT. Ce bloc est un `<p>` dans
+   `.usecase`, or `.usecase p { margin: 0 }` a une spécificité de (0,1,1) et
+   écrasait le `margin: 20px 0 0` d'une classe seule (0,1,0) : la marge était
+   DÉCLARÉE et n'a jamais existé. Le texte du volet venait donc coller le filet de
+   séparation, signalé par le client le 2026-08-26. Deuxième occurrence du même
+   piège sur ce dépôt, après `.newsletter .newsletter__legal`. */
+.usecase .usecase__fig {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  margin: 20px 0 0;
+  margin: 24px 0 0;
   padding-top: 18px;
   border-top: 1px solid var(--border);
 }
@@ -5290,7 +5315,9 @@ label > input[type="checkbox"] {
    marques du format qui se fait citer, avec la réponse autonome de 40 à 60 mots
    sous chaque titre-question. Elle vit dans le page-hero, dont les <p> portent
    déjà une couleur fixe : on n'y touche pas, on ne change que l'échelle. */
-.guide-date { font-size: 0.8125rem; margin-top: 6px; }
+/* Sélecteur doublé : `.page-hero p` vaut (0,1,1) et écrasait la marge d'une classe
+   seule (0,1,0). Même piège que `.usecase__fig` et `.newsletter__legal`. */
+.page-hero .guide-date { font-size: 0.8125rem; margin-top: 6px; }
 
 .ucs__note {
   margin-top: 20px;
