@@ -3856,3 +3856,67 @@ console. Faux positif écarté au passage : une sonde qui lit `img.complete` jus
 défilement signale `qbot-gen-actuelle.webp` comme cassée alors qu'elle est encore en cours de
 chargement. **Un contrôle d'image en chargement différé doit attendre, ou lire `naturalWidth`
 seulement quand `complete` est vrai.**
+
+## La photo LuxTrust : pleine largeur sur téléphone, et la colonne se resserre (2026-08-26)
+
+Deux retours du client sur le plafonnement de la veille : « remets-la en pleine largeur sur
+mobile » et « ça fait un peu vide là ».
+
+**AVANT DE GÉRER LE COMPROMIS, J'AI VÉRIFIÉ QU'IL EXISTAIT.** Les trois pages de la brochure dont
+la photo est tirée sont des images **aplaties à 300 dpi**, et la photo n'y est qu'un petit encart
+en haut de la page 1. Il n'existe donc aucune version plus fine : 699 x 860 est tout ce qu'il y a,
+et la seule variable est la taille d'affichage. C'est ce contrôle qui autorise à arbitrer plutôt
+qu'à chercher une meilleure source.
+
+### Le vide : la colonne se resserre sur l'image
+
+Mesuré après le seul plafonnement : 216 px d'image, **310 px de noir**, puis le texte au milieu de
+la page. Le client avait raison, et la raison est précise : un écart de cette taille **ENTRE** deux
+blocs liés se lit comme un manque, alors que le même espace **APRÈS** le texte se lit comme une
+marge. La grille passe donc en `auto 1fr` (ou `1fr auto` selon le côté de l'image), et le vide
+entre les deux blocs retombe à la gouttière de la grille : **80 px sur les accueils, 48 px sur les
+pages Démo**. Seul le titre gagne en largeur ; le paragraphe garde sa mesure de lecture.
+
+Fait avec `:has()`, donc **sans toucher au balisage des quatre pages**. Sans `:has()`, la grille
+reste en deux colonnes égales, c'est-à-dire exactement l'état d'avant : dégradation gracieuse, pas
+de mise en page cassée.
+
+**LE PARAGRAPHE N'EST BRIDÉ QUE QUAND L'IMAGE EST À GAUCHE**, et c'est le point non évident. À
+droite (pages Démo), le brider recréerait le trou : le reste tomberait entre le texte et l'image.
+Leurs quatre paragraphes font 96 à 153 caractères, donc une ligne à pleine largeur, et une ligne
+unique n'a pas de problème de mesure.
+
+### Trois erreurs de ma part, toutes trouvées par la mesure
+
+1. **le seuil n'était pas 900 px mais 768.** J'avais écrit `min-width: 901px` en me fiant à une
+   note interne parlant de 900 : le relevé montre `.intro__grid` **encore à deux colonnes à
+   769 px** (320,5 px chacune). Le plafond ne s'appliquait donc pas entre 769 et 900, où l'image
+   restait agrandie 1,49 fois. Les deux grilles passent à une colonne à 768 ;
+2. **mon premier sélecteur d'alignement visait le mauvais conteneur.** Les accueils utilisent
+   `.intro__grid` (image en PREMIER), les pages Démo `.split-2` (image en SECOND). Une règle
+   `.intro__grid > …` ne s'appliquait nulle part où c'était nécessaire, **sans erreur ni trace** ;
+3. **la pleine largeur en une colonne donnait x3,34 sur tablette.** Le client demandait la pleine
+   largeur « sur mobile » ; à 768 px en une colonne, la colonne monte à 720 px et l'agrandissement
+   explose. D'où un plafond de **350 px dans la plage empilée**, qui est **sans effet sur un
+   téléphone** (la colonne y fait 342 px, donc pleine largeur comme demandé) et ne mord que
+   au-dessus. Autrement dit : la photo garde partout au plus la qualité qu'elle a sur un
+   téléphone, jamais moins.
+
+### Relevé final
+
+| largeur | cadre | agrandissement | vide entre blocs | côté |
+|---|---|---|---|---|
+| 390 px, densité 3 | 342 (pleine largeur) | x1,59 | empilé | gauche |
+| 600 et 768 px, densité 3 | 350 | x1,62 | empilé | gauche |
+| 769 px et au-delà, densité 3 | 216 | **x1,00** | 80 / 48 px | gauche / droite |
+| 1440 et 2560 px, densité 2 | 216 | **x0,67** | 80 / 48 px | gauche / droite |
+
+Chaque cadre touche une gouttière, **aucun cas au milieu**, 0 débordement horizontal sur les
+quatre pages aux huit largeurs testées.
+
+**FAUX POSITIF ÉCARTÉ, ET C'EST LE MÊME PIÈGE QUE D'HABITUDE.** Un balayage en lot des 24
+combinaisons a signalé jusqu'à 3 révélations restées invisibles. Rejouées isolément, **0 partout**,
+y compris à la cadence grossière : ce n'était pas le pas de défilement mais le **délai de repos
+final de 350 ms**, trop court pour les révélations échelonnées de la variante `card`, qui durent
+plus de 400 ms avec leur décalage. Un balayage de révélations doit laisser **au moins 800 ms** au
+repos avant de mesurer, et une remontée doit être rejouée seule avant d'être appelée régression.

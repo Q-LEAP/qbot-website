@@ -920,52 +920,68 @@ p { color: var(--gray); }
    `display:none` est bel et bien envoyé, seul `disabled` l'exclurait. */
 .form-honeypot { display: none; }
 
-/* ── La photo LuxTrust est bridée en largeur, et ce n'est pas un choix d'esthétique
+/* ── La photo LuxTrust : bridée en largeur, et la colonne se resserre sur elle
    ─────────────────────────────────────────────────────────────────────────────
-   `qbot-photo-dock.jpg` fait 699 x 860 pixels réels, et c'est TOUT ce qui existe :
-   elle est découpée dans la brochure, qui est une image aplatie à 300 dpi. Il n'y a
-   pas de version plus fine à aller chercher, seulement un agrandissement. Mesuré
-   dans son cadre de colonne d'origine, à densité 2 : x1,63 à 1440 px, x1,94 à 1920,
-   x2,03 à 2560. C'est cet agrandissement que le client voyait comme une
-   pixelisation.
+   `qbot-photo-dock.jpg` fait 699 x 860 pixels réels, et c'est TOUT ce qui existe.
+   Vérifié dans la brochure dont elle est tirée : ses trois pages sont des images
+   aplaties à 300 dpi et la photo n'y est qu'un petit encart de la page 1. Il n'y a
+   pas de version plus fine à aller chercher, seulement un agrandissement.
 
-   216 PX, ET CE NOMBRE TOMBE JUSTE DEUX FOIS.
-   1. C'est la demande du client : « la même taille que le bloc texte
-      correspondant ». Le bloc texte voisin mesure 286 px de haut (relevé à 1440 et
-      à 1920 px) ; un cadre de 216 px donne une image de 287 px de haut, donc les
-      deux colonnes ont la même hauteur, au pixel.
-   2. C'est aussi la largeur au-delà de laquelle l'image serait encore agrandie sur
-      un écran à densité 3 : 699 / 3 / 1,08 = 216, où 1,08 est la sur-échelle que
-      `.intro__image` applique à son contenu au repos (celle du parallaxe). Un
-      premier plafond à 320 px suffisait à densité 2 mais laissait x1,48 à densité 3,
-      et c'est ce reste que le client voyait encore.
+   216 PX, ET LE NOMBRE TOMBE JUSTE DEUX FOIS : c'est `699 / 3 / 1,08` (le 1,08 est
+   la sur-échelle que `.intro__image` applique à son contenu au repos), donc la
+   largeur au-delà de laquelle l'image serait encore agrandie sur un écran à
+   densité 3 ; et c'est aussi la demande du client, « la même taille que le bloc
+   texte », le bloc voisin mesurant 286 px de haut pour 287 à l'image.
+   Un premier plafond à 320 px suffisait à densité 2 mais laissait x1,48 à
+   densité 3 : un plafond calculé pour densité 2 ne suffit pas, les téléphones et
+   une partie des portables sont à densité 3 et un zoom navigateur à 125 % produit
+   le même effet.
 
-   Conséquence acceptée : sur téléphone, la photo est plus étroite que la colonne de
-   texte. C'est le prix de sa résolution réelle, et l'afficher plus large ne montre
-   que du détail qui n'existe pas dans le fichier.
+   LA COLONNE SE RESSERRE SUR L'IMAGE, sinon le plafond creuse un trou. Mesuré
+   après le seul plafonnement : 216 px d'image, puis 310 px de noir, puis le texte
+   au milieu de la page. Signalé par le client (« ça fait un peu vide »), et à
+   juste titre : un écart de cette taille ENTRE deux blocs liés se lit comme un
+   manque, alors que le même espace APRÈS le texte se lit comme une marge. La
+   grille passe donc en `auto 1fr` (ou `1fr auto` selon le côté de l'image) et le
+   paragraphe garde sa mesure de lecture ; seul le titre gagne en largeur.
 
-   Le cadre reste aligné à GAUCHE sur la gouttière, comme tout bloc du site : c'est
-   la colonne qui garde sa largeur, pas l'image qui se centre dedans. */
-.intro__image--dock { max-width: 216px; }
-/* Quand ce cadre bridé est la colonne de DROITE, il se cale sur la gouttière
-   droite et non au milieu de la page : un bloc plus étroit que sa colonne doit
-   toucher un bord, jamais flotter entre les deux. La règle du dépôt autorise
-   gauche OU droite, et interdit le centre. Mesuré avant : 614 px de marge à
-   gauche et 350 à droite sur les pages Démo, donc au milieu.
+   `:has()` évite de toucher au balisage des quatre pages. Sans lui, la grille
+   reste en deux colonnes égales : c'est exactement l'état d'avant, donc une
+   dégradation gracieuse et jamais une mise en page cassée.
 
-   LE SÉLECTEUR PORTE SUR `:last-child`, PAS SUR UN CONTENEUR NOMMÉ. Les deux
-   dispositions du site n'emploient pas la même grille : les accueils utilisent
-   `.intro__grid` (image en PREMIER, colonne de gauche), les pages Démo
-   `.split-2` (image en SECOND, colonne de droite). Un premier essai visait
-   `.intro__grid > …` et ne s'appliquait donc nulle part où c'était nécessaire.
-   `:last-child` décrit la position, qui est ce qui compte ici.
+   LE SEUIL EST 769 PX POUR LES DEUX, ET IL A ÉTÉ MESURÉ, PAS DÉDUIT. J'avais écrit
+   901 pour `.intro__grid` en me fiant à une note interne parlant de 900 px : le
+   relevé montre qu'elle est encore à DEUX colonnes à 769 px (320,5 px chacune), et
+   le plafond ne s'appliquait donc pas entre 769 et 900, où l'image restait agrandie
+   1,49 fois. Les deux grilles passent à une colonne à 768.
 
-   Borné au-delà de 768 px, le seuil auquel `.split-2` repasse à une colonne : en
-   dessous, alignement à gauche comme tout le reste du site. Entre 769 et 900,
-   `.intro__grid` est déjà empilée mais le cadre y est le PREMIER enfant, donc la
-   règle ne l'atteint pas. */
+   LE PARAGRAPHE N'EST BRIDÉ QUE QUAND L'IMAGE EST À GAUCHE. À droite (pages Démo),
+   le brider recréerait le trou : le reste tomberait ENTRE le texte et l'image au
+   lieu de tomber sur la marge. Leurs quatre paragraphes font 96 à 153 caractères,
+   donc une ligne à pleine largeur, et une ligne unique n'a pas de problème de
+   mesure. */
 @media (min-width: 769px) {
-  .intro__image--dock:last-child { margin-left: auto; }
+  .intro__grid > .intro__image--dock { max-width: 216px; }
+  .intro__grid:has(> .intro__image--dock) { grid-template-columns: auto 1fr; }
+  .intro__grid:has(> .intro__image--dock) > div:not(.intro__image) p { max-width: 62ch; }
+}
+@media (min-width: 769px) {
+  /* `margin-left: auto` est le filet quand `:has()` n'est pas reconnu : la colonne
+     resterait à `1fr` et l'image flotterait au milieu au lieu de toucher la
+     gouttière droite. Avec `:has()`, la colonne `auto` s'en charge déjà. */
+  .split-2 > .intro__image--dock { max-width: 216px; margin-left: auto; }
+  .split-2:has(> .intro__image--dock) { grid-template-columns: 1fr auto; }
+}
+
+/* En dessous du seuil, la photo reprend toute la largeur de sa colonne, à la
+   demande du client. 350 px est le plafond de ce cas, et il n'a rien d'arbitraire :
+   sur un téléphone la colonne fait 342 px, donc la règle est SANS EFFET là où la
+   pleine largeur a été demandée. Elle ne mord qu'au-dessus, sur une tablette en une
+   colonne, où la colonne monte à 720 px et où l'agrandissement atteignait **x3,34**
+   à densité 3. Autrement dit : la photo garde partout au plus la qualité qu'elle a
+   sur un téléphone, et jamais moins. */
+@media (max-width: 768px) {
+  .intro__image--dock { max-width: 350px; }
 }
 
 /* BLOC DE SECOURS DU REPLI COURRIER (module 15). Il n'apparaît qu'après un envoi,
