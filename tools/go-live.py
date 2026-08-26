@@ -20,10 +20,14 @@ CE QU'IL FAIT
   1. retire `<meta name="robots" content="noindex, nofollow">` et le commentaire
      PRÉ-LANCEMENT qui l'accompagne, sur toutes les pages ;
   2. remplace robots.txt par son contenu d'ouverture ;
-  3. si `--endpoint` est fourni, renseigne `data-endpoint` sur les six
-     formulaires (contact FR/EN, newsletter des deux accueils et des deux index
-     de blog). Sans endpoint ils basculent sur le repli courrier : rien n'est
-     perdu, mais le visiteur doit appuyer sur « envoyer » dans son logiciel.
+  3. si `--endpoint` est fourni, renseigne `data-endpoint` sur les formulaires
+     qui n'en ont pas encore. Depuis le 2026-08-26 les QUATRE newsletters
+     pointent sur le vrai endpoint Brevo du client (relevé sur son WordPress),
+     donc il n'en reste que DEUX : les formulaires de contact FR et EN. Ce qui
+     règle au passage un défaut de ce script, qui posait la même URL sur les six
+     alors qu'une inscription newsletter et une demande de démo ne vont pas au
+     même endroit. Sans endpoint, ces deux-là restent sur le repli courrier :
+     rien n'est perdu, mais le visiteur doit appuyer sur « envoyer ».
 
 CE QU'IL NE FAIT PAS, ET QUI RESTE MANUEL : le DNS, HTTPS, la Search Console, et
 la suppression du WordPress. Il les rappelle en fin d'exécution.
@@ -64,7 +68,7 @@ with io.open(os.path.join(RACINE, 'sitemap.xml'), encoding='utf-8') as _f:
 META = re.compile(r'[ \t]*<meta name="robots" content="noindex[^"]*">\n')
 COMMENTAIRE = re.compile(r'[ \t]*<!--\s*PRÉ-LANCEMENT.*?-->\n', re.S)
 
-# La note posée à côté des six formulaires pour dire que l'endpoint est en
+# La note posée à côté des formulaires sans endpoint pour dire qu'il est en
 # attente d'approbation. Elle n'a plus d'objet dès que --endpoint est fourni,
 # et elle NE porte PAS la marque « PRÉ-LANCEMENT » à dessein : elle ne doit pas
 # disparaître avec les verrous d'indexation, qui se lèvent peut-être avant que
@@ -145,9 +149,11 @@ CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
  4. NE SUPPRIMER LE WORDPRESS QU'APRÈS l'étape 2. Les quatre pages légales
     vivent désormais dans ce dépôt, aux mêmes adresses, donc rien ne se perd ;
     mais tant que le WordPress répond encore, on peut comparer.
- 5. Si aucun endpoint n'a été fourni : les six formulaires basculent sur le
-    repli courrier. Chaque demande de démo demande alors un geste de plus au
-    visiteur. À brancher dès que possible.
+ 5. Si aucun endpoint n'a été fourni : les deux formulaires de CONTACT restent
+    sur le repli courrier (les quatre newsletters, elles, sont branchées sur
+    Brevo). Chaque demande de démo demande alors un geste de plus au visiteur.
+    Le live traitait ce formulaire avec Contact Form 7, un plugin DANS le
+    WordPress : il n'y a rien à récupérer, et il meurt à l'étape 4.
 ────────────────────────────────────────────────────────────────────────────
 """
 
@@ -167,7 +173,7 @@ def main():
     ap.add_argument('--appliquer', action='store_true',
                     help="écrit réellement les fichiers (sans ce drapeau : simulation)")
     ap.add_argument('--endpoint', default=None,
-                    help="URL de réception des six formulaires")
+                    help="URL de réception des formulaires encore sans endpoint (les 2 contacts)")
     a = ap.parse_args()
     ecrit = a.appliquer
     mode = 'APPLICATION' if ecrit else 'SIMULATION (rien n\'est écrit)'
@@ -203,7 +209,7 @@ def main():
         print(f"  data-endpoint renseigné sur {n_form} formulaires → {a.endpoint}")
         print(f"  note ROSOAI-EN-ATTENTE de l'endpoint retirée de {n_note} fichiers")
     else:
-        print("  aucun endpoint fourni : les six formulaires restent sur le repli courrier")
+        print("  aucun endpoint fourni : les formulaires sans endpoint restent sur le repli courrier")
 
     p = os.path.join(RACINE, 'robots.txt')
     if ecrit:

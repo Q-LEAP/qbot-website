@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=300af073">
+  <link rel="stylesheet" href="assets/css/style.css?v=024d4166">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=faaf73c1">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -685,17 +685,24 @@
   <div class="container">
     <h2>Newsletter</h2>
     <p>Si vous souhaitez bénéficier des dernières nouveautés de Q-Bot, inscrivez-vous à notre newsletter.</p>
-    <!-- ROSOAI-EN-ATTENTE · endpoint des formulaires
-         `data-endpoint` est vide À DESSEIN, ce n'est pas un formulaire oublié :
-         l'adresse du service d'envoi est en attente d'approbation chez le client,
-         point ouvert le 2026-08-25. Rien ne se perd en attendant. Le module 15 de
-         main.js ouvre le logiciel de courrier du visiteur, prérempli champ par
-         champ, et la page le lui écrit noir sur blanc. Le jour de l'approbation il
-         n'y a qu'une valeur à renseigner : le script bascule seul en envoi direct.
-         Statut complet du site : /llms.txt, section « Pre-launch status ».
-         À RETIRER avec la valeur. Tout retrouver : grep -rn ROSOAI-EN-ATTENTE -->
-    <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Inscription newsletter">
+    <form class="newsletter__form" data-form="newsletter" data-endpoint="https://279f6284.sibforms.com/serve/MUIEAElAEknQtHJ_N_8OQaaN05ie9uWt0pqCMH3aVqbEevc8_5J8SfJauGv2-2KJm2g2qjifky5UA0h2s-xvn5escP20r8nYnHbmD6TawxDMt8mwAQp9Xew5aGMY3JdmA_2x4qlTl8XmLU8M3phqUzYIfgSeYg9pwVVGsC6R1Cv4HiqSLJx0lOPUFkJL9a72Q4HVXFXeG6quYVet" data-endpoint-kind="brevo" data-locale="fr" method="post" aria-label="Inscription newsletter">
       <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
+      <!-- ENDPOINT BREVO, relevé sur le formulaire du live q-bot.eu le 2026-08-26.
+           C'est le compte du client, pas un service ajouté : la bande newsletter de
+           ce site est la reprise de son embed Sendinblue. Mesuré depuis une autre
+           origine : HTTP 200, réponse lisible (CORS ouvert), donc le `fetch` du
+           module 15 l'atteint directement, sans navigation.
+           `data-endpoint-kind` déclare la correspondance des noms de champs, qui
+           vit dans main.js et NON dans ce balisage : Brevo impose EMAIL et OPT_IN,
+           le site garde `email` et `consent` dont dépendent le repli courrier et
+           la validation.
+           RESERVE À LEVER : la section newsletter du live est désactivée
+           (`display:none` sur sa section Elementor), donc la liste Brevo derrière
+           cet endpoint n'est peut-être plus relevée. À confirmer par le client. -->
+      <!-- Pot de miel de Brevo : il doit partir VIDE. En `display:none`, donc
+           invisible et hors de l'ordre de tabulation, mais bien envoyé (seul
+           `disabled` retire un champ d'un envoi, pas `display:none`). -->
+      <input type="text" name="email_address_check" value="" class="form-honeypot" tabindex="-1" autocomplete="off">
       <button type="submit" class="btn">S'INSCRIRE</button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
       <!-- Le consentement est DANS le formulaire, et ce n'est pas un détail de mise
@@ -848,7 +855,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=0db193fe" defer></script>
+<script src="assets/js/main.js?v=349262f6" defer></script>
 <script src="assets/js/scrolly.js?v=a93e153e" defer></script>
 </body>
 </html>

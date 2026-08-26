@@ -1212,10 +1212,18 @@ backToTop.addEventListener('click', () => {
    l'échec. C'est le pire des trois cas possibles, parce qu'il est invisible.
 
    UN SEUL POINT DE CONFIGURATION : l'attribut `data-endpoint` du <form>.
-     data-endpoint=""                     → repli courrier (l'état actuel)
+     data-endpoint=""                     → repli courrier
      data-endpoint="https://…/f/xxxx"     → envoi HTTP, sans toucher au reste
-   Brevo, Formspree et compagnie exposent tous une URL de ce genre qui accepte un
-   POST multipart ; il suffira de la coller là, dans les six pages.
+
+   OÙ EN SONT LES SIX (2026-08-26). Les QUATRE newsletters pointent sur le vrai
+   endpoint Brevo du client, relevé sur le formulaire de son WordPress. Les DEUX
+   formulaires de contact sont encore vides, et il n'y a rien à récupérer pour
+   eux : le live les traitait avec Contact Form 7, un plugin DANS le WordPress,
+   qui disparaît avec lui. C'est le seul endpoint qui reste à fournir.
+
+   Si le service impose ses propres noms de champs, ils se déclarent par
+   `data-endpoint-kind` et la correspondance vit dans PROFILS ci-dessous, jamais
+   dans le balisage.
 
    Sans endpoint, on n'invente pas un envoi : on ouvre le client courrier du
    visiteur avec un message déjà rédigé. Ce n'est pas idéal — il faut qu'il
@@ -1246,6 +1254,45 @@ backToTop.addEventListener('click', () => {
     sujetC:  'Enquiry from the Q-Bot website',
     sujetN:  'Q-Bot newsletter subscription'
   };
+
+  /* CORRESPONDANCE DES NOMS DE CHAMPS. Certains services imposent les leurs, et
+     on ne renomme PAS dans le HTML : `email` et `consent` sont les noms du site,
+     et le repli courrier comme la validation s'appuient dessus. La table vit ici,
+     et le formulaire déclare son profil par `data-endpoint-kind`.
+
+     Brevo (ex-Sendinblue) : relevé sur le formulaire du live q-bot.eu le
+     2026-08-26. Il attend EMAIL, OPT_IN à la valeur « 1 » (et non le « on » par
+     défaut d'une case sans attribut `value`), le pot de miel
+     `email_address_check` qui doit partir VIDE, et `locale`. Son endpoint est
+     déclaré en `application/x-www-form-urlencoded` et non en multipart : on lui
+     envoie donc un URLSearchParams, dont fetch déduit seul le bon Content-Type.
+     Les deux valeurs restent des en-têtes autorisés sans pré-vol CORS, ce qui
+     est ce qui permet de lire la réponse (mesuré : `type: 'cors'`, 200,
+     `{"success":true}`). */
+  var PROFILS = {
+    brevo: {
+      noms:    { email: 'EMAIL', consent: 'OPT_IN' },
+      valeurs: { OPT_IN: '1' },
+      urlencode: true
+    }
+  };
+
+  /* Ce qui part réellement. Sans profil, le multipart du formulaire tel quel :
+     c'est ce qu'attendent Formspree et compagnie. */
+  function charge(form) {
+    var fd = new FormData(form);
+    var prof = PROFILS[form.getAttribute('data-endpoint-kind')];
+    if (!prof || !prof.urlencode) return fd;
+
+    var p = new URLSearchParams();
+    fd.forEach(function (v, k) {
+      var nom = (prof.noms && prof.noms[k]) || k;
+      p.append(nom, (prof.valeurs && prof.valeurs[nom] !== undefined) ? prof.valeurs[nom] : v);
+    });
+    var loc = form.getAttribute('data-locale');
+    if (loc && !p.has('locale')) p.append('locale', loc);
+    return p;
+  }
 
   function dire(form, texte, type) {
     var el = form.querySelector('.form-status');
@@ -1312,7 +1359,7 @@ backToTop.addEventListener('click', () => {
       dire(form, T.envoi, 'info');
       var bouton = form.querySelector('[type="submit"]');
       if (bouton) bouton.disabled = true;
-      fetch(url, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      fetch(url, { method: 'POST', body: charge(form), headers: { Accept: 'application/json' } })
         .then(function (r) {
           if (!r.ok) throw new Error(r.status);
           form.reset();

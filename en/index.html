@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=300af073">
+  <link rel="stylesheet" href="../assets/css/style.css?v=024d4166">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=faaf73c1">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -626,17 +626,16 @@
   <div class="container">
     <h2>Newsletter</h2>
     <p>If you want to get the latest news from Q-Bot, subscribe to our newsletter.</p>
-    <!-- ROSOAI-EN-ATTENTE · form endpoint
-         `data-endpoint` is empty ON PURPOSE, this is not a forgotten form: the
-         submission service URL is awaiting the client's approval, an item opened on
-         2026-08-25. Nothing is lost meanwhile. Module 15 of main.js opens the
-         visitor's mail client pre-filled field by field, and the page says so in
-         plain words. On approval there is a single value to fill in: the script
-         switches to direct submission on its own.
-         Full site status: /llms.txt, section "Pre-launch status".
-         REMOVE ALONG WITH the value. Find them all: grep -rn ROSOAI-EN-ATTENTE -->
-    <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Newsletter signup">
+    <form class="newsletter__form" data-form="newsletter" data-endpoint="https://279f6284.sibforms.com/serve/MUIEAElAEknQtHJ_N_8OQaaN05ie9uWt0pqCMH3aVqbEevc8_5J8SfJauGv2-2KJm2g2qjifky5UA0h2s-xvn5escP20r8nYnHbmD6TawxDMt8mwAQp9Xew5aGMY3JdmA_2x4qlTl8XmLU8M3phqUzYIfgSeYg9pwVVGsC6R1Cv4HiqSLJx0lOPUFkJL9a72Q4HVXFXeG6quYVet" data-endpoint-kind="brevo" data-locale="en" method="post" aria-label="Newsletter signup">
       <input type="email" name="email" placeholder="Please enter your email address to subscribe" required aria-label="Email" title="Please enter your email address to subscribe. E.g.: abc@xyz.com">
+      <!-- Brevo endpoint, read off the live q-bot.eu form on 2026-08-26, cf.
+           index.html for the full note (CORS measured open, field mapping lives in
+           main.js, and the live newsletter section is disabled so the list behind
+           this endpoint still needs the client's confirmation). -->
+      <!-- Pot de miel de Brevo : il doit partir VIDE. En `display:none`, donc
+           invisible et hors de l'ordre de tabulation, mais bien envoyé (seul
+           `disabled` retire un champ d'un envoi, pas `display:none`). -->
+      <input type="text" name="email_address_check" value="" class="form-honeypot" tabindex="-1" autocomplete="off">
       <button type="submit" class="btn">SUBSCRIBE</button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
       <!-- Consent lives INSIDE the form, cf. index.html for the full reasoning:
@@ -780,7 +779,7 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=0db193fe" defer></script>
+<script src="../assets/js/main.js?v=349262f6" defer></script>
 <script src="../assets/js/scrolly.js?v=a93e153e" defer></script>
 </body>
 </html>

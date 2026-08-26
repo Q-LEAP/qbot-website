@@ -3323,3 +3323,72 @@ Schumacher. Des personnes nommées construisent l'autorité d'une page, et le fr
 déjà. **ARBITRÉ PAR LE CLIENT LE 2026-08-26 : la version anglaise reste telle quelle.**
 L'abrègement est donc voulu. Ne pas y revenir, et ne pas « aligner » l'anglais sur la liste
 française au motif de la parité : c'est un choix, pas une traduction abrégée par oubli.
+
+## La newsletter est branchée sur le vrai Brevo du client (2026-08-26)
+
+Question posée : « il y avait pas un formspree ou autre sur le site live ? ». Relevé dans un
+navigateur, en-tête `Accept-Language` fixé par langue. Réponse en deux moitiés qui ne se
+ressemblent pas.
+
+**LA NEWSLETTER : OUI, UN ENDPOINT BREVO, ET IL RÉPOND ENCORE.**
+`https://279f6284.sibforms.com/serve/MUIEAElAEknQ…` (244 caractères), **le même dans les deux
+langues**, seul le champ caché `locale` change. Confirmation au passage : notre phrase de
+consentement est mot pour mot le libellé `OPT_IN` du live, ce n'était pas une reconstitution.
+
+**LE CONTACT : NON, ET IL N'Y A RIEN À RÉCUPÉRER.** Le live le traite avec **Contact Form 7**,
+un plugin *dans* le WordPress (`_wpcf7=3034`), qui **meurt à l'étape 12 de la séquence du jour
+J**, quand le WordPress est supprimé. C'est donc le seul endpoint qui reste à fournir, et c'est
+lui qui est chez les managers. Le formulaire du live n'a d'ailleurs que 3 champs contre nos 7.
+
+### Ce qui a été mesuré avant de câbler, et une réserve à lever
+
+- **endpoint vivant et CORS ouvert** : POST depuis une autre origine, `type: 'cors'`, HTTP 200,
+  `{"success":true}`, réponse lisible. Le `fetch` du module 15 l'atteint donc directement, sans
+  navigation ni `mode: 'no-cors'`. Sonde faite **pot de miel REMPLI**, ce que Brevo écarte par
+  définition : aucun inscrit créé ;
+- **le captcha n'est PAS tranché.** Un `g-recaptcha-response` fait partie de l'envoi du live
+  (sitekey `6LfFzw4jAAAAAH1LvdGfzojE7PbpDnCMDqpHKNv5`). Un `{"success":true}` sur un envoi à pot
+  de miel rempli ne prouve rien : simuler le succès est précisément ce que fait un pot de miel.
+  Seul un envoi RÉEL le tranche, et il crée un inscrit dans la liste du client. Contrôle d'une
+  minute laissé au client : remplir la bande newsletter en local, puis regarder dans Brevo ;
+- **RÉSERVE À LEVER, et c'est le piège des blocs masqués qui remonte.** La section newsletter du
+  live est **désactivée** : `display:none` sur sa section Elementor, dans les deux langues, et le
+  mot « newsletter » n'apparaît pas du tout dans `document.body.innerText`. La liste Brevo
+  derrière cet endpoint n'est donc peut-être plus relevée. Ce n'est pas une raison de ne pas
+  câbler (le formulaire existe sur NOTRE site, et le repli courrier n'est pas meilleur), mais
+  c'est à confirmer par le client. Ne pas conclure « endpoint vivant » de « HTTP 200 » : les deux
+  ne disent pas la même chose.
+
+### Le renommage des champs vit dans le JS, jamais dans le balisage
+
+Brevo impose `EMAIL`, `OPT_IN` **à la valeur « 1 »** (et non le « on » par défaut d'une case sans
+attribut `value`), un pot de miel `email_address_check` qui doit partir **vide**, et `locale`.
+Son endpoint est déclaré en `application/x-www-form-urlencoded`, **pas en multipart**.
+
+Le site garde `email` et `consent` : ce sont les noms dont dépendent le repli courrier et la
+validation, et les renommer dans le HTML enfermerait le balisage dans un fournisseur. La
+correspondance est donc une table `PROFILS` du module 15, et le formulaire déclare son profil par
+`data-endpoint-kind="brevo"` plus `data-locale`. Sans profil, le comportement d'avant ne change
+pas : `FormData` en multipart, ce qu'attendent Formspree et compagnie.
+
+`charge(form)` rend un `URLSearchParams` quand le profil le demande, et **on ne pose pas de
+`Content-Type` à la main** : `fetch` le déduit de l'objet. Les deux valeurs restent des en-têtes
+autorisés sans pré-vol CORS, ce qui est ce qui permet de lire la réponse.
+
+Le pot de miel est en **`display: none`** (classe `.form-honeypot`) et non en `.visually-hidden` :
+la seconde laisse le champ dans l'ordre de tabulation et dans l'arbre d'accessibilité, où il n'a
+rien à faire. Un champ en `display:none` **est bien envoyé**, seul `disabled` l'exclurait.
+
+Charge interceptée avant départ, sur les quatre pages :
+`EMAIL=…&email_address_check=&OPT_IN=1&locale=fr|en`, en urlencoded. Échec serveur simulé (500) :
+message d'erreur affiché et bouton réactivé, donc pas de succès silencieux. Sans cocher la case :
+**0 envoi parti**. Mise en page identique au pixel avant/après (bande à 414 px, champ à 490 px),
+le pot de miel n'occupe rien.
+
+### Effet de bord, et c'est une correction
+
+`go-live.py --endpoint` posait **la même URL sur les six** formulaires, alors qu'une inscription
+newsletter et une demande de démo ne vont pas au même endroit. Les quatre newsletters n'étant plus
+vides, il ne touche plus que **les deux contacts**, et retire **2** notes d'attente au lieu de 6.
+Vérifié en simulation. Sa documentation, son aide de ligne de commande et son rappel de fin
+d'exécution disent désormais lesquels restent. `llms.txt` aussi.

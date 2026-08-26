@@ -913,6 +913,12 @@ p { color: var(--gray); }
    `margin-top` retombe à 2 px : la rangée wrappée apporte déjà les 12 px de
    `gap`, et sans ça la bande gagnait 12 px de haut pour rien. */
 .newsletter__form .newsletter__consent { flex-basis: 100%; margin-top: 2px; }
+/* Pot de miel du service d'envoi : un champ que seul un robot remplit, et qui
+   doit arriver VIDE. `display:none` est ce qu'il faut ici, pas la classe
+   `visually-hidden` : celle-ci laisse le champ dans l'ordre de tabulation et
+   dans l'arbre d'accessibilité, où il n'a rien à faire. Un champ en
+   `display:none` est bel et bien envoyé, seul `disabled` l'exclurait. */
+.form-honeypot { display: none; }
 /* Sur la bande newsletter, fond teal : le texte repasse au noir de charte. */
 .newsletter .form-status {
   color: #001A18;

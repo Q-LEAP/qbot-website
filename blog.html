@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=300af073">
+  <link rel="stylesheet" href="assets/css/style.css?v=024d4166">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -234,17 +234,15 @@
   <div class="container">
     <h2>Newsletter</h2>
     <p>Si vous souhaitez bénéficier des dernières nouveautés de Q-Bot, inscrivez-vous à notre newsletter.</p>
-    <!-- ROSOAI-EN-ATTENTE · endpoint des formulaires
-         `data-endpoint` est vide À DESSEIN, ce n'est pas un formulaire oublié :
-         l'adresse du service d'envoi est en attente d'approbation chez le client,
-         point ouvert le 2026-08-25. Rien ne se perd en attendant. Le module 15 de
-         main.js ouvre le logiciel de courrier du visiteur, prérempli champ par
-         champ, et la page le lui écrit noir sur blanc. Le jour de l'approbation il
-         n'y a qu'une valeur à renseigner : le script bascule seul en envoi direct.
-         Statut complet du site : /llms.txt, section « Pre-launch status ».
-         À RETIRER avec la valeur. Tout retrouver : grep -rn ROSOAI-EN-ATTENTE -->
-    <form class="newsletter__form" data-form="newsletter" data-endpoint="" method="post" aria-label="Inscription newsletter">
+    <form class="newsletter__form" data-form="newsletter" data-endpoint="https://279f6284.sibforms.com/serve/MUIEAElAEknQtHJ_N_8OQaaN05ie9uWt0pqCMH3aVqbEevc8_5J8SfJauGv2-2KJm2g2qjifky5UA0h2s-xvn5escP20r8nYnHbmD6TawxDMt8mwAQp9Xew5aGMY3JdmA_2x4qlTl8XmLU8M3phqUzYIfgSeYg9pwVVGsC6R1Cv4HiqSLJx0lOPUFkJL9a72Q4HVXFXeG6quYVet" data-endpoint-kind="brevo" data-locale="fr" method="post" aria-label="Inscription newsletter">
       <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email">
+      <!-- Brevo endpoint, read off the live q-bot.eu form on 2026-08-26, cf. index.html for the full note (CORS measured open, field mapping lives in
+           main.js, and the live newsletter section is disabled so the list behind
+           this endpoint still needs the client's confirmation). -->
+      <!-- Pot de miel de Brevo : il doit partir VIDE. En `display:none`, donc
+           invisible et hors de l'ordre de tabulation, mais bien envoyé (seul
+           `disabled` retire un champ d'un envoi, pas `display:none`). -->
+      <input type="text" name="email_address_check" value="" class="form-honeypot" tabindex="-1" autocomplete="off">
       <button type="submit" class="btn">S'INSCRIRE</button>
           <p class="form-status" role="status" aria-live="polite" hidden></p>
       <!-- C'était le seul endroit du site où l'on demandait une adresse sans rien
@@ -342,6 +340,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=0db193fe" defer></script>
+<script src="assets/js/main.js?v=349262f6" defer></script>
 </body>
 </html>
