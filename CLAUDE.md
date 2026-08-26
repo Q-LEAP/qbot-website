@@ -3747,3 +3747,89 @@ Note d'environnement : le volume exFAT qui porte ce dépôt s'est **démonté en
 pendant cette passe (« Working directory was deleted »), puis est revenu seul. Le commit n'était
 pas passé, les fichiers l'étaient : après un incident de ce genre, **vérifier `git log` ET
 `git status`** avant de refaire quoi que ce soit, sinon on rejoue des éditions déjà appliquées.
+
+## La photo LuxTrust rétrécit, et le premier prototype change d'image (2026-08-26)
+
+Deux retours du client, et deux natures de problème.
+
+### 1. La photo LuxTrust était agrandie, pas « pixelisée » par hasard
+
+`qbot-photo-dock.jpg` fait **699 x 860 pixels réels, et c'est tout ce qui existe** : elle est
+découpée dans la brochure, qui est une image aplitie à 300 dpi. Il n'y a pas de version plus fine
+à aller chercher, seulement un agrandissement. Mesuré dans son cadre de colonne, sur un écran à
+densité 2 : **x1,63 à 1440 px, x1,94 à 1920, x2,03 à 2560**. Le client voyait donc une vraie
+dégradation, pas une impression.
+
+La seule correction possible est de réduire l'affichage, et **le plafond est calculé, pas
+tâtonné** : à densité 2 il faut au plus 699/2 = 349 px affichés, et `.intro__image` agrandit son
+contenu de 1,08 au repos (la sur-échelle du parallaxe), donc 349/1,08 = 323 px de cadre. D'où
+`.intro__image--dock { max-width: 320px; }`, posé sur les **quatre** emplacements de la photo
+(les deux accueils, `commandez`, `en/order`). Relevé après : **x0,99** à 1440, 1920 et 2560 px.
+
+**Ce qui reste, et c'est assumé** : à 390 px sur un écran de densité 3, l'agrandissement vaut
+encore 1,48. Descendre à 1,00 demanderait un cadre de 216 px, soit une vignette sur un téléphone
+où la colonne fait toute la largeur. La section deux colonnes n'existe de toute façon qu'au-delà
+de 900 px, là où le défaut a été signalé.
+
+Le cadre reste **aligné à gauche** sur la gouttière : c'est la colonne qui garde sa largeur, pas
+l'image qui se centre dedans, conformément à la règle du dépôt.
+
+### 2. Le « premier prototype » montrait le second
+
+Arbitré par le client le 2026-08-26 : l'image du portique (`qbot-proto-gen1.png`) est **le second
+prototype**, et le premier est celui de la photo de Mathilde Magne publiée dans les articles de
+blog. La carte « Génération 1 » des deux accueils montre donc maintenant ce boîtier, détouré.
+
+Trois choses ont changé ensemble, et pas seulement l'image : l'`alt`, le corps de la carte (il
+décrivait « un portique motorisé monté à la main, deux axes, un stylet capacitif ») et **le
+chapeau de la section**, qui annonçait « Du portique assemblé dans nos locaux… ». Un seul des
+trois oublié aurait laissé le texte contredire l'image. Contrôlé : 0 occurrence de « portique »
+et de « gantry » sur les deux accueils.
+
+Le nouveau texte ne s'appuie que sur ce qui est vérifiable et déjà publié par le client : « moins
+de dix centimètres de côté » et « développé en interne dans les bureaux de Q-Leap » viennent de
+l'article de blog qui porte cette photo, et le petit écran en façade est visible dessus. **Aucune
+date n'est ajoutée**, conformément au choix de cette section.
+
+`qbot-proto-gen1.png` n'est plus référencé nulle part ; le fichier reste sur le disque, comme le
+veut l'usage du dépôt. **Le rail n'a pas gagné de quatrième carte** : sa géométrie est calculée
+pour trois étapes (`--evo-fill: 0.5` est le milieu de trois, et pour quatre il faudrait
+`index / (n − 1)`), et cela n'a pas été demandé.
+
+### Le détourage : un fond VERT, et un piège de rééchantillonnage
+
+`assets/img/blog/qbot-photo.webp` n'est pas sur fond blanc mais sur un **fond vert de studio**,
+`(72, 112, 75)` uniforme sur les quatre bords. Conséquence directe : **une clé de luminance aurait
+rendu transparent le texte blanc de l'afficheur**. C'est la teinte qui sépare, par la « verdeur »
+`G − max(R, B)` : 37 pour le fond, un 99e centile à 0 pour l'objet.
+
+Deux mesures faites AVANT d'écrire l'outil, et qui ont permis de se passer d'un remplissage par
+proximité : aucun pixel de fond n'est isolé dans l'objet (les 245 138 sont tous atteints depuis le
+bord, donc un seuil global ne peut pas trouer l'anneau métallique), et rien n'est légitimement
+vert dans la photo (le bouton est rouge), donc le dé-débordement peut s'appliquer partout.
+
+**LE PIÈGE, ET IL A COÛTÉ TROIS HYPOTHÈSES FAUSSES.** Un trait vert d'un pixel de large sur 36 de
+haut subsistait au bord gauche du boîtier, à alpha 240. J'ai d'abord accusé la compression avec
+perte du WebP (faux : le sans-perte coûtait 402 Ko pour rien), puis le sous-échantillonnage de
+chrominance qui baverait depuis les pixels transparents (faux aussi : remplir le transparent avec
+la couleur moyenne de l'objet n'a rien changé). La mesure étape par étape a donné la réponse :
+c'est **Lanczos qui « sonne »**. Verdeur 0 après dé-débordement, 0 après recadrage, puis **255 sur
+25 pixels après la réduction**. Bilinéaire et « box » n'ont pas ce défaut mais perdent du piqué.
+
+Le correctif garde Lanczos et **réapplique le dé-débordement après la réduction**. Relevé sur le
+fichier livré : verdeur composité **max 4,9, zéro pixel au-delà de 8**, et cela sur fond de carte,
+sur fond de page et même sur blanc.
+
+Leçon générale : **une opération de rééchantillonnage peut violer un invariant établi avant
+elle.** Un contrôle de détourage doit se faire sur le fichier FINAL, composité sur le fond réel,
+et non sur le tableau intermédiaire.
+
+L'outil est versionné dans `tools/render/detourer-proto.py`, sortie
+`assets/img/qbot-proto-1-boitier.webp` (760 x 687, 97 Ko, 2,5x le plus grand cadre mesuré).
+
+Contrôles : les quatre pages touchées à 390 / 768 / 900 / 1440 / 2560 px, un seul `h1`, 0
+révélation invisible, 0 débordement horizontal, 0 image cassée, 0 défaut de contraste, 0 erreur
+console. Faux positif écarté au passage : une sonde qui lit `img.complete` juste après le
+défilement signale `qbot-gen-actuelle.webp` comme cassée alors qu'elle est encore en cours de
+chargement. **Un contrôle d'image en chargement différé doit attendre, ou lire `naturalWidth`
+seulement quand `complete` est vrai.**

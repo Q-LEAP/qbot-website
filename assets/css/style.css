@@ -920,6 +920,22 @@ p { color: var(--gray); }
    `display:none` est bel et bien envoyé, seul `disabled` l'exclurait. */
 .form-honeypot { display: none; }
 
+/* ── La photo LuxTrust est bridée en largeur, et ce n'est pas un choix d'esthétique
+   ─────────────────────────────────────────────────────────────────────────────
+   `qbot-photo-dock.jpg` fait 699 x 860 pixels réels, et c'est TOUT ce qui existe :
+   elle est découpée dans la brochure, qui est une image aplatie à 300 dpi. Il n'y a
+   pas de version plus fine à aller chercher, seulement un agrandissement.
+   Mesuré avant correction, dans son cadre de colonne : x1,63 sur un écran Retina de
+   1440 px, x1,94 à 1920, **x2,03 à 2560**. C'est cet agrandissement que le client
+   voyait comme une pixelisation, et il est réel.
+   Le cadre est donc plafonné à 320 px. Le calcul, pas un tâtonnement : à densité 2 il
+   faut au plus 699/2 = 349 px affichés, et `.intro__image` agrandit son contenu de
+   1,08 au repos (la sur-échelle du parallaxe), donc 349/1,08 = 323 px de cadre. On
+   prend 320.
+   Le cadre reste aligné à GAUCHE sur la gouttière, comme tout bloc du site : c'est
+   la colonne qui garde sa largeur, pas l'image qui se centre dedans. */
+.intro__image--dock { max-width: 320px; }
+
 /* BLOC DE SECOURS DU REPLI COURRIER (module 15). Il n'apparaît qu'après un envoi,
    quand le message a été passé au logiciel de courrier : il montre ce texte, au
    cas où rien ne se soit ouvert.
