@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automating a LuxTrust authentication in tests | Q-Bot</title>
+  <meta name="description" content="A LuxTrust approval is not computed, it is granted on the phone. Where Selenium and Cypress stop, and how to clear that step on a real Android device.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/en/automate-luxtrust-authentication.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/automate-luxtrust-authentication.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/automatiser-authentification-luxtrust.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/automatiser-authentification-luxtrust.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Automating a LuxTrust authentication in tests | Q-Bot">
+  <meta property="og:description" content="A LuxTrust approval is not computed, it is granted on the phone. Where Selenium and Cypress stop, and how to clear that step on a real Android device.">
+  <meta property="og:url" content="https://q-bot.eu/en/automate-luxtrust-authentication.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Automating a LuxTrust authentication in tests | Q-Bot">
+  <meta name="twitter:description" content="A LuxTrust approval is not computed, it is granted on the phone. Where Selenium and Cypress stop, and how to clear that step on a real Android device.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/style.css?v=95c58ad8">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://q-bot.eu/en/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "LuxTrust guide",
+      "item": "https://q-bot.eu/en/automate-luxtrust-authentication.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Automating a LuxTrust authentication in your tests",
+  "description": "A LuxTrust approval is not computed, it is granted on the phone. Where Selenium and Cypress stop, and how to clear that step on a real Android device.",
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "inLanguage": "en",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/en/automate-luxtrust-authentication.html" },
+  "author": { "@id": "https://q-bot.eu/#organization" },
+  "publisher": { "@id": "https://q-bot.eu/#organization" },
+  "about": [
+    { "@type": "Thing", "name": "LuxTrust" },
+    { "@type": "Thing", "name": "two-factor authentication" },
+    { "@type": "Thing", "name": "test automation" }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Main navigation">
+      <a href="index.html" class="nav__logo" aria-label="Q-Bot, home">
+        <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="about.html" class="nav__link">About</a></li>
+        <li><a href="technical-specs.html" class="nav__link">Specifications</a></li>
+        <li><a href="use-cases.html" class="nav__link">Use cases</a></li>
+        <li><a href="contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="contact.html" class="btn btn--primary">Free demo</a>
+                <div class="nav__lang">
+          <a href="../automatiser-authentification-luxtrust.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Guide</span>
+    <h1 id="page-title">Automating a LuxTrust authentication in your tests</h1>
+    <p>A LuxTrust authentication is not computed, it is approved on the user's phone. No library can stand in for it, because there is no shared secret left to recompute. This guide sets out where Selenium and Cypress stop, and how to clear that step on a real Android device.</p>
+    <p class="guide-date">Updated <time datetime="2026-08-26">26 August 2026</time></p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Breadcrumb">
+      <li><a href="../index.html">Home</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">LuxTrust guide</span></li>
+    </ol>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="pourquoi-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The starting point</span>
+      <h2 class="section-title" id="pourquoi-title">Why can a LuxTrust authentication not be automated like an Authenticator code?</h2>
+      <p class="section-subtitle">An Authenticator code is a computation. The TOTP standard takes a shared secret and the current time, so a free library reproduces it with no phone involved. A LuxTrust approval is not a computation: it is granted in the app, on the device. There is no secret to recompute, so nothing to simulate.</p>
+    </div>
+    <p>The difference fits in one sentence: in one case you hold the key, in the other you do not.</p>
+    <p>A six-digit authenticator code follows the <a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener">TOTP standard set out in RFC&nbsp;6238</a>. It takes a shared secret, adds the current time, and produces the code. Your team received that secret at enrolment, so it can recompute the code inside the test itself, with no device at all.</p>
+    <p>An approval through <a href="https://www.luxtrust.com/" target="_blank" rel="noopener">LuxTrust</a> does not work that way. There is no code to recompute: there is a request arriving on the enrolled device, and a human gesture approving it. The secret never leaves the device, which is precisely the point of the scheme. No library can stand in its place, and that is by design.</p>
+    <p>What that means for your pipeline: the only way to approve is to tap. On a real device.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="outils-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">What the usual tools do</span>
+      <h2 class="section-title" id="outils-title">Where do Selenium, Cypress and Playwright stop?</h2>
+      <p class="section-subtitle">All three drive a browser, and they do it very well. The 2FA approval, however, happens in an app, on a phone, outside the browser: no selector reaches it. Selenium's own documentation says as much, and advises turning two-factor authentication off in test environments.</p>
+    </div>
+    <p>This is not a weakness of those tools, it is their scope. A browser driver acts on the rendered document; it has no hold on a system notification or a native app.</p>
+    <p>Selenium <a href="https://www.selenium.dev/documentation/test_practices/discouraged/two_factor_authentication/" target="_blank" rel="noopener">devotes a documentation page to the question</a> and recommends three routes: disable two-factor authentication in the test environment, disable it for one account, or obtain the shared secret and recompute the code.</p>
+    <p>All three are sound. But read the definition it works from: it describes 2FA as a code received through an app, an SMS or an email. It does not cover requests to approve, nor sovereign identity apps. That is where its boundary sits, and it is exactly where your real login flow lives if your users sign in with LuxTrust or <a href="https://www.itsme-id.com/" target="_blank" rel="noopener">itsme</a>.</p>
+    <p>And turning 2FA off carries a cost that is rarely stated: you are no longer testing the journey your users actually take.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="pas-nous-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Where we are not the answer</span>
+      <h2 class="section-title" id="pas-nous-title">When is a robot not the right answer?</h2>
+      <p class="section-subtitle">For Google Authenticator or Microsoft Authenticator, buy nothing. Those are TOTP codes: a few lines of library compute them, for free, faster than any physical device. A robot only earns its place where there is no secret to obtain, and therefore nothing to compute.</p>
+    </div>
+    <p>We would rather say this here than let you find it out later: if your second factor is a TOTP code whose secret you hold, the right answer is a library, not a robot. It is free, it runs in a millisecond, it does not break down, and it needs no hardware.</p>
+    <p>A driven physical device is only worth it where there is nothing to compute:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a request to <strong>approve</strong> on the enrolled device, with no code to type: LuxTrust Mobile, itsme</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a code that exists <strong>only</strong> on the app's screen, with no shared secret handed to your team</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a QR code shown on a second screen that the device has to scan</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a flow you need to test <strong>as the user lives it</strong>, without switching anything off</span></li>
+    </ul>
+    <p style="margin-top:26px;">If none of those four lines describes your situation, keep your TOTP library: it does the job.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="comment-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The method</span>
+      <h2 class="section-title" id="comment-title">How does Q-Bot clear a LuxTrust approval?</h2>
+      <p class="section-subtitle">A real Android phone, connected over USB to the box, driven through ADB. Every tap lands on the physical screen, in the genuine app. The scenario is built with the mouse on a screenshot of that screen: numbered tap points and waiting times, no script to write.</p>
+    </div>
+    <p>The principle is deliberately plain: since the only way to approve is to tap, we tap for real.</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The phone is an ordinary Android device from your test environment, connected over USB and driven through <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a></span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You upload a screenshot of the 2FA app screen as the background of the step, then place the tap points by clicking on it</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You set the waiting times to the millisecond, to match how the app really behaves</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Your test triggers the scenario with an HTTP call, or lets the companion app fire it on its own as soon as a 2FA notification arrives</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>When the screen shows a code, a dedicated endpoint returns it to your test</span></li>
+    </ul>
+    <p style="margin-top:26px;">There is no simulator, no stub, and no SDK to embed in your application. The <a href="technical-specs.html">technical page covers the scenario editor and the hardware stack</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="appel-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">In your pipeline</span>
+      <h2 class="section-title" id="appel-title">What does the call from your test look like?</h2>
+      <p class="section-subtitle">An HTTP request, and nothing more. If your tool can call a URL, it can drive the robot: no SDK, no plugin, no API key. The test triggers the scenario, waits for the answer, and picks up exactly where it left off.</p>
+    </div>
+    <figure class="ucs__snippet code-panel">
+      <figcaption>Python / Selenium</figcaption>
+      <div class="code-block"><pre><code># The user has entered their credentials,
+# LuxTrust is waiting for approval.
+import requests
+
+requests.get(
+  &quot;http://q-bot.local:8000&quot;
+  &quot;/scenarios/42/execute&quot;
+)
+
+# The robot approved it on the phone.
+# The test picks up where it left off.
+driver.find_element(
+  By.ID, &quot;dashboard&quot;
+).is_displayed()</code></pre></div>
+    </figure>
+    <p style="margin-top:26px;">Three endpoints cover the usual cases: run a scenario, read the code on screen, show a QR code on the box's own display. They are documented on the <a href="technical-specs.html">technical page</a>, and <a href="use-cases.html">the per-tool call examples</a> cover Cypress, Playwright, Robot Framework and JUnit.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="limites-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The limits, stated</span>
+      <h2 class="section-title" id="limites-title">What does this not automate?</h2>
+      <p class="section-subtitle">Q-Bot drives an <strong>Android</strong> device. It does not automate two-factor authentication on iOS, and that limit has no workaround: the driving relies on ADB, which has no equivalent on iPhone. The device also has to be physically connected to the box.</p>
+    </div>
+    <p>Three things worth knowing beforehand rather than afterwards:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>Android only.</strong> If your flow has to be validated on an iPhone, this is not the tool</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>One physical device per box.</strong> The phone is wired over USB, it does not live in a cloud</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>An app, not a hardware token.</strong> A physical token with its own display does not fit this model</span></li>
+    </ul>
+    <p style="margin-top:26px; font-size:0.9375rem;">Q-Bot is a Q-Leap&nbsp;S.A. product and is not published, distributed or endorsed by LuxTrust. Names quoted belong to their respective owners.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="donnees-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Security and data</span>
+      <h2 class="section-title" id="donnees-title">Where does your test data go?</h2>
+      <p class="section-subtitle">Nowhere. Scenarios and their screenshots stay inside the box, on your network, in a local database. Nothing is sent to an online service, and no internet connection is needed while the tests run. That is what makes the tool defensible in front of a security team.</p>
+    </div>
+    <p>This is often the question that decides, and it does not come from the tester: it comes from whoever has to sign it off.</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Scenarios and their screenshots are stored in the box, never on an online service</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No internet connection is needed while the tests run</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No API key to hand out, so no secret circulating through your integration pipeline</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The box stays on your network, in your own premises</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cta-guide-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-guide-title" style="margin-bottom:16px;">Want to see it on your own login flow?</h2>
+    <h3 style="font-size:1.5rem; font-weight:500; margin-bottom:32px; color:var(--teal-text);">Book a demo</h3>
+    <a href="contact.html" class="btn btn--primary btn--lg">Make an appointment</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Social media">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Product</h3>
+        <ul role="list">
+          <li><a href="technical-specs.html">Technical Specs</a></li>
+          <li><span aria-current="page">Use Cases</span></li>
+          <li><a href="3d-model.html">3D Model</a></li>
+          <li><a href="order.html">Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="contact.html">Contact us</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Legal links">
+        <a href="terms-and-conditions-of-sale/">Terms of Sale</a>
+        <a href="privacy/">Privacy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js?v=710207f0" defer></script>
+</body>
+</html>

@@ -31,6 +31,13 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/cas-usage.html"/>
   </url>
   <url>
+    <loc>https://q-bot.eu/automatiser-authentification-luxtrust.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/automatiser-authentification-luxtrust.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/automate-luxtrust-authentication.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/automatiser-authentification-luxtrust.html"/>
+  </url>
+  <url>
     <loc>https://q-bot.eu/modele-3d.html</loc>
     <lastmod>2026-08-25</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/modele-3d.html"/>
@@ -114,6 +121,13 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/cas-usage.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/use-cases.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/cas-usage.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/automate-luxtrust-authentication.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/automatiser-authentification-luxtrust.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/automate-luxtrust-authentication.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/automatiser-authentification-luxtrust.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/en/3d-model.html</loc>

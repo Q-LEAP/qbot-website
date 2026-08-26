@@ -66,6 +66,9 @@ blog editor, an earlier HTML mock-up). They are excluded from the build and now 
 
 ## Verified facts
 
+- Q-Bot is a Q-Leap S.A. product. It is NOT published, distributed or endorsed by LuxTrust,
+  nor by Google, Microsoft or itsme. Do not describe it as a LuxTrust product or partner.
+
 These figures come from the client's own published pages; do not infer or round them.
 
 - Price: NOT PUBLISHED, on purpose. Q-Bot is an all-inclusive monthly rental (technical support and
@@ -89,7 +92,7 @@ These figures come from the client's own published pages; do not infer or round 
 
 ## Product
 
-- [Homepage (FR)](https://q-bot.eu/): product overview, how it works, pricing.
+- [Homepage (FR)](https://q-bot.eu/): product overview and how it works.
 - [Homepage (EN)](https://q-bot.eu/en/)
 - [Technical specifications (FR)](https://q-bot.eu/caracteristiques.html)
 - [Technical specifications (EN)](https://q-bot.eu/en/technical-specs.html)
@@ -98,8 +101,21 @@ These figures come from the client's own published pages; do not infer or round 
 - [Use cases (EN)](https://q-bot.eu/en/use-cases.html)
 - [Interactive 3D model (FR)](https://q-bot.eu/modele-3d.html)
 - [Interactive 3D model (EN)](https://q-bot.eu/en/3d-model.html)
-- [Order / pricing (FR)](https://q-bot.eu/commandez.html)
-- [Order / pricing (EN)](https://q-bot.eu/en/order.html)
+- [Demo request (FR)](https://q-bot.eu/commandez.html): includes a ROI calculator that
+  returns the reader's OWN cost of manual 2FA in hours, never a Q-Bot price.
+- [Demo request (EN)](https://q-bot.eu/en/order.html)
+
+## Guides
+
+- [Automating a LuxTrust authentication (FR)](https://q-bot.eu/automatiser-authentification-luxtrust.html):
+  the long-form guide. Why a LuxTrust approval cannot be computed the way a TOTP code can (there is
+  no shared secret left to recompute, RFC 6238 does not apply); where Selenium, Cypress and
+  Playwright stop, and what Selenium's own documentation recommends; WHEN A ROBOT IS NOT THE RIGHT
+  ANSWER, stated plainly: for Google Authenticator or Microsoft Authenticator, a free TOTP library
+  is the better choice and this guide says so; how Q-Bot clears the step by driving a real Android
+  device over ADB; the HTTP call from a test; and the stated limits, Android only, no iOS, one
+  wired device per box.
+- [Automating a LuxTrust authentication (EN)](https://q-bot.eu/en/automate-luxtrust-authentication.html)
 
 ## Company
 

@@ -3572,3 +3572,93 @@ Contrôlé sur les deux langues : ligne visible avant le clic, message court qui
 normale, message long qui déclenche l'avertissement, bloc copiable présent dans les deux cas,
 0 débordement, 0 erreur console. Et les notes « endpoint en attente » ne subsistent plus que sur
 le sujet des références clients, qui est un autre point, toujours ouvert lui.
+
+## Le premier guide : automatiser une authentification LuxTrust (2026-08-26)
+
+Première page du plan de contenu de l'audit RosoAI, et le P1 qu'il classe en tête : sur
+« automatiser l'authentification LuxTrust » il a vérifié qu'aucun contenu concurrent n'occupe la
+page de résultats, et c'est le seul sujet sur lequel le nom sort déjà spontanément d'une IA, par
+l'article ITnation. Un territoire vide où l'on est déjà nommé.
+
+`automatiser-authentification-luxtrust.html` et `en/automate-luxtrust-authentication.html` sont
+**générées par `tools/gen-guide-luxtrust.py`**, un gabarit et deux jeux de textes. Même choix que
+`gen-legal.py` et les pages de cas d'usage, pour la même raison : deux pages écrites l'une après
+l'autre divergent. **Les slugs portent la requête visée** dans chaque langue, et l'anglaise ne
+porte pas un slug français (premier jet corrigé).
+
+**L'HABILLAGE EST EXTRAIT DE `cas-usage.html`, JAMAIS RETAPÉ.** En-tête, barre de navigation, pied
+de page et fin de document sont découpés dans la page donneuse, avec deux retouches : l'état
+courant du menu est retiré (la nouvelle page n'y figure pas) et l'entrée « Cas d'usage » du pied
+de page retrouve son lien. Conséquence utile : si le pied de page change, une régénération suffit.
+
+### Ce que le format applique, et qui vient de l'audit
+
+Le guide, pas la page produit : sur les cinq pages de résultats analysées, c'est le guide qui se
+classe, cinq fois sur cinq, et aucune page produit n'apparaît. Les quatre marques du format :
+
+- **chaque `<h2>` est une question, suivie d'une réponse autonome.** Mesuré : **14 capsules sur
+  14 dans la fenêtre de 40 à 60 mots** (40 à 53 selon les sections) ;
+- **une source vérifiable tous les 150 à 200 mots** : RFC 6238 pour TOTP, la page que Selenium
+  consacre à la 2FA, la documentation ADB d'Android, LuxTrust et itsme. Les cinq suivies dans un
+  navigateur, toutes en 200 ;
+- **une date de mise à jour visible**, en `<time>` sous le chapeau (`.guide-date`) ;
+- **le courage de dire quand le concurrent gagne.** C'est la section « Dans quels cas un robot
+  n'est pas la bonne réponse », qui envoie le lecteur vers une bibliothèque TOTP gratuite pour
+  Google et Microsoft Authenticator. Ce n'est pas de la modestie : une comparaison qui gagne sur
+  tous les critères n'est crue par personne, ni par un acheteur ni par un modèle. C'est aussi
+  l'arbitrage de contenu de l'audit, qui demande d'arrêter de mettre ces deux applications en
+  avant comme argument principal, la valeur étant maximale là où il n'existe aucune clé à
+  récupérer.
+
+**Deux affirmations à ne jamais retourner.** La page énonce le périmètre **comme une limite**
+(Android seulement, pas d'iOS, un appareil filaire par boîtier), et elle porte une mention de
+**non-affiliation** : Q-Bot est un produit de Q-Leap S.A., il n'est ni édité, ni distribué, ni
+approuvé par LuxTrust. `llms.txt` reprend cette non-affiliation dans ses faits vérifiés, avec la
+consigne de ne pas décrire le produit comme un produit ou un partenaire LuxTrust.
+
+**Le `TechArticle` déclare `author: Organization`, pas `Person`.** Le dépôt attribue quatre
+articles à Sylvain Perez, mais ce guide n'a pas été relu par lui : signer un texte au nom d'une
+personne réelle est une affirmation sur elle. À basculer sur `Person` le jour où il le valide.
+
+### Deux pièges rencontrés dans le générateur, tous deux déjà connus du dépôt
+
+1. **les `hreflang` ne se remplacent PAS par un bloc de trois lignes.** Le donneur anglais les
+   écrit dans un autre ordre (`en`, `fr`, `x-default`) : le motif ordonné ne correspondait à rien
+   et la page anglaise a été écrite avec les `hreflang` de la page des cas d'usage, **en silence**.
+   Le remplacement se fait par attribut. Même famille que le motif multi-lignes qui échouait sur
+   `en/technical-specs.html` ;
+2. **l'ordre des remplacements compte.** Mon premier correctif renommait les slugs avant de
+   toucher au bloc `hreflang`, qui contenait les anciennes URL : le motif ne correspondait plus.
+3. le contrôle de cadratin porte sur le document **commentaires retirés** : ceux de l'habillage
+   extrait en contiennent encore, et ils ne sont pas lus par le visiteur.
+
+### Intendance, et les liens entrants
+
+Le plan du site passe de 28 à **30 URL** avec leurs paires hreflang, le décompte de `robots.txt`
+suit, et `llms.txt` reçoit une section **Guides** qui résume l'argument, y compris le « quand un
+robot n'est pas la réponse » : c'est ce qui rend la page citable plutôt que promotionnelle. Deux
+mentions de tarif périmées y ont été corrigées au passage (« pricing » sur l'accueil, « Order /
+pricing » devenu « Demo request »).
+
+**Quatre liens entrants, pas zéro** : un bouton sur les deux fiches techniques, à côté de celui
+des exemples d'appel, et un lien en pleine phrase dans le cas LuxTrust des deux pages de cas
+d'usage. **La page n'entre PAS dans la barre de navigation** : elle porte déjà quatre entrées, un
+bouton et le sélecteur de langue, et la passe du 2026-08-20 a vérifié qu'elle tient de 901 à
+1440 px dans cet état. Une entrée « Guides » se justifiera quand il y en aura deux ou trois.
+
+Contrôles : 1 `h1` par page, 0 saut de niveau, **0 défaut de contraste**, 0 débordement horizontal
+à 375 / 390 / 768 / 900 / 1024 / 1440 / 2560 px, 0 révélation restée invisible en normal comme en
+mouvement réduit, 0 erreur console, **85 pages balayées et 0 lien interne cassé**, et
+**79 blocs JSON-LD valides** dont le nouveau `TechArticle`. Le titre tombe au pixel sur le logo,
+au même écart de 7 px que `cas-usage` et `caracteristiques` (c'est la zone d'exclusion du logo,
+pas un défaut). Environ 1 300 mots par page.
+
+Note d'outillage : **`luxtrust.com` limite le débit**. Il a répondu `ERR_CONNECTION_REFUSED`
+pendant un balayage de liens, puis 200 six secondes plus tard. Un contrôle de liens qui le
+signale mort doit être rejoué seul avant qu'on y touche.
+
+### Les sept autres contenus du plan restent à écrire
+
+Trois P1 (celui-ci est le troisième), trois P2, deux P3. Il manque encore la page « Faut-il
+désactiver la 2FA en environnement de test ? », la page pilier « Automatiser la double
+authentification dans vos tests », et la version itsme de ce guide pour le marché belge.

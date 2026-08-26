@@ -5267,6 +5267,17 @@ label > input[type="checkbox"] {
 }
 /* Dans le bandeau, le bouton reprend sa place dans le flux. */
 .ucs__snippet figcaption .code-copy-btn { position: static; flex: none; }
+/* Le panneau de code de la bande des cas d'usage, réemployé dans le flux d'un
+   guide : là-bas sa largeur vient du rail (`--api-card`), ici il prend celle de sa
+   colonne. Deux déclarations, tout le reste du panneau est déjà écrit. */
+.code-panel { width: auto; max-width: 760px; }
+
+/* Date de mise à jour d'un guide. L'audit RosoAI la compte parmi les quatre
+   marques du format qui se fait citer, avec la réponse autonome de 40 à 60 mots
+   sous chaque titre-question. Elle vit dans le page-hero, dont les <p> portent
+   déjà une couleur fixe : on n'y touche pas, on ne change que l'échelle. */
+.guide-date { font-size: 0.8125rem; margin-top: 6px; }
+
 .ucs__note {
   margin-top: 20px;
   max-width: 760px;
