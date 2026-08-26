@@ -3320,4 +3320,6 @@ anglais sur les 14 paires de pages, ce qui est l'écart naturel entre les deux l
 pas un défaut. Une seule paire sort de la fourchette, à −31 % : « Remerciements » compte 236 mots
 et nomme **14 contributeurs**, « Acknowledgements » en compte 46 et ne nomme que Hubert
 Schumacher. Des personnes nommées construisent l'autorité d'une page, et le français le fait
-déjà. **À trancher, pas à corriger d'office** : si l'abrègement anglais est voulu, il reste.
+déjà. **ARBITRÉ PAR LE CLIENT LE 2026-08-26 : la version anglaise reste telle quelle.**
+L'abrègement est donc voulu. Ne pas y revenir, et ne pas « aligner » l'anglais sur la liste
+française au motif de la parité : c'est un choix, pas une traduction abrégée par oubli.
