@@ -3380,63 +3380,13 @@ a:focus-visible { border-radius: var(--radius-sm); }
   transition: transform 0.08s ease !important;
 }
 
-/* ── Bandeau de confiance ─────────────────────────────────────────────────
-   Utilisé par aucune page aujourd'hui : le balisage est en commentaire dans
-   les deux accueils, en attente de l'accord des clients nommés. Le CSS est
-   posé pour que l'activation ne demande que de retirer deux lignes.
-
-   Aligné à GAUCHE sur la gouttière du conteneur, comme tout bloc de texte du
-   site : jamais centré. Les noms sont sur une seule ligne qui passe à la
-   suivante, séparés par un point médian dessiné en pseudo-élément, pas par un
-   caractère dans le texte : un séparateur décoratif n'a rien à faire dans ce
-   qu'un lecteur d'écran énonce, ni dans ce qu'un moteur recopie.
-   ──────────────────────────────────────────────────────────────────────── */
-.trust-strip {
-  padding: 40px 0 48px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-}
-.trust-strip__title {
-  display: block;
-  margin-bottom: 20px;
-}
-.trust-strip__list {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px 0;
-  margin: 0 0 16px;
-  padding: 0;
-}
-.trust-strip__list li {
-  font-size: 1.0625rem;
-  font-weight: 500;
-  color: var(--black);
-  white-space: nowrap;
-}
-.trust-strip__list li + li::before {
-  content: "";
-  display: inline-block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--teal);
-  margin: 0 14px;
-  vertical-align: 3px;
-}
-.trust-strip__note {
-  font-size: .8125rem;
-  line-height: 1.6;
-  color: var(--muted);
-  margin: 0;
-  max-width: 62ch;
-}
-@media (max-width: 600px) {
-  .trust-strip { padding: 32px 0 36px; }
-  .trust-strip__list li { font-size: 1rem; }
-  .trust-strip__list li + li::before { margin: 0 10px; }
-}
+/* Le bandeau de confiance a été RETIRÉ le 2026-08-26, balisage et CSS. Le client
+   avait sollicité ses clients : aucun n'a accepté d'être nommé, donc il n'y aura
+   pas de témoignages. C'est un refus, pas une attente, et un CSS gardé « au cas
+   où » est une invitation à décommenter le balisage un jour. Même arbitrage que
+   les bandes d'outils du 2026-08-20 : le motif est écarté, pas mis de côté.
+   L'écart avec `.timeline`, gardée comme chemin de code, est que celle-ci l'a été
+   sur décision du client. Ici la décision est inverse. */
 
 /* ── Carte de contact — l'état AVANT le clic ──────────────────────────────
    L'iframe Google n'existe pas encore (module 19 de main.js la crée au clic).

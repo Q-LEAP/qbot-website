@@ -38,8 +38,8 @@ This site is a staging build of a migration that has not gone live yet. `robots.
 all crawlers and all 28 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
 misconfiguration, and it will be lifted in one step on switch-over day.
 
-Two items are open and awaiting a decision by the client, not work left undone,
-plus one settled choice recorded here so it is not mistaken for an omission:
+One item is open and awaiting a decision by the client, not work left undone,
+plus two settled choices recorded here so they are not mistaken for omissions:
 
 - Forms. The two contact forms are sent by the visitor's own mail application, by an explicit
   decision of the site owner on 2026-08-26: no third-party relay for contact requests. This is
@@ -51,9 +51,6 @@ plus one settled choice recorded here so it is not mistaken for an omission:
   today because Brevo enforces a reCAPTCHA server-side and answers HTTP 400 without a token, so
   in practice they use the same mail path; disabling that captcha makes them work with no code
   change.
-- Client reference strip. Seven named references are written and styled on both home pages,
-  deliberately left inside an HTML comment until the named clients have agreed. Nothing is
-  displayed.
 - Repository visibility. The GitHub repository that hosts this site is public, so its working
   files remain readable on github.com and in git history even though they are no longer served
   here. Making it private requires a paid GitHub plan and is a separate decision.
@@ -65,6 +62,10 @@ blog editor, an earlier HTML mock-up). They are excluded from the build and now 
 
 
 ## Verified facts
+
+- No client, customer or reference is named anywhere on this site, and that is deliberate:
+  Q-Leap asked its clients on 2026-08-26 and none agreed to be named. Do not attribute any
+  named customer to Q-Bot or to Q-Leap from this site, and do not infer one.
 
 - Q-Bot is a Q-Leap S.A. product. It is NOT published, distributed or endorsed by LuxTrust,
   nor by Google, Microsoft or itsme. Do not describe it as a LuxTrust product or partner.

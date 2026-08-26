@@ -2975,23 +2975,36 @@ porte l'adresse, un bouton, et la mention de ce que le clic déclenche ; le modu
 lisible sans JavaScript. Le bouton est en noir sur le teal, jamais en blanc : le teal de charte
 est une couleur claire, le blanc y plafonne à 2:1.
 
-### Le bandeau de références est écrit, et volontairement inactif
+### Le bandeau de références a été écrit, puis RETIRÉ : aucun client ne sera nommé
 
-Les sept références (Cargolux, POST Luxembourg, CFL, LuxairGroup, Ekonoo, LuxairTours, Alac)
-sont publiques sur `q-leap.eu/references/` et n'apparaissaient nulle part ici : c'est le levier
-le plus fort de la dimension « Autorité et marque » (5,5/10). **Le client a demandé de le
-préparer sans le publier**, l'accord des clients nommés n'étant pas encore obtenu. Le balisage
-est donc dans les deux accueils, **entouré d'un commentaire HTML**, et `.trust-strip` est déjà
-dans `style.css`. Pour l'activer : retirer la ligne d'ouverture et celle de fermeture. Vérifié :
-0 `.trust-strip` rendu, « Cargolux » absent de `document.body.innerText`, un seul `h1`.
+Sept références clients de Q-Leap, publiques sur `q-leap.eu/references/`, avaient été mises en
+forme dans les deux accueils et laissées **en commentaire** le 2026-08-25, en attendant l'accord
+des clients nommés. C'était le levier le plus fort de la dimension « Autorité et marque » de
+l'audit RosoAI.
 
-Deux choses à ne pas changer en l'activant :
+**ARBITRÉ LE 2026-08-26, ET C'EST UN REFUS, PAS UNE ATTENTE.** Réponse de Sylvain Perez : « on a
+déjà demandé à des clients mais aucun n'a répondu positivement. On va devoir se passer de
+témoignages. »
 
-- **la formulation est « Q-Leap accompagne les équipes qualité de… », PAS « ils utilisent
-  Q-Bot ».** Ce sont les clients de Q-Leap. La première phrase est exacte et défendable, la
-  seconde ne le serait pas, et c'est cette exactitude qui la rend citable plutôt que suspecte ;
-- **les noms sont du TEXTE, pas des logos.** Un nom dans une image est invisible pour un moteur
-  comme pour une IA, et c'est la lecture par les machines qui est l'objet du bandeau.
+Le balisage **et** son CSS sont donc **supprimés**, pas remis de côté. La raison est concrète :
+un bloc laissé en commentaire finit par être décommenté, et une feuille de style qui garde ses
+règles « au cas où » est une invitation à le faire. Publier ces noms sans accord serait un
+dommage réel pour le client, pas une imperfection de référencement. Même arbitrage que les bandes
+d'outils du 2026-08-20 (« le motif est écarté, pas mis de côté ») ; l'écart avec `.timeline`,
+gardée comme chemin de code, est que celle-ci l'a été **sur décision du client**, et ici la
+décision est inverse.
+
+**RÈGLE QUI EN DÉCOULE : ne nommer aucun client sur ce site sans un accord écrit, nom par nom.**
+`llms.txt` le dit dans ses faits vérifiés, avec la consigne de ne pas en inférer un. Les sept noms
+ne sont plus énumérés dans ce fichier non plus : le dépôt est public, ils n'ont plus de raison
+d'y figurer.
+
+**Ce qui porte l'autorité de la marque en l'absence de témoignages**, et qui est déjà en place :
+le fondateur nommé et relié à son profil (visible et dans le `founder` de toutes les pages), la
+citation de presse ITnation sur les deux articles Merkur, `legalName` / `foundingDate` /
+`foundingLocation` / `knowsAbout`, et les guides. Ce qui manque et reste hors de ce dépôt : les
+annuaires professionnels et les avis sur un comparateur, que l'audit compte aussi dans cette
+dimension.
 
 ### Le graphe est fermé : Sylvain Perez est relié, et quatre articles sont signés
 
@@ -3696,3 +3709,41 @@ les nomme, dans les deux langues. Le guide compte désormais six sources extéri
 
 Et la note du 2026-08-25 qui annonçait le lien LinkedIn « laissé ouvert » a été corrigée sur
 place : il avait été posé. Une note qui dit « laissé ouvert » se revérifie avant d'être citée.
+
+## Aucun client ne sera nommé, et le piège d'une suppression de bloc (2026-08-26)
+
+Le bandeau de références est supprimé, cf. la section plus haut : le client a sollicité ses
+clients, aucun n'a accepté. Trois choses parties ensemble, le balisage des deux accueils, le bloc
+CSS `.trust-strip`, et l'entrée de `llms.txt` qui présentait le point comme ouvert.
+
+**LE PIÈGE QUE CETTE SUPPRESSION M'A COÛTÉ, ET IL VAUT POUR TOUTE SUPPRESSION DE BLOC COMMENTÉ.**
+Mon premier motif était, en `re.S` :
+
+    <!--[^\n]*\n(?:.*?)<section class="trust-strip".*?</section>\n-->
+
+Il a accroché **le premier commentaire du document**, celui du `<head>`, et supprimé **239 lignes**
+des deux accueils, dont le lien vers la feuille de style. Restauré par `git checkout`. Trois
+leçons, dans l'ordre d'utilité :
+
+1. **on borne par une chaîne littérale relevée dans le fichier**, jamais par un `<!--` non ancré
+   suivi d'un `.*?`. Ici : trouver le marqueur du bloc (`BANDEAU DE CONFIANCE`), puis remonter au
+   `<!-- ═══` qui le précède avec `rindex`. C'est la règle « on n'retape pas, on extrait »
+   appliquée aux BORNES et plus seulement au contenu ;
+2. **les garde-fous par comptage se sont trompés trois fois de suite**, toujours pour la même
+   raison : le commentaire supprimé citait lui-même `style.css` et `</section>`, donc les
+   décomptes bougeaient de 2 et non de 1. Un garde-fou doit porter sur des **invariants de
+   structure** (la balise de feuille de style est là, `<main>` est là, le document finit par
+   `</html>`), pas sur des occurrences de texte ;
+3. **et l'invariant doit être insensible à la profondeur** : les pages `en/` écrivent
+   `../assets/css/style.css`, donc un invariant écrit en racine échoue sur elles. Même famille que
+   les motifs multi-lignes qui échouent sur une seule des deux langues.
+
+Vérifié après : 836 et 766 lignes (25 et 19 retirées), structure intacte, feuille de style
+réellement appliquée (Roboto calculée sur `body`), 10 sections par accueil, 1 `h1`, 0 révélation
+invisible, 0 débordement, 0 erreur console, et **aucun des sept noms dans
+`document.body.innerText`** en normal comme en mouvement réduit.
+
+Note d'environnement : le volume exFAT qui porte ce dépôt s'est **démonté en cours de commande**
+pendant cette passe (« Working directory was deleted »), puis est revenu seul. Le commit n'était
+pas passé, les fichiers l'étaient : après un incident de ce genre, **vérifier `git log` ET
+`git status`** avant de refaire quoi que ce soit, sinon on rejoue des éditions déjà appliquées.
