@@ -3995,3 +3995,80 @@ Contrôles : la contrainte dure de la carte épinglée est tenue (308 px au plus
 640, donc 332 px de marge) aux sept tailles d'écran du contrôle habituel, et **32 vues** (16 pages
 × 390 et 1440 px) sans anomalie : un seul `h1`, 0 révélation invisible, 0 débordement, **0 défaut
 de contraste**, 0 erreur console.
+
+## Passe accessibilité et visibilité (2026-08-26)
+
+Demandée en clôture. Mesurée sur les **31 pages** (les 30 du plan du site, plus `404.html`), à
+1440 et 390 px. **Résultat : aucun défaut réel, sur aucun des deux volets.** Les deux sondes sont
+figées dans `tools/audit-a11y.py` et `tools/audit-visibilite.py` : elles ont trouvé de vrais
+défauts aujourd'hui et seront rejouées.
+
+### Accessibilité, douze contrôles
+
+Un seul `h1` et aucun saut de niveau sur les 31 pages ; `alt` présent sur toutes les images ; un
+nom accessible sur tous les champs, liens et boutons ; **aucune référence ARIA orpheline**
+(`aria-labelledby`, `aria-controls`, `aria-describedby`, `for`) ; aucun `aria-hidden` sur un
+élément focalisable ; tout `role="list"` a ses `listitem` ; un `main`, un `banner`, un
+`contentinfo` par page ; `lang` et `<title>` partout ; aucun tableau sans `th` ni `scope`.
+
+**WCAG 2.5.8 est CALCULÉ, plus invoqué.** Les cibles sous 24 px existent (liens de navigation à
+18 px de haut, liens d'outils à 15 px, cases à cocher à 20 px), et la norme les admet par
+l'exception d'espacement : un cercle de 24 px de diamètre centré sur la boîte ne doit intersecter
+ni une autre cible ni le cercle d'une autre cible sous-dimensionnée. La sonde le calcule
+maintenant, sur 8 pages × 2 largeurs : **0 échec**. Marges relevées : 38 à 67 px dans la barre de
+navigation, 8 à 28 px pour les cases à cocher. Le seul dépassement (guide LuxTrust à 390 px, deux
+liens voisins à −12 px) est un **lien en pleine phrase**, cas que la norme exempte explicitement.
+
+**Deux vérifications qui ne se voient pas dans une sonde de DOM :**
+
+- **le menu mobile fermé est en `display: none`** : 0 lien focalisable, `aria-expanded="false"`,
+  et 4 liens focalisables une fois ouvert. Pas de piège de focus, contrairement à ce que la FAQ
+  avait avant sa correction ;
+- **anneau de focus de 2 à 3 px** sur les huit premiers focalisables, aucun élément sans indicateur.
+
+### Visibilité, dix-sept contrôles
+
+Titre présent, unique et sous 62 caractères sur les 31 pages ; description sous 158 ; `noindex`
+partout (pré-lancement) ; canonical absolu et auto-référent ; **hreflang auto-référent, apparié et
+avec `x-default`, en absolu** ; les dix champs Open Graph et les quatre Twitter au complet ;
+**aucun titre où « Q-Bot » figure seul** (la règle de l'audit RosoAI) ; JSON-LD valide, champs
+obligatoires présents par type, et **plus aucun bloc `offers`** ; plan du site sans URL morte,
+avec `lastmod` et paires hreflang partout.
+
+Décomptes cohérents : **30 URL au plan du site, 30 annoncées dans `robots.txt`, les 30 présentes
+dans `llms.txt`**, et 32 fichiers portant `noindex` (les 30, plus `404.html` et `admin/`, qui
+restent hors index pour toujours).
+
+**Les 16 destinations sortantes suivies une par une : 15 en 200.** La seule exception est
+`linkedin.com/in/sylvainperez/` en **999**, le code anti-robot de LinkedIn (leur page entreprise
+répond 200, ce qui est typique de leur limitation). Ce n'est pas un lien mort mais une URL non
+vérifiable par outillage : elle vient du client, elle reste.
+
+### Trois faux positifs à connaître, tous câblés dans les sondes
+
+1. **`aria-hidden` sur un élément qui porte `tabindex="-1"` est légitime** : il n'est pas
+   focalisable au clavier. C'est le cas du film décoratif de l'accueil. Sans cette exemption, la
+   sonde le signale sur les deux accueils ;
+2. **une case à cocher de 20 px dont le LABEL fait 444 × 64 est conforme** : c'est le label qui
+   est la cible. Sans exemption, six pages remontent ;
+3. **`404.html` n'a ni canonical ni métadonnées sociales, et c'est correct** : une page d'erreur
+   ne se canonicalise pas et ne se partage pas. Sans exemption, elle produit à elle seule 15 faux
+   constats sur 15.
+
+### Et les deux sondes sont prouvées vivantes
+
+Une sonde qui annonce zéro ne vaut rien sans cette épreuve. Chacune a été rejouée sur un DOM
+volontairement cassé : **0 constat sur la page saine, 5 et 6 sur la page cassée**, un par défaut
+injecté (second `h1`, `alt` retiré, lien sans nom, `aria-labelledby` orphelin, `role="list"` vide
+d'un côté ; titre à 87 caractères, description à 200, canonical retiré, `og:image:alt` retiré,
+`Product` incomplet et porteur d'`offers` de l'autre).
+
+### Le poids, et pourquoi le chiffre n'est pas comparable à celui de l'audit
+
+Relevé ici : accueil 3 268 Ko, page 3D 2 865 Ko, médiane 485 Ko. **Ces chiffres sont bruts** :
+`python3 -m http.server` ne compresse pas, alors que GitHub Pages le fait. Compressés, les
+fichiers texte fondent (`style.css` 225 → 67 Ko, `main.js` 83 → 28, l'accueil 47 → 14) et ce qui
+reste est binaire et peu compressible : la visionneuse 1 043 Ko, le modèle 571, le décodeur Draco
+279. **Ne pas comparer une mesure faite sur le serveur de test à une mesure faite en ligne**, et
+ne pas conclure à une régression de poids sur cette base. Le poids de l'accueil a été accepté par
+le client le 2026-08-11.
