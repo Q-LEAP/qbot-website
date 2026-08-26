@@ -3346,11 +3346,13 @@ lui qui est chez les managers. Le formulaire du live n'a d'ailleurs que 3 champs
   `{"success":true}`, réponse lisible. Le `fetch` du module 15 l'atteint donc directement, sans
   navigation ni `mode: 'no-cors'`. Sonde faite **pot de miel REMPLI**, ce que Brevo écarte par
   définition : aucun inscrit créé ;
-- **le captcha n'est PAS tranché.** Un `g-recaptcha-response` fait partie de l'envoi du live
-  (sitekey `6LfFzw4jAAAAAH1LvdGfzojE7PbpDnCMDqpHKNv5`). Un `{"success":true}` sur un envoi à pot
-  de miel rempli ne prouve rien : simuler le succès est précisément ce que fait un pot de miel.
-  Seul un envoi RÉEL le tranche, et il crée un inscrit dans la liste du client. Contrôle d'une
-  minute laissé au client : remplir la bande newsletter en local, puis regarder dans Brevo ;
+- **LE CAPTCHA EST TRANCHÉ, ET IL BLOQUE (mesuré le 2026-08-26).** Brevo l'impose côté serveur :
+  un envoi sans jeton reçoit **HTTP 400** et
+  `{"success":false,"errors":{"g-recaptcha-response":…}}`. Le `{"success":true}` de la première
+  sonde était bien le court-circuit du pot de miel, comme soupçonné : simuler le succès est
+  précisément ce que fait un pot de miel, et c'est pourquoi une sonde à pot de miel rempli ne
+  peut JAMAIS valider un endpoint. Le témoin le montre côte à côte : pot rempli 200, pot vide
+  400, même charge par ailleurs. Sitekey du live : `6LfFzw4jAAAAAH1LvdGfzojE7PbpDnCMDqpHKNv5` ;
 - **RÉSERVE À LEVER, et c'est le piège des blocs masqués qui remonte.** La section newsletter du
   live est **désactivée** : `display:none` sur sa section Elementor, dans les deux langues, et le
   mot « newsletter » n'apparaît pas du tout dans `document.body.innerText`. La liste Brevo
@@ -3392,3 +3394,42 @@ newsletter et une demande de démo ne vont pas au même endroit. Les quatre news
 vides, il ne touche plus que **les deux contacts**, et retire **2** notes d'attente au lieu de 6.
 Vérifié en simulation. Sa documentation, son aide de ligne de commande et son rappel de fin
 d'exécution disent désormais lesquels restent. `llms.txt` aussi.
+
+### Conséquence : le repli courrier devient le FILET de l'échec, plus seulement l'état initial
+
+Le refus de Brevo a mis à nu un défaut du module 15 qui existait depuis sa création : un endpoint
+qui refuse laissait le visiteur devant « L'envoi a échoué » **et rien d'autre**. Un cul-de-sac,
+alors que le site sait parfaitement composer le message. Constaté en vrai par le client sur la
+bande newsletter.
+
+`versCourrier()` sert donc maintenant les deux cas : « pas d'endpoint » et « l'endpoint a
+refusé ». `T.erreur` n'avait plus d'appelant et a été fusionnée dans le nouveau message, pour que
+l'adresse reste écrite noir sur blanc **au cas où aucun logiciel de courrier ne s'ouvre** (un
+téléphone sans compte mail ne fait rien d'un `mailto:`). État `info` et non `error` : de son point
+de vue, le visiteur a une issue qui fonctionne.
+
+Vérifié en rejouant **la réponse réelle de Brevo** (400 + son corps JSON exact) sur les quatre
+pages : message de repli affiché dans les deux langues, bouton réactivé, et le succès 200 continue
+d'afficher la confirmation. Le `mailto` lui-même n'est pas interceptable en sonde
+(`window.location.href` n'est pas redéfinissable dans Chrome) mais le message affiché est produit
+DANS `versCourrier`, juste après la ligne de navigation, et le client a constaté l'ouverture de sa
+boîte mail en vrai.
+
+**L'ENDPOINT BREVO EST DONC LAISSÉ EN PLACE alors qu'il refuse aujourd'hui**, et c'est délibéré :
+le visiteur retrouve exactement le comportement d'avant (courrier prérempli), et le jour où le
+captcha est désactivé sur le formulaire Brevo, les quatre newsletters fonctionnent **sans une
+ligne à changer**. Ne pas « corriger » cet état en revidant `data-endpoint`.
+
+Les contournements, dans l'ordre de préférence, si la question revient :
+
+1. **désactiver le reCAPTCHA sur ce formulaire depuis le back-office Brevo.** Notre pot de miel
+   reste en place, donc la protection anti-robot ne disparaît pas ;
+2. **créer un formulaire Brevo neuf sans captcha** et remplacer l'URL, si le réglage est
+   introuvable sur l'ancien ;
+3. **implémenter reCAPTCHA sur nos pages : À ÉCARTER.** Cela rouvrirait une requête vers
+   `www.google.com` sur quatre pages, alors que la passe du 2026-08-25 a supprimé **toutes** les
+   dépendances tierces du site (Roboto, model-viewer, Draco), et cela chargerait un traceur Google
+   avant tout consentement, exactement le problème réglé par le chargement au clic de la carte de
+   contact. La clé reCAPTCHA est en plus liée à un domaine, donc intestable en local ;
+4. **l'API Brevo : À ÉCARTER.** Elle demande une clé d'API, qui n'a rien à faire dans une page
+   publique.

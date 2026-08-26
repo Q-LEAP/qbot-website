@@ -40,12 +40,14 @@ misconfiguration, and it will be lifted in one step on switch-over day.
 
 Three items are open and awaiting a decision by the client, not work left undone:
 
-- Form endpoint. The four newsletter forms now post to the client's own Brevo (Sendinblue)
-  endpoint, read off the form still present in their WordPress. The two contact forms are the
-  ones still awaiting a decision: the live site handled them with Contact Form 7, a plugin
-  inside the WordPress, so there is nothing to carry over and it disappears with it. Until an
-  endpoint is approved they fall back to a pre-filled mail client, which works today and loses
-  nothing. One value to fill in when the approval lands.
+- Form endpoint. The four newsletter forms carry the client's own Brevo (Sendinblue) endpoint,
+  read off the form still present in their WordPress. It is REJECTED today: Brevo enforces a
+  reCAPTCHA server-side and answers HTTP 400 without a token, so in practice these four still
+  use the mail fallback. Disabling the captcha on that Brevo form makes them work with no code
+  change. The two contact forms have no endpoint at all and are the ones awaiting a decision:
+  the live site handled them with Contact Form 7, a plugin inside the WordPress, so there is
+  nothing to carry over and it disappears with it. Every form falls back to a pre-filled mail
+  client, which works today and loses nothing.
 - Client reference strip. Seven named references are written and styled on both home pages,
   deliberately left inside an HTML comment until the named clients have agreed. Nothing is
   displayed.

@@ -1239,18 +1239,18 @@ backToTop.addEventListener('click', () => {
     envoi:   'Envoi en cours…',
     ok:      'Merci, votre message est parti. Nous revenons vers vous rapidement.',
     okNews:  'Merci, votre inscription est enregistrée.',
-    erreur:  'L’envoi a échoué. Écrivez-nous à ' + MAIL + ', nous répondrons.',
     manque:  'Merci de compléter les champs obligatoires.',
     courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ».',
+    echecCourrier:'L’envoi direct a échoué. Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ». S’il ne s’est pas ouvert, écrivez-nous à ' + MAIL + '.',
     sujetC:  'Demande via le site Q-Bot',
     sujetN:  'Inscription à la newsletter Q-Bot'
   } : {
     envoi:   'Sending…',
     ok:      'Thank you, your message is on its way. We will get back to you shortly.',
     okNews:  'Thank you, your subscription is registered.',
-    erreur:  'Sending failed. Write to us at ' + MAIL + ' and we will answer.',
     manque:  'Please fill in the required fields.',
-    courrier:'Your mail application just opened with the message prefilled — all that is left is to hit send.',
+    courrier:'Your mail application just opened with the message prefilled: all that is left is to hit send.',
+    echecCourrier:'Direct submission failed. Your mail application just opened with the message prefilled: all that is left is to hit send. If it did not open, write to us at ' + MAIL + '.',
     sujetC:  'Enquiry from the Q-Bot website',
     sujetN:  'Q-Bot newsletter subscription'
   };
@@ -1347,12 +1347,22 @@ backToTop.addEventListener('click', () => {
 
       var url = (form.getAttribute('data-endpoint') || '').trim();
 
-      if (!url) {                                   // repli courrier
+      /* LE REPLI COURRIER N'EST PLUS SEULEMENT L'ÉTAT « PAS D'ENDPOINT », C'EST
+         AUSSI LE FILET QUAND L'ENVOI ÉCHOUE. Sans lui, un endpoint qui refuse
+         laisse le visiteur devant « l'envoi a échoué » et rien d'autre : un
+         cul-de-sac, alors que le site sait parfaitement composer le message.
+         Constaté en vrai le 2026-08-26 : Brevo refuse nos envois en 400 faute de
+         jeton reCAPTCHA, et la bande newsletter ne proposait plus aucune issue. */
+      function versCourrier(message, etat) {
         var sujet = news ? T.sujetN : T.sujetC;
         window.location.href = 'mailto:' + MAIL
           + '?subject=' + encodeURIComponent(sujet)
           + '&body=' + encodeURIComponent(corps(form));
-        dire(form, T.courrier, 'info');
+        dire(form, message, etat);
+      }
+
+      if (!url) {                                   // pas d'endpoint du tout
+        versCourrier(T.courrier, 'info');
         return;
       }
 
@@ -1365,7 +1375,7 @@ backToTop.addEventListener('click', () => {
           form.reset();
           dire(form, news ? T.okNews : T.ok, 'ok');
         })
-        .catch(function () { dire(form, T.erreur, 'error'); })
+        .catch(function () { versCourrier(T.echecCourrier, 'info'); })
         .then(function () { if (bouton) bouton.disabled = false; });
     });
   });
