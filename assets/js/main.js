@@ -1241,7 +1241,7 @@ backToTop.addEventListener('click', () => {
     okNews:  'Merci, votre inscription est enregistrée.',
     manque:  'Merci de compléter les champs obligatoires.',
     courrier:'Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ».',
-    echecCourrier:'L’envoi direct a échoué. Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ». S’il ne s’est pas ouvert, écrivez-nous à ' + MAIL + '.',
+    echecCourrier:'L’envoi direct a échoué. Votre logiciel de courrier vient de s’ouvrir avec le message prérempli : il reste à appuyer sur « envoyer ». S’il ne s’est pas ouvert, écrivez-nous à {MAIL}.',
     sujetC:  'Demande via le site Q-Bot',
     sujetN:  'Inscription à la newsletter Q-Bot'
   } : {
@@ -1250,7 +1250,7 @@ backToTop.addEventListener('click', () => {
     okNews:  'Thank you, your subscription is registered.',
     manque:  'Please fill in the required fields.',
     courrier:'Your mail application just opened with the message prefilled: all that is left is to hit send.',
-    echecCourrier:'Direct submission failed. Your mail application just opened with the message prefilled: all that is left is to hit send. If it did not open, write to us at ' + MAIL + '.',
+    echecCourrier:'Direct submission failed. Your mail application just opened with the message prefilled: all that is left is to hit send. If it did not open, write to us at {MAIL}.',
     sujetC:  'Enquiry from the Q-Bot website',
     sujetN:  'Q-Bot newsletter subscription'
   };
@@ -1322,7 +1322,11 @@ backToTop.addEventListener('click', () => {
     var lignes = [];
     Array.prototype.forEach.call(form.elements, function (el) {
       if (!el.name || el.type === 'submit' || el.type === 'button') return;
-      var v = el.type === 'checkbox' ? (el.checked ? (FR ? 'oui' : 'yes') : (FR ? 'non' : 'no')) : el.value;
+      /* Une liste déroulante part avec le LIBELLÉ choisi, pas son code : le
+         message disait « Sujet : demo » là où le visiteur avait lu « Demande de
+         démonstration ». Le destinataire doit lire ce que le visiteur a vu. */
+      var v = el.type === 'checkbox' ? (el.checked ? (FR ? 'oui' : 'yes') : (FR ? 'non' : 'no'))
+            : (el.tagName === 'SELECT' && el.selectedIndex >= 0 ? el.options[el.selectedIndex].text.trim() : el.value);
       if (!v) return;
       var lab = (el.labels && el.labels[0]) || form.querySelector('label[for="' + el.id + '"]');
       var nom = (lab ? lab.textContent : el.name).replace(/\s+/g, ' ').replace(/\s*\*\s*$/, '').trim();
@@ -1353,12 +1357,26 @@ backToTop.addEventListener('click', () => {
          cul-de-sac, alors que le site sait parfaitement composer le message.
          Constaté en vrai le 2026-08-26 : Brevo refuse nos envois en 400 faute de
          jeton reCAPTCHA, et la bande newsletter ne proposait plus aucune issue. */
+      /* LA DESTINATION EST CELLE DU FORMULAIRE, pas une constante du script.
+         `data-mailto` sur le <form>, `bot@q-leap.eu` par défaut. Les demandes de
+         contact partent sur `contact@q-leap.eu`, qui est déjà l'adresse des
+         quatre pages légales du site : les formulaires étaient les seuls à ne pas
+         la suivre. Un seul attribut à changer si une adresse bouge. */
       function versCourrier(message, etat) {
+        var dest = (form.getAttribute('data-mailto') || '').trim() || MAIL;
+
+        /* Le sujet reprend le motif choisi dans la liste : « Demande via le site
+           Q-Bot : Questions tarifaires » se trie sans ouvrir le message. */
         var sujet = news ? T.sujetN : T.sujetC;
-        window.location.href = 'mailto:' + MAIL
+        var motif = form.querySelector('select[name="subject"]');
+        if (motif && motif.value && motif.selectedIndex >= 0) {
+          sujet += ' : ' + motif.options[motif.selectedIndex].text.trim();
+        }
+
+        window.location.href = 'mailto:' + dest
           + '?subject=' + encodeURIComponent(sujet)
           + '&body=' + encodeURIComponent(corps(form));
-        dire(form, message, etat);
+        dire(form, message.replace('{MAIL}', dest), etat);
       }
 
       if (!url) {                                   // pas d'endpoint du tout

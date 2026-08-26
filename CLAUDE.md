@@ -3433,3 +3433,68 @@ Les contournements, dans l'ordre de préférence, si la question revient :
    contact. La clé reCAPTCHA est en plus liée à un domaine, donc intestable en local ;
 4. **l'API Brevo : À ÉCARTER.** Elle demande une clé d'API, qui n'a rien à faire dans une page
    publique.
+
+## Le formulaire de contact part sur contact@q-leap.eu (2026-08-26)
+
+Demande : « tu peux pas faire un formulaire de contact propre qui pointe vers contact@q-leap.eu
+et qui est fonctionnel seul ? »
+
+**LA CONTRAINTE DURE, À REDIRE À CHAQUE FOIS QUE LA QUESTION REVIENT : un site statique ne peut
+pas envoyer de courrier.** Il n'y a pas de serveur, donc un formulaire qui part vraiment doit
+poster vers quelque chose qui n'est pas ce site. « Fonctionnel seul, sans aucun tiers » n'a
+qu'une implémentation possible, le `mailto:`, et c'est exactement ce que fait le module 15. Tout
+le reste (Formspree, FormSubmit, Brevo, une fonction serverless) est un relais, donc un
+sous-traitant de données, donc une décision du client et pas un choix technique.
+
+**Ce que la demande a révélé : `contact@q-leap.eu` est déjà l'adresse des quatre pages légales**
+(reprises du live), alors que les six formulaires partaient sur `bot@q-leap.eu`. Les formulaires
+étaient les seuls à ne pas la suivre. Ce n'était donc pas une préférence, c'était une
+incohérence.
+
+### La destination est celle du formulaire, plus une constante du script
+
+`data-mailto` sur le `<form>`, `bot@q-leap.eu` par défaut. Les deux formulaires de contact
+portent `data-mailto="contact@q-leap.eu"` ; les quatre newsletters gardent le défaut, parce
+qu'une inscription et une demande de démo ne vont pas au même endroit. Le message d'échec
+contient un jeton `{MAIL}` remplacé à l'exécution, sinon il aurait annoncé l'adresse du script
+et non celle du formulaire.
+
+**Le repli sans JavaScript a suivi.** Il promettait `bot@q-leap.eu` dans le `<noscript>` du
+formulaire : deux adresses pour un même geste selon que JavaScript tourne ou non. Corrigé sur
+les deux pages.
+
+**Les 180 autres `bot@q-leap.eu` du site n'ont PAS été touchés** (métadonnées, JSON-LD, bloc de
+coordonnées, pieds de page). C'est l'adresse publiée de Q-Bot, et la changer partout est une
+décision éditoriale du client, pas une conséquence de ce lot. À lui arbitrer.
+
+### Deux défauts du courrier corrigés au passage
+
+- **une liste déroulante partait en CODE et non en clair** : le message disait « Sujet : demo »
+  là où le visiteur avait lu « Demande de démonstration ». `corps()` prend désormais le libellé
+  de l'option choisie. Le destinataire doit lire ce que le visiteur a vu, c'est le même principe
+  que le libellé de consentement du 2026-08-26 ;
+- **le sujet du courrier ne disait pas le motif.** Il vaut maintenant « Demande via le site
+  Q-Bot : Questions tarifaires », donc la demande se trie sans ouvrir le message.
+
+Vérifié sur les deux langues : destination et `<noscript>` concordants, sujet qualifié, et le
+corps liste les sept champs dans les mots du formulaire, phrase de consentement comprise.
+
+### Les relais possibles, et pourquoi aucun n'a été branché
+
+À présenter au client, pas à choisir à sa place :
+
+1. **`mailto:` (en place aujourd'hui)** : zéro tiers, zéro compte, aucune donnée qui transite.
+   Coût : le visiteur doit appuyer sur « envoyer » dans son logiciel, et un téléphone sans compte
+   mail ne fait rien d'un `mailto:` ;
+2. **FormSubmit** : `data-endpoint="https://formsubmit.co/contact@q-leap.eu"` suffirait, sans
+   compte, avec un seul clic d'activation dans un courrier envoyé à cette adresse. **Mais c'est
+   un sous-traitant hors UE**, alors que la politique de confidentialité du site ne nomme que
+   Sendinblue. Question de conformité, donc décision du client ;
+3. **une fonction serverless (Cloudflare Worker) relayant vers l'API Brevo** : la clé reste côté
+   serveur, les données restent chez un fournisseur que le client a déjà. C'est l'architecture
+   correcte, elle demande un compte Cloudflare gratuit et une vingtaine de lignes ;
+4. **l'API Brevo appelée depuis la page : À ÉCARTER**, elle demande une clé d'API dans une page
+   publique.
+
+Le jour où l'un des trois est choisi, c'est **un seul attribut** à renseigner
+(`tools/go-live.py --endpoint`), et le repli courrier reste le filet en cas de refus.
