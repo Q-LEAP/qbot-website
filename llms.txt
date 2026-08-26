@@ -32,10 +32,10 @@ Key facts:
 Site available in French (default, root paths) and English (`/en/`).
 
 
-## Pre-launch status (last updated 2026-08-25)
+## Pre-launch status (last updated 2026-08-26)
 
 This site is a staging build of a migration that has not gone live yet. `robots.txt` disallows
-all crawlers and all 28 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
+all crawlers and all 44 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
 misconfiguration, and it will be lifted in one step on switch-over day.
 
 One item is open and awaiting a decision by the client, not work left undone,
@@ -56,7 +56,7 @@ plus two settled choices recorded here so they are not mistaken for omissions:
   here. Making it private requires a paid GitHub plan and is a separate decision.
 
 Fixed on 2026-08-25, so do not report it against this site: the hosting used to serve working
-files alongside the 28 published pages (development notes, an internal documents folder, a local
+files alongside the 44 published pages (development notes, an internal documents folder, a local
 blog editor, an earlier HTML mock-up). They are excluded from the build and now return 404.
 
 
@@ -183,4 +183,4 @@ publisher's own, reproduced word for word.
 
 ---
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26

@@ -94,7 +94,10 @@ if __name__ == '__main__':
     ecrits = 0
     for ancien, (cible, lang) in sorted(REDIRECTIONS.items()):
         prof = ancien.rstrip('/').count('/') + 1          # profondeur du dossier créé
-        rel = '../' * prof + cible
+        # `index.html` disparaît de la cible RELATIVE comme il a disparu des liens
+        # internes du site le 2026-08-26 : l'adresse officielle d'un accueil est son
+        # répertoire, et l'adresse ABSOLUE juste en dessous le disait déjà.
+        rel = '../' * prof + cible.replace('index.html', '')
         t = dict(T[lang])
         t.update(rel=rel, abs='https://q-bot.eu/' + cible.replace('index.html', ''),
                  js="'" + rel.replace("'", "\\'") + "'")

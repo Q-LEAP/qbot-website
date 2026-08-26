@@ -209,7 +209,12 @@ for page in PAGES:
              cta_btn='Prendre rendez-vous' if fr else 'Make an appointment',
              maj='Migré depuis' if fr else 'Migrated from')
 
-    fil_url = f'{p}index.html'
+    # L'ACCUEIL DU FIL EST CELUI DE LA LANGUE, PAS LA RACINE. Les quatre pages
+    # légales vivent un cran sous leur racine de langue (`conditions-vente/` en
+    # français, `en/privacy/` en anglais) : `../` est donc l'accueil de la langue
+    # dans les deux cas, là où `{p}` vaut `../../` en anglais et renvoyait le
+    # lecteur anglais sur l'accueil FRANÇAIS. Relevé le 2026-08-26.
+    fil_url = '../'
     hreflang_fr = page['url'] if fr else page['alt']
     hreflang_en = page['alt'] if fr else page['url']
 

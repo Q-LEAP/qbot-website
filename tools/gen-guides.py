@@ -36,6 +36,7 @@ C'est `MAILLAGE` ci-dessous, et il est vérifié en fin de script.
 
 import io
 import os
+import posixpath
 import re
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -275,7 +276,11 @@ def profondeur_plus_un(html):
         att, v = m.group(1), m.group(2)
         if re.match(r'^(https?:|//|mailto:|tel:|data:|#)', v):
             return m.group(0)
-        return att + '="../' + v + '"'
+        # NORMALISÉ, sinon `./` (la forme racine des liens vers l'accueil depuis
+        # le 2026-08-26) donnerait `.././`. La barre finale est réintroduite : elle
+        # distingue un répertoire d'un fichier, et `normpath` la mange.
+        nouveau = posixpath.normpath('../' + v) + ('/' if v.endswith('/') else '')
+        return att + '="' + nouveau + '"'
     return re.sub(r'\b(href|src)="([^"]*)"', remplace, html)
 
 
@@ -322,6 +327,12 @@ def construire(cfg):
     {{
       "@type": "ListItem",
       "position": 2,
+      "name": "Blog",
+      "item": "{base}blog.html"
+    }},
+    {{
+      "@type": "ListItem",
+      "position": 3,
       "name": "{cfg['fil']}",
       "item": "{url}"
     }}
@@ -372,6 +383,15 @@ def construire(cfg):
     corps = ''.join(bloc(s['id'], s['label'], s['titre'], s['capsule'], s['corps'])
                     for s in cfg['sections'])
 
+    # LE FIL D'ARIANE VISE L'ACCUEIL DE SA LANGUE, PAS LA RACINE DU SITE, d'où
+    # `../` en dur et non `{prof}`. Un guide FR vit dans `blog/` et un guide EN dans
+    # `en/blog/` : dans les deux cas `../` est l'accueil de la langue et
+    # `../blog.html` son index de blog. `prof` vaut `../../` en anglais — c'est la
+    # bonne profondeur pour les ASSETS, et c'était la mauvaise pour ces deux liens.
+    # Relevé le 2026-08-26 : les 8 guides anglais renvoyaient « Home » et « Blog »
+    # vers l'accueil et le blog FRANÇAIS, en contradiction avec leur propre fil
+    # déclaré, qui annonçait bien https://q-bot.eu/en/. Le contrôle qui l'attrape
+    # n'est pas un comptage de niveaux mais la RÉSOLUTION de chaque cible.
     principal = f'''<main id="main">
 <section class="page-hero" aria-labelledby="page-title">
   <div class="container">
@@ -385,9 +405,9 @@ def construire(cfg):
 <div class="breadcrumb">
   <div class="container">
     <ol class="breadcrumb__list" aria-label="{'Breadcrumb' if cfg['lang'] == 'en' else "Fil d'Ariane"}">
-      <li><a href="{prof}index.html">{cfg['accueil']}</a></li>
+      <li><a href="../">{cfg['accueil']}</a></li>
       <li><span aria-hidden="true">&rsaquo;</span></li>
-      <li><a href="{prof}{'blog.html' if cfg['lang'] == 'fr' else 'blog.html'}">Blog</a></li>
+      <li><a href="../blog.html">Blog</a></li>
       <li><span aria-hidden="true">&rsaquo;</span></li>
       <li><span aria-current="page">{cfg['fil']}</span></li>
     </ol>
@@ -684,7 +704,7 @@ REEL_FR = dict(
              titre="Que change un appareil posé sur votre réseau&nbsp;?",
              capsule="Il est enrôlé une fois et le reste, il joint vos environnements internes sans passerelle, et rien de ce qu'il affiche ne quitte vos locaux. C'est la réponse quand l'authentification elle-même fait partie du test, et quand une revue de sécurité doit signer.",
              corps="""    <p>Le compte utilisé pour les tests reste enrôlé sur un appareil qui ne bouge pas, et c'est ce qui rend le parcours rejouable tous les soirs sans intervention.</p>
-    <p>C'est le modèle de Q-Bot&nbsp;: un téléphone Android ordinaire, relié en USB, piloté par <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, sur votre réseau. Les données du test restent dans le boîtier, sujet traité par le <a href="securite-conformite-donnees-de-test.html">guide sécurité et conformité</a>.</p>"""),
+    <p>C'est le modèle de Q-Bot&nbsp;: un téléphone Android ordinaire, relié en USB, piloté par <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, sur votre réseau. Les données du test restent dans le boîtier, sujet traité par le <a href="securite-conformite-donnees-de-test.html">guide sécurité et conformité</a>. Pour situer cette approche parmi les autres, voir le <a href="automatiser-2fa-dans-vos-tests.html">guide d'ensemble sur l'automatisation de la 2FA</a>.</p>"""),
         dict(id='questions-title', label='La liste à emporter',
              titre="Quelles six questions poser à un fournisseur&nbsp;?",
              capsule="Elles ne portent pas sur les fonctions annoncées mais sur ce qui bloque en pratique. Posez-les à n'importe quel fournisseur, y compris à nous&nbsp;: les réponses vous diront en cinq minutes si l'outil couvre votre parcours ou seulement une partie.",
@@ -730,7 +750,7 @@ REEL_EN = dict(
              titre="What does a device on your own network change?",
              capsule="It is enrolled once and stays enrolled, it reaches your internal environments with no gateway, and nothing it displays leaves your premises. That is the answer when authentication is itself part of the test, and when a security review has to sign off.",
              corps="""    <p>The account used for testing stays enrolled on a device that does not move, and that is what makes the journey replayable every night with nobody watching.</p>
-    <p>This is Q-Bot's model: an ordinary Android phone, wired over USB, driven through <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, on your network. Test data stays inside the box, a subject covered by the <a href="security-compliance-test-data.html">security and compliance guide</a>.</p>"""),
+    <p>This is Q-Bot's model: an ordinary Android phone, wired over USB, driven through <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, on your network. Test data stays inside the box, a subject covered by the <a href="security-compliance-test-data.html">security and compliance guide</a>. To place this approach among the others, see the <a href="automate-2fa-in-your-tests.html">overview guide on automating 2FA</a>.</p>"""),
         dict(id='questions-title', label='The list to take with you',
              titre="Which six questions should you ask a vendor?",
              capsule="They are not about advertised features but about what actually blocks in practice. Ask them of any vendor, including us: the answers will tell you within five minutes whether the tool covers your whole journey or only a part of it. Ask for them in writing.",

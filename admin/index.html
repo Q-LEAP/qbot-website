@@ -725,7 +725,7 @@ $('sb-logout').onclick = () => {
   hide('view-app'); show('view-login');
   $('f-user').value = ''; $('f-pass').value = '';
 };
-$('sb-site').onclick = () => window.open('../index.html', '_blank');
+$('sb-site').onclick = () => window.open('../', '_blank');
 $('sb-folder').onclick = setupFolder;
 
 // ── Storage ──────────────────────────────────────────────
@@ -1105,10 +1105,10 @@ function generateArticleHTML(a) {
   const specsHref = `${nav0}${fr ? 'caracteristiques' : 'technical-specs'}.html`;
 
   const breadcrumb = fr
-    ? `<li><a href="${nav0}index.html">Accueil</a></li><li><span>›</span></li>
+    ? `<li><a href="${nav0}">Accueil</a></li><li><span>›</span></li>
        <li><a href="${blogHref}">Blog</a></li><li><span>›</span></li>
        <li><span aria-current="page">${a.title}</span></li>`
-    : `<li><a href="${nav0}index.html">Home</a></li><li><span>›</span></li>
+    : `<li><a href="${nav0}">Home</a></li><li><span>›</span></li>
        <li><a href="${blogHref}">Blog</a></li><li><span>›</span></li>
        <li><span aria-current="page">${a.title}</span></li>`;
 
@@ -1135,7 +1135,7 @@ function generateArticleHTML(a) {
      descendent dans la barre du bas, comme sur le site. */
   const footerCols = fr
     ? `<div class="footer__col"><h4>Q-Bot</h4><ul role="list">
-         <li><a href="${nav0}index.html">Accueil</a></li>
+         <li><a href="${nav0}">Accueil</a></li>
          <li><a href="${nav0}a-propos.html">À propos</a></li>
          <li><a href="${blogHref}">Blog</a></li>
          <li><a href="${nav0}faq.html">FAQ</a></li>
@@ -1147,7 +1147,7 @@ function generateArticleHTML(a) {
          <li><a href="${orderHref}">Démo</a></li>
        </ul></div>`
     : `<div class="footer__col"><h4>Q-Bot</h4><ul role="list">
-         <li><a href="${nav0}index.html">Home</a></li>
+         <li><a href="${nav0}">Home</a></li>
          <li><a href="${nav0}about.html">About</a></li>
          <li><a href="${blogHref}">Blog</a></li>
          <li><a href="${nav0}faq.html">FAQ</a></li>
@@ -1193,7 +1193,7 @@ function generateArticleHTML(a) {
 <header class="nav" role="banner">
   <div class="container">
     <nav class="nav__inner">
-      <a href="${nav0}index.html" class="nav__logo"><img src="${base}img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40"></a>
+      <a href="${nav0}" class="nav__logo"><img src="${base}img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40"></a>
       <button class="nav__toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
       <ul class="nav__menu" id="nav-menu" role="list">${navLinks}</ul>
       <div class="nav__actions">

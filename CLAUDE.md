@@ -4265,3 +4265,107 @@ plus de pixels**, et 1,26 sur une vignette de 441 px n'a rien à voir avec le 2,
 Contrôles : les six schémas nets à 1440, 1920 et 2560 px, `alt` descriptif et distinct du titre sur
 chaque vignette, 0 image cassée, 0 défaut de contraste, 0 débordement, 0 erreur console sur les
 deux index. Les deux audits sur les **45 pages** : 0 constat.
+
+## Contrôle n°4 : le fil qui annonçait une autre page (2026-08-26)
+
+`Documentations/Audit_Q-Bot_Controle4_Note_Strategique.pdf` (17 pages, 6,5 → 6,9 sur 10, et
+7,8 → 8,3 sur le périmètre auditable) et `Documentations/Plan_Bascule3_Q-Bot.pdf` (11 chantiers)
+remplacent les versions de la veille. Les huit guides sont mesurés et validés : 100 % des titres
+de section sont des questions, **76 réponses courtes sur 76** dans la fenêtre de 40 à 60 mots,
+parité de traduction de −5 % à +1 %. Sept corrections chiffrées, quatre décisions du client.
+
+**UN POINT DE L'AUDIT DU 24/08 RESTE À ÉCARTER** : republier le tarif. Décision inverse du
+client le 2026-08-24, et l'audit n°4 ne la rouvre pas.
+
+### Chantiers 01 et 02 : les deux erreurs visibles
+
+- **les trois articles de 2023 en français annonçaient « 5 signes de couverture insuffisante »**,
+  un titre qui n'existe nulle part ailleurs dans le dépôt. Copier-coller de gabarit, en français
+  uniquement (les trois pages anglaises étaient justes), **à deux endroits par page** : le fil
+  déclaré et le fil affiché. Le libellé est **extrait du `<h1>` du fichier**, jamais retapé
+  (règle du dépôt) ;
+- **`padel_alerte.py` était servi par le site.** Script personnel, 86 lignes, aucun identifiant
+  réel (adresse et mot de passe sont des gabarits), donc aucune fuite. Ce qui compte est ce
+  qu'il prouve : `_config.yml` prévient en majuscules que l'exclusion est SILENCIEUSE, et
+  personne n'avait passé la commande de contrôle depuis l'arrivée de ce fichier. Il est
+  **sorti du suivi git** (`git rm --cached` + `.gitignore`, le fichier reste sur le disque) ET
+  inscrit dans `exclude` comme filet. La commande de contrôle de `_config.yml` devient une
+  boucle sur les cinq chemins, avec la date à laquelle elle a manqué.
+
+### Le fil d'Ariane : trois défauts, et seul le premier était dans l'audit
+
+1. **les 16 guides ne déclaraient que deux niveaux** (Accueil › Guide) là où le fil affiché en
+   montre trois (Accueil › Blog › Guide). Corrigé dans `tools/gen-guides.py`, puis régénéré ;
+2. **DÉFAUT NON REPÉRÉ PAR L'AUDIT, TROUVÉ EN MESURANT LES CIBLES** : sur les 8 guides anglais
+   et les 2 pages légales anglaises, « Home » et « Blog » du fil AFFICHÉ menaient à l'accueil et
+   au blog **français**. `prof` vaut `../../` en anglais, ce qui est la bonne profondeur pour
+   les ASSETS et la mauvaise pour ces deux liens : un guide FR vit dans `blog/` et un guide EN
+   dans `en/blog/`, donc **`../` est l'accueil de la langue dans les deux cas**. Même erreur
+   dans `tools/gen-legal.py` (`fil_url = f'{p}index.html'`). **Le contrôle qui l'attrape n'est
+   pas un comptage de niveaux mais la RÉSOLUTION de chaque cible** (`urljoin`) comparée à
+   l'`item` du fil déclaré ;
+3. **les pages Démo déclaraient encore « Commander » / « Order »** dans leur fil structuré,
+   reste du renommage du 2026-08-24, alors que le fil affiché dit « Démo » / « Demo ».
+
+Relevé après : **42 fils comparés, 0 divergence de libellé, 0 divergence de cible**, et la
+navigation réelle vérifiée au clic (accueil, blog et logo, depuis un guide FR, un guide EN, les
+quatre pages légales).
+
+### Chantier 04 : l'accueil n'a plus qu'une adresse
+
+**140 liens** des 45 pages visaient `index.html` alors que la balise d'adresse officielle
+déclare la racine. Aucune perte de classement (la balise fait son travail), mais c'était le seul
+endroit du site à ne pas suivre son propre adressage. Remplacés par la forme répertoire
+(`./`, `../`, `../../`, `en/`), plus le gabarit d'article de `admin/index.html` (5 liens) et les
+cibles relatives des 52 relais.
+
+Trois choses à connaître :
+
+- **le mode `file://` se dégrade, et c'est assumé.** Un `href="./"` ouvert par double-clic donne
+  la liste du répertoire, pas la page. Le site le faisait déjà pour ses quatre pages légales
+  (`conditions-vente/`), donc le précédent existe ; et le repli `file://` sert le visionneur 3D,
+  pas la navigation ;
+- **le module 2 de `main.js` n'a rien demandé** : `href.split('/').pop() || 'index.html'` traite
+  déjà la forme répertoire, et aucun `.nav__link` ne visait l'accueil ;
+- **`profondeur_plus_un()` de `gen-guides.py` a dû être normalisé** : `'../' + './'` donne
+  `.././`. Le chemin passe par `posixpath.normpath`, avec réintroduction de la barre finale, qui
+  distingue un répertoire d'un fichier et que `normpath` mange.
+
+### Chantier 06 : `lastmod` est dérivé, plus écrit
+
+Six pages modifiées portaient encore la date de la veille. La vraie correction est en amont, et
+c'est celle qui a déjà réglé les compteurs « 34 redirections » : **`tools/maj-sitemap.py` dérive
+la date de chaque URL du dernier commit qui a touché son fichier**, et prend la date du jour si
+le fichier est modifié mais pas encore commité — sans quoi il porterait la date de sa version
+précédente, c'est-à-dire exactement le défaut qu'on corrige.
+
+    python3 tools/maj-sitemap.py            # simulation
+    python3 tools/maj-sitemap.py --ecrire   # avant de commiter
+
+### Les autres chantiers chiffrés
+
+- **05** : le guide « tester sur appareil réel » ne renvoyait pas à la page centrale, dans
+  aucune des deux langues, alors que `llms.txt` affirmait que chacun renvoie en retour. Corrigé
+  dans le générateur, donc dans les deux langues d'un coup. Maillage relevé après :
+  **page centrale → 7 guides et 7 guides → page centrale, dans les deux langues** ;
+- **07** : `llms.txt` annonçait encore 28 pages (deux fois) et la date de la veille. **Ne pas
+  toucher** à « All six articles were first published on 2023-03-02 » : elle parle des six
+  articles d'archive, pas des guides, et elle est juste.
+
+### Contrôles
+
+`tools/audit-a11y.py` et `tools/audit-visibilite.py` sur les 45 pages : **0 constat**, à 1440
+comme à 390 px. 96 pages balayées, **1 597 liens relatifs, 0 cassé**. 52 relais, 0 défaut.
+17 pages menées au navigateur en normal et en mouvement réduit : un seul `h1`, 0 révélation
+invisible, 0 débordement, 0 erreur console, 0 cadratin, 0 emoji.
+
+### Les quatre décisions du client, non tranchées ici
+
+1. **la newsletter** : Brevo refuse faute de jeton anti-robot, donc les quatre bandes retombent
+   sur le courrier. Trois issues (désactiver le captcha chez Brevo, vider `data-endpoint` et
+   assumer le courrier en changeant le libellé du bouton, changer de service) — et **une
+   question d'abord** : cette liste est-elle encore relevée ? La section newsletter du live est
+   désactivée ;
+2. **poser les six schémas dans le corps des guides**, pas seulement en vignette d'index ;
+3. **signer les guides d'un `Person`** (Sylvain Perez) plutôt que de l'`Organization` ;
+4. **le « Depuis 10 ans » de `q-leap.eu`** : cinquième relevé, hors de ce dépôt.

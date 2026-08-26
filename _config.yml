@@ -27,8 +27,11 @@
 # tard et oublié dans la liste ci-dessous part en ligne sans un mot, et rien ne
 # le signale. À chaque ajout d'un dossier qui n'est pas du site, l'inscrire ici.
 # Le contrôle est une commande, à passer avant la mise en ligne :
-#   curl -s -o /dev/null -w '%{http_code}\n' https://q-bot.eu/CLAUDE.md
-# doit répondre 404, comme /admin/ et /Documentations/website/.
+#   for u in CLAUDE.md admin/ Documentations/website/ tools/ padel_alerte.py; do \
+#     curl -s -o /dev/null -w "%{http_code} $u\n" "https://q-bot.eu/$u"; done
+# doit répondre 404 sur chaque ligne. LE 2026-08-26, CE CONTRÔLE N'AVAIT JAMAIS ÉTÉ
+# PASSÉ DEPUIS L'ARRIVÉE DE padel_alerte.py, et l'audit RosoAI l'a trouvé servi : la
+# consigne écrite juste au-dessus ne protège rien tant que personne ne l'exécute.
 #
 # CE QUI N'EST PAS RÉGLÉ ICI : le dépôt est PUBLIC, donc ces fichiers restent
 # lisibles sur github.com et dans l'historique git. Seul un passage en dépôt
@@ -44,4 +47,5 @@ exclude:
   - tools/                  # chaîne de rendu, scripts de génération, 2 pages HTML de travail
   - website 3/              # SECONDE copie des quatre pages de maquette anglaises
   - Screen modèle 3D/       # rendus CAO et enregistrement d'écran
+  - padel_alerte.py         # script personnel, sans rapport avec le site (aussi sorti du suivi git)
   - .gitignore
