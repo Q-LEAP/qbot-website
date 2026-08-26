@@ -31,8 +31,8 @@ import os
 import re
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-URL_FR = 'https://q-bot.eu/automatiser-authentification-luxtrust.html'
-URL_EN = 'https://q-bot.eu/en/automate-luxtrust-authentication.html'
+URL_FR = 'https://q-bot.eu/blog/automatiser-authentification-luxtrust.html'
+URL_EN = 'https://q-bot.eu/en/blog/automate-luxtrust-authentication.html'
 MAJ_ISO, MAJ_FR, MAJ_EN = '2026-08-26', '26 août 2026', '26 August 2026'
 
 CHECK = ('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
@@ -68,8 +68,8 @@ def bloc(idc, label, titre, capsule, corps):
 # du dépôt) : même substance, chacun dans ses propres moyens.
 # ══════════════════════════════════════════════════════════════════════════════
 FR = dict(
-    lang='fr', autre='en/automate-luxtrust-authentication.html',
-    fichier='automatiser-authentification-luxtrust.html',
+    lang='fr', autre='../en/blog/automate-luxtrust-authentication.html',
+    fichier='blog/automatiser-authentification-luxtrust.html',
     donneur='cas-usage.html', locale='fr_FR',
     title="Tester une authentification LuxTrust en automatisé | Q-Bot",
     desc="Une validation LuxTrust ne se calcule pas, elle s'approuve sur le téléphone. Où s'arrête Selenium, et comment franchir l'étape sur un vrai appareil Android.",
@@ -78,7 +78,7 @@ FR = dict(
     lead="Une authentification LuxTrust ne se calcule pas&nbsp;: elle s'approuve, sur le téléphone de l'utilisateur. Aucune bibliothèque ne peut la reproduire, parce qu'il n'existe aucun secret partagé à recalculer. Ce guide explique où s'arrêtent Selenium et Cypress, et comment franchir cette étape sur un vrai appareil Android.",
     datel=f'Mis à jour le <time datetime="{MAJ_ISO}">{MAJ_FR}</time>',
     cta_h2="Vous voulez le voir sur votre propre parcours&nbsp;?",
-    cta_h3="Réservez une démo", cta_btn="Prendre rendez-vous", cta_href='contact.html',
+    cta_h3="Réservez une démo", cta_btn="Prendre rendez-vous", cta_href='../contact.html',
     sections=[
         dict(id='pourquoi-title', label='Le point de départ',
              titre="Pourquoi une authentification LuxTrust ne s'automatise pas comme un code Authenticator&nbsp;?",
@@ -94,18 +94,6 @@ FR = dict(
     <p>La <a href="https://www.selenium.dev/documentation/test_practices/discouraged/two_factor_authentication/" target="_blank" rel="noopener">documentation de Selenium consacre une page à la question</a> et recommande trois voies&nbsp;: désactiver la double authentification dans l'environnement de test, la désactiver pour un compte donné, ou récupérer le secret partagé pour recalculer le code.</p>
     <p>Les trois se tiennent. Mais lisez la définition qu'elle emploie&nbsp;: elle décrit la 2FA comme un code reçu par application, par SMS ou par courriel. Elle ne parle ni des demandes à approuver, ni des applications d'identité souveraine. Sa frontière est là, et c'est exactement l'endroit où votre parcours réel se trouve si vos utilisateurs se connectent avec LuxTrust ou <a href="https://www.itsme-id.com/" target="_blank" rel="noopener">itsme</a>.</p>
     <p>Et désactiver la 2FA a un coût qu'on énonce rarement&nbsp;: vous ne testez plus le parcours que vos utilisateurs empruntent.</p>"""),
-        dict(id='pas-nous-title', label='Le cas où nous ne sommes pas la réponse',
-             titre="Dans quels cas un robot n'est pas la bonne réponse&nbsp;?",
-             capsule="Pour Google Authenticator ou Microsoft Authenticator, n'achetez rien. Ce sont des codes TOTP&nbsp;: une bibliothèque de quelques lignes les calcule, gratuitement, plus vite qu'un appareil physique. Un robot ne se justifie que là où il n'y a aucun secret à récupérer, donc aucun calcul possible.",
-             corps="""    <p>Nous préférons le dire ici plutôt que de vous le laisser découvrir&nbsp;: si votre double authentification repose sur un code TOTP dont vous détenez le secret, la bonne solution est une bibliothèque, pas un robot. Elle est gratuite, elle s'exécute en une milliseconde, elle ne tombe pas en panne et elle ne demande aucun matériel.</p>
-    <p>Un appareil réel piloté n'a de valeur que dans les situations où il n'y a rien à calculer&nbsp;:</p>
-""" + liste([
-                 "une demande à <strong>approuver</strong> sur l'appareil enrôlé, sans code à saisir&nbsp;: LuxTrust Mobile, itsme",
-                 "un code qui n'existe <strong>que</strong> sur l'écran de l'application, sans secret partagé remis à votre équipe",
-                 "un QR code affiché sur un second écran, que l'appareil doit venir scanner",
-                 "un parcours que vous devez tester <strong>tel que l'utilisateur le vit</strong>, sans rien désactiver",
-             ]) + """
-    <p style="margin-top:26px;">Si aucune de ces quatre lignes ne décrit votre situation, gardez votre bibliothèque TOTP&nbsp;: elle fait le travail.</p>"""),
         dict(id='comment-title', label='La méthode',
              titre="Comment Q-Bot franchit une validation LuxTrust&nbsp;?",
              capsule="Un vrai téléphone Android, relié en USB au boîtier, piloté par ADB. Chaque appui arrive sur l'écran physique, dans la véritable application. Le scénario se construit à la souris sur une capture de cet écran&nbsp;: des points d'appui numérotés et des temps d'attente, aucun script à écrire.",
@@ -117,7 +105,7 @@ FR = dict(
                  "Votre test déclenche le scénario par un appel HTTP, ou laisse l'app compagnon le déclencher seule dès qu'une notification 2FA arrive",
                  "Quand l'écran affiche un code, un point d'entrée dédié le renvoie à votre test",
              ]) + """
-    <p style="margin-top:26px;">Il n'y a ni simulateur, ni bouchon, ni SDK à intégrer dans votre application. La <a href="caracteristiques.html">fiche technique détaille l'éditeur de scénarios et la pile matérielle</a>.</p>"""),
+    <p style="margin-top:26px;">Il n'y a ni simulateur, ni bouchon, ni SDK à intégrer dans votre application. La <a href="../caracteristiques.html">fiche technique détaille l'éditeur de scénarios et la pile matérielle</a>.</p>"""),
         dict(id='appel-title', label='Dans votre chaîne de tests',
              titre="À quoi ressemble l'appel depuis votre test&nbsp;?",
              capsule="À une requête HTTP, et rien de plus. Si votre outil sait appeler une URL, il sait piloter le robot&nbsp;: aucun SDK, aucun greffon, aucune clé d'API. Le test déclenche le scénario, attend la réponse, et reprend son cours là où il s'était arrêté.",
@@ -138,7 +126,7 @@ driver.find_element(
   By.ID, &quot;dashboard&quot;
 ).is_displayed()</code></pre></div>
     </figure>
-    <p style="margin-top:26px;">Trois points d'entrée couvrent les cas courants&nbsp;: exécuter un scénario, lire le code affiché, afficher un QR code sur l'écran du boîtier. Ils sont documentés sur la <a href="caracteristiques.html">fiche technique</a>, et <a href="cas-usage.html">les exemples d'appel par outil</a> couvrent Cypress, Playwright, Robot Framework et JUnit.</p>"""),
+    <p style="margin-top:26px;">Trois points d'entrée couvrent les cas courants&nbsp;: exécuter un scénario, lire le code affiché, afficher un QR code sur l'écran du boîtier. Ils sont documentés sur la <a href="../caracteristiques.html">fiche technique</a>, et <a href="../cas-usage.html">les exemples d'appel par outil</a> couvrent Cypress, Playwright, Robot Framework et JUnit.</p>"""),
         dict(id='limites-title', label='Les limites, énoncées',
              titre="Qu'est-ce que cela n'automatise pas&nbsp;?",
              capsule="Q-Bot pilote un appareil <strong>Android</strong>. Il n'automatise pas la double authentification sur iOS, et cette limite ne se contourne pas&nbsp;: le pilotage repose sur ADB, qui n'a pas d'équivalent sur iPhone. L'appareil doit aussi être physiquement relié au boîtier.",
@@ -162,8 +150,8 @@ driver.find_element(
     ])
 
 EN = dict(
-    lang='en', autre='../automatiser-authentification-luxtrust.html',
-    fichier='en/automate-luxtrust-authentication.html',
+    lang='en', autre='../../blog/automatiser-authentification-luxtrust.html',
+    fichier='en/blog/automate-luxtrust-authentication.html',
     donneur='en/use-cases.html', locale='en_GB',
     title="Automating a LuxTrust authentication in tests | Q-Bot",
     desc="A LuxTrust approval is not computed, it is granted on the phone. Where Selenium and Cypress stop, and how to clear that step on a real Android device.",
@@ -172,7 +160,7 @@ EN = dict(
     lead="A LuxTrust authentication is not computed, it is approved on the user's phone. No library can stand in for it, because there is no shared secret left to recompute. This guide sets out where Selenium and Cypress stop, and how to clear that step on a real Android device.",
     datel=f'Updated <time datetime="{MAJ_ISO}">{MAJ_EN}</time>',
     cta_h2="Want to see it on your own login flow?",
-    cta_h3="Book a demo", cta_btn="Make an appointment", cta_href='contact.html',
+    cta_h3="Book a demo", cta_btn="Make an appointment", cta_href='../contact.html',
     sections=[
         dict(id='pourquoi-title', label='The starting point',
              titre="Why can a LuxTrust authentication not be automated like an Authenticator code?",
@@ -188,18 +176,6 @@ EN = dict(
     <p>Selenium <a href="https://www.selenium.dev/documentation/test_practices/discouraged/two_factor_authentication/" target="_blank" rel="noopener">devotes a documentation page to the question</a> and recommends three routes: disable two-factor authentication in the test environment, disable it for one account, or obtain the shared secret and recompute the code.</p>
     <p>All three are sound. But read the definition it works from: it describes 2FA as a code received through an app, an SMS or an email. It does not cover requests to approve, nor sovereign identity apps. That is where its boundary sits, and it is exactly where your real login flow lives if your users sign in with LuxTrust or <a href="https://www.itsme-id.com/" target="_blank" rel="noopener">itsme</a>.</p>
     <p>And turning 2FA off carries a cost that is rarely stated: you are no longer testing the journey your users actually take.</p>"""),
-        dict(id='pas-nous-title', label='Where we are not the answer',
-             titre="When is a robot not the right answer?",
-             capsule="For Google Authenticator or Microsoft Authenticator, buy nothing. Those are TOTP codes: a few lines of library compute them, for free, faster than any physical device. A robot only earns its place where there is no secret to obtain, and therefore nothing to compute.",
-             corps="""    <p>We would rather say this here than let you find it out later: if your second factor is a TOTP code whose secret you hold, the right answer is a library, not a robot. It is free, it runs in a millisecond, it does not break down, and it needs no hardware.</p>
-    <p>A driven physical device is only worth it where there is nothing to compute:</p>
-""" + liste([
-                 "a request to <strong>approve</strong> on the enrolled device, with no code to type: LuxTrust Mobile, itsme",
-                 "a code that exists <strong>only</strong> on the app's screen, with no shared secret handed to your team",
-                 "a QR code shown on a second screen that the device has to scan",
-                 "a flow you need to test <strong>as the user lives it</strong>, without switching anything off",
-             ]) + """
-    <p style="margin-top:26px;">If none of those four lines describes your situation, keep your TOTP library: it does the job.</p>"""),
         dict(id='comment-title', label='The method',
              titre="How does Q-Bot clear a LuxTrust approval?",
              capsule="A real Android phone, connected over USB to the box, driven through ADB. Every tap lands on the physical screen, in the genuine app. The scenario is built with the mouse on a screenshot of that screen: numbered tap points and waiting times, no script to write.",
@@ -211,7 +187,7 @@ EN = dict(
                  "Your test triggers the scenario with an HTTP call, or lets the companion app fire it on its own as soon as a 2FA notification arrives",
                  "When the screen shows a code, a dedicated endpoint returns it to your test",
              ]) + """
-    <p style="margin-top:26px;">There is no simulator, no stub, and no SDK to embed in your application. The <a href="technical-specs.html">technical page covers the scenario editor and the hardware stack</a>.</p>"""),
+    <p style="margin-top:26px;">There is no simulator, no stub, and no SDK to embed in your application. The <a href="../technical-specs.html">technical page covers the scenario editor and the hardware stack</a>.</p>"""),
         dict(id='appel-title', label='In your pipeline',
              titre="What does the call from your test look like?",
              capsule="An HTTP request, and nothing more. If your tool can call a URL, it can drive the robot: no SDK, no plugin, no API key. The test triggers the scenario, waits for the answer, and picks up exactly where it left off.",
@@ -232,7 +208,7 @@ driver.find_element(
   By.ID, &quot;dashboard&quot;
 ).is_displayed()</code></pre></div>
     </figure>
-    <p style="margin-top:26px;">Three endpoints cover the usual cases: run a scenario, read the code on screen, show a QR code on the box's own display. They are documented on the <a href="technical-specs.html">technical page</a>, and <a href="use-cases.html">the per-tool call examples</a> cover Cypress, Playwright, Robot Framework and JUnit.</p>"""),
+    <p style="margin-top:26px;">Three endpoints cover the usual cases: run a scenario, read the code on screen, show a QR code on the box's own display. They are documented on the <a href="../technical-specs.html">technical page</a>, and <a href="../use-cases.html">the per-tool call examples</a> cover Cypress, Playwright, Robot Framework and JUnit.</p>"""),
         dict(id='limites-title', label='The limits, stated',
              titre="What does this not automate?",
              capsule="Q-Bot drives an <strong>Android</strong> device. It does not automate two-factor authentication on iOS, and that limit has no workaround: the driving relies on ADB, which has no equivalent on iPhone. The device also has to be physically connected to the box.",
@@ -256,9 +232,29 @@ driver.find_element(
     ])
 
 
+def profondeur_plus_un(html):
+    """Ajoute un niveau à tous les chemins RELATIFS de l'habillage extrait.
+
+    Les pages donneuses sont à la racine (FR) et dans `en/` (EN) ; le guide vit un
+    cran plus bas, dans `blog/` et `en/blog/`. On ne réécrit pas l'habillage à la
+    main : on préfixe `../`, ce qui marche uniformément (`x.html` devient
+    `../x.html`, `../assets/` devient `../../assets/`). Les adresses absolues, les
+    ancres, `mailto:` et `tel:` sont laissées telles quelles, et le JSON-LD n'est
+    pas touché puisque seuls les attributs `href` et `src` le sont.
+    Le garde-fou qui compte est en fin de script : chaque chemin relatif produit
+    doit désigner un fichier qui existe.
+    """
+    def remplace(m):
+        att, v = m.group(1), m.group(2)
+        if re.match(r'^(https?:|//|mailto:|tel:|data:|#)', v):
+            return m.group(0)
+        return att + '="../' + v + '"'
+    return re.sub(r'\b(href|src)="([^"]*)"', remplace, html)
+
+
 def construire(cfg):
     donneur = io.open(os.path.join(RACINE, cfg['donneur']), encoding='utf-8').read()
-    prof = '../' if cfg['lang'] == 'en' else ''
+    prof = '../../' if cfg['lang'] == 'en' else '../'
     base = 'https://q-bot.eu/' + ('en/' if cfg['lang'] == 'en' else '')
     url = 'https://q-bot.eu/' + cfg['fichier']
 
@@ -329,18 +325,19 @@ def construire(cfg):
 }}
   </script>
 </head>'''
-    head += guide
+    head = profondeur_plus_un(head) + guide
 
     # ---- HABILLAGE : du <body> au <main>, puis du </main> à la fin ----
-    haut = donneur[donneur.index('<body>'):donneur.index('<main id="main">')]
+    haut = profondeur_plus_un(donneur[donneur.index('<body>'):donneur.index('<main id="main">')])
     # notre page n'est pas dans le menu : on retire l'état courant du donneur
     haut = haut.replace(' class="nav__link active" aria-current="page"', ' class="nav__link"')
     haut = re.sub(r'(<div class="nav__lang">\s*<a href=")[^"]*(")',
                   r'\g<1>' + cfg['autre'] + r'\g<2>', haut, count=1)
 
-    bas = donneur[donneur.index('</main>'):]
+    bas = profondeur_plus_un(donneur[donneur.index('</main>'):])
     # ni dans le pied de page : on rend son lien à l'entrée marquée courante
-    lien_cu = 'use-cases.html' if cfg['lang'] == 'en' else 'cas-usage.html'
+    # Posé APRÈS profondeur_plus_un() : il porte donc son `../` lui-même.
+    lien_cu = '../' + ('use-cases.html' if cfg['lang'] == 'en' else 'cas-usage.html')
     nom_cu = 'Use cases' if cfg['lang'] == 'en' else "Cas d'usage"
     bas = bas.replace(f'<span aria-current="page">{nom_cu}</span>',
                       f'<a href="{lien_cu}">{nom_cu}</a>')
@@ -363,6 +360,8 @@ def construire(cfg):
     <ol class="breadcrumb__list" aria-label="{'Breadcrumb' if cfg['lang'] == 'en' else "Fil d'Ariane"}">
       <li><a href="{prof}index.html">{cfg['accueil']}</a></li>
       <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><a href="{prof}{'blog.html' if cfg['lang'] == 'fr' else 'blog.html'}">Blog</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
       <li><span aria-current="page">{cfg['fil']}</span></li>
     </ol>
   </div>
@@ -379,6 +378,8 @@ def construire(cfg):
     return head + '\n' + haut + principal + bas
 
 
+ECRITS = []
+
 for cfg in (FR, EN):
     # les deux contraintes dures d'affichage en recherche, vérifiées avant d'écrire
     assert len(cfg['title']) <= 62, (cfg['fichier'], 'titre', len(cfg['title']))
@@ -394,4 +395,30 @@ for cfg in (FR, EN):
     chemin = os.path.join(RACINE, cfg['fichier'])
     os.makedirs(os.path.dirname(chemin), exist_ok=True)
     io.open(chemin, 'w', encoding='utf-8').write(s)
+    ECRITS.append(chemin)
+
     print(f"  écrit {cfg['fichier']:34s} titre {len(cfg['title'])} c, description {len(cfg['desc'])} c")
+
+# LE GARDE-FOU QUI COMPTE, et il tourne quand LES DEUX pages existent : elles se
+# désignent mutuellement par le sélecteur de langue, donc un contrôle page par page
+# échouerait sur la première. La transformation de profondeur est mécanique ; la
+# seule preuve qu'elle est juste est que chaque chemin relatif produit désigne un
+# fichier réel. Sans cette assertion, un `../` en trop passe inaperçu jusqu'à ce
+# qu'un visiteur clique.
+for chemin in ECRITS:
+    contenu = io.open(chemin, encoding='utf-8').read()
+    base = os.path.dirname(chemin)
+    relatifs, casses = set(), []
+    for v in re.findall(r'\b(?:href|src)="([^"]*)"', contenu):
+        if not v or re.match(r'^(https?:|//|mailto:|tel:|data:|#)', v):
+            continue
+        relatifs.add(v)
+        cible = os.path.normpath(os.path.join(base, v.split('?')[0].split('#')[0]))
+        if os.path.isdir(cible):
+            cible = os.path.join(cible, 'index.html')
+        if not os.path.exists(cible):
+            casses.append(v)
+    assert not casses, (os.path.relpath(chemin, RACINE),
+                        'chemins relatifs cassés : ' + ', '.join(sorted(set(casses))[:6]))
+    print('  %-46s %d chemin(s) relatif(s), tous valides'
+          % (os.path.relpath(chemin, RACINE), len(relatifs)))

@@ -3617,13 +3617,18 @@ classe, cinq fois sur cinq, et aucune page produit n'apparaît. Les quatre marqu
   consacre à la 2FA, la documentation ADB d'Android, LuxTrust et itsme. Les cinq suivies dans un
   navigateur, toutes en 200 ;
 - **une date de mise à jour visible**, en `<time>` sous le chapeau (`.guide-date`) ;
-- **le courage de dire quand le concurrent gagne.** C'est la section « Dans quels cas un robot
-  n'est pas la bonne réponse », qui envoie le lecteur vers une bibliothèque TOTP gratuite pour
-  Google et Microsoft Authenticator. Ce n'est pas de la modestie : une comparaison qui gagne sur
-  tous les critères n'est crue par personne, ni par un acheteur ni par un modèle. C'est aussi
-  l'arbitrage de contenu de l'audit, qui demande d'arrêter de mettre ces deux applications en
-  avant comme argument principal, la valeur étant maximale là où il n'existe aucune clé à
-  récupérer.
+- ~~le courage de dire quand le concurrent gagne~~ : **RETIRÉ SUR DEMANDE DU CLIENT LE
+  2026-08-26.** La section « Dans quels cas un robot n'est pas la bonne réponse » envoyait le
+  lecteur vers une bibliothèque TOTP gratuite pour Google et Microsoft Authenticator. Le client
+  ne veut pas publier un texte qui déconseille son propre produit, et c'est sa décision : **ne
+  pas la réintroduire, sur ce guide ni sur les suivants.**
+  Ce qui reste de l'exigence d'honnêteté du format, et qui suffit : la section « Qu'est-ce que
+  cela n'automatise pas ? » énonce le périmètre COMME UNE LIMITE (Android seulement, pas d'iOS,
+  un appareil filaire par boîtier) et la page porte sa mention de non-affiliation à LuxTrust.
+  Le guide passe de 7 à 6 sections ; rien n'y renvoyait, donc aucun raccord à reprendre, et le
+  fait technique que la section portait (un code TOTP se recalcule depuis un secret partagé) reste
+  énoncé dans la première section, où il sert à expliquer pourquoi LuxTrust est différent.
+  `llms.txt` a été reprise aussi : elle annonçait cette section noir sur blanc aux assistants IA.
 
 **Deux affirmations à ne jamais retourner.** La page énonce le périmètre **comme une limite**
 (Android seulement, pas d'iOS, un appareil filaire par boîtier), et elle porte une mention de
@@ -4072,3 +4077,54 @@ reste est binaire et peu compressible : la visionneuse 1 043 Ko, le modèle 571,
 279. **Ne pas comparer une mesure faite sur le serveur de test à une mesure faite en ligne**, et
 ne pas conclure à une régression de poids sur cette base. Le poids de l'accueil a été accepté par
 le client le 2026-08-11.
+
+## Les guides vivent dans le blog (2026-08-26)
+
+**ARBITRÉ PAR LE CLIENT : pas de section `guides/` séparée, tout va dans le blog.** J'avais
+proposé `guides/` avec son propre sommaire et une cinquième entrée de menu, au motif que l'index
+du blog est chronologique et que ses six billets de 2023 portent une note disant que le produit a
+évolué. Le client a tranché l'inverse. C'est donc `blog/` qui accueille les guides, et il n'y a
+pas de nouvelle entrée de navigation à créer.
+
+`blog/automatiser-authentification-luxtrust.html` et
+`en/blog/automate-luxtrust-authentication.html` remplacent les deux fichiers de racine. Rien ne
+pointait dessus de l'extérieur et le site n'est pas public, donc le déplacement ne casse aucune
+adresse acquise.
+
+**Comment un guide se distingue d'un billet daté dans l'index** : étiquette « Guide » au lieu de
+« Presse » ou « Automatisation », **une date de mise à jour au lieu d'un mois de parution**, et la
+carte est posée **en premier** dans la grille, avant les archives. C'est ce qui évite que le
+contenu stratégique se noie dans le fond de catalogue.
+
+### La mesure qui a servi à la décision, et qui reste utile
+
+Une cinquième entrée de menu **passe à partir de 1024 px et casse en dessous** : à 901 px le menu
+repasse sur deux lignes (relevé avec « Guides » comme avec « Ressources »). Si une entrée doit un
+jour être ajoutée, il faut donc **faire basculer le menu hamburger à 1024 px** au lieu de 900. La
+mesure qui compte n'est pas la largeur du menu mais les écarts logo → menu et menu → actions, et
+le nombre de lignes du menu : une première sonde comparant les bords des enfants de `.nav__inner`
+annonçait un recouvrement même dans l'état actuel, qui fonctionne.
+
+### La transformation de profondeur du générateur
+
+Les pages donneuses de l'habillage sont à la racine (FR) et dans `en/` (EN) ; le guide vit un cran
+plus bas. Le générateur ne réécrit donc pas l'habillage à la main : `profondeur_plus_un()` préfixe
+`../` à tout chemin RELATIF des attributs `href` et `src`, ce qui marche uniformément
+(`x.html` → `../x.html`, `../assets/` → `../../assets/`). Les adresses absolues, les ancres,
+`mailto:` et `tel:` sont laissées, et le JSON-LD n'est pas touché puisque seuls ces deux attributs
+le sont.
+
+**LE GARDE-FOU EST CE QUI REND CETTE MÉCANIQUE SÛRE**, et il a servi deux fois du premier coup :
+chaque chemin relatif produit doit désigner un fichier qui existe. Il a attrapé le lien du pied de
+page réinjecté APRÈS la transformation (il ne portait donc pas son `../`), et il doit tourner
+**quand les deux pages existent**, puisqu'elles se désignent l'une l'autre par le sélecteur de
+langue : un contrôle page par page échoue sur la première. Relevé : 19 et 21 chemins relatifs,
+tous valides.
+
+### Contrôles
+
+83 pages balayées, **0 lien interne cassé**. Le fil d'Ariane passe désormais par le blog
+(`Accueil › Blog › Guide LuxTrust`). Les deux audits d'aujourd'hui repassent à **0 constat** sur
+les 31 pages, à 1440 comme à 390 px. 24 vues des pages touchées (index de blog, guides, fiches
+techniques) sans anomalie. Et le texte du bloc retiré ne subsiste **nulle part**, ni dans les
+pages, ni dans `llms.txt`.

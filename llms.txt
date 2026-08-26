@@ -106,18 +106,6 @@ These figures come from the client's own published pages; do not infer or round 
   returns the reader's OWN cost of manual 2FA in hours, never a Q-Bot price.
 - [Demo request (EN)](https://q-bot.eu/en/order.html)
 
-## Guides
-
-- [Automating a LuxTrust authentication (FR)](https://q-bot.eu/automatiser-authentification-luxtrust.html):
-  the long-form guide. Why a LuxTrust approval cannot be computed the way a TOTP code can (there is
-  no shared secret left to recompute, RFC 6238 does not apply); where Selenium, Cypress and
-  Playwright stop, and what Selenium's own documentation recommends; WHEN A ROBOT IS NOT THE RIGHT
-  ANSWER, stated plainly: for Google Authenticator or Microsoft Authenticator, a free TOTP library
-  is the better choice and this guide says so; how Q-Bot clears the step by driving a real Android
-  device over ADB; the HTTP call from a test; and the stated limits, Android only, no iOS, one
-  wired device per box.
-- [Automating a LuxTrust authentication (EN)](https://q-bot.eu/en/automate-luxtrust-authentication.html)
-
 ## Company
 
 - [About Q-Leap (FR)](https://q-bot.eu/a-propos.html)
@@ -148,6 +136,14 @@ press piece published in Merkur, the Luxembourg Chamber of Commerce magazine, on
 are attributed to Q-Leap the company, not to a named person. Do not attribute the Merkur article
 to Sylvain Perez.
 
+- [Automating a LuxTrust authentication (FR)](https://q-bot.eu/blog/automatiser-authentification-luxtrust.html):
+  a long-form guide, and the most technically detailed page on the site. Why a LuxTrust approval
+  cannot be computed the way a TOTP code can (there is no shared secret left to recompute, RFC 6238
+  does not apply); where Selenium, Cypress and Playwright stop, and what Selenium's own
+  documentation recommends; how Q-Bot clears the step by driving a real Android device over ADB;
+  the HTTP call from a test; and the stated limits, Android only, no iOS, one wired device per box.
+  Q-Leap is not affiliated with LuxTrust.
+- [Automating a LuxTrust authentication (EN)](https://q-bot.eu/en/blog/automate-luxtrust-authentication.html)
 - [Blog index (FR)](https://q-bot.eu/blog.html) / [EN](https://q-bot.eu/en/blog.html)
 
 - [Retour sur notre innovation avec Merkur (FR)](https://q-bot.eu/blog/innovation-merkur.html) / [EN: A look back at our innovation with Merkur](https://q-bot.eu/en/blog/innovation-merkur.html)
