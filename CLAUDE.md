@@ -4128,3 +4128,81 @@ tous valides.
 les 31 pages, à 1440 comme à 390 px. 24 vues des pages touchées (index de blog, guides, fiches
 techniques) sans anomalie. Et le texte du bloc retiré ne subsiste **nulle part**, ni dans les
 pages, ni dans `llms.txt`.
+
+## Les huit guides du blog, et les vignettes carrées (2026-08-26)
+
+### Les vignettes de l'index de blog
+
+Signalé « surabusé » : les images des cartes faisaient **436 px de haut à 1440**, en portrait, et
+deux voisines n'avaient pas la même hauteur (436 et 459). La cause est un
+`style="width:100%;height:100%;object-fit:cover"` **en ligne** dans le balisage, donc hors
+d'atteinte de la feuille de style, et dont le `height:100%` ne résolvait rien dans une carte en
+colonne flex : la hauteur retombait sur le rapport de chaque fichier.
+
+Le style sort du balisage, une vraie règle `.blog-card > img` le remplace avec
+`aspect-ratio: 1 / 1`. Toutes les vignettes sont carrées et de hauteur identique, et la carte
+raccourcit de **19 % à toutes les largeurs** (436 → 354 à 1440, 321 → 261 à 900, 418 → 340 à 390).
+Aucun agrandissement nulle part (1,01 au pire à densité 2).
+
+**LA VEDETTE N'EST PAS CONCERNÉE**, sur décision du client : « sauf pour la première qui est plus
+grande que les autres, celle-ci peut rester tel quel ». `.blog__featured-img` garde ses 702 × 395.
+
+### Les sept guides restants sont écrits, dans le blog
+
+Le plan de contenu de l'audit RosoAI est complet : **huit guides, deux langues, seize pages**,
+générés par `tools/gen-guides.py` (qui remplace `gen-guide-luxtrust.py`).
+
+| Guide | Priorité | Ce qu'il fait |
+|---|---|---|
+| Automatiser la 2FA dans vos tests | P1 | **la page pilier**, le moyeu du maillage |
+| Tester une authentification LuxTrust | P1 | la niche vérifiée vide |
+| Faut-il désactiver la 2FA en test ? | P1 | la question tapée avant de connaître le produit |
+| Automatiser la 2FA sans clé secrète | P2 | le coeur technique du différenciateur |
+| Quel outil pour tester sur appareil réel | P2 | nuage contre réseau, et six questions à poser |
+| Sécurité, conformité et données de test | P2 | répond à l'équipe sécurité, pas au testeur |
+| Campagnes de nuit bloquées au login | P3 | le symptôme tel qu'il est ressenti |
+| Combien coûte l'étape manuelle ? | P3 | le calcul, en heures, jamais en euros |
+
+**LE MAILLAGE EST LA MOITIÉ DU TRAVAIL**, et c'est ce qui les fait exister : la page pilier pointe
+vers les sept autres, chacune lui renvoie et renvoie à une ou deux voisines, les quatre pages
+produit pointent vers le pilier et vers le guide LuxTrust. Huit guides isolés ne pèsent rien.
+
+**74 capsules, toutes dans la fourchette 40-60 mots.** Quatorze étaient sous 40 au premier jet,
+presque toutes anglaises : c'est attendu, l'anglais fait 10 à 15 % de moins que le français, et
+c'est une raison de MESURER plutôt que de traduire. Elles ont été allongées avec de l'information,
+pas du remplissage.
+
+**Trois règles tenues, vérifiées sur le texte RENDU** et non par un grep : aucun cadratin, aucun
+emoji, et **aucun tarif** sur les 24 pages du blog. Le guide sur le coût rend un résultat en
+heures et en journées, jamais en euros, et le dit explicitement : convertir demanderait un taux
+horaire que nous n'avons pas et que nous n'inventons pas.
+
+**Le comparatif est le guide à surveiller.** Sa règle d'écriture est inscrite dans le générateur :
+on nomme des FAMILLES d'outils et des différences d'architecture vérifiables, jamais une limite
+prêtée à un fournisseur nommé sans pouvoir la prouver. Sa valeur pour le lecteur est la liste des
+six questions à poser, y compris à nous, et notre réponse à la dernière y est écrite : Android
+uniquement, pas d'iOS.
+
+### Ce que la génération a appris
+
+- **`tools/gen-index-guides.py` réécrit les cartes des deux index depuis les pages elles-mêmes** :
+  titre, accroche et temps de lecture sont RELEVÉS dans la page cible, donc une carte ne peut pas
+  mentir sur ce qu'elle ouvre. Onze cartes écrites à la main dans deux langues divergent dès la
+  première correction de titre ;
+- **`relève()` doit tolérer DEUX structures** : un guide porte `<h1 id="page-title">` et
+  `<main id="main">`, un billet daté porte un h1 nu et `<main class="article-body">`. Supposer la
+  première casse net sur les billets ;
+- **le garde-fou des chemins relatifs doit tourner quand TOUTES les pages existent.** Les guides se
+  pointent mutuellement : un contrôle page par page échoue sur la première écrite. Il tourne donc
+  en fin de script, sur les seize fichiers, et il a validé 20 à 28 chemins par page ;
+- **l'assertion de longueur de description a mordu quatre fois** (159, 163, 161, 163 caractères).
+  C'est exactement son rôle : ces quatre descriptions auraient été tronquées en résultat de
+  recherche sans que rien ne le signale.
+
+Décomptes finaux : **44 URL au plan du site** (30 + 14), 44 annoncées dans `robots.txt`, 46
+fichiers portant `noindex` (les 44, plus `404.html` et `admin/`), 10 cartes par index de blog, et
+les huit guides listés dans `llms.txt` avec, pour chacun, ce qu'il ne faut pas en inférer.
+
+Contrôles : **97 pages balayées, 0 lien interne cassé**. Les deux audits sur les **45 pages** à
+1440 et 390 px : **0 constat**. 48 vues des pages neuves sans anomalie (un seul `h1`, 0 saut de
+niveau, 0 révélation invisible, 0 débordement, 0 défaut de contraste, 0 erreur console).

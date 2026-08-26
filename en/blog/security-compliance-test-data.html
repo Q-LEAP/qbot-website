@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security, compliance and 2FA test data | Q-Leap</title>
+  <meta name="description" content="What data an authentication test handles, where it goes, and the questions a security review will ask. Including what this approach does not cover.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/en/blog/security-compliance-test-data.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/security-compliance-test-data.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/securite-conformite-donnees-de-test.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/securite-conformite-donnees-de-test.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Security, compliance and 2FA test data | Q-Leap">
+  <meta property="og:description" content="What data an authentication test handles, where it goes, and the questions a security review will ask. Including what this approach does not cover.">
+  <meta property="og:url" content="https://q-bot.eu/en/blog/security-compliance-test-data.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Security, compliance and 2FA test data | Q-Leap">
+  <meta name="twitter:description" content="What data an authentication test handles, where it goes, and the questions a security review will ask. Including what this approach does not cover.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=c9d2bf61">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://q-bot.eu/en/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Security and test data",
+      "item": "https://q-bot.eu/en/blog/security-compliance-test-data.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Security, compliance and test data",
+  "description": "What data an authentication test handles, where it goes, and the questions a security review will ask. Including what this approach does not cover.",
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "inLanguage": "en",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/en/blog/security-compliance-test-data.html" },
+  "author": { "@id": "https://q-bot.eu/#organization" },
+  "publisher": { "@id": "https://q-bot.eu/#organization" },
+  "about": [
+    { "@type": "Thing", "name": "LuxTrust" },
+    { "@type": "Thing", "name": "two-factor authentication" },
+    { "@type": "Thing", "name": "test automation" }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Main navigation">
+      <a href="../index.html" class="nav__logo" aria-label="Q-Bot, home">
+        <img src="../../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../about.html" class="nav__link">About</a></li>
+        <li><a href="../technical-specs.html" class="nav__link">Specifications</a></li>
+        <li><a href="../use-cases.html" class="nav__link">Use cases</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="../contact.html" class="btn btn--primary">Free demo</a>
+                <div class="nav__lang">
+          <a href="../../blog/securite-conformite-donnees-de-test.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Guide</span>
+    <h1 id="page-title">Security, compliance and test data</h1>
+    <p>This is often the question that decides, and it does not come from the tester: it comes from whoever has to sign off. This guide answers the three points of a security review, says what belongs in a processing record, and states what the approach does not cover.</p>
+    <p class="guide-date">Updated <time datetime="2026-08-26">26 August 2026</time></p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Breadcrumb">
+      <li><a href="../../index.html">Home</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><a href="../../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">Security and test data</span></li>
+    </ol>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="quoi-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The inventory</span>
+      <h2 class="section-title" id="quoi-title">What data does an authentication test handle?</h2>
+      <p class="section-subtitle">Less than people assume, and it is worth putting on the record: a test account, its credentials, the screenshots used by scenarios, and one-time codes read on the fly. No production data and no real customer data, provided environments are properly separated.</p>
+    </div>
+    <p>The full inventory, line by line:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>test account</strong> and its password, handled like any other secret in the pipeline</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>the <strong>screenshots</strong> used as the background of a scenario's steps</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>one-time codes</strong>, valid for a few dozen seconds, read and handed back to the test</span></li>
+    </ul>
+    <p style="margin-top:26px;">The point that reassures a review: there is <strong>no authentication secret to extract</strong> from the application. Why is covered in <a href="automate-2fa-without-shared-secret.html">« automating 2FA without a shared secret »</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="ou-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The location</span>
+      <h2 class="section-title" id="ou-title">Where does that data go?</h2>
+      <p class="section-subtitle">Nowhere. Scenarios and their screenshots stay inside the box, on your own network, in a local database. Nothing is sent to an online service, and no internet connection is needed while the tests run. That last point can be verified by cutting the network and running a campaign.</p>
+    </div>
+    <p>Concretely:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>scenarios and their screenshots are stored <strong>in the box</strong>, never on an online service</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>no internet connection</strong> is needed while tests run</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>no API key</strong> to distribute, so no secret circulating through the integration pipeline</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>the box and the phone stay <strong>on your premises</strong>, on your network</span></li>
+    </ul>
+    <p style="margin-top:26px;">That is what separates this model from a device hosted by a third party, a difference set out in <a href="test-2fa-real-device.html">the comparison of the two families of tools</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="revue-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The review</span>
+      <h2 class="section-title" id="revue-title">What does a security review ask for?</h2>
+      <p class="section-subtitle">Almost always the same five things: the exposed surface, the secrets in circulation, where the data sits, access traceability, and hardware end of life. Having all five prepared in advance turns a review that drags on for three weeks into a single one-hour meeting.</p>
+    </div>
+    <p>All five, with what you need to be able to show:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>exposed surface</strong>: an HTTP API on your local network, no inbound access from outside</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>secrets</strong>: the test account, nothing else; no API key to provision</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>location</strong>: a local database on the box, on your premises</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>traceability</strong>: who triggers which scenario, and from which pipeline</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>end of life</strong>: what remains on the hardware when it is returned or replaced</span></li>
+    </ul>
+    <p style="margin-top:26px;">On that last point the honest answer is that a returned box still holds your screenshots until it is wiped: that is a line for your return procedure, not a property of the product.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="limites-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The limits, stated</span>
+      <h2 class="section-title" id="limites-title">What does this approach not cover?</h2>
+      <p class="section-subtitle">Three things, and they are better known beforehand: it does not replace the separation of your environments, it does not encrypt screenshots at rest, and it does not excuse you from handling the test account like any other production secret. All three stay on your side.</p>
+    </div>
+    <p>To handle on your side, because the product will not:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>environment separation</strong>: if your staging talks to production, no test tool will fix that</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>encryption at rest</strong> of the screenshots in the box is not provided: cover it with disk encryption if your policy requires it</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>the <strong>test account</strong> remains a secret to rotate, revoke and monitor like any other</span></li>
+    </ul>
+    <p style="margin-top:26px;">The rest of the subject, from the tester's point of view this time, is in the <a href="automate-2fa-in-your-tests.html">reference page on automating 2FA</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cta-guide-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-guide-title" style="margin-bottom:16px;">Want to see it on your own login flow?</h2>
+    <h3 style="font-size:1.5rem; font-weight:500; margin-bottom:32px; color:var(--teal-text);">Book a demo</h3>
+    <a href="../contact.html" class="btn btn--primary btn--lg">Make an appointment</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Social media">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Product</h3>
+        <ul role="list">
+          <li><a href="../technical-specs.html">Technical Specs</a></li>
+          <li><span aria-current="page">Use Cases</span></li>
+          <li><a href="../3d-model.html">3D Model</a></li>
+          <li><a href="../order.html">Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="../contact.html">Contact us</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Legal links">
+        <a href="../terms-and-conditions-of-sale/">Terms of Sale</a>
+        <a href="../privacy/">Privacy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js?v=710207f0" defer></script>
+</body>
+</html>

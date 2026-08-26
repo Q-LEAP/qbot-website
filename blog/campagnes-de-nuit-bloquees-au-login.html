@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pourquoi vos campagnes de nuit s'arrêtent au login | Q-Leap</title>
+  <meta name="description" content="Un paquet d'échecs au même endroit, la même trace : c'est presque toujours le second facteur. Les trois rustines habituelles, et ce qu'elles coûtent vraiment.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/night-runs-blocked-at-login.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Pourquoi vos campagnes de nuit s'arrêtent au login | Q-Leap">
+  <meta property="og:description" content="Un paquet d'échecs au même endroit, la même trace : c'est presque toujours le second facteur. Les trois rustines habituelles, et ce qu'elles coûtent vraiment.">
+  <meta property="og:url" content="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone Android inséré dans son socle, l'interface web à l'écran">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pourquoi vos campagnes de nuit s'arrêtent au login | Q-Leap">
+  <meta name="twitter:description" content="Un paquet d'échecs au même endroit, la même trace : c'est presque toujours le second facteur. Les trois rustines habituelles, et ce qu'elles coûtent vraiment.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Campagnes bloquées au login",
+      "item": "https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Pourquoi vos campagnes de nuit s'arrêtent au login",
+  "description": "Un paquet d'échecs au même endroit, la même trace : c'est presque toujours le second facteur. Les trois rustines habituelles, et ce qu'elles coûtent vraiment.",
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "inLanguage": "fr",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html" },
+  "author": { "@id": "https://q-bot.eu/#organization" },
+  "publisher": { "@id": "https://q-bot.eu/#organization" },
+  "about": [
+    { "@type": "Thing", "name": "LuxTrust" },
+    { "@type": "Thing", "name": "two-factor authentication" },
+    { "@type": "Thing", "name": "test automation" }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="../index.html" class="nav__logo" aria-label="Q-Bot, accueil">
+        <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../a-propos.html" class="nav__link">À propos</a></li>
+        <li><a href="../caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="../cas-usage.html" class="nav__link">Cas d'usage</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="../contact.html" class="btn btn--primary">Demo gratuite</a>
+                <div class="nav__lang">
+          <a href="../en/blog/night-runs-blocked-at-login.html" hreflang="en" aria-label="Cette page est en français. Passer à la version anglaise." title="Cette page est en français. Passer à la version anglaise."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> FR</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Guide</span>
+    <h1 id="page-title">Pourquoi vos campagnes de nuit s'arrêtent au login</h1>
+    <p>Le rapport du matin montre un paquet d'échecs, tous au même endroit, avec la même trace. Ce n'est presque jamais une suite fragile&nbsp;: c'est une étape que rien n'a pu franchir pendant la nuit. Ce guide explique le symptôme, les rustines habituelles, et ce qu'il faut pour aller au bout.</p>
+    <p class="guide-date">Mis à jour le <time datetime="2026-08-26">26 août 2026</time></p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Fil d'Ariane">
+      <li><a href="../index.html">Accueil</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><a href="../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">Campagnes bloquées au login</span></li>
+    </ol>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="symptome-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Le symptôme</span>
+      <h2 class="section-title" id="symptome-title">À quoi ressemble le symptôme dans un rapport&nbsp;?</h2>
+      <p class="section-subtitle">À une grappe d'échecs qui partagent trois traits&nbsp;: ils sont nombreux, ils tombent tous au même endroit du parcours, et ils portent la même trace. Une suite réellement instable échoue de façon dispersée&nbsp;; celle-ci échoue avec une régularité qui devrait mettre la puce à l'oreille.</p>
+    </div>
+    <p>Les trois signes qui distinguent un blocage d'une instabilité&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>les échecs sont <strong>groupés</strong> sur une même étape, pas dispersés dans la suite</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>la trace est <strong>identique</strong> d'un scénario à l'autre</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>les scénarios qui ne passent pas par la connexion, eux, <strong>passent</strong></span></li>
+    </ul>
+    <p style="margin-top:26px;">Quand ces trois signes sont réunis, chercher la cause dans la suite est une perte de temps&nbsp;: la cause est en amont.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="pourquoi-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">La cause</span>
+      <h2 class="section-title" id="pourquoi-title">Pourquoi est-ce presque toujours le second facteur&nbsp;?</h2>
+      <p class="section-subtitle">Parce que c'est la seule étape du parcours qui attend un geste humain. Tout le reste s'automatise&nbsp;: la saisie, la navigation, les assertions. Une validation à approuver sur un téléphone, non&nbsp;: elle attend quelqu'un, et à trois heures du matin il n'y a personne.</p>
+    </div>
+    <p>Un pilote de navigateur agit sur le document affiché. Dès que l'étape sort du navigateur, il n'a plus de prise&nbsp;: aucun sélecteur n'atteint l'écran d'un téléphone. Ce n'est pas une faiblesse de l'outil, c'est son périmètre, et <a href="automatiser-2fa-dans-vos-tests.html">la page de référence</a> détaille ce partage.</p>
+    <p>Les quatre familles de second facteur ne posent d'ailleurs pas le même problème&nbsp;: un code calculé se recalcule, une demande à approuver ne se calcule pas. La distinction est faite dans <a href="automatiser-2fa-sans-cle-secrete.html">« automatiser la 2FA sans clé secrète partagée »</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="rustines-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Les rustines</span>
+      <h2 class="section-title" id="rustines-title">Que coûtent les trois rustines habituelles&nbsp;?</h2>
+      <p class="section-subtitle">Une astreinte de nuit coûte cher et n'est pas tenable longtemps. Un compte sans second facteur fait passer les tests mais ne teste plus le parcours réel. Et sauter l'étape en test vide de son sens toute assertion qui vient après la connexion.</p>
+    </div>
+    <p>Les trois, avec leur facture&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>quelqu'un d'astreinte</strong>&nbsp;: ça marche une semaine, pas un trimestre, et ça se paie en heures</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>un compte sans 2FA</strong>&nbsp;: rapide, mais le parcours testé n'est plus celui des utilisateurs</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>sauter l'étape</strong>&nbsp;: la campagne repasse au vert et ne prouve plus la même chose</span></li>
+    </ul>
+    <p style="margin-top:26px;">La deuxième et la troisième se défendent dans certains cas&nbsp;: <a href="desactiver-2fa-en-test.html">le guide sur la désactivation en test</a> dit lesquels, et lesquels non. La première se chiffre, et c'est le sujet du <a href="cout-etape-manuelle-authentification.html">guide sur le coût de l'étape manuelle</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="bout-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Ce qu'il faut</span>
+      <h2 class="section-title" id="bout-title">Que faut-il pour qu'une campagne aille au bout&nbsp;?</h2>
+      <p class="section-subtitle">Que l'étape se franchisse sans personne, sur le parcours réel. Cela suppose un appareil qui reste enrôlé, joignable depuis votre chaîne de tests, et une commande que le test puisse déclencher lui-même au moment voulu. Trois conditions, et toutes les trois se vérifient avant d'acheter quoi que ce soit.</p>
+    </div>
+    <p>Trois conditions, et elles se vérifient avant d'acheter quoi que ce soit&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>un appareil <strong>enrôlé une fois</strong> et qui le reste d'une nuit à l'autre</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>un appareil qui <strong>joint votre environnement</strong> de test sans passerelle</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>une <strong>commande déclenchable</strong> depuis la chaîne, au moment où le test en a besoin</span></li>
+    </ul>
+    <p style="margin-top:26px;">Les deux familles d'outils qui répondent à ces conditions sont comparées dans <a href="tester-2fa-appareil-reel.html">« quel outil pour tester la 2FA sur appareil réel »</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cta-guide-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-guide-title" style="margin-bottom:16px;">Vous voulez le voir sur votre propre parcours&nbsp;?</h2>
+    <h3 style="font-size:1.5rem; font-weight:500; margin-bottom:32px; color:var(--teal-text);">Réservez une démo</h3>
+    <a href="../contact.html" class="btn btn--primary btn--lg">Prendre rendez-vous</a>
+  </div>
+</section>
+</main>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="../index.html">Accueil</a></li>
+          <li><a href="../a-propos.html">À propos</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Produit</h3>
+        <ul role="list">
+          <li><a href="../caracteristiques.html">Caractéristiques</a></li>
+          <li><a href="../cas-usage.html">Cas d'usage</a></li>
+          <li><a href="../modele-3d.html">Modèle 3D</a></li>
+          <li><a href="../commandez.html">Démo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="../contact.html">Nous contacter</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="../conditions-vente/">Conditions de vente</a>
+        <a href="../confidentialite/">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js?v=710207f0" defer></script>
+</body>
+</html>

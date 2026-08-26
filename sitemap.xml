@@ -38,6 +38,55 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-authentification-luxtrust.html"/>
   </url>
   <url>
+    <loc>https://q-bot.eu/blog/desactiver-2fa-en-test.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/desactiver-2fa-en-test.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/disable-2fa-in-testing.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/desactiver-2fa-en-test.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa-in-your-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/tester-2fa-appareil-reel.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/tester-2fa-appareil-reel.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/test-2fa-real-device.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/tester-2fa-appareil-reel.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/securite-conformite-donnees-de-test.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/securite-conformite-donnees-de-test.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/security-compliance-test-data.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/securite-conformite-donnees-de-test.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/automatiser-2fa-sans-cle-secrete.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-sans-cle-secrete.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa-without-shared-secret.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-sans-cle-secrete.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/night-runs-blocked-at-login.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/blog/cout-etape-manuelle-authentification.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/cost-of-manual-authentication-step.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html"/>
+  </url>
+  <url>
     <loc>https://q-bot.eu/modele-3d.html</loc>
     <lastmod>2026-08-25</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/modele-3d.html"/>
@@ -128,6 +177,55 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-authentification-luxtrust.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-luxtrust-authentication.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-authentification-luxtrust.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/disable-2fa-in-testing.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/desactiver-2fa-en-test.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/disable-2fa-in-testing.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/desactiver-2fa-en-test.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/automate-2fa-in-your-tests.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa-in-your-tests.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/test-2fa-real-device.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/tester-2fa-appareil-reel.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/test-2fa-real-device.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/tester-2fa-appareil-reel.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/security-compliance-test-data.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/securite-conformite-donnees-de-test.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/security-compliance-test-data.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/securite-conformite-donnees-de-test.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/automate-2fa-without-shared-secret.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/automatiser-2fa-sans-cle-secrete.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/automate-2fa-without-shared-secret.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/automatiser-2fa-sans-cle-secrete.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/night-runs-blocked-at-login.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/night-runs-blocked-at-login.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/blog/cost-of-manual-authentication-step.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/cost-of-manual-authentication-step.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/en/3d-model.html</loc>

@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=2535b2ff">
+  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -170,7 +170,7 @@
   <div class="container">
     <div class="blog__featured">
       <div class="blog__featured-img">
-        <img src="../assets/img/blog/post-tokens.webp" alt="Booking a Q-Bot demonstration" width="768" height="768" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+        <img src="../assets/img/blog/post-tokens.webp" alt="Booking a Q-Bot demonstration" width="768" height="768" loading="lazy">
       </div>
       <div>
         <span class="blog-card__tag">Automation</span>
@@ -193,17 +193,31 @@
     <!-- ======= BLOG GRID ======= -->
     <div class="blog__grid" role="list">
 
-      <!-- Evergreen guide, not a dated post: a « Guide » tag and an update date rather
-           than a month of publication, and first in the grid. Cf. blog.html. -->
       <article class="blog-card reveal" role="listitem">
-        <img src="../assets/img/qbot-photo-dock.jpg" alt="A smartphone docked in the Q-Bot cradle, showing a LuxTrust transaction approval" width="699" height="860" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+        <img src="../assets/img/qbot-specs.jpg" alt="Automating two-factor authentication in your tests" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Reference guide</span>
+          <h3 class="blog-card__title"><a href="blog/automate-2fa-in-your-tests.html">Automating two-factor authentication in your tests</a></h3>
+          <p class="blog-card__excerpt">The four families of second factor, what a browser can and cannot reach, and the three approaches to clearing the step with nobody in front of the screen.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>4 min</span>
+          </div>
+          <a href="blog/automate-2fa-in-your-tests.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/qbot-photo-dock.jpg" alt="Automating a LuxTrust authentication in your tests" width="768" height="768" loading="lazy">
         <div class="blog-card__content">
           <span class="blog-card__tag">Guide</span>
           <h3 class="blog-card__title"><a href="blog/automate-luxtrust-authentication.html">Automating a LuxTrust authentication in your tests</a></h3>
           <p class="blog-card__excerpt">A LuxTrust approval is not computed, it is granted on the phone. Where Selenium and Cypress stop, and how to clear that step on a real Android device.</p>
           <div class="blog-card__meta">
             <span>Updated 26 August 2026</span>
-            <span>7 min</span>
+            <span>6 min</span>
           </div>
           <a href="blog/automate-luxtrust-authentication.html" class="blog-card__read-more">
             Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -212,7 +226,103 @@
       </article>
 
       <article class="blog-card reveal" role="listitem">
-        <img src="../assets/img/blog/post-merkur.webp" alt="Q-Bot, the robot automating two-factor authentication" width="768" height="768" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+        <img src="../assets/img/blog/post-2fa.webp" alt="Should you disable 2FA in test environments?" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Guide</span>
+          <h3 class="blog-card__title"><a href="blog/disable-2fa-in-testing.html">Should you disable 2FA in test environments?</a></h3>
+          <p class="blog-card__excerpt">Disabling 2FA in testing is defensible in three cases and expensive in three others. How to decide, and what Selenium's own documentation recommends.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>4 min</span>
+          </div>
+          <a href="blog/disable-2fa-in-testing.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/qbot-interface-en.jpg?v=27469e30" alt="Automating 2FA without a shared secret" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Guide</span>
+          <h3 class="blog-card__title"><a href="blog/automate-2fa-without-shared-secret.html">Automating 2FA without a shared secret</a></h3>
+          <p class="blog-card__excerpt">Obtaining a test account's TOTP seed works, and assumes someone hands it to you. The journeys where no seed exists, and how to clear the step without one.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>3 min</span>
+          </div>
+          <a href="blog/automate-2fa-without-shared-secret.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/qbot-photo-poste.jpg" alt="Which tool for testing 2FA on a real device?" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Comparison</span>
+          <h3 class="blog-card__title"><a href="blog/test-2fa-real-device.html">Which tool for testing 2FA on a real device?</a></h3>
+          <p class="blog-card__excerpt">A device in the cloud and a device on your own network answer different constraints. The difference, and the six questions to ask any vendor.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>3 min</span>
+          </div>
+          <a href="blog/test-2fa-real-device.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/blog/post-tokens.webp" alt="Security, compliance and test data" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Guide</span>
+          <h3 class="blog-card__title"><a href="blog/security-compliance-test-data.html">Security, compliance and test data</a></h3>
+          <p class="blog-card__excerpt">What data an authentication test handles, where it goes, and the questions a security review will ask. Including what this approach does not cover.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>3 min</span>
+          </div>
+          <a href="blog/security-compliance-test-data.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/qbot-gen-actuelle.webp" alt="Why your night runs stop at login" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Guide</span>
+          <h3 class="blog-card__title"><a href="blog/night-runs-blocked-at-login.html">Why your night runs stop at login</a></h3>
+          <p class="blog-card__excerpt">A cluster of failures in the same place with the same trace: it is almost always the second factor. The three usual workarounds, and what they really cost.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>3 min</span>
+          </div>
+          <a href="blog/night-runs-blocked-at-login.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/qbot-proto-1-boitier.webp" alt="What does the manual authentication step cost?" width="768" height="768" loading="lazy">
+        <div class="blog-card__content">
+          <span class="blog-card__tag">Guide</span>
+          <h3 class="blog-card__title"><a href="blog/cost-of-manual-authentication-step.html">What does the manual authentication step cost?</a></h3>
+          <p class="blog-card__excerpt">The calculation is in hours, with your numbers: testers, minutes lost, working days. The three costs people forget, and what it does not say.</p>
+          <div class="blog-card__meta">
+            <span>Updated 26 August 2026</span>
+            <span>3 min</span>
+          </div>
+          <a href="blog/cost-of-manual-authentication-step.html" class="blog-card__read-more">
+            Read the guide <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </article>
+
+      <article class="blog-card reveal" role="listitem">
+        <img src="../assets/img/blog/post-merkur.webp" alt="A look back at our innovation with Merkur" width="768" height="768" loading="lazy">
         <div class="blog-card__content">
           <span class="blog-card__tag">Press</span>
           <h3 class="blog-card__title"><a href="blog/innovation-merkur.html">A look back at our innovation with Merkur</a></h3>
@@ -222,23 +332,23 @@
             <span>3 min</span>
           </div>
           <a href="blog/innovation-merkur.html" class="blog-card__read-more">
-            Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Read the article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
       </article>
 
       <article class="blog-card reveal" role="listitem">
-        <img src="../assets/img/blog/post-2fa.webp" alt="Two-factor authentication on a smartphone" width="768" height="768" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+        <img src="../assets/img/blog/post-2fa.webp" alt="What is two-factor authentication?" width="768" height="768" loading="lazy">
         <div class="blog-card__content">
           <span class="blog-card__tag">Security</span>
           <h3 class="blog-card__title"><a href="blog/two-factor-authentication.html">What is two-factor authentication?</a></h3>
           <p class="blog-card__excerpt">Security on the web matters to everyone. That is why two-factor authentication is the ideal tool for securing logins.</p>
           <div class="blog-card__meta">
             <span>March 2023</span>
-            <span>3 min</span>
+            <span>2 min</span>
           </div>
           <a href="blog/two-factor-authentication.html" class="blog-card__read-more">
-            Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Read the article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
         </div>
       </article>

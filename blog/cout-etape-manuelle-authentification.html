@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Combien coûte l'étape manuelle d'authentification ? | Q-Leap</title>
+  <meta name="description" content="Le calcul se fait en heures, avec vos chiffres : testeurs, minutes perdues, jours ouvrés. Les trois coûts qu'on oublie, et ce que le calcul ne dit pas.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/cost-of-manual-authentication-step.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Combien coûte l'étape manuelle d'authentification ? | Q-Leap">
+  <meta property="og:description" content="Le calcul se fait en heures, avec vos chiffres : testeurs, minutes perdues, jours ouvrés. Les trois coûts qu'on oublie, et ce que le calcul ne dit pas.">
+  <meta property="og:url" content="https://q-bot.eu/blog/cout-etape-manuelle-authentification.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone Android inséré dans son socle, l'interface web à l'écran">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Combien coûte l'étape manuelle d'authentification ? | Q-Leap">
+  <meta name="twitter:description" content="Le calcul se fait en heures, avec vos chiffres : testeurs, minutes perdues, jours ouvrés. Les trois coûts qu'on oublie, et ce que le calcul ne dit pas.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Le coût de l'étape manuelle",
+      "item": "https://q-bot.eu/blog/cout-etape-manuelle-authentification.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Combien coûte l'étape manuelle d'authentification ?",
+  "description": "Le calcul se fait en heures, avec vos chiffres : testeurs, minutes perdues, jours ouvrés. Les trois coûts qu'on oublie, et ce que le calcul ne dit pas.",
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "inLanguage": "fr",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/blog/cout-etape-manuelle-authentification.html" },
+  "author": { "@id": "https://q-bot.eu/#organization" },
+  "publisher": { "@id": "https://q-bot.eu/#organization" },
+  "about": [
+    { "@type": "Thing", "name": "LuxTrust" },
+    { "@type": "Thing", "name": "two-factor authentication" },
+    { "@type": "Thing", "name": "test automation" }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="../index.html" class="nav__logo" aria-label="Q-Bot, accueil">
+        <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../a-propos.html" class="nav__link">À propos</a></li>
+        <li><a href="../caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="../cas-usage.html" class="nav__link">Cas d'usage</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="../contact.html" class="btn btn--primary">Demo gratuite</a>
+                <div class="nav__lang">
+          <a href="../en/blog/cost-of-manual-authentication-step.html" hreflang="en" aria-label="Cette page est en français. Passer à la version anglaise." title="Cette page est en français. Passer à la version anglaise."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> FR</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Guide</span>
+    <h1 id="page-title">Combien coûte l'étape manuelle d'authentification&nbsp;?</h1>
+    <p>Personne ne peut répondre à votre place&nbsp;: le chiffre dépend de vos effectifs et de vos campagnes. Ce guide donne la formule, les trois coûts que l'on oublie systématiquement, et ce que ce calcul ne dit pas. Vous repartez avec votre chiffre, pas avec le nôtre.</p>
+    <p class="guide-date">Mis à jour le <time datetime="2026-08-26">26 août 2026</time></p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Fil d'Ariane">
+      <li><a href="../index.html">Accueil</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><a href="../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">Le coût de l'étape manuelle</span></li>
+    </ol>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="formule-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Le calcul</span>
+      <h2 class="section-title" id="formule-title">Comment se calcule le coût, en heures&nbsp;?</h2>
+      <p class="section-subtitle">Trois nombres suffisent&nbsp;: combien de personnes sont mobilisées par cette étape, combien de minutes chacune y perd par jour, et combien de jours ouvrés compte le mois. Le produit des trois donne des heures, et les heures se convertissent en journées de test.</p>
+    </div>
+    <p>La formule, telle quelle&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>testeurs mobilisés</strong> × <strong>minutes perdues par jour</strong> × <strong>21 jours ouvrés</strong></span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>le résultat est en minutes&nbsp;: divisé par 60, il donne des heures</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>divisé par 7, il donne des <strong>journées de test</strong>, l'unité dans laquelle on planifie</span></li>
+    </ul>
+    <p style="margin-top:26px;">Le calcul est posé sur la <a href="../commandez.html">page de démonstration</a>, avec deux curseurs et le détail affiché sous le résultat. Un grand nombre sans son calcul est un argument publicitaire&nbsp;; avec son calcul, c'est une mesure que vous pouvez contredire.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="oublies-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Ce qu'on oublie</span>
+      <h2 class="section-title" id="oublies-title">Quels sont les trois coûts que l'on oublie&nbsp;?</h2>
+      <p class="section-subtitle">Le temps de reprise après interruption, qui ne se voit dans aucun relevé. La disponibilité de nuit, qui ne se paie pas au tarif de jour. Et les campagnes abandonnées, dont le coût n'est pas le temps passé mais l'information qu'on n'a pas eue.</p>
+    </div>
+    <p>Les trois, dans l'ordre où ils grossissent&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>la <strong>reprise après interruption</strong>&nbsp;: valider un code prend dix secondes, retrouver le fil en prend davantage</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>la <strong>disponibilité de nuit</strong>&nbsp;: une astreinte ne se compare pas à une heure de journée</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>les <strong>campagnes abandonnées</strong>&nbsp;: le coût n'est pas le temps passé, c'est le défaut qu'on n'a pas vu</span></li>
+    </ul>
+    <p style="margin-top:26px;">Le troisième est le plus lourd et le plus difficile à chiffrer. Le symptôme, lui, est visible dès le rapport du matin&nbsp;: <a href="campagnes-de-nuit-bloquees-au-login.html">« pourquoi vos campagnes de nuit s'arrêtent au login »</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="mesurer-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Chez vous</span>
+      <h2 class="section-title" id="mesurer-title">Comment le mesurer chez vous cette semaine&nbsp;?</h2>
+      <p class="section-subtitle">Sans outil et sans réunion&nbsp;: relevez pendant cinq jours le nombre de validations manuelles faites par votre équipe, et le nombre de scénarios en échec à la même étape. Deux colonnes dans un tableur suffisent, et le résultat est difficile à contester.</p>
+    </div>
+    <p>Le protocole, tel qu'il tient sur un coin de table&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>une ligne par jour, deux colonnes&nbsp;: <strong>validations faites à la main</strong> et <strong>scénarios en échec à cette étape</strong></span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>cinq jours, pas un&nbsp;: un lundi ne ressemble pas à un jeudi de fin d'itération</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>notez à part les <strong>campagnes relancées</strong> le lendemain matin</span></li>
+    </ul>
+    <p style="margin-top:26px;">Ce relevé sert deux fois&nbsp;: il donne le chiffre, et il montre à une direction où part le temps.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="pasdit-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Les limites du calcul</span>
+      <h2 class="section-title" id="pasdit-title">Qu'est-ce que ce calcul ne dit pas&nbsp;?</h2>
+      <p class="section-subtitle">Il ne dit pas ce qu'une solution coûte, il dit ce que le problème coûte. Convertir des heures en euros demanderait votre taux horaire, que nous n'avons pas et que nous n'inventerons pas. Le rapprochement des deux, c'est votre calcul, avec vos chiffres.</p>
+    </div>
+    <p>Deux précisions qui rendent ce calcul défendable&nbsp;:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>il rend un résultat en <strong>heures et en journées</strong>, jamais en euros&nbsp;: le taux horaire est le vôtre</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>il ne suppose <strong>aucun gain</strong> de notre côté&nbsp;: c'est votre coût actuel, pas une économie promise</span></li>
+    </ul>
+    <p style="margin-top:26px;">Ce que change concrètement l'automatisation de cette étape est décrit dans la <a href="automatiser-2fa-dans-vos-tests.html">page de référence</a>, et le tarif se donne en démonstration, pas dans un guide.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cta-guide-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-guide-title" style="margin-bottom:16px;">Vous voulez le voir sur votre propre parcours&nbsp;?</h2>
+    <h3 style="font-size:1.5rem; font-weight:500; margin-bottom:32px; color:var(--teal-text);">Réservez une démo</h3>
+    <a href="../contact.html" class="btn btn--primary btn--lg">Prendre rendez-vous</a>
+  </div>
+</section>
+</main>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="../index.html">Accueil</a></li>
+          <li><a href="../a-propos.html">À propos</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Produit</h3>
+        <ul role="list">
+          <li><a href="../caracteristiques.html">Caractéristiques</a></li>
+          <li><a href="../cas-usage.html">Cas d'usage</a></li>
+          <li><a href="../modele-3d.html">Modèle 3D</a></li>
+          <li><a href="../commandez.html">Démo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="../contact.html">Nous contacter</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="../conditions-vente/">Conditions de vente</a>
+        <a href="../confidentialite/">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js?v=710207f0" defer></script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Should you disable 2FA in test environments? | Q-Leap</title>
+  <meta name="description" content="Disabling 2FA in testing is defensible in three cases and expensive in three others. How to decide, and what Selenium's own documentation recommends.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/en/blog/disable-2fa-in-testing.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/disable-2fa-in-testing.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/desactiver-2fa-en-test.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/desactiver-2fa-en-test.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Should you disable 2FA in test environments? | Q-Leap">
+  <meta property="og:description" content="Disabling 2FA in testing is defensible in three cases and expensive in three others. How to decide, and what Selenium's own documentation recommends.">
+  <meta property="og:url" content="https://q-bot.eu/en/blog/disable-2fa-in-testing.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Should you disable 2FA in test environments? | Q-Leap">
+  <meta name="twitter:description" content="Disabling 2FA in testing is defensible in three cases and expensive in three others. How to decide, and what Selenium's own documentation recommends.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=c9d2bf61">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://q-bot.eu/en/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Disabling 2FA in testing",
+      "item": "https://q-bot.eu/en/blog/disable-2fa-in-testing.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Should you disable 2FA in test environments?",
+  "description": "Disabling 2FA in testing is defensible in three cases and expensive in three others. How to decide, and what Selenium's own documentation recommends.",
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "inLanguage": "en",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/en/blog/disable-2fa-in-testing.html" },
+  "author": { "@id": "https://q-bot.eu/#organization" },
+  "publisher": { "@id": "https://q-bot.eu/#organization" },
+  "about": [
+    { "@type": "Thing", "name": "LuxTrust" },
+    { "@type": "Thing", "name": "two-factor authentication" },
+    { "@type": "Thing", "name": "test automation" }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Main navigation">
+      <a href="../index.html" class="nav__logo" aria-label="Q-Bot, home">
+        <img src="../../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../about.html" class="nav__link">About</a></li>
+        <li><a href="../technical-specs.html" class="nav__link">Specifications</a></li>
+        <li><a href="../use-cases.html" class="nav__link">Use cases</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="../contact.html" class="btn btn--primary">Free demo</a>
+                <div class="nav__lang">
+          <a href="../../blog/desactiver-2fa-en-test.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Guide</span>
+    <h1 id="page-title">Should you disable 2FA in test environments?</h1>
+    <p>Often yes, sometimes no, and the answer comes down to a single question: is the login journey part of what you are testing? This guide gives the three cases where disabling is the right call, the three where it is a risk, and how to decide in three minutes.</p>
+    <p class="guide-date">Updated <time datetime="2026-08-26">26 August 2026</time></p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Breadcrumb">
+      <li><a href="../../index.html">Home</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><a href="../../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">Disabling 2FA in testing</span></li>
+    </ol>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="perdez-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">What it changes</span>
+      <h2 class="section-title" id="perdez-title">What exactly do you lose by disabling it?</h2>
+      <p class="section-subtitle">You stop testing the journey your users take. A real sign-in goes through a second factor; the one in your tests does not. Everything that depends on that step falls outside coverage: the redirect after approval, session expiry, and what happens on refusal.</p>
+    </div>
+    <p>It is a trade-off, not a mistake. But you should know what you are setting aside.</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>the <strong>redirect</strong> after approval, often where a journey breaks</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>session expiry</strong>, which depends on when authentication happened</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>refusal</strong> and the return to the sign-in screen</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>repeated attempts</strong> and account lock-out</span></li>
+    </ul>
+    <p style="margin-top:26px;">In short: you keep coverage of the application and lose coverage of its front door.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="oui-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The three cases for yes</span>
+      <h2 class="section-title" id="oui-title">When is disabling it the right call?</h2>
+      <p class="section-subtitle">When sign-in is not the subject of the test. A unit test, a UI test on an internal screen, a dataset built by script: in those three cases, clearing a strong authentication adds nothing to the coverage and only lengthens the run. An injected session is simpler than any tool.</p>
+    </div>
+    <p>Three situations where the answer is clear:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>unit or integration test</strong> that never goes through the interface</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>an <strong>internal screen</strong> reached with a session already opened by script</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>dataset</strong> prepared through the API, where sign-in is only a prerequisite</span></li>
+    </ul>
+    <p style="margin-top:26px;">In those cases an injected session or a service account without a second factor is simpler and faster than any tool.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="non-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The three cases for no</span>
+      <h2 class="section-title" id="non-title">When is it a risk?</h2>
+      <p class="section-subtitle">When sign-in IS the subject, when the test acts as a release gate, or when an auditor will ask for proof that the real journey ran. There, a test that bypasses the second factor does not prove what it is asked to prove.</p>
+    </div>
+    <p>The three expensive cases:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>regression suite</strong> on the sign-in journey itself</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>release gate</strong>, where the test result is the decision</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>regulated context</strong>, where you must show the real journey ran</span></li>
+    </ul>
+    <p style="margin-top:26px;">The tell-tale sign: if nobody would agree to ship without a human having signed in once by hand, the test is not covering what you think it covers.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="selenium-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">What the source says</span>
+      <h2 class="section-title" id="selenium-title">What does Selenium's documentation recommend?</h2>
+      <p class="section-subtitle">It devotes a page to the question and offers three routes: disable 2FA in the test environment, disable it for one account, or obtain the shared secret and recompute the code. All three are sound, and the definition it works from draws its own boundary.</p>
+    </div>
+    <p>The page is <a href="https://www.selenium.dev/documentation/test_practices/discouraged/two_factor_authentication/" target="_blank" rel="noopener">« Two Factor Authentication », under discouraged practices</a>. It is an authoritative source, written by the project your team uses every day.</p>
+    <p>Read the definition it works from, though: it describes 2FA as a code received through an app, an SMS or an email. It covers neither requests to <strong>approve</strong> nor sovereign identity apps. Its third route, obtaining the shared secret, assumes a secret exists and that someone hands it to you.</p>
+    <p>That is exactly where its boundary lies, and it is the subject of the <a href="automate-2fa-without-shared-secret.html">guide on automating without a shared secret</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="trancher-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The decision</span>
+      <h2 class="section-title" id="trancher-title">How do you decide, in three questions?</h2>
+      <p class="section-subtitle">Is the sign-in journey part of this test's scope? Do you hold the secret that lets you recompute the code? And does this test's result decide whether something ships or not? Three answers, and the choice is made without a meeting and without a proof of concept.</p>
+    </div>
+    <p>In order:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>out of scope</strong> and nothing ships on it: disable, that is the simple choice</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>in scope</strong> and you hold the secret: recompute the code, a library is enough</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>in scope</strong> and no secret can be obtained: you need a real device</span></li>
+    </ul>
+    <p style="margin-top:26px;">The third case covers approval requests and identity apps: the <a href="automate-2fa-in-your-tests.html">page covering the whole subject</a> sets out the three approaches, and the <a href="automate-luxtrust-authentication.html">LuxTrust guide</a> gives a worked example.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cta-guide-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-guide-title" style="margin-bottom:16px;">Want to see it on your own login flow?</h2>
+    <h3 style="font-size:1.5rem; font-weight:500; margin-bottom:32px; color:var(--teal-text);">Book a demo</h3>
+    <a href="../contact.html" class="btn btn--primary btn--lg">Make an appointment</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Social media">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Product</h3>
+        <ul role="list">
+          <li><a href="../technical-specs.html">Technical Specs</a></li>
+          <li><span aria-current="page">Use Cases</span></li>
+          <li><a href="../3d-model.html">3D Model</a></li>
+          <li><a href="../order.html">Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="../contact.html">Contact us</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Legal links">
+        <a href="../terms-and-conditions-of-sale/">Terms of Sale</a>
+        <a href="../privacy/">Privacy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js?v=710207f0" defer></script>
+</body>
+</html>

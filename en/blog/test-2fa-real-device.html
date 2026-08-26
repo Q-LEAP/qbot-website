@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Which tool for testing 2FA on a real device? | Q-Leap</title>
+  <meta name="description" content="A device in the cloud and a device on your own network answer different constraints. The difference, and the six questions to ask any vendor.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://q-bot.eu/en/blog/test-2fa-real-device.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/blog/test-2fa-real-device.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/blog/tester-2fa-appareil-reel.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/blog/tester-2fa-appareil-reel.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Which tool for testing 2FA on a real device? | Q-Leap">
+  <meta property="og:description" content="A device in the cloud and a device on your own network answer different constraints. The difference, and the six questions to ask any vendor.">
+  <meta property="og:url" content="https://q-bot.eu/en/blog/test-2fa-real-device.html">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Q-Bot by Q-Leap">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Which tool for testing 2FA on a real device? | Q-Leap">
+  <meta name="twitter:description" content="A device in the cloud and a device on your own network answer different constraints. The difference, and the six questions to ask any vendor.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=c9d2bf61">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-baseline.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://q-bot.eu/en/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Testing on a real device",
+      "item": "https://q-bot.eu/en/blog/test-2fa-real-device.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Which tool for testing 2FA on a real device?",
+  "description": "A device in the cloud and a device on your own network answer different constraints. The difference, and the six questions to ask any vendor.",
+  "datePublished": "2026-08-26",
+  "dateModified": "2026-08-26",
+  "inLanguage": "en",
+  "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/en/blog/test-2fa-real-device.html" },
+  "author": { "@id": "https://q-bot.eu/#organization" },
+  "publisher": { "@id": "https://q-bot.eu/#organization" },
+  "about": [
+    { "@type": "Thing", "name": "LuxTrust" },
+    { "@type": "Thing", "name": "two-factor authentication" },
+    { "@type": "Thing", "name": "test automation" }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Main navigation">
+      <a href="../index.html" class="nav__logo" aria-label="Q-Bot, home">
+        <img src="../../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="94" height="40">
+      </a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="../about.html" class="nav__link">About</a></li>
+        <li><a href="../technical-specs.html" class="nav__link">Specifications</a></li>
+        <li><a href="../use-cases.html" class="nav__link">Use cases</a></li>
+        <li><a href="../contact.html" class="nav__link">Contact</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="../contact.html" class="btn btn--primary">Free demo</a>
+                <div class="nav__lang">
+          <a href="../../blog/tester-2fa-appareil-reel.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Comparison</span>
+    <h1 id="page-title">Which tool for testing 2FA on a real device?</h1>
+    <p>Two families of tools run tests on real phones: hosted device farms, and devices sitting on your own network. They answer different constraints, and the choice comes down to what your authentication app requires.</p>
+    <p class="guide-date">Updated <time datetime="2026-08-26">26 August 2026</time></p>
+  </div>
+</section>
+
+<div class="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb__list" aria-label="Breadcrumb">
+      <li><a href="../../index.html">Home</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><a href="../../blog.html">Blog</a></li>
+      <li><span aria-hidden="true">&rsaquo;</span></li>
+      <li><span aria-current="page">Testing on a real device</span></li>
+    </ol>
+  </div>
+</div>
+
+<section class="section" aria-labelledby="familles-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The two families</span>
+      <h2 class="section-title" id="familles-title">What are the two families of tools?</h2>
+      <p class="section-subtitle">On one side, hosted device farms, where you rent access to phones that live at a provider. On the other, devices sitting on your own network, driven from your side. The first family brings numbers and variety, the second brings proximity. Many teams end up needing both.</p>
+    </div>
+    <p>Both run code on real hardware, which is already the main thing. The difference lies elsewhere: in <strong>where</strong> the device sits, and therefore in what it can reach.</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>hosted farm</strong> gives access to dozens of models and versions, with no hardware to manage</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>a <strong>device on your network</strong> sees what your network sees, and nothing leaves your premises</span></li>
+    </ul>
+    <p style="margin-top:26px;">Neither is better in the abstract. They answer two different constraints, and many teams need both.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="nuage-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The cloud</span>
+      <h2 class="section-title" id="nuage-title">What does a hosted device change?</h2>
+      <p class="section-subtitle">It brings coverage: many models, many Android and iOS versions, all available on demand and with no hardware to manage. It is the right answer when the question is « does my application render correctly everywhere », and that question matters a great deal.</p>
+    </div>
+    <p>It is the compatibility-testing tool, and nothing else replaces it. Two things to check once an authentication step enters the journey:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>the device must be able to <strong>reach your test environment</strong>, often behind a private network</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>the authentication app must be <strong>enrolable</strong> on that device, and stay enrolled between sessions</span></li>
+    </ul>
+    <p style="margin-top:26px;">These are logistics questions, not objections: they can be solved, but they should be asked before the choice, not after.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="reseau-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Your network</span>
+      <h2 class="section-title" id="reseau-title">What does a device on your own network change?</h2>
+      <p class="section-subtitle">It is enrolled once and stays enrolled, it reaches your internal environments with no gateway, and nothing it displays leaves your premises. That is the answer when authentication is itself part of the test, and when a security review has to sign off.</p>
+    </div>
+    <p>The account used for testing stays enrolled on a device that does not move, and that is what makes the journey replayable every night with nobody watching.</p>
+    <p>This is Q-Bot's model: an ordinary Android phone, wired over USB, driven through <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, on your network. Test data stays inside the box, a subject covered by the <a href="security-compliance-test-data.html">security and compliance guide</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="questions-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The list to take with you</span>
+      <h2 class="section-title" id="questions-title">Which six questions should you ask a vendor?</h2>
+      <p class="section-subtitle">They are not about advertised features but about what actually blocks in practice. Ask them of any vendor, including us: the answers will tell you within five minutes whether the tool covers your whole journey or only a part of it. Ask for them in writing.</p>
+    </div>
+    <p>Ask them as they stand:</p>
+    <ul class="api-facts">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>can the device <strong>reach my internal test environment</strong>?</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>does my authentication account <strong>stay enrolled between sessions</strong>?</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>can the tool approve a <strong>pushed request</strong>, or only type a code?</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>can it <strong>read a displayed code</strong> and hand it back to my test?</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>where are</strong> my scenarios' screenshots stored?</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>which platforms exactly, and which ones NOT?</span></li>
+    </ul>
+    <p style="margin-top:26px;">Our answer to the last one is on the record: <strong>Android only, no iOS</strong>. The driving relies on ADB, which has no equivalent on iPhone. If your journey has to be validated on an iPhone, a hosted farm is the right tool, not ours.</p>
+    <p style="margin-top:18px; font-size:0.9375rem;">Other tools are named here only to place the families. We attribute no limitation to any named vendor: the six questions exist so that you get their answers from them.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cta-guide-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-guide-title" style="margin-bottom:16px;">Want to see it on your own login flow?</h2>
+    <h3 style="font-size:1.5rem; font-weight:500; margin-bottom:32px; color:var(--teal-text);">Book a demo</h3>
+    <a href="../contact.html" class="btn btn--primary btn--lg">Make an appointment</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../../assets/img/logo-baseline-neg.png" alt="Q-Bot by Q-Leap" width="84" height="36">
+        </div>
+        <p class="footer__desc">
+          The unique solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Social media">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Q-Bot</h3>
+        <ul role="list">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../blog.html">Blog</a></li>
+          <li><a href="../faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Product</h3>
+        <ul role="list">
+          <li><a href="../technical-specs.html">Technical Specs</a></li>
+          <li><span aria-current="page">Use Cases</span></li>
+          <li><a href="../3d-model.html">3D Model</a></li>
+          <li><a href="../order.html">Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="../contact.html">Contact us</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Legal links">
+        <a href="../terms-and-conditions-of-sale/">Terms of Sale</a>
+        <a href="../privacy/">Privacy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js?v=710207f0" defer></script>
+</body>
+</html>

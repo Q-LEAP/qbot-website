@@ -2347,6 +2347,21 @@ a:focus-visible { border-radius: var(--radius-sm); }
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
 }
+/* La vignette d'une carte est CARRÉE, et sa taille vient d'ici et non d'un style en
+   ligne. Elle portait `width:100%;height:100%;object-fit:cover` dans le balisage,
+   donc hors d'atteinte de cette feuille : dans une carte en colonne flex, ce
+   `height:100%` ne résolvait rien et la hauteur retombait sur le rapport de chaque
+   fichier. Relevé avant : 436 px pour une carte, 459 pour sa voisine, en portrait.
+   `aspect-ratio: 1/1` donne la même hauteur pour toutes et raccourcit la carte de
+   19 % à toutes les largeurs (436 → 354 à 1440, 321 → 261 à 900, 418 → 340 à 390).
+   La vedette (`.blog__featured-img`) n'est PAS concernée : elle est plus grande à
+   dessein, et le client l'a confirmée telle quelle. */
+.blog-card > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
 .blog-card__banner {
   width: 100%;
   aspect-ratio: 16/9;

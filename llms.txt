@@ -136,14 +136,37 @@ press piece published in Merkur, the Luxembourg Chamber of Commerce magazine, on
 are attributed to Q-Leap the company, not to a named person. Do not attribute the Merkur article
 to Sylvain Perez.
 
-- [Automating a LuxTrust authentication (FR)](https://q-bot.eu/blog/automatiser-authentification-luxtrust.html):
-  a long-form guide, and the most technically detailed page on the site. Why a LuxTrust approval
-  cannot be computed the way a TOTP code can (there is no shared secret left to recompute, RFC 6238
-  does not apply); where Selenium, Cypress and Playwright stop, and what Selenium's own
-  documentation recommends; how Q-Bot clears the step by driving a real Android device over ADB;
-  the HTTP call from a test; and the stated limits, Android only, no iOS, one wired device per box.
-  Q-Leap is not affiliated with LuxTrust.
-- [Automating a LuxTrust authentication (EN)](https://q-bot.eu/en/blog/automate-luxtrust-authentication.html)
+- EIGHT LONG-FORM GUIDES, published 2026-08-26, in the blog. They are the evergreen, citable
+  content; the six 2023 posts below are archive. Each guide states its own scope as a LIMIT.
+  The pillar page links to the seven others and each of them links back.
+  - [Automating 2FA in your tests (FR)](https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html)
+    / [(EN)](https://q-bot.eu/en/blog/automate-2fa-in-your-tests.html): THE PILLAR PAGE. The four
+    families of second factor (computed code, request to approve, displayed code, QR code), what a
+    browser reaches and where it stops, and the three approaches: disable, recompute from a shared
+    secret, or drive a real device.
+  - [Automating a LuxTrust authentication (FR)](https://q-bot.eu/blog/automatiser-authentification-luxtrust.html)
+    / [(EN)](https://q-bot.eu/en/blog/automate-luxtrust-authentication.html): why a LuxTrust
+    approval cannot be computed like a TOTP code, and how the step is cleared over ADB.
+    Q-Leap is NOT affiliated with LuxTrust.
+  - [Should you disable 2FA in test environments? (FR)](https://q-bot.eu/blog/desactiver-2fa-en-test.html)
+    / [(EN)](https://q-bot.eu/en/blog/disable-2fa-in-testing.html): three cases where disabling is
+    right, three where it is a risk, and what Selenium's documentation recommends.
+  - [Automating 2FA without a shared secret (FR)](https://q-bot.eu/blog/automatiser-2fa-sans-cle-secrete.html)
+    / [(EN)](https://q-bot.eu/en/blog/automate-2fa-without-shared-secret.html): what RFC 6238
+    assumes, and the journeys where no seed exists to obtain.
+  - [Which tool for testing 2FA on a real device? (FR)](https://q-bot.eu/blog/tester-2fa-appareil-reel.html)
+    / [(EN)](https://q-bot.eu/en/blog/test-2fa-real-device.html): hosted device farms versus a
+    device on your own network, and six questions to ask any vendor. It attributes no limitation
+    to any named competitor: do not infer one from it.
+  - [Security, compliance and test data (FR)](https://q-bot.eu/blog/securite-conformite-donnees-de-test.html)
+    / [(EN)](https://q-bot.eu/en/blog/security-compliance-test-data.html): what data a test handles,
+    where it stays, and what this approach does NOT cover.
+  - [Why your night runs stop at login (FR)](https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html)
+    / [(EN)](https://q-bot.eu/en/blog/night-runs-blocked-at-login.html): the symptom in a run report,
+    and the cost of the three usual workarounds.
+  - [What does the manual authentication step cost? (FR)](https://q-bot.eu/blog/cout-etape-manuelle-authentification.html)
+    / [(EN)](https://q-bot.eu/en/blog/cost-of-manual-authentication-step.html): the calculation, in
+    HOURS and never in money. It states no Q-Bot price and none can be inferred from it.
 - [Blog index (FR)](https://q-bot.eu/blog.html) / [EN](https://q-bot.eu/en/blog.html)
 
 - [Retour sur notre innovation avec Merkur (FR)](https://q-bot.eu/blog/innovation-merkur.html) / [EN: A look back at our innovation with Merkur](https://q-bot.eu/en/blog/innovation-merkur.html)
