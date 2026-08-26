@@ -3760,16 +3760,39 @@ découpée dans la brochure, qui est une image aplitie à 300 dpi. Il n'y a pas 
 densité 2 : **x1,63 à 1440 px, x1,94 à 1920, x2,03 à 2560**. Le client voyait donc une vraie
 dégradation, pas une impression.
 
-La seule correction possible est de réduire l'affichage, et **le plafond est calculé, pas
-tâtonné** : à densité 2 il faut au plus 699/2 = 349 px affichés, et `.intro__image` agrandit son
-contenu de 1,08 au repos (la sur-échelle du parallaxe), donc 349/1,08 = 323 px de cadre. D'où
-`.intro__image--dock { max-width: 320px; }`, posé sur les **quatre** emplacements de la photo
-(les deux accueils, `commandez`, `en/order`). Relevé après : **x0,99** à 1440, 1920 et 2560 px.
+**PREMIER PLAFOND À 320 PX, INSUFFISANT.** Calcul : à densité 2 il faut au plus 699/2 = 349 px
+affichés, et `.intro__image` agrandit son contenu de 1,08 au repos (la sur-échelle du parallaxe),
+donc 349/1,08 = 323 px de cadre. Cela réglait la densité 2 (x0,99) mais laissait **x1,48 à
+densité 3**, et le client a signalé qu'elle était « encore légèrement pixelisée ». La leçon est
+qu'un plafond calculé pour densité 2 ne suffit pas : les téléphones et une partie des portables
+sont à densité 3, et un zoom navigateur de 125 % produit le même effet.
 
-**Ce qui reste, et c'est assumé** : à 390 px sur un écran de densité 3, l'agrandissement vaut
-encore 1,48. Descendre à 1,00 demanderait un cadre de 216 px, soit une vignette sur un téléphone
-où la colonne fait toute la largeur. La section deux colonnes n'existe de toute façon qu'au-delà
-de 900 px, là où le défaut a été signalé.
+**PLAFOND RETENU : 216 PX, ET CE NOMBRE TOMBE JUSTE DEUX FOIS.**
+
+1. C'est la demande du client, « la même taille que le bloc texte correspondant ». Le bloc texte
+   voisin mesure **286 px de haut** (relevé à 1440 et à 1920 px) ; un cadre de 216 px donne une
+   image de 287 px, donc les deux colonnes ont la même hauteur **au pixel près**. À 2560 px le
+   texte se resserre à 259 px, l'écart monte à 28 px, ce qui ne se voit pas ;
+2. c'est aussi `699 / 3 / 1,08 = 216`, donc la largeur au-delà de laquelle l'image serait encore
+   agrandie à **densité 3**. Relevé après : **x0,67 à densité 2 et x1,00 exactement à densité 3**,
+   à 1440, 1920 et 2560 px. Il n'y a plus aucun agrandissement nulle part.
+
+Conséquence acceptée : sur téléphone la photo est plus étroite que la colonne de texte. C'est le
+prix de sa résolution réelle, et l'afficher plus large ne montre que du détail qui n'existe pas
+dans le fichier.
+
+**ET LE CADRE DOIT TOUCHER UNE GOUTTIÈRE.** Un bloc plus étroit que sa colonne ne doit pas
+flotter entre les deux bords : mesuré sur les pages Démo, il restait 614 px de marge à gauche et
+350 à droite, donc au milieu. La règle du dépôt autorise gauche ou droite et interdit le centre.
+
+**LE SÉLECTEUR PORTE SUR `:last-child`, PAS SUR UN CONTENEUR NOMMÉ**, et c'est ce qui a coûté un
+essai : les deux dispositions n'emploient pas la même grille. Les accueils utilisent
+`.intro__grid` avec l'image en PREMIER (colonne de gauche), les pages Démo `.split-2` avec
+l'image en SECOND (colonne de droite). Un premier essai visait `.intro__grid > …` et ne
+s'appliquait donc nulle part où c'était nécessaire, sans erreur. `:last-child` décrit la
+position, qui est ce qui compte. Borné au-delà de 768 px, le seuil auquel `.split-2` repasse à
+une colonne. Vérifié à 390 / 768 / 769 / 900 / 1440 / 2560 px sur les quatre pages : chaque cadre
+touche une gouttière, **aucun cas « au milieu »**, 0 débordement.
 
 Le cadre reste **aligné à gauche** sur la gouttière : c'est la colonne qui garde sa largeur, pas
 l'image qui se centre dedans, conformément à la règle du dépôt.

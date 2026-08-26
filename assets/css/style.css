@@ -924,17 +924,49 @@ p { color: var(--gray); }
    ─────────────────────────────────────────────────────────────────────────────
    `qbot-photo-dock.jpg` fait 699 x 860 pixels réels, et c'est TOUT ce qui existe :
    elle est découpée dans la brochure, qui est une image aplatie à 300 dpi. Il n'y a
-   pas de version plus fine à aller chercher, seulement un agrandissement.
-   Mesuré avant correction, dans son cadre de colonne : x1,63 sur un écran Retina de
-   1440 px, x1,94 à 1920, **x2,03 à 2560**. C'est cet agrandissement que le client
-   voyait comme une pixelisation, et il est réel.
-   Le cadre est donc plafonné à 320 px. Le calcul, pas un tâtonnement : à densité 2 il
-   faut au plus 699/2 = 349 px affichés, et `.intro__image` agrandit son contenu de
-   1,08 au repos (la sur-échelle du parallaxe), donc 349/1,08 = 323 px de cadre. On
-   prend 320.
+   pas de version plus fine à aller chercher, seulement un agrandissement. Mesuré
+   dans son cadre de colonne d'origine, à densité 2 : x1,63 à 1440 px, x1,94 à 1920,
+   x2,03 à 2560. C'est cet agrandissement que le client voyait comme une
+   pixelisation.
+
+   216 PX, ET CE NOMBRE TOMBE JUSTE DEUX FOIS.
+   1. C'est la demande du client : « la même taille que le bloc texte
+      correspondant ». Le bloc texte voisin mesure 286 px de haut (relevé à 1440 et
+      à 1920 px) ; un cadre de 216 px donne une image de 287 px de haut, donc les
+      deux colonnes ont la même hauteur, au pixel.
+   2. C'est aussi la largeur au-delà de laquelle l'image serait encore agrandie sur
+      un écran à densité 3 : 699 / 3 / 1,08 = 216, où 1,08 est la sur-échelle que
+      `.intro__image` applique à son contenu au repos (celle du parallaxe). Un
+      premier plafond à 320 px suffisait à densité 2 mais laissait x1,48 à densité 3,
+      et c'est ce reste que le client voyait encore.
+
+   Conséquence acceptée : sur téléphone, la photo est plus étroite que la colonne de
+   texte. C'est le prix de sa résolution réelle, et l'afficher plus large ne montre
+   que du détail qui n'existe pas dans le fichier.
+
    Le cadre reste aligné à GAUCHE sur la gouttière, comme tout bloc du site : c'est
    la colonne qui garde sa largeur, pas l'image qui se centre dedans. */
-.intro__image--dock { max-width: 320px; }
+.intro__image--dock { max-width: 216px; }
+/* Quand ce cadre bridé est la colonne de DROITE, il se cale sur la gouttière
+   droite et non au milieu de la page : un bloc plus étroit que sa colonne doit
+   toucher un bord, jamais flotter entre les deux. La règle du dépôt autorise
+   gauche OU droite, et interdit le centre. Mesuré avant : 614 px de marge à
+   gauche et 350 à droite sur les pages Démo, donc au milieu.
+
+   LE SÉLECTEUR PORTE SUR `:last-child`, PAS SUR UN CONTENEUR NOMMÉ. Les deux
+   dispositions du site n'emploient pas la même grille : les accueils utilisent
+   `.intro__grid` (image en PREMIER, colonne de gauche), les pages Démo
+   `.split-2` (image en SECOND, colonne de droite). Un premier essai visait
+   `.intro__grid > …` et ne s'appliquait donc nulle part où c'était nécessaire.
+   `:last-child` décrit la position, qui est ce qui compte ici.
+
+   Borné au-delà de 768 px, le seuil auquel `.split-2` repasse à une colonne : en
+   dessous, alignement à gauche comme tout le reste du site. Entre 769 et 900,
+   `.intro__grid` est déjà empilée mais le cadre y est le PREMIER enfant, donc la
+   règle ne l'atteint pas. */
+@media (min-width: 769px) {
+  .intro__image--dock:last-child { margin-left: auto; }
+}
 
 /* BLOC DE SECOURS DU REPLI COURRIER (module 15). Il n'apparaît qu'après un envoi,
    quand le message a été passé au logiciel de courrier : il montre ce texte, au
