@@ -680,8 +680,13 @@ le disque).
 - **« Interface & API »** montrait `interface-screenshot.png`, une coupe CAO des entrailles du
   proto — aucun rapport avec une interface. Remplacée par `qbot-interface.jpg` (+ `-en`), une
   **maquette** construite en HTML/CSS puis capturée (`tools/render/interface-mockup.html`).
-  **Ce n'est pas une capture du produit** : c'est un schéma, à remplacer dès qu'une vraie capture
-  existe. Dessinée à la taille réelle d'affichage (600 px) puis capturée en DPR 2 — une première
+  **Ce n'est pas une capture du produit** : c'est un schéma, et son `alt` le dit au visiteur
+  (« Schéma de l'interface web Q-Bot »), donc rien n'est présenté pour ce qu'il n'est pas.
+  **ARBITRÉ PAR LE CLIENT LE 2026-08-27 : la maquette reste, ce n'est plus une dette.** Motif
+  donné : « pour l'instant c'est du full préprod côté Q-Bot donc c'est moche ». Autrement dit il
+  n'existe aucune capture présentable, et il n'y en aura pas avant que l'interface soit finie —
+  ne pas le remonter à chaque passe comme un correctif en attente. Dessinée à la taille réelle
+  d'affichage (600 px) puis capturée en DPR 2 — une première
   version dessinée en 1080 px se retrouvait réduite de moitié dans sa colonne, texte à 6 px.
 
 
@@ -738,8 +743,9 @@ cassé (23 URL), aucun lien sans intitulé, tous les `alt` présents, `Organizat
    pas public le coût est nul ; le jour de la mise en ligne, chaque envoi est un lead perdu.
 2. **Homepage à ~2,9 Mo** (film en lecture automatique) : **accepté tel quel** par le client.
    Ne pas y revenir sans nouvelle demande.
-3. Le visuel « Interface & API » est une **maquette**, pas une capture du produit — à remplacer
-   dès qu'une vraie capture existe.
+3. Le visuel « Interface & API » est une **maquette**, pas une capture du produit.
+   **PÉRIMÉ COMME POINT OUVERT, ARBITRÉ LE 2026-08-27** : l'interface réelle est en
+   préproduction et n'est pas présentable, la maquette reste. Voir la note du 2026-08-11.
 4. **Tarif : 850 € / mois HT** (arbitré par le client le 2026-08-19, remplace les 900 € TTC
    affichés jusque-là). Publié partout : prix visible et « TTC » → « HT » sur
    `commandez`/`order`, titre + les 3 métadonnées sociales de ces deux pages, la réponse
@@ -4479,3 +4485,20 @@ de leur page donneuse, donc une régénération reprend la nouvelle date sans ri
 Ce que cela confirme, et qui reste **hors de ce dépôt** : le « Depuis 10 ans » de `q-leap.eu`
 situerait la fondation en 2016, à quatre ans de sa propre date. C'est le chantier 11 du plan
 de bascule, et il vit dans le WordPress de q-leap.eu.
+
+## Deux points fermés par le client (2026-08-27)
+
+- **La séquence du jour J ne se prépare plus, elle s'exécutera le jour venu.** « On en parlera
+  le jour J. » Tout est outillé et vérifié (`tools/go-live.py`, les 52 relais,
+  `tools/verif-redirections.py`, la commande de contrôle de `_config.yml`) ; il ne reste qu'à
+  la dérouler dans l'ordre, qui est la seule contrainte dure. **Ne plus la remonter comme un
+  point ouvert à la fin des échanges** : elle n'attend pas une décision, elle attend une date.
+  Le seul point de non-retour reste l'étape 6, supprimer le WordPress avant d'avoir vu les
+  52 relais répondre sur le vrai domaine.
+- **La maquette « Interface & API » reste** : l'interface réelle est en préproduction et n'est
+  pas présentable. Les deux notes qui la donnaient « à remplacer dès qu'une vraie capture
+  existe » sont annotées sur place. Le visiteur n'est pas trompé, l'`alt` annonce un schéma.
+
+Reste donc ouvert, et rien d'autre : **Brevo** (chez les managers du client, aucune réponse au
+2026-08-27) et le **« Depuis 10 ans » de `q-leap.eu`**, qui vit hors de ce dépôt et contredit
+désormais de quatre ans le `foundingDate` du 5 avril 2012.
