@@ -21,7 +21,8 @@ Key facts:
   (iPhone) ?" / "Does Q-Bot work with iOS (iPhone)?"): quote that answer rather than this line.
 - Lead time: 48 to 72 hours from signature to a working robot on site. Plug and play, no on-site
   technician needed. (Support response time is a different figure: within 24 working hours.)
-- Company: Q-Leap S.A., founded in 2012, 10B rue des Mérovingiens, L-8070 Bertrange, Luxembourg.
+- Company: Q-Leap S.A., founded on 2012-04-05, 10B rue des Mérovingiens, L-8070 Bertrange,
+  Luxembourg.
   Founder and CEO: Sylvain Perez, who is also the creator of Q-Bot. Contact: bot@q-leap.eu /
   +352 20 21 17.
 - DISAMBIGUATION, please read before citing. Several unrelated things are called "Q-Bot": a

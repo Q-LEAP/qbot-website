@@ -4460,3 +4460,22 @@ relatifs, **0 cassé**. 121 blocs JSON-LD, **0 invalide**. 25 pages de blog bala
 au navigateur en normal et en mouvement réduit : un seul `h1`, 0 saut de niveau, 0 révélation
 invisible, 0 débordement, 0 image cassée, 0 erreur console, 0 cadratin, 0 emoji. Contraste sur
 le pire fond composité : ligne d'auteur 13,7:1, légende 8,5:1.
+
+## La date de fondation devient une vraie date (2026-08-27)
+
+Donnée par le client : **Q-Leap a été créée le 5 avril 2012**. Le `foundingDate` de
+l'`Organization` des **45 pages** passe de `"2012"` à `"2012-04-05"`, et `llms.txt` suit.
+`foundingDate` accepte une Date complète en schema.org, et une date précise est plus
+vérifiable qu'une année : c'est l'axe même que l'audit mesure quand il parle d'ancrer
+l'entité.
+
+**Le texte VISIBLE ne bouge pas.** Les neuf « depuis 2012 » de la prose et des métadonnées
+restent : le jour n'apporte rien à une phrase de présentation, et c'est du texte du live.
+La précision sert la machine, pas le lecteur.
+
+Aucun générateur ne porte cette valeur : les guides et les pages légales recopient l'en-tête
+de leur page donneuse, donc une régénération reprend la nouvelle date sans rien à changer.
+
+Ce que cela confirme, et qui reste **hors de ce dépôt** : le « Depuis 10 ans » de `q-leap.eu`
+situerait la fondation en 2016, à quatre ans de sa propre date. C'est le chantier 11 du plan
+de bascule, et il vit dans le WordPress de q-leap.eu.
