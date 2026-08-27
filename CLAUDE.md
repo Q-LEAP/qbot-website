@@ -4502,3 +4502,94 @@ de bascule, et il vit dans le WordPress de q-leap.eu.
 Reste donc ouvert, et rien d'autre : **Brevo** (chez les managers du client, aucune réponse au
 2026-08-27) et le **« Depuis 10 ans » de `q-leap.eu`**, qui vit hors de ce dépôt et contredit
 désormais de quatre ans le `foundingDate` du 5 avril 2012.
+
+## Les FAQ se laissent citer, et les articles de 2023 disent leur époque (2026-08-27)
+
+Deux chantiers de rédaction confiés par le client, avec une consigne explicite&nbsp;: « fais en
+sorte que ça reste cohérent et pas d'invention de ta part ». **Aucune phrase ajoutée n'est
+inventée** : chacune reprend un fait déjà publié ailleurs sur le site, et la source est notée en
+regard dans la table d'édition.
+
+### Les 21 ouvertures de FAQ trop courtes
+
+L'audit RosoAI mesure la fenêtre de 40 à 60 mots comme celle où un assistant recopie un
+paragraphe au lieu de le résumer. Relevé avant : **11 réponses françaises et 10 anglaises sur 17
+ouvraient sous 35 mots**, dont trois qui faisaient moins de 25 mots en tout.
+
+Trois sources d'expansion, dans cet ordre de préférence :
+
+1. **le corps de la réponse elle-même**, dont un paragraphe est absorbé dans l'ouverture puis
+   supprimé (Q4, Q6, Q15, Q16). Zéro invention par construction ;
+2. **une autre réponse de la même FAQ** (Q7 reprend de Q9 que le tarif est donné en démo ; Q11 et
+   Q15 reprennent de Q9 que l'assistance et le remplacement sont inclus) ;
+3. **une page du site** (la page démo pour « 48 à 72 heures » et « sous 24h ouvrées », la fiche
+   technique pour le stockage local, le guide sécurité pour « tout reste dans le boîtier »).
+
+Après : **16 sur 17 dans la fenêtre, dans les deux langues.** La seule hors fenêtre est la Q3
+(66 et 70 mots), et elle est laissée : elle est trop LONGUE, pas trop courte, et c'est du texte
+d'origine qu'on ne découpe pas pour atteindre un chiffre.
+
+### Le JSON-LD de la FAQ se dérive du texte rendu, il ne se maintient plus à la main
+
+**Le piège documenté depuis le 2026-08-24 avait encore frappé, et un contrôle l'avait manqué.**
+Chaque réponse vit en double, texte visible et `acceptedAnswer.text`. Le contrôle d'alors
+comparait les **60 premiers caractères** : la réponse anglaise « What is Q-Bot? » divergeait à
+partir du MILIEU de la phrase (« and allow for increased security » côté JSON, « and it increases
+the security » côté page) et avait survécu à trois passes.
+
+`tools/sync-faq-jsonld.py` recale les 34 entrées sur le texte réellement rendu. Deux points de
+méthode qui font tout :
+
+- **la référence est `innerText`, pas le HTML aplati.** Aplatir le HTML insère une espace à chaque
+  balise fermante et produit « +352 20 21 17 . » : c'est exactement l'artefact qu'on retrouvait
+  dans **17 entrées** du JSON. Reproduire l'artefact aurait été le figer ;
+- **il faut OUVRIR les accordéons avant de lire.** Une réponse repliée est en `max-height: 0` et
+  son texte rendu serait vide.
+
+Relevé : 26 entrées recalées sur 34, puis **0 au second passage** (le script est idempotent, ce qui
+est le vrai contrôle). Il recale aussi le libellé de la question, qui vit en double lui aussi.
+
+### Les quatre articles « token » : le récit reste, l'époque est nommée
+
+**Le vocabulaire de 2023 n'est PAS réécrit, et c'est délibéré.** Ces articles racontent le
+lancement de la première version, celle conçue pour les tokens LuxTrust ; la réécrire ferait dire
+à une publication datée autre chose que ce qu'elle a dit. Ce qui manquait, c'est que le lecteur
+sache lequel des deux produits il lit.
+
+La note de transparence le dit désormais : « Le vocabulaire de l'époque parle de token et de
+récupération de la valeur d'un OTP : c'est la première version de Q-Bot, celle de 2022, conçue
+pour les tokens LuxTrust. Le produit a changé depuis (…) il n'y a plus aucune valeur à reconnaître
+ni à récupérer. » `llms.txt` porte la même mise en garde, plus une seconde : **le « 100 % des
+tests de fonctionnalités » de ces articles est une CITATION du fondateur en 2023**, pas une
+revendication d'aujourd'hui, et le périmètre actuel est énoncé comme une limite.
+
+Les deux articles sur la 2FA ne sont pas concernés : leur unique mention d'un OTP est une
+définition générale, qui reste juste.
+
+### Trois défauts objectifs trouvés en les relisant
+
+- **le chapeau était DUPLIQUÉ** sur les deux articles « tokens » : le premier paragraphe est la
+  première phrase du second, mot pour mot ;
+- **deux mots collés** dans les deux articles français : « les systèmes ouapplications » et « du
+  réseau de l'entreprise estdemandée » ;
+- **et voici pourquoi le doublon avait survécu à toutes les passes : LES DEUX CHAPEAUX NE SONT PAS
+  NORMALISÉS PAREIL, DANS LE MÊME FICHIER.** « marché » y est écrit en NFD dans l'un et en NFC dans
+  l'autre. Deux chaînes visuellement identiques, différentes à l'octet : `t2.startswith(t1)` répond
+  faux, et toute recherche de doublon passe à côté. C'est le même piège que `Screen modèle 3D` dans
+  `_config.yml`, mais à l'intérieur d'un fichier de contenu.
+
+  **Règle qui en découle** : sur ce dépôt, toute comparaison de texte se fait après
+  `unicodedata.normalize('NFC', …)`, et **on n'écrit jamais une chaîne accentuée à la main dans un
+  motif de remplacement** : on l'extrait du fichier, ou on ancre sur de l'ASCII. Trois de mes
+  motifs ont échoué en silence avant que je m'en aperçoive.
+
+Les quatre articles retouchés passent leur `dateModified` au 2026-08-27, visible et structuré ;
+les deux autres restent au 25, n'ayant pas changé.
+
+### Contrôles
+
+Les deux audits sur les 45 pages, à 1440 et 390 px : **0 constat**. 121 blocs JSON-LD valides.
+`sync-faq-jsonld.py` idempotent. 14 pages menées au navigateur, accordéons ouverts, en normal et
+en mouvement réduit : un seul `h1`, 0 saut de niveau, 0 révélation invisible, 0 débordement,
+0 erreur console, 0 cadratin, 0 emoji, 0 coquille. Vérifié aussi que les aperçus de FAQ des deux
+accueils restent cohérents : ce sont des résumés délibérés, pas des copies des réponses.

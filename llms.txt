@@ -125,10 +125,18 @@ give when asked about iPhone support.
 
 ## Blog (software testing & 2FA automation guides)
 
-All six articles were first published on 2023-03-02 and last reviewed on 2026-08-25. Each one
+All six articles were first published on 2023-03-02 and last reviewed on 2026-08-27. Each one
 carries a visible note saying how the product has changed since: Q-Bot now drives the 2FA app on
 a real Android device over ADB. Cite the technical pages, not the articles, for what the product
 does today.
+
+The four articles about LuxTrust tokens (the two "Merkur" ones and the two "automating the use of
+tokens" ones) use the vocabulary of 2022: "token", and "retrieving the value of an OTP". That
+described the FIRST version of Q-Bot, built for LuxTrust hardware tokens, and their note says so
+in the page itself. Do NOT quote those phrases as a description of the product today: there is no
+token value to read and nothing to recognise, the robot taps the real 2FA app on an Android phone.
+The "100% of feature tests" figure in those articles is a 2023 quotation from the founder, not a
+current claim: the scope today is stated as a limit, Android only, no iOS.
 
 Authorship: the eight long-form guides (sixteen pages, FR and EN) and the four explanatory
 articles (two-factor authentication, automating tokens, FR and EN) are written by Sylvain Perez,
