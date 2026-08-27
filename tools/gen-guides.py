@@ -38,9 +38,18 @@ import io
 import os
 import posixpath
 import re
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import vignettes_guides as vg
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MAJ_ISO, MAJ_FR, MAJ_EN = '2026-08-26', '26 août 2026', '26 August 2026'
+# DEUX DATES ET NON UNE. Les seize guides sont parus le 2026-08-26 ; toute
+# retouche postérieure change la date de MODIFICATION, jamais celle de parution.
+# Les confondre annoncerait à chaque passe un contenu tout neuf, ce qui est
+# précisément le signal trompeur contre lequel l'audit RosoAI met en garde.
+PUB_ISO = '2026-08-26'
+MAJ_ISO, MAJ_FR, MAJ_EN = '2026-08-27', '27 août 2026', '27 August 2026'
 
 CHECK = ('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
          'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
@@ -55,7 +64,32 @@ def liste(items):
     return '\n'.join(out)
 
 
-def bloc(idc, label, titre, capsule, corps):
+def figure(base, legende, lang, prof):
+    """Un schéma dans le CORPS du guide, pas seulement en vignette d'index.
+
+    Les six schémas ne vivaient que sur les cartes de l'index de blog. Un schéma
+    posé dans le guide sert deux fois : il aide à comprendre, et c'est un objet
+    que les moteurs de réponse citent (audit RosoAI n°4, 2026-08-26).
+
+    LA DESCRIPTION D'IMAGE VIENT DE `vignettes_guides.py`, jamais réécrite ici :
+    c'est la même image que sur la carte, et deux textes alternatifs pour une
+    image divergent à la première correction. La LÉGENDE, elle, est propre au
+    guide — elle s'adresse à qui voit le schéma et dit ce qu'il faut en retenir.
+
+    `prof` et non `../` en dur : un guide FR vit dans `blog/` et un guide EN dans
+    `en/blog/`, donc les assets sont à `../` d'un côté et `../../` de l'autre.
+    C'est l'inverse du fil d'Ariane, qui vise l'accueil de la LANGUE.
+    """
+    largeur, hauteur = vg.dimensions(base)
+    return f'''    <figure class="guide-figure">
+      <img src="{prof}assets/img/{vg.fichier(base, lang)}" alt="{vg.alt(base, lang)}"
+           width="{largeur}" height="{hauteur}" loading="lazy" decoding="async">
+      <figcaption>{legende}</figcaption>
+    </figure>
+'''
+
+
+def bloc(idc, label, titre, capsule, corps, fig=''):
     return f'''
 <section class="section" aria-labelledby="{idc}">
   <div class="container">
@@ -64,7 +98,7 @@ def bloc(idc, label, titre, capsule, corps):
       <h2 class="section-title" id="{idc}">{titre}</h2>
       <p class="section-subtitle">{capsule}</p>
     </div>
-{corps}
+{fig}{corps}
   </div>
 </section>
 '''
@@ -97,8 +131,20 @@ CTA_FR = dict(cta_h2="Vous voulez le voir sur votre propre parcours&nbsp;?",
 CTA_EN = dict(cta_h2="Want to see it on your own login flow?",
               cta_h3="Book a demo", cta_btn="Make an appointment",
               cta_href='../contact.html')
-DATE_FR = dict(datel='Mis à jour le <time datetime="%s">%s</time>' % (MAJ_ISO, MAJ_FR))
-DATE_EN = dict(datel='Updated <time datetime="%s">%s</time>' % (MAJ_ISO, MAJ_EN))
+# LA SIGNATURE, VISIBLE ET STRUCTURÉE. Les 16 guides étaient attribués à
+# l'entreprise là où les quatre articles de 2023 le sont à une personne nommée et
+# reliée à son profil : c'est ce qui distingue une page d'expertise d'une page de
+# marque (audit RosoAI n°4). Arbitré par le client le 2026-08-27.
+# Les deux articles « Merkur » gardent `Organization` à dessein — ce sont la
+# reprise d'un article de presse, les signer nominativement dirait quelque chose
+# de faux sur lui ET sur le magazine. Ne pas « compléter » ces deux-là.
+PROFIL = 'https://www.linkedin.com/in/sylvainperez/'
+SIGNE_FR = f'Par <a href="{PROFIL}" target="_blank" rel="noopener">Sylvain Perez</a>, créateur de Q-Bot.'
+SIGNE_EN = f'By <a href="{PROFIL}" target="_blank" rel="noopener">Sylvain Perez</a>, creator of Q-Bot.'
+DATE_FR = dict(metier='Fondateur et CEO de Q-Leap, créateur de Q-Bot',
+               datel=SIGNE_FR + ' Mis à jour le <time datetime="%s">%s</time>' % (MAJ_ISO, MAJ_FR))
+DATE_EN = dict(metier='Founder and CEO of Q-Leap, creator of Q-Bot',
+               datel=SIGNE_EN + ' Updated <time datetime="%s">%s</time>' % (MAJ_ISO, MAJ_EN))
 
 LUX_FR = dict(
     title="Tester une authentification LuxTrust en automatisé | Q-Bot",
@@ -106,7 +152,6 @@ LUX_FR = dict(
     fil='Guide LuxTrust',
     label='Guide', h1="Tester une authentification LuxTrust en automatisé",
     lead="Une authentification LuxTrust ne se calcule pas&nbsp;: elle s'approuve, sur le téléphone de l'utilisateur. Aucune bibliothèque ne peut la reproduire, parce qu'il n'existe aucun secret partagé à recalculer. Ce guide explique où s'arrêtent Selenium et Cypress, et comment franchir cette étape sur un vrai appareil Android.",
-    datel=f'Mis à jour le <time datetime="{MAJ_ISO}">{MAJ_FR}</time>',
     cta_h2="Vous voulez le voir sur votre propre parcours&nbsp;?",
     cta_h3="Réservez une démo", cta_btn="Prendre rendez-vous", cta_href='../contact.html',
     sections=[
@@ -186,7 +231,6 @@ LUX_EN = dict(
     fil='LuxTrust guide',
     label='Guide', h1="Automating a LuxTrust authentication in your tests",
     lead="A LuxTrust authentication is not computed, it is approved on the user's phone. No library can stand in for it, because there is no shared secret left to recompute. This guide sets out where Selenium and Cypress stop, and how to clear that step on a real Android device.",
-    datel=f'Updated <time datetime="{MAJ_ISO}">{MAJ_EN}</time>',
     cta_h2="Want to see it on your own login flow?",
     cta_h3="Book a demo", cta_btn="Make an appointment", cta_href='../contact.html',
     sections=[
@@ -348,12 +392,17 @@ def construire(cfg):
   "@type": "TechArticle",
   "headline": "{cfg['h1'].replace('&nbsp;', ' ')}",
   "description": "{cfg['desc']}",
-  "datePublished": "{MAJ_ISO}",
+  "datePublished": "{PUB_ISO}",
   "dateModified": "{MAJ_ISO}",
   "inLanguage": "{cfg['lang']}",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg",
   "mainEntityOfPage": {{ "@type": "WebPage", "@id": "{url}" }},
-  "author": {{ "@id": "https://q-bot.eu/#organization" }},
+  "author": {{
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "{cfg['metier']}",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  }},
   "publisher": {{ "@id": "https://q-bot.eu/#organization" }},
   "about": [
     {{ "@type": "Thing", "name": "LuxTrust" }},
@@ -380,8 +429,10 @@ def construire(cfg):
     bas = bas.replace(f'<span aria-current="page">{nom_cu}</span>',
                       f'<a href="{lien_cu}">{nom_cu}</a>')
 
-    corps = ''.join(bloc(s['id'], s['label'], s['titre'], s['capsule'], s['corps'])
-                    for s in cfg['sections'])
+    corps = ''.join(
+        bloc(sec['id'], sec['label'], sec['titre'], sec['capsule'], sec['corps'],
+             figure(sec['schema'], sec['legende'], cfg['lang'], prof) if sec.get('schema') else '')
+        for sec in cfg['sections'])
 
     # LE FIL D'ARIANE VISE L'ACCUEIL DE SA LANGUE, PAS LA RACINE DU SITE, d'où
     # `../` en dur et non `{prof}`. Un guide FR vit dans `blog/` et un guide EN dans
@@ -554,6 +605,8 @@ PILIER_FR = dict(
              corps="""    <p>Le symptôme se lit dans un rapport de campagne&nbsp;: un grand nombre de scénarios en échec, tous au même endroit, et la même trace. Ce n'est pas la suite qui est fragile, c'est qu'elle ne peut pas franchir une étape.</p>
     <p>Ce que ça coûte se mesure en heures d'astreinte, et c'est le sujet du <a href="cout-etape-manuelle-authentification.html">guide sur le coût de l'étape manuelle</a>. Le symptôme lui-même est détaillé dans <a href="campagnes-de-nuit-bloquees-au-login.html">« pourquoi vos campagnes de nuit s'arrêtent au login »</a>.</p>"""),
         dict(id='familles-title', label='Le paysage',
+             schema='guides/familles-2fa',
+             legende="Les quatre familles de second facteur. Seule la première se recalcule depuis un secret&nbsp;; les trois autres se jouent sur l'appareil, et c'est exactement là que les outils de navigateur s'arrêtent.",
              titre="Quelles sont les quatre familles de second facteur&nbsp;?",
              capsule="Un code calculé, une demande à approuver, un code affiché nulle part ailleurs, et un QR code à scanner. Ces quatre familles ne s'automatisent pas de la même façon, et c'est la seule distinction qui compte pour décider d'une approche.",
              corps="""    <p>Dans l'ordre de difficulté croissante&nbsp;:</p>
@@ -570,6 +623,8 @@ PILIER_FR = dict(
              corps="""    <p><a href="https://www.selenium.dev/" target="_blank" rel="noopener">Selenium</a>, <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> et <a href="https://playwright.dev/" target="_blank" rel="noopener">Playwright</a> agissent sur le DOM. Dès que l'étape sort du navigateur, ils sont hors de leur domaine, et aucune option ne les y ramène.</p>
     <p>La documentation de Selenium <a href="https://www.selenium.dev/documentation/test_practices/discouraged/two_factor_authentication/" target="_blank" rel="noopener">le dit elle-même</a> et conseille de désactiver la double authentification en test. C'est une recommandation défendable, dont <a href="desactiver-2fa-en-test.html">le guide dédié</a> détaille les cas où elle s'applique et ceux où elle coûte cher.</p>"""),
         dict(id='approches-title', label='Les trois voies',
+             schema='guides/trois-voies',
+             legende="Une seule question ouvre les trois voies&nbsp;: la 2FA fait-elle partie de ce que vous testez, et détenez-vous le secret&nbsp;?",
              titre="Quelles sont les trois approches possibles&nbsp;?",
              capsule="Désactiver le second facteur, recalculer le code depuis son secret partagé, ou piloter un appareil réel. Chacune a un domaine où elle est le bon choix, et le domaine se lit sur une seule question&nbsp;: existe-t-il un secret que vous détenez&nbsp;?",
              corps="""    <p>Les trois, avec leur domaine&nbsp;:</p>
@@ -619,6 +674,8 @@ PILIER_EN = dict(
              corps="""    <p>The symptom shows up in a run report: a large number of failures, all in the same place, with the same trace. The suite is not flaky; it simply cannot clear one step.</p>
     <p>What that costs is measured in hours, and it is the subject of the <a href="cost-of-manual-authentication-step.html">guide on the cost of the manual step</a>. The symptom itself is covered in <a href="night-runs-blocked-at-login.html">« why your night runs stop at login »</a>.</p>"""),
         dict(id='familles-title', label='The landscape',
+             schema='guides/familles-2fa',
+             legende="The four families of second factor. Only the first can be recomputed from a secret; the other three happen on the device, which is precisely where browser tools stop.",
              titre="What are the four families of second factor?",
              capsule="A computed code, a request to approve, a code shown nowhere else, and a QR code to scan. These four families are not automated the same way, and that distinction is the only one that matters when you choose an approach. Everything else in this guide follows from it.",
              corps="""    <p>In order of increasing difficulty:</p>
@@ -635,6 +692,8 @@ PILIER_EN = dict(
              corps="""    <p><a href="https://www.selenium.dev/" target="_blank" rel="noopener">Selenium</a>, <a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> and <a href="https://playwright.dev/" target="_blank" rel="noopener">Playwright</a> act on the DOM. As soon as the step leaves the browser they are outside their domain, and no option brings them back in.</p>
     <p>Selenium's documentation <a href="https://www.selenium.dev/documentation/test_practices/discouraged/two_factor_authentication/" target="_blank" rel="noopener">says so itself</a> and advises disabling two-factor authentication in testing. That is a defensible recommendation, and <a href="disable-2fa-in-testing.html">the dedicated guide</a> sets out where it applies and where it costs you.</p>"""),
         dict(id='approches-title', label='The three routes',
+             schema='guides/trois-voies',
+             legende="A single question opens the three routes: is 2FA part of what you are testing, and do you hold the secret?",
              titre="What are the three possible approaches?",
              capsule="Disable the second factor, recompute the code from its shared secret, or drive a real device. Each has a domain where it is the right choice, and that domain comes down to one question: is there a secret that you hold?",
              corps="""    <p>All three, with their domain:</p>
@@ -786,6 +845,8 @@ SECU_FR = dict(
              ]) + """
     <p style="margin-top:26px;">Le point qui rassure une revue&nbsp;: il n'y a <strong>aucun secret d'authentification à extraire</strong> de l'application. Le pourquoi est dans <a href="automatiser-2fa-sans-cle-secrete.html">« automatiser la 2FA sans clé secrète partagée »</a>.</p>"""),
         dict(id='ou-title', label='La localisation',
+             schema='guides/rien-ne-sort',
+             legende="Scénarios, captures et base restent du même côté de la frontière&nbsp;: celui de votre réseau.",
              titre="Où vont ces données&nbsp;?",
              capsule="Nulle part. Les scénarios et leurs captures restent dans le boîtier, sur votre réseau, dans une base locale. Rien n'est envoyé vers un service en ligne, et aucune connexion internet n'est nécessaire pendant l'exécution des tests. Cela se vérifie en coupant le réseau et en relançant une campagne.",
              corps="""    <p>Concrètement&nbsp;:</p>
@@ -838,6 +899,8 @@ SECU_EN = dict(
              ]) + """
     <p style="margin-top:26px;">The point that reassures a review: there is <strong>no authentication secret to extract</strong> from the application. Why is covered in <a href="automate-2fa-without-shared-secret.html">« automating 2FA without a shared secret »</a>.</p>"""),
         dict(id='ou-title', label='The location',
+             schema='guides/rien-ne-sort',
+             legende="Scenarios, screenshots and store all stay on the same side of the boundary: your own network.",
              titre="Where does that data go?",
              capsule="Nowhere. Scenarios and their screenshots stay inside the box, on your own network, in a local database. Nothing is sent to an online service, and no internet connection is needed while the tests run. That last point can be verified by cutting the network and running a campaign.",
              corps="""    <p>Concretely:</p>
@@ -891,6 +954,8 @@ SANSCLE_FR = dict(
              ]) + """
     <p style="margin-top:26px;">La <a href="securite-conformite-donnees-de-test.html">page sur la sécurité et les données de test</a> détaille ce qu'une revue demande sur ce point précis.</p>"""),
         dict(id='totp-title', label='Ce que la norme suppose',
+             schema='guides/avec-sans-cle',
+             legende="À gauche, le seul cas que la norme TOTP couvre&nbsp;: un secret détenu, donc un code recalculable. À droite, tout le reste.",
              titre="Que suppose exactement la norme TOTP&nbsp;?",
              capsule="Qu'un secret a été partagé entre le service et l'appareil au moment de l'enrôlement, et que ce secret plus l'heure courante suffisent à produire le code. C'est écrit dans la RFC 6238, et c'est ce qui rend une bibliothèque capable de remplacer le téléphone.",
              corps="""    <p>La <a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener">RFC 6238</a> décrit un mot de passe à usage unique fondé sur le temps&nbsp;: le service et l'appareil détiennent la même graine, et chacun calcule le même code au même instant.</p>
@@ -932,6 +997,8 @@ SANSCLE_EN = dict(
              ]) + """
     <p style="margin-top:26px;">The <a href="security-compliance-test-data.html">page on security and test data</a> sets out what a review asks on that exact point.</p>"""),
         dict(id='totp-title', label='What the standard assumes',
+             schema='guides/avec-sans-cle',
+             legende="On the left, the only case the TOTP standard covers: a secret you hold, so a code you can recompute. On the right, everything else.",
              titre="What exactly does the TOTP standard assume?",
              capsule="That a secret was shared between the service and the device at enrolment, and that this secret plus the current time is enough to produce the code. That is written into RFC 6238, and it is what lets a library stand in for the phone.",
              corps="""    <p><a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener">RFC 6238</a> describes a time-based one-time password: the service and the device hold the same seed, and each computes the same code at the same instant.</p>
@@ -964,6 +1031,8 @@ NUIT_FR = dict(
     lead="Le rapport du matin montre un paquet d'échecs, tous au même endroit, avec la même trace. Ce n'est presque jamais une suite fragile&nbsp;: c'est une étape que rien n'a pu franchir pendant la nuit. Ce guide explique le symptôme, les rustines habituelles, et ce qu'il faut pour aller au bout.",
     sections=[
         dict(id='symptome-title', label='Le symptôme',
+             schema='guides/campagne-bute',
+             legende="Le rapport ne montre qu'une étape en échec, mais tout ce qui la suit n'a jamais été joué.",
              titre="À quoi ressemble le symptôme dans un rapport&nbsp;?",
              capsule="À une grappe d'échecs qui partagent trois traits&nbsp;: ils sont nombreux, ils tombent tous au même endroit du parcours, et ils portent la même trace. Une suite réellement instable échoue de façon dispersée&nbsp;; celle-ci échoue avec une régularité qui devrait mettre la puce à l'oreille.",
              corps="""    <p>Les trois signes qui distinguent un blocage d'une instabilité&nbsp;:</p>
@@ -1008,6 +1077,8 @@ NUIT_EN = dict(
     lead="The morning report shows a cluster of failures, all in the same place, with the same trace. It is almost never a flaky suite: it is a step nothing could clear overnight. This guide covers the symptom, the usual workarounds, and what it takes to reach the end.",
     sections=[
         dict(id='symptome-title', label='The symptom',
+             schema='guides/campagne-bute',
+             legende="The report shows a single failed step, but everything after it was never run at all.",
              titre="What does the symptom look like in a report?",
              capsule="A cluster of failures sharing three traits: there are many of them, they all land at the same point in the journey, and they carry the same trace. A genuinely flaky suite fails in a scattered way; this one fails with a regularity that should raise a flag.",
              corps="""    <p>The three signs that separate a blockage from instability:</p>
@@ -1055,6 +1126,8 @@ COUT_FR = dict(
     lead="Personne ne peut répondre à votre place&nbsp;: le chiffre dépend de vos effectifs et de vos campagnes. Ce guide donne la formule, les trois coûts que l'on oublie systématiquement, et ce que ce calcul ne dit pas. Vous repartez avec votre chiffre, pas avec le nôtre.",
     sections=[
         dict(id='formule-title', label='Le calcul',
+             schema='guides/le-calcul',
+             legende="Testeurs, minutes, jours ouvrés&nbsp;: le résultat reste en heures et en journées de test, jamais en euros.",
              titre="Comment se calcule le coût, en heures&nbsp;?",
              capsule="Trois nombres suffisent&nbsp;: combien de personnes sont mobilisées par cette étape, combien de minutes chacune y perd par jour, et combien de jours ouvrés compte le mois. Le produit des trois donne des heures, et les heures se convertissent en journées de test.",
              corps="""    <p>La formule, telle quelle&nbsp;:</p>
@@ -1103,6 +1176,8 @@ COUT_EN = dict(
     lead="Nobody can answer for you: the figure depends on your headcount and your runs. This guide gives the formula, the three costs that are systematically forgotten, and what the calculation does not say. You leave with your own number, not ours.",
     sections=[
         dict(id='formule-title', label='The calculation',
+             schema='guides/le-calcul',
+             legende="Testers, minutes, working days: the result stays in hours and testing days, never in money.",
              titre="How is the cost calculated, in hours?",
              capsule="Three numbers are enough: how many people this step ties up, how many minutes each of them loses per day, and how many working days the month holds. Their product gives minutes, minutes give hours, and hours convert into testing days, which is the unit you actually plan in.",
              corps="""    <p>The formula, as it stands:</p>

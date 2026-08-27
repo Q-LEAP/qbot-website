@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../../assets/css/style.css?v=c9d2bf61">
+  <link rel="stylesheet" href="../../assets/css/style.css?v=a1a35df2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -126,11 +126,16 @@
   "headline": "Why your night runs stop at login",
   "description": "A cluster of failures in the same place with the same trace: it is almost always the second factor. The three usual workarounds, and what they really cost.",
   "datePublished": "2026-08-26",
-  "dateModified": "2026-08-26",
+  "dateModified": "2026-08-27",
   "inLanguage": "en",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/en/blog/night-runs-blocked-at-login.html" },
-  "author": { "@id": "https://q-bot.eu/#organization" },
+  "author": {
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "Founder and CEO of Q-Leap, creator of Q-Bot",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  },
   "publisher": { "@id": "https://q-bot.eu/#organization" },
   "about": [
     { "@type": "Thing", "name": "LuxTrust" },
@@ -183,7 +188,7 @@
     <span class="section-label">Guide</span>
     <h1 id="page-title">Why your night runs stop at login</h1>
     <p>The morning report shows a cluster of failures, all in the same place, with the same trace. It is almost never a flaky suite: it is a step nothing could clear overnight. This guide covers the symptom, the usual workarounds, and what it takes to reach the end.</p>
-    <p class="guide-date">Updated <time datetime="2026-08-26">26 August 2026</time></p>
+    <p class="guide-date">By <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, creator of Q-Bot. Updated <time datetime="2026-08-27">27 August 2026</time></p>
   </div>
 </section>
 
@@ -206,6 +211,11 @@
       <h2 class="section-title" id="symptome-title">What does the symptom look like in a report?</h2>
       <p class="section-subtitle">A cluster of failures sharing three traits: there are many of them, they all land at the same point in the journey, and they carry the same trace. A genuinely flaky suite fails in a scattered way; this one fails with a regularity that should raise a flag.</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../../assets/img/guides/campagne-bute-en.webp" alt="A test run clearing the first steps then stopping dead at the 2FA step"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>The report shows a single failed step, but everything after it was never run at all.</figcaption>
+    </figure>
     <p>The three signs that separate a blockage from instability:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>failures are <strong>clustered</strong> on one step, not scattered through the suite</span></li>

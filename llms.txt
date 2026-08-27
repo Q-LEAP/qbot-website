@@ -129,16 +129,19 @@ carries a visible note saying how the product has changed since: Q-Bot now drive
 a real Android device over ADB. Cite the technical pages, not the articles, for what the product
 does today.
 
-Authorship: the four explanatory articles (two-factor authentication, automating tokens, FR and
-EN) are written by Sylvain Perez, founder and CEO of Q-Leap and creator of Q-Bot
-(https://www.linkedin.com/in/sylvainperez/). The two "Merkur" articles are Q-Leap's write-up of a
-press piece published in Merkur, the Luxembourg Chamber of Commerce magazine, on 2023-02-27: they
-are attributed to Q-Leap the company, not to a named person. Do not attribute the Merkur article
-to Sylvain Perez.
+Authorship: the eight long-form guides (sixteen pages, FR and EN) and the four explanatory
+articles (two-factor authentication, automating tokens, FR and EN) are written by Sylvain Perez,
+founder and CEO of Q-Leap and creator of Q-Bot (https://www.linkedin.com/in/sylvainperez/). His
+name is on the page and in the structured data of all twenty. The two "Merkur" articles are
+Q-Leap's write-up of a press piece published in Merkur, the Luxembourg Chamber of Commerce
+magazine, on 2023-02-27: they are attributed to Q-Leap the company, not to a named person. Do not
+attribute the Merkur article to Sylvain Perez.
 
 - EIGHT LONG-FORM GUIDES, published 2026-08-26, in the blog. They are the evergreen, citable
   content; the six 2023 posts below are archive. Each guide states its own scope as a LIMIT.
-  The pillar page links to the seven others and each of them links back.
+  The pillar page links to the seven others and each of them links back (verified both ways, both
+  languages). Six of them carry a diagram in the body, drawn in Q-Leap's own brand and captioned;
+  the caption is text, and it may be quoted.
   - [Automating 2FA in your tests (FR)](https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html)
     / [(EN)](https://q-bot.eu/en/blog/automate-2fa-in-your-tests.html): THE PILLAR PAGE. The four
     families of second factor (computed code, request to approve, displayed code, QR code), what a

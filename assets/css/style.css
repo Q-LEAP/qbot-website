@@ -5334,6 +5334,66 @@ label > input[type="checkbox"] {
    seule (0,1,0). Même piège que `.usecase__fig` et `.newsletter__legal`. */
 .page-hero .guide-date { font-size: 0.8125rem; margin-top: 6px; }
 
+/* LA SIGNATURE D'UN GUIDE ET CELLE D'UN ARTICLE PORTENT UN LIEN QUI NE SE VOYAIT
+   PAS. Relevé le 2026-08-27 : `.article-meta a` (les quatre articles signés) et
+   `.guide-date a` (les seize guides) prenaient exactement la couleur de leur
+   paragraphe, sans soulignement — donc rien, pas même la couleur, ne disait qu'il
+   y avait un lien vers le profil de l'auteur. C'est le motif déjà retenu pour les
+   libellés de fiche technique : on garde la couleur du texte, qui porte le
+   contraste, et le soulignement pointillé teal fait l'affordance. */
+.guide-date a,
+.article-meta a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 203, 190, 0.55);
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+.guide-date a:hover, .guide-date a:focus-visible,
+.article-meta a:hover, .article-meta a:focus-visible {
+  color: var(--teal);
+  text-decoration-color: currentColor;
+}
+
+/* Schéma dans le CORPS d'un guide. Les six schémas ne vivaient que sur les cartes
+   de l'index de blog ; un schéma posé dans le guide aide à comprendre ET donne aux
+   moteurs de réponse un objet à citer (audit RosoAI n°4, 2026-08-26).
+
+   LA LARGEUR N'EST PAS UN GOÛT, C'EST LA RÉSOLUTION DE LA SOURCE. Les schémas sont
+   sortis en 900 px par `tools/render/shoot-guide-thumbs.py` : à 450 px d'affichage
+   ils tombent à 1,00 sur un écran de densité 2, donc aucun agrandissement. Les
+   afficher plus large ne montrerait que du détail qui n'existe pas dans le fichier,
+   défaut déjà relevé sur la photo LuxTrust le 2026-08-26.
+
+   ALIGNÉ À GAUCHE, jamais centré : un bloc plus étroit que sa colonne doit toucher
+   une gouttière, c'est la règle du dépôt. Le `max-width` cède la place à `100%`
+   sous 500 px, où la colonne est plus étroite que la source. */
+.guide-figure {
+  margin: 32px 0 0;
+  max-width: 450px;
+}
+.guide-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid #2B2B2B;
+  background: #141414;
+}
+.guide-figure figcaption {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  /* `--gray` et non `--muted` : la légende est du texte qui compte, un assistant la
+     lit, et elle est posée sur le fond de page comme `.ucs__note` juste en dessous. */
+  color: var(--gray);
+}
+/* La figure ouvre la section : le corps qui la suit reprend le rythme des 32 px. */
+.guide-figure + p,
+.guide-figure + ul,
+.guide-figure + figure { margin-top: 32px; }
+
 .ucs__note {
   margin-top: 20px;
   max-width: 760px;

@@ -4369,3 +4369,94 @@ invisible, 0 débordement, 0 erreur console, 0 cadratin, 0 emoji.
 2. **poser les six schémas dans le corps des guides**, pas seulement en vignette d'index ;
 3. **signer les guides d'un `Person`** (Sylvain Perez) plutôt que de l'`Organization` ;
 4. **le « Depuis 10 ans » de `q-leap.eu`** : cinquième relevé, hors de ce dépôt.
+
+## Les schémas entrent dans les guides, et les guides sont signés (2026-08-27)
+
+Décisions 9 et 10 du plan de bascule 3, tranchées par le client. Les deux se font dans
+`tools/gen-guides.py`, donc une fois pour les seize pages.
+
+### La table des vignettes devient une source unique
+
+`tools/vignettes_guides.py` porte, par vignette, son fichier et sa **description d'image**
+dans les deux langues. `gen-index-guides.py` et `gen-guides.py` la lisent tous les deux.
+Même raison que `redirections_map.py` : la même image apparaît maintenant DEUX fois (la carte
+de l'index et la figure du corps), et deux textes alternatifs pour une image divergent à la
+première correction, en silence. Preuve que le branchement est fidèle : la régénération des
+deux index de blog rend un fichier **identique à l'octet**.
+
+Ce que cette table ne contient pas, à dessein : la **légende**. Une légende n'est pas une
+description d'image — elle s'adresse à qui VOIT le schéma, dit ce qu'il faut en retenir, et
+un assistant la lit comme du texte. Elle vit donc avec la section qu'elle illustre.
+
+### Six schémas, cinq guides, et la place de chacun
+
+| Schéma | Guide | Section |
+|---|---|---|
+| `familles-2fa` | page centrale | « Quelles sont les quatre familles de second facteur ? » |
+| `trois-voies` | page centrale | « Quelles sont les trois approches possibles ? » |
+| `avec-sans-cle` | sans clé secrète | « Que suppose exactement la norme TOTP ? » |
+| `rien-ne-sort` | sécurité et données | « Où vont ces données ? » |
+| `campagne-bute` | campagnes de nuit | « À quoi ressemble le symptôme dans un rapport ? » |
+| `le-calcul` | coût de l'étape manuelle | « Comment se calcule le coût, en heures ? » |
+
+La figure se pose **après la réponse courte**, avant le corps : c'est la réponse qui doit
+rester collée à sa question, la figure l'illustre ensuite. Deux guides n'en ont pas (LuxTrust
+et appareil réel) : leur vignette d'index est une photo, pas un schéma.
+
+**LA LARGEUR EST CALCULÉE, PAS CHOISIE.** Les schémas sortent en 900 px de
+`shoot-guide-thumbs.py` ; à **450 px d'affichage** ils tombent à un agrandissement de **1,00
+sur un écran de densité 2**. Mesuré à 390 / 768 / 1440 / 2560 px : 450 px partout sauf sur
+téléphone où la colonne fait 342 (1,14 à densité 3, la source n'a pas plus de pixels). Les
+afficher plus large ne montrerait que du détail qui n'existe pas dans le fichier — c'est le
+défaut corrigé sur la photo LuxTrust la veille. La figure est **alignée à gauche**, jamais
+centrée : relevé écart 0 px avec le logo et avec le titre de section, de 1024 à 2560 px.
+
+`prof` et non `../` en dur pour le chemin de l'image : un guide FR vit dans `blog/` et un
+guide EN dans `en/blog/`, donc les assets sont à `../` d'un côté et `../../` de l'autre.
+**C'est l'inverse du fil d'Ariane**, qui vise l'accueil de la LANGUE et prend `../` partout.
+Les deux règles cohabitent dans le même fichier, chacune commentée sur place.
+
+### Les seize guides sont signés, à l'écran comme dans le balisage
+
+`author` passe d'`Organization` à `Person` (Sylvain Perez, son `jobTitle`, son profil), et
+**la ligne visible suit** : « Par Sylvain Perez, créateur de Q-Bot. Mis à jour le… » dans le
+`.guide-date`, avec la formulation exacte déjà employée sur les quatre articles signés. Un
+auteur déclaré qu'on ne lit pas sur la page, c'est le défaut qui a déjà coûté des corrections
+sur les FAQ. Relevé : **16 sur 16 alignés**.
+
+**Les deux articles « Merkur » gardent `Organization`, ne pas les « compléter »** : ce sont la
+reprise d'un article de presse, les signer nominativement dirait quelque chose de faux sur lui
+ET sur le magazine. Vérifié après coup qu'ils sont intacts.
+
+### Un défaut trouvé en mesurant la signature
+
+**Le lien vers le profil de l'auteur n'avait aucune affordance**, ni dans le nouveau
+`.guide-date` ni dans le `.article-meta` des quatre articles signés (défaut préexistant) :
+couleur identique à celle du paragraphe, aucun soulignement — donc rien, pas même la couleur,
+ne disait qu'il y avait un lien. Réglé par le motif déjà retenu pour les libellés de fiche
+technique : la couleur du texte reste (c'est elle qui porte le contraste), et un
+**soulignement pointillé teal** fait l'affordance. Une seule règle couvre les vingt pages.
+
+### Publication et modification sont deux dates
+
+Retoucher les guides a fait apparaître un défaut de conception : `MAJ_ISO` servait à la fois de
+`datePublished` et de `dateModified`, donc toute retouche aurait annoncé un contenu tout neuf.
+C'est exactement le signal trompeur contre lequel l'audit RosoAI met en garde. `PUB_ISO` reste
+au **2026-08-26**, la date de modification passe au **2026-08-27**.
+
+Et **la carte de l'index LIT désormais cette date dans la page** au lieu de la porter en dur :
+elle annonçait le 26 quand la page disait le 27. Même principe que le titre et l'accroche, déjà
+relevés dans la page cible, et que le `lastmod` du plan de site. Une assertion échoue si une
+page ne porte pas de date lisible.
+
+Deux surcharges MORTES retirées au passage : le guide LuxTrust déclarait son propre `datel`,
+écrasé par `dict(LUX_FR, **DATE_FR)`. Sans effet, mais elles laissaient croire que ce guide se
+datait à part.
+
+### Contrôles
+
+Les deux audits sur les 45 pages, à 1440 et 390 px : **0 constat**. 72 pages, 1 585 liens
+relatifs, **0 cassé**. 121 blocs JSON-LD, **0 invalide**. 25 pages de blog balayées
+au navigateur en normal et en mouvement réduit : un seul `h1`, 0 saut de niveau, 0 révélation
+invisible, 0 débordement, 0 image cassée, 0 erreur console, 0 cadratin, 0 emoji. Contraste sur
+le pire fond composité : ligne d'auteur 13,7:1, légende 8,5:1.

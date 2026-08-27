@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
+  <link rel="stylesheet" href="../assets/css/style.css?v=a1a35df2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -126,11 +126,16 @@
   "headline": "Combien coûte l'étape manuelle d'authentification ?",
   "description": "Le calcul se fait en heures, avec vos chiffres : testeurs, minutes perdues, jours ouvrés. Les trois coûts qu'on oublie, et ce que le calcul ne dit pas.",
   "datePublished": "2026-08-26",
-  "dateModified": "2026-08-26",
+  "dateModified": "2026-08-27",
   "inLanguage": "fr",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/blog/cout-etape-manuelle-authentification.html" },
-  "author": { "@id": "https://q-bot.eu/#organization" },
+  "author": {
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "Fondateur et CEO de Q-Leap, créateur de Q-Bot",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  },
   "publisher": { "@id": "https://q-bot.eu/#organization" },
   "about": [
     { "@type": "Thing", "name": "LuxTrust" },
@@ -183,7 +188,7 @@
     <span class="section-label">Guide</span>
     <h1 id="page-title">Combien coûte l'étape manuelle d'authentification&nbsp;?</h1>
     <p>Personne ne peut répondre à votre place&nbsp;: le chiffre dépend de vos effectifs et de vos campagnes. Ce guide donne la formule, les trois coûts que l'on oublie systématiquement, et ce que ce calcul ne dit pas. Vous repartez avec votre chiffre, pas avec le nôtre.</p>
-    <p class="guide-date">Mis à jour le <time datetime="2026-08-26">26 août 2026</time></p>
+    <p class="guide-date">Par <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, créateur de Q-Bot. Mis à jour le <time datetime="2026-08-27">27 août 2026</time></p>
   </div>
 </section>
 
@@ -206,6 +211,11 @@
       <h2 class="section-title" id="formule-title">Comment se calcule le coût, en heures&nbsp;?</h2>
       <p class="section-subtitle">Trois nombres suffisent&nbsp;: combien de personnes sont mobilisées par cette étape, combien de minutes chacune y perd par jour, et combien de jours ouvrés compte le mois. Le produit des trois donne des heures, et les heures se convertissent en journées de test.</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../assets/img/guides/le-calcul-fr.webp" alt="Le calcul du coût : testeurs multipliés par minutes puis par jours ouvrés, en heures puis en journées"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>Testeurs, minutes, jours ouvrés&nbsp;: le résultat reste en heures et en journées de test, jamais en euros.</figcaption>
+    </figure>
     <p>La formule, telle quelle&nbsp;:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>testeurs mobilisés</strong> × <strong>minutes perdues par jour</strong> × <strong>21 jours ouvrés</strong></span></li>

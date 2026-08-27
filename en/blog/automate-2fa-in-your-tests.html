@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../../assets/css/style.css?v=c9d2bf61">
+  <link rel="stylesheet" href="../../assets/css/style.css?v=a1a35df2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -126,11 +126,16 @@
   "headline": "Automating two-factor authentication in your tests",
   "description": "The four families of second factor, what a browser can and cannot reach, and the three approaches to clearing the step with nobody in front of the screen.",
   "datePublished": "2026-08-26",
-  "dateModified": "2026-08-26",
+  "dateModified": "2026-08-27",
   "inLanguage": "en",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/en/blog/automate-2fa-in-your-tests.html" },
-  "author": { "@id": "https://q-bot.eu/#organization" },
+  "author": {
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "Founder and CEO of Q-Leap, creator of Q-Bot",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  },
   "publisher": { "@id": "https://q-bot.eu/#organization" },
   "about": [
     { "@type": "Thing", "name": "LuxTrust" },
@@ -183,7 +188,7 @@
     <span class="section-label">Reference guide</span>
     <h1 id="page-title">Automating two-factor authentication in your tests</h1>
     <p>Two-factor authentication is the last manual step in many test pipelines. This guide covers the whole subject: what exactly blocks, the four families of second factor, what a browser can reach and where it stops, and the three possible approaches to clearing the step.</p>
-    <p class="guide-date">Updated <time datetime="2026-08-26">26 August 2026</time></p>
+    <p class="guide-date">By <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, creator of Q-Bot. Updated <time datetime="2026-08-27">27 August 2026</time></p>
   </div>
 </section>
 
@@ -218,6 +223,11 @@
       <h2 class="section-title" id="familles-title">What are the four families of second factor?</h2>
       <p class="section-subtitle">A computed code, a request to approve, a code shown nowhere else, and a QR code to scan. These four families are not automated the same way, and that distinction is the only one that matters when you choose an approach. Everything else in this guide follows from it.</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../../assets/img/guides/familles-2fa-en.webp" alt="The four families of second factor: computed code, request to approve, displayed code, QR code"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>The four families of second factor. Only the first can be recomputed from a secret; the other three happen on the device, which is precisely where browser tools stop.</figcaption>
+    </figure>
     <p>In order of increasing difficulty:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>a computed code</strong> (TOTP): Google Authenticator, Microsoft Authenticator. It derives from a shared secret and the current time, per <a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener">RFC 6238</a></span></li>
@@ -248,6 +258,11 @@
       <h2 class="section-title" id="approches-title">What are the three possible approaches?</h2>
       <p class="section-subtitle">Disable the second factor, recompute the code from its shared secret, or drive a real device. Each has a domain where it is the right choice, and that domain comes down to one question: is there a secret that you hold?</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../../assets/img/guides/trois-voies-en.webp" alt="The three possible routes: disable, recompute the code, or drive a real device"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>A single question opens the three routes: is 2FA part of what you are testing, and do you hold the secret?</figcaption>
+    </figure>
     <p>All three, with their domain:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>disable</strong>: simple and free, whenever the sign-in journey is out of the test's scope</span></li>

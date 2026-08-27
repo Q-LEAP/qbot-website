@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
+  <link rel="stylesheet" href="../assets/css/style.css?v=a1a35df2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -126,11 +126,16 @@
   "headline": "Automatiser la double authentification dans vos tests",
   "description": "Les quatre familles de 2FA, ce qu'un navigateur sait faire et où il s'arrête, et les trois approches pour franchir l'étape sans intervention humaine.",
   "datePublished": "2026-08-26",
-  "dateModified": "2026-08-26",
+  "dateModified": "2026-08-27",
   "inLanguage": "fr",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/blog/automatiser-2fa-dans-vos-tests.html" },
-  "author": { "@id": "https://q-bot.eu/#organization" },
+  "author": {
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "Fondateur et CEO de Q-Leap, créateur de Q-Bot",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  },
   "publisher": { "@id": "https://q-bot.eu/#organization" },
   "about": [
     { "@type": "Thing", "name": "LuxTrust" },
@@ -183,7 +188,7 @@
     <span class="section-label">Guide de référence</span>
     <h1 id="page-title">Automatiser la double authentification dans vos tests</h1>
     <p>La double authentification est le dernier verrou manuel de beaucoup de chaînes de tests. Ce guide fait le tour du sujet&nbsp;: ce qui bloque exactement, les quatre familles de second facteur, ce qu'un navigateur sait faire et où il s'arrête, et les trois approches possibles pour franchir l'étape.</p>
-    <p class="guide-date">Mis à jour le <time datetime="2026-08-26">26 août 2026</time></p>
+    <p class="guide-date">Par <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, créateur de Q-Bot. Mis à jour le <time datetime="2026-08-27">27 août 2026</time></p>
   </div>
 </section>
 
@@ -218,6 +223,11 @@
       <h2 class="section-title" id="familles-title">Quelles sont les quatre familles de second facteur&nbsp;?</h2>
       <p class="section-subtitle">Un code calculé, une demande à approuver, un code affiché nulle part ailleurs, et un QR code à scanner. Ces quatre familles ne s'automatisent pas de la même façon, et c'est la seule distinction qui compte pour décider d'une approche.</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../assets/img/guides/familles-2fa-fr.webp" alt="Les quatre familles de second facteur : code calculé, demande à approuver, code affiché, QR code"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>Les quatre familles de second facteur. Seule la première se recalcule depuis un secret&nbsp;; les trois autres se jouent sur l'appareil, et c'est exactement là que les outils de navigateur s'arrêtent.</figcaption>
+    </figure>
     <p>Dans l'ordre de difficulté croissante&nbsp;:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>un code calculé</strong> (TOTP)&nbsp;: Google Authenticator, Microsoft Authenticator. Il dérive d'un secret partagé et de l'heure, selon la <a href="https://www.rfc-editor.org/rfc/rfc6238" target="_blank" rel="noopener">RFC 6238</a></span></li>
@@ -248,6 +258,11 @@
       <h2 class="section-title" id="approches-title">Quelles sont les trois approches possibles&nbsp;?</h2>
       <p class="section-subtitle">Désactiver le second facteur, recalculer le code depuis son secret partagé, ou piloter un appareil réel. Chacune a un domaine où elle est le bon choix, et le domaine se lit sur une seule question&nbsp;: existe-t-il un secret que vous détenez&nbsp;?</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../assets/img/guides/trois-voies-fr.webp" alt="Les trois voies possibles : désactiver, recalculer le code, ou piloter un appareil réel"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>Une seule question ouvre les trois voies&nbsp;: la 2FA fait-elle partie de ce que vous testez, et détenez-vous le secret&nbsp;?</figcaption>
+    </figure>
     <p>Les trois, avec leur domaine&nbsp;:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><strong>désactiver</strong>&nbsp;: simple et gratuit, dès que le parcours de connexion sort du périmètre du test</span></li>

@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
+  <link rel="stylesheet" href="../assets/css/style.css?v=a1a35df2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -126,11 +126,16 @@
   "headline": "Sécurité, conformité et données de test",
   "description": "Quelles données un test d'authentification manipule, où elles vont, et les questions d'une revue de sécurité. Avec ce que cette approche ne couvre pas.",
   "datePublished": "2026-08-26",
-  "dateModified": "2026-08-26",
+  "dateModified": "2026-08-27",
   "inLanguage": "fr",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/blog/securite-conformite-donnees-de-test.html" },
-  "author": { "@id": "https://q-bot.eu/#organization" },
+  "author": {
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "Fondateur et CEO de Q-Leap, créateur de Q-Bot",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  },
   "publisher": { "@id": "https://q-bot.eu/#organization" },
   "about": [
     { "@type": "Thing", "name": "LuxTrust" },
@@ -183,7 +188,7 @@
     <span class="section-label">Guide</span>
     <h1 id="page-title">Sécurité, conformité et données de test</h1>
     <p>C'est souvent la question qui décide, et elle ne vient pas du testeur&nbsp;: elle vient de la personne qui doit signer. Ce guide répond aux trois points d'une revue de sécurité, dit ce qu'il faut inscrire dans un registre de traitement, et énonce ce que l'approche ne couvre pas.</p>
-    <p class="guide-date">Mis à jour le <time datetime="2026-08-26">26 août 2026</time></p>
+    <p class="guide-date">Par <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, créateur de Q-Bot. Mis à jour le <time datetime="2026-08-27">27 août 2026</time></p>
   </div>
 </section>
 
@@ -223,6 +228,11 @@
       <h2 class="section-title" id="ou-title">Où vont ces données&nbsp;?</h2>
       <p class="section-subtitle">Nulle part. Les scénarios et leurs captures restent dans le boîtier, sur votre réseau, dans une base locale. Rien n'est envoyé vers un service en ligne, et aucune connexion internet n'est nécessaire pendant l'exécution des tests. Cela se vérifie en coupant le réseau et en relançant une campagne.</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../assets/img/guides/rien-ne-sort-fr.webp" alt="Scénarios, captures et base locale restent dans votre réseau : aucun envoi vers l'extérieur"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>Scénarios, captures et base restent du même côté de la frontière&nbsp;: celui de votre réseau.</figcaption>
+    </figure>
     <p>Concrètement&nbsp;:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>les scénarios et leurs captures sont stockés <strong>dans le boîtier</strong>, jamais sur un service en ligne</span></li>

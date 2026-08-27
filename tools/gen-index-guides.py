@@ -16,6 +16,10 @@ une note disant que le produit a évolué depuis, et ils ont leur place, en dess
 
 import io
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import vignettes_guides as vg
 import re
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,46 +28,28 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # du produit déjà présents dans le dépôt : aucune image n'est inventée pour
 # l'occasion, et la vignette carrée recadre au centre.
 ORDRE = [
-    # (slug FR, slug EN, image FR, image EN, étiquette FR, étiquette EN, alt FR, alt EN)
+    # (slug FR, slug EN, base de la vignette, étiquette FR, étiquette EN)
     #
-    # SIX SCHÉMAS ET DEUX PHOTOS, ET LE PARTAGE N'EST PAS ARBITRAIRE : un schéma là où
-    # le sujet est conceptuel, une photo là où le sujet est l'objet. Les schémas sont
-    # construits dans la charte par tools/render/guide-thumbs.html, donc sans aucune
-    # image tierce et sans licence à surveiller. Ils remplacent au passage les deux
-    # vignettes qui faisaient doublon avec des billets datés.
+    # Le fichier et la description d'image viennent de `vignettes_guides.py`, qui est
+    # la source unique : la même vignette sert ici, sur la carte, ET dans le corps du
+    # guide. Deux tables se seraient désynchronisées à la première correction de
+    # texte alternatif, et personne ne l'aurait vu.
     ('automatiser-2fa-dans-vos-tests.html', 'automate-2fa-in-your-tests.html',
-     'guides/familles-2fa-fr.webp', 'guides/familles-2fa-en.webp',
-     'Guide de référence', 'Reference guide',
-     "Les quatre familles de second facteur : code calculé, demande à approuver, code affiché, QR code",
-     "The four families of second factor: computed code, request to approve, displayed code, QR code"),
+     'guides/familles-2fa', 'Guide de référence', 'Reference guide'),
     ('automatiser-authentification-luxtrust.html', 'automate-luxtrust-authentication.html',
-     'qbot-photo-dock.jpg', 'qbot-photo-dock.jpg', 'Guide', 'Guide',
-     "Un smartphone dans le socle du Q-Bot, affichant une demande de validation LuxTrust",
-     "A smartphone in the Q-Bot cradle, showing a LuxTrust approval request"),
+     'qbot-photo-dock', 'Guide', 'Guide'),
     ('desactiver-2fa-en-test.html', 'disable-2fa-in-testing.html',
-     'guides/trois-voies-fr.webp', 'guides/trois-voies-en.webp', 'Guide', 'Guide',
-     "Les trois voies possibles : désactiver, recalculer le code, ou piloter un appareil réel",
-     "The three possible routes: disable, recompute the code, or drive a real device"),
+     'guides/trois-voies', 'Guide', 'Guide'),
     ('automatiser-2fa-sans-cle-secrete.html', 'automate-2fa-without-shared-secret.html',
-     'guides/avec-sans-cle-fr.webp', 'guides/avec-sans-cle-en.webp', 'Guide', 'Guide',
-     "Deux chemins : avec un secret partagé on calcule, sans secret on appuie sur l'appareil",
-     "Two paths: with a shared secret you compute, without one you tap the device"),
+     'guides/avec-sans-cle', 'Guide', 'Guide'),
     ('tester-2fa-appareil-reel.html', 'test-2fa-real-device.html',
-     'qbot-photo-poste.jpg', 'qbot-photo-poste.jpg', 'Comparatif', 'Comparison',
-     "Le boîtier Q-Bot et son téléphone posés sur un poste de travail, à côté d'un écran",
-     "The Q-Bot enclosure and its phone on a desk, beside a monitor"),
+     'qbot-photo-poste', 'Comparatif', 'Comparison'),
     ('securite-conformite-donnees-de-test.html', 'security-compliance-test-data.html',
-     'guides/rien-ne-sort-fr.webp', 'guides/rien-ne-sort-en.webp', 'Guide', 'Guide',
-     "Scénarios, captures et base locale restent dans votre réseau : aucun envoi vers l'extérieur",
-     "Scenarios, screenshots and local store stay on your network: nothing is uploaded"),
+     'guides/rien-ne-sort', 'Guide', 'Guide'),
     ('campagnes-de-nuit-bloquees-au-login.html', 'night-runs-blocked-at-login.html',
-     'guides/campagne-bute-fr.webp', 'guides/campagne-bute-en.webp', 'Guide', 'Guide',
-     "Une campagne de tests qui franchit les premières étapes puis s'arrête net à la 2FA",
-     "A test run clearing the first steps then stopping dead at the 2FA step"),
+     'guides/campagne-bute', 'Guide', 'Guide'),
     ('cout-etape-manuelle-authentification.html', 'cost-of-manual-authentication-step.html',
-     'guides/le-calcul-fr.webp', 'guides/le-calcul-en.webp', 'Guide', 'Guide',
-     "Le calcul du coût : testeurs multipliés par minutes puis par jours ouvrés, en heures puis en journées",
-     "The cost calculation: testers times minutes times working days, in hours then in days"),
+     'guides/le-calcul', 'Guide', 'Guide'),
 ]
 
 # Les billets datés, conservés tels quels sous les guides.
@@ -91,12 +77,17 @@ def relève(chemin):
     desc = re.search(r'<meta name="description" content="(.*?)">', s).group(1)
     m2 = re.search(r'<main[^>]*>(.*?)</main>', s, re.S)
     mots = len(re.sub(r'<[^>]+>', ' ', m2.group(1)).split()) if m2 else 400
-    return titre, desc, max(2, round(mots / 200))
+    # LA DATE EST LUE DANS LA PAGE, JAMAIS ÉCRITE ICI. Elle l'était, et elle s'est
+    # périmée dès la première retouche des guides : la carte annonçait le 26 quand
+    # la page disait le 27. Même principe que le titre et l'accroche juste au-dessus,
+    # et que le `lastmod` du plan de site dérivé de son fichier.
+    d = re.search(r'<p class="guide-date">.*?<time datetime="[^"]*">(.*?)</time>', s, re.S)
+    return titre, desc, max(2, round(mots / 200)), (d.group(1) if d else None)
 
 
-def carte(lien, img, etiquette, titre, accroche, meta, lire, prefixe, alt=None):
+def carte(lien, img, etiquette, titre, accroche, meta, lire, prefixe, alt=None, dim=(768, 768)):
     return f'''      <article class="blog-card reveal" role="listitem">
-        <img src="{prefixe}assets/img/{img}" alt="{alt or titre}" width="{900 if "guides/" in img else 768}" height="{900 if "guides/" in img else 768}" loading="lazy">
+        <img src="{prefixe}assets/img/{img}" alt="{alt or titre}" width="{dim[0]}" height="{dim[1]}" loading="lazy">
         <div class="blog-card__content">
           <span class="blog-card__tag">{etiquette}</span>
           <h3 class="blog-card__title"><a href="blog/{lien}">{titre}</a></h3>
@@ -118,15 +109,16 @@ def construire(langue):
     prefixe = '' if fr else '../'
     dossier = 'blog/' if fr else 'en/blog/'
     out = []
-    for slug_fr, slug_en, img_fr, img_en, et_fr, et_en, alt_fr, alt_en in ORDRE:
+    for slug_fr, slug_en, base, et_fr, et_en in ORDRE:
         slug = slug_fr if fr else slug_en
-        titre, accroche, mn = relève(dossier + slug)
-        meta = ('Mis à jour le 26 août 2026' if fr else 'Updated 26 August 2026')
-        out.append(carte(slug, img_fr if fr else img_en, et_fr if fr else et_en,
+        titre, accroche, mn, maj = relève(dossier + slug)
+        assert maj, f'{slug} ne porte pas de date de mise à jour lisible'
+        meta = ('Mis à jour le ' if fr else 'Updated ') + maj
+        out.append(carte(slug, vg.fichier(base, langue), et_fr if fr else et_en,
                          titre, accroche, meta, f'{mn} min', prefixe,
-                         alt_fr if fr else alt_en))
+                         vg.alt(base, langue), vg.dimensions(base)))
     for slug, img, et, date in (BILLETS_FR if fr else BILLETS_EN):
-        titre, accroche, mn = relève(dossier + slug)
+        titre, accroche, mn, _ = relève(dossier + slug)
         c = carte(slug, img, et, titre, accroche, date, f'{mn} min', prefixe)
         # un billet daté n'est pas un guide : le libellé du lien le dit
         out.append(c.replace('Lire le guide', "Lire l'article").replace('Read the guide', 'Read the article'))

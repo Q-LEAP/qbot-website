@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=c9d2bf61">
+  <link rel="stylesheet" href="../assets/css/style.css?v=a1a35df2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -126,11 +126,16 @@
   "headline": "Pourquoi vos campagnes de nuit s'arrêtent au login",
   "description": "Un paquet d'échecs au même endroit, la même trace : c'est presque toujours le second facteur. Les trois rustines habituelles, et ce qu'elles coûtent vraiment.",
   "datePublished": "2026-08-26",
-  "dateModified": "2026-08-26",
+  "dateModified": "2026-08-27",
   "inLanguage": "fr",
   "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://q-bot.eu/blog/campagnes-de-nuit-bloquees-au-login.html" },
-  "author": { "@id": "https://q-bot.eu/#organization" },
+  "author": {
+    "@type": "Person",
+    "name": "Sylvain Perez",
+    "jobTitle": "Fondateur et CEO de Q-Leap, créateur de Q-Bot",
+    "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+  },
   "publisher": { "@id": "https://q-bot.eu/#organization" },
   "about": [
     { "@type": "Thing", "name": "LuxTrust" },
@@ -183,7 +188,7 @@
     <span class="section-label">Guide</span>
     <h1 id="page-title">Pourquoi vos campagnes de nuit s'arrêtent au login</h1>
     <p>Le rapport du matin montre un paquet d'échecs, tous au même endroit, avec la même trace. Ce n'est presque jamais une suite fragile&nbsp;: c'est une étape que rien n'a pu franchir pendant la nuit. Ce guide explique le symptôme, les rustines habituelles, et ce qu'il faut pour aller au bout.</p>
-    <p class="guide-date">Mis à jour le <time datetime="2026-08-26">26 août 2026</time></p>
+    <p class="guide-date">Par <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, créateur de Q-Bot. Mis à jour le <time datetime="2026-08-27">27 août 2026</time></p>
   </div>
 </section>
 
@@ -206,6 +211,11 @@
       <h2 class="section-title" id="symptome-title">À quoi ressemble le symptôme dans un rapport&nbsp;?</h2>
       <p class="section-subtitle">À une grappe d'échecs qui partagent trois traits&nbsp;: ils sont nombreux, ils tombent tous au même endroit du parcours, et ils portent la même trace. Une suite réellement instable échoue de façon dispersée&nbsp;; celle-ci échoue avec une régularité qui devrait mettre la puce à l'oreille.</p>
     </div>
+    <figure class="guide-figure">
+      <img src="../assets/img/guides/campagne-bute-fr.webp" alt="Une campagne de tests qui franchit les premières étapes puis s'arrête net à la 2FA"
+           width="900" height="900" loading="lazy" decoding="async">
+      <figcaption>Le rapport ne montre qu'une étape en échec, mais tout ce qui la suit n'a jamais été joué.</figcaption>
+    </figure>
     <p>Les trois signes qui distinguent un blocage d'une instabilité&nbsp;:</p>
     <ul class="api-facts">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>les échecs sont <strong>groupés</strong> sur une même étape, pas dispersés dans la suite</span></li>
