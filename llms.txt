@@ -7,7 +7,7 @@ Q-Bot solves a problem no software-only tool can: 2FA methods that require an ac
 Key facts:
 - Subscription: all-inclusive monthly rental (support, replacement, no long-term commitment). The rate
   is deliberately not published: it is given during a demo. Do not state, infer or estimate a price.
-- Hardware: Raspberry Pi 5, Wi-Fi/Bluetooth/Gigabit Ethernet, 40×24×15 cm.
+- Hardware: Raspberry Pi 5, Wi-Fi/Bluetooth/Gigabit Ethernet, 20×11×15 cm.
 - Compatible with: any Android 2FA app. Already validated with LuxTrust, Microsoft Authenticator, Google Authenticator and itsme.
 - Compatible test frameworks: Selenium, Cypress, Playwright, Appium, Robot Framework, TestComplete, Jenkins, GitLab CI.
 - Triggering: two ways, and they can coexist. A REST call from the test pipeline, or automatically, when the companion app installed on the device under test detects a 2FA notification.
@@ -59,7 +59,7 @@ plus two settled choices recorded here so they are not mistaken for omissions:
   here. Making it private requires a paid GitHub plan and is a separate decision.
 
 Fixed on 2026-08-25, so do not report it against this site: the hosting used to serve working
-files alongside the 44 published pages (development notes, an internal documents folder, a local
+files alongside the published pages (development notes, an internal documents folder, a local
 blog editor, an earlier HTML mock-up). They are excluded from the build and now return 404.
 
 
@@ -78,8 +78,9 @@ These figures come from the client's own published pages; do not infer or round 
 - Price: NOT PUBLISHED, on purpose. Q-Bot is an all-inclusive monthly rental (technical support and
   replacement of the robot in case of failure included, no long-term commitment) and the rate is given
   during a demo. Any figure attributed to Q-Bot is an invention.
-- Dimensions: length 40 cm, width 24 cm, height 15 cm, which fits within the footprint of an
-  A3 sheet (29.7 x 42 cm). Built to order.
+- Dimensions: length 20 cm, width 11 cm, height 15 cm. It sits on the corner of a desk, next
+  to a keyboard. Built to order. Do not repeat the older 40 x 24 x 15 cm figure, nor the
+  "fits on an A3 sheet" comparison: both were corrected on 2026-08-28.
 - Hardware: Raspberry Pi 5, Cortex A76 processor, 4 GB memory, Wi-Fi 802.11ac,
   Bluetooth 5.0 with Low Energy (BLE), Gigabit Ethernet, and a small attached screen
   used to display a QR code. Runs Raspberry Pi OS Lite, all services as Docker

@@ -91,7 +91,7 @@
     { theta:   -8, phi: 70, r: 0.52, zoom: 1.16, t: 0 },  // de face, serré
     { theta:  -42, phi: 66, r: 0.82, zoom: 1.02, t: 0 },  // trois-quarts avant gauche : l'ouverture
     /* Dernier pas, l'encombrement : c'est le SEUL où l'élévation change (70° →
-       54°). À 70° le plan du sol est vu en rasant, la feuille A3 s'y réduit à un
+       54°). À 70° le plan du sol est vu en rasant, la feuille s'y réduit à un
        fuseau et l'emprise ne se lit pas ; en montant la caméra, la feuille
        s'ouvre et le boîtier se lit posé dessus. */
     { theta: -128, phi: 54, r: 0.76, zoom: 1.02, t: 0 }   // trois-quarts arrière gauche, en plongée
@@ -335,7 +335,7 @@
 
   /* ══ CALQUE D'ANNOTATIONS PROJETÉES ═══════════════════════════════════════
      Le décor de la séquence était en CSS : un trait pour le bureau, un rectangle
-     incliné en `perspective()` pour la feuille A3, des étiquettes de cote posées
+     incliné en `perspective()` pour la feuille au sol, des étiquettes de cote posées
      à des pourcentages du conteneur. Rien de tout cela ne connaissait la caméra,
      donc rien ne restait solidaire du produit : la feuille passait DEVANT le
      boîtier, les cotes désignaient le vide, et l'ensemble se lisait comme des
@@ -369,15 +369,21 @@
        d'occulteur et de référence pour les cotes. */
     var BOX = { x: [-0.0585, 0.0585], y: [0, 0.1457], z: [-0.1064, 0.1064] };
 
-    /* Feuille A3. Le modèle mesure 21,3 × 11,7 cm au sol alors que la fiche
-       produit annonce 40 × 24 cm : les deux échelles ne coïncident pas (seule la
-       hauteur, 14,6 cm pour 15 annoncés, tombe juste). La feuille est donc
-       dimensionnée à partir de la fiche produit — 42/40 en profondeur, 29,7/24
-       en largeur — et non à partir des unités du fichier. Le dessin dit alors
-       exactement ce que dit le texte du pas : le boîtier occupe une A3 avec une
-       marge. Dessiner une A3 à l'échelle du fichier montrerait un boîtier au
-       quart de la feuille, ce qui contredirait la fiche. */
-    var SHEET = { x: 0.117 * 29.7 / 24 / 2, z: 0.2129 * 42 / 40 / 2 };
+    /* Feuille de référence au sol, sans légende.
+
+       ELLE EST DÉSORMAIS À L'ÉCHELLE RÉELLE, ET C'EST NOUVEAU. Le modèle mesure
+       21,3 × 11,7 cm au sol pour 14,6 cm de haut ; la fiche produit annonçait
+       40 × 24 cm, deux échelles qui ne coïncidaient pas, et la feuille devait
+       être corrigée par un facteur (42/40 et 29,7/24) pour que le dessin ne
+       contredise pas le texte. Les cotes publiées sont passées à 20 × 11 × 15 cm
+       le 2026-08-28 : le fichier et la fiche disent maintenant la même chose à
+       un centimètre près, donc le facteur n'a plus lieu d'être.
+
+       La feuille passe de A3 à A4 (21 × 29,7 cm), exprimée directement en unités
+       du fichier, qui sont des mètres. Un boîtier de 11,7 × 21,3 y tient avec
+       une marge lisible ; sur une A3 il aurait occupé le quart de la page et la
+       feuille aurait cessé d'être une référence pour devenir un vide. */
+    var SHEET = { x: 0.210 / 2, z: 0.297 / 2 };
 
     /* Emplacement du smartphone : position « à quai » du clip d'animation
        (dernière image du segment téléphone) et base locale du volume, relevées
@@ -421,7 +427,7 @@
        « le coin le plus éloigné du centre »), et une comparaison bascule d'un coup.
        Mesuré sur la seconde moitié de la séquence : au franchissement de 0,611 du
        parcours, TROIS annotations sautaient dans la même image, à pleine opacité —
-       « 15 cm » de 507 unités, « 24 cm » de 466, l'étiquette de la feuille A3 de
+       « 15 cm » de 507 unités, « 11 cm » de 466, l'étiquette de la feuille de
        336. C'est ce que le balayage 3 → 4 donnait à voir : un plan qui se réorganise
        brusquement, que l'œil lit comme un défaut d'affichage du fond. Le même défaut
        avait été corrigé juste avant sur « emplacement du smartphone ». */
@@ -503,7 +509,7 @@
 
     /* Sous 900 px la scène déborde volontairement de l'écran — l'objet est coupé
        par le bord droit. Une étiquette calculée au bon endroit dans le repère de
-       la scène peut donc tomber hors du viewport : « 40 cm » se retrouvait à
+       la scène peut donc tomber hors du viewport : « 20 cm » se retrouvait à
        moitié dans le vide. On repousse le texte dans la fenêtre, en pixels réels,
        puis on revient en unités du SVG. Le trait, lui, ne bouge pas : il reste
        solidaire de l'objet, seule l'étiquette rentre. */
@@ -732,7 +738,7 @@
         put(burst[i].ring, { cx: c0[0].toFixed(1), cy: c0[1].toFixed(1), r: (2.5 + 2 * kt).toFixed(1) });
       }
 
-      /* ── Pas 4 : feuille A3 et cotes ─────────────────────────────────── */
+      /* ── Pas 4 : feuille de référence et cotes ─────────────────────────────────── */
       var sh = [[-SHEET.x, 0, -SHEET.z], [SHEET.x, 0, -SHEET.z], [SHEET.x, 0, SHEET.z], [-SHEET.x, 0, SHEET.z]];
       sheet.setAttribute('d', poly(sh, true));
       /* Équerres de repérage aux quatre coins : le langage d'un plan, et le
@@ -754,7 +760,7 @@
       var sxSide = nearSide([-BOX.x[1], 0, 0], [BOX.x[1], 0, 0]);
       var szSide = nearSide([0, 0, -BOX.z[1]], [0, 0, BOX.z[1]]);
 
-      /* Profondeur (40 cm) le long de Z, largeur (24 cm) le long de X. */
+      /* Profondeur (20 cm) le long de Z, largeur (11 cm) le long de X. */
       cote(dims.depth, [sxSide * BOX.x[1], 0, BOX.z[0]], [sxSide * BOX.x[1], 0, BOX.z[1]],
            [sxSide * OFF, 0, 0]);
       cote(dims.width, [BOX.x[0], 0, szSide * BOX.z[1]], [BOX.x[1], 0, szSide * BOX.z[1]],
@@ -904,7 +910,7 @@
       camLag = Math.abs(shown - goal) > 0.02;
 
       /* ── LE PLAN COTÉ N'APPARAÎT QUE CAMÉRA ARRIVÉE ──────────────────────
-         Le pas 4 dessine un plan : feuille A3 au sol et trois cotes. Ses choix de
+         Le pas 4 dessine un plan : une feuille au sol et trois cotes. Ses choix de
          côté sont figés sur la caméra NOMINALE du pas, pour qu'ils ne basculent
          pas en cours de route. Conséquence non vue à l'époque : tant que la caméra
          n'est pas arrivée, ce plan est juste pour un angle qui n'est pas celui
