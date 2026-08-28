@@ -3967,6 +3967,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
   display: grid;
   gap: 8px;
 }
+/* Deux colonnes pour la liste de la section Raspberry, demandé le 2026-08-28.
+   ON AJOUTE DES COLONNES DE GRILLE, PAS `columns`. La règle de base pose
+   `display: grid` sur .specs__dims, et un conteneur de grille ignore purement
+   et simplement la mise en colonnes multiple : la propriété était bien lue,
+   les quatre items restaient l'un sous l'autre. Sous 640 px on revient sur une
+   colonne, deux colonnes de 150 px couperaient les libellés au milieu d'un mot. */
+.specs__dims--2col { grid-template-columns: 1fr 1fr; column-gap: 32px; }
+@media (max-width: 640px) { .specs__dims--2col { grid-template-columns: 1fr; } }
+
 .specs__dims li {
   position: relative;
   padding-left: 20px;
