@@ -36,7 +36,7 @@ Site available in French (default, root paths) and English (`/en/`).
 ## Pre-launch status (last updated 2026-08-26)
 
 This site is a staging build of a migration that has not gone live yet. `robots.txt` disallows
-all crawlers and all 20 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
+all crawlers and all 18 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
 misconfiguration, and it will be lifted in one step on switch-over day.
 
 One item is open and awaiting a decision by the client, not work left undone,
@@ -101,8 +101,6 @@ These figures come from the client's own published pages; do not infer or round 
 - [Use cases (FR)](https://q-bot.eu/cas-usage.html): five real-world scenarios, with the
   exact API call each one uses.
 - [Use cases (EN)](https://q-bot.eu/en/use-cases.html)
-- [Interactive 3D model (FR)](https://q-bot.eu/modele-3d.html)
-- [Interactive 3D model (EN)](https://q-bot.eu/en/3d-model.html)
 - [Demo request (FR)](https://q-bot.eu/commandez.html): includes a ROI calculator that
   returns the reader's OWN cost of manual 2FA in hours, never a Q-Bot price.
 - [Demo request (EN)](https://q-bot.eu/en/order.html)
