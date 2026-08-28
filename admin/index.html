@@ -1125,10 +1125,10 @@ function generateArticleHTML(a) {
        l'action, qui est de demander une démonstration. */
     ? `<div style="font-size:1.0625rem;font-weight:700;color:#00CBBE;margin-bottom:6px;">Location tout compris</div>
        <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Assistance et remplacement inclus, sans engagement de durée.</p>
-       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Demandez une démo</a>`
+       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Réserver une démo</a>`
     : `<div style="font-size:1.0625rem;font-weight:700;color:#00CBBE;margin-bottom:6px;">All-inclusive rental</div>
        <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Support and replacement included, no long-term commitment.</p>
-       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Request a demo</a>`;
+       <a href="${orderHref}" class="btn btn--primary" style="display:inline-block;font-size:.8rem;padding:8px 16px;">Book a demo</a>`;
 
   /* PIED DE PAGE DU GABARIT D'ARTICLE, aligné sur celui du site le 2026-08-25 :
      trois colonnes de quatre entrées au lieu de 2 / 7 / 3. Les liens légaux
@@ -1158,8 +1158,8 @@ function generateArticleHTML(a) {
        </ul></div>`;
 
   const ctaBtn = fr
-    ? `<a href="${nav0}contact.html" class="btn btn--primary">Demander une démo →</a>`
-    : `<a href="${nav0}contact.html" class="btn btn--primary">Request a demo →</a>`;
+    ? `<a href="${nav0}contact.html" class="btn btn--primary">Réserver une démo →</a>`
+    : `<a href="${nav0}contact.html" class="btn btn--primary">Book a demo →</a>`;
 
   const relatedTitle = fr ? 'Articles liés' : 'Related articles';
   const relatedCard  = fr
