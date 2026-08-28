@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=217bd2fd">
+  <link rel="stylesheet" href="assets/css/style.css?v=f9f93927">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -291,11 +291,18 @@
 
 <!-- ======= PAGE HERO ======= -->
 <main id="main">
-<section class="page-hero" aria-labelledby="page-title">
+<section class="page-hero page-hero--media" aria-labelledby="page-title">
   <div class="container">
-    <span class="section-label">FAQ</span>
-    <h1 id="page-title">Les principales questions autour de <span class="nb">Q-Bot</span></h1>
-    <p>Découvrez les réponses à vos principales questions autour de <span class="nb">Q-Bot</span>, une innovation de Q-Leap permettant la double authentification via une app mobile.</p>
+    <div class="page-hero__grid">
+      <div>
+        <span class="section-label">FAQ</span>
+        <h1 id="page-title">Les principales questions autour de <span class="nb">Q-Bot</span></h1>
+        <p>Découvrez les réponses à vos principales questions autour de <span class="nb">Q-Bot</span>, une innovation de Q-Leap permettant la double authentification via une app mobile.</p>
+      </div>
+      <div class="page-hero__media">
+        <img src="assets/img/qbot-specs.jpg" alt="Le boîtier Q-Bot vu de trois quarts" width="1400" height="1050">
+      </div>
+    </div>
   </div>
 </section>
 
