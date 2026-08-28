@@ -1666,57 +1666,25 @@ p { color: var(--gray); }
 .timeline-item__content p { font-size: 0.9rem; }
 
 /* ---- Évolution du produit ----
-   Trois étapes côte à côte (prototype → boîtier actuel → suite), reliées par
-   un rail horizontal dont la portion teal s'arrête sur le point de la carte
-   « Génération actuelle ». Remplace la timeline datée de la homepage.
-   Le remplissage est FIXE : il dit où en est le produit, pas où en est le
-   scroll. Il était scrubbé par le moteur de motion (--tl-p) et s'allongeait
-   donc au défilement, ce qui le faisait lire comme une barre de progression de
-   lecture et le décollait du point qu'il est censé marquer.
-   Le rail et ses pastilles ne sont dessinés qu'en desktop : en colonne unique
-   ils relieraient des cartes empilées verticalement, ce qui n'a plus de sens. */
+   Trois étapes côte à côte : Q-Bot V1, la génération 2, et le NFC pour la
+   suite. Remplace la timeline datée de la homepage.
+
+   LE RAIL DE PROGRESSION A ÉTÉ RETIRÉ LE 2026-08-28, à la demande du client :
+   « ça n'apporte pas grand-chose et on a l'impression que c'est pas fini ».
+   C'était un trait horizontal reliant les trois cartes, dont la portion teal
+   s'arrêtait sur la pastille de la carte courante. Il est parti d'un bloc,
+   avec ses deux pseudo-éléments, les pastilles `.evo-card__node`, la variable
+   `--evo-fill` et les deux animations d'entrée qui le dessinaient.
+
+   Ne pas le réintroduire pour « marquer où en est le produit » : c'est le
+   libellé d'étape de chaque carte qui le dit, et il le dit en toutes lettres. */
 .evolution__rail {
   --evo-gap: 24px;
-  --evo-fill: 0.5;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--evo-gap);
   position: relative;
-  padding-top: 40px;
-  /* Le remplissage teal est un `::after` en `inset: 0` à angles droits : sans
-     découpe, ses extrémités dépassent des bouts arrondis du rail. */
-  overflow: hidden;
 }
-.evolution__rail::before,
-.evolution__rail::after {
-  content: '';
-  position: absolute;
-  top: 7px;
-  /* D'un centre de colonne à l'autre : avec 3 colonnes égales séparées de
-     --evo-gap, une colonne mesure (100% − 2×gap)/3 et son centre est donc à
-     (100% − 2×gap)/6 du bord. */
-  left:  calc((100% - 2 * var(--evo-gap)) / 6);
-  right: calc((100% - 2 * var(--evo-gap)) / 6);
-  height: 2px;
-  border-radius: 2px;
-}
-.evolution__rail::before { background: var(--border); }
-.evolution__rail::after {
-  background: linear-gradient(90deg, var(--teal), var(--teal-dark));
-  /* 0.5 n'est pas un réglage à l'œil : le rail va d'un centre de colonne
-     extérieure à l'autre (cf. left/right ci-dessus), donc son milieu est
-     exactement le centre de la colonne du milieu — le point de la carte
-     « Génération actuelle ». Si une 4e étape est ajoutée, la valeur devient
-     (index de l'étape courante) / (nombre d'étapes − 1). */
-  transform: scaleX(var(--evo-fill));
-  transform-origin: left center;
-}
-/* Les deux traits sont les pseudo-éléments du rail : ::after est son DERNIER
-   enfant, donc il était peint après les cartes et passait par-dessus les
-   pastilles. Ordre rendu explicite — même correctif que pour la timeline. */
-.evolution__rail::before,
-.evolution__rail::after { z-index: 0; }
-.evo-card { z-index: 1; }
 
 .evo-card {
   position: relative;
@@ -1729,54 +1697,6 @@ p { color: var(--gray); }
   transition: border-color var(--transition), transform 0.5s var(--ease-out);
 }
 .evo-card:hover { border-color: rgba(0,203,190,0.35); transform: translateY(-4px); }
-
-/* Pastille posée sur le rail, au centre de la colonne. */
-.evo-card__node {
-  position: absolute;
-  /* Centre la pastille (12 px de haut) sur le rail : rail à 7 px + 1 px de
-     demi-épaisseur = axe à 8 px du haut de .evolution__rail, lui-même à
-     40 px au-dessus de la carte → -38 px. */
-  top: -38px;
-  left: 50%;
-  width: 12px; height: 12px;
-  margin-left: -6px;
-  border-radius: 50%;
-  background: var(--light);
-  border: 2px solid var(--border);
-}
-.evo-card--current .evo-card__node {
-  background: var(--teal);
-  border-color: var(--teal);
-  box-shadow: 0 0 0 5px rgba(0,203,190,0.16);
-}
-.evo-card--next .evo-card__node { border-style: dashed; }
-
-/* ---- Entrée du rail : le trait se dessine, le point l'accueille ----
-   Un seul passage, à l'arrivée de la section — pas de boucle : le trait
-   indique un état, il n'a aucune raison de s'agiter en permanence.
-   Le déclencheur est le `.is-visible` que l'observer pose déjà sur la carte
-   courante (variante `card` du système de reveal) ; `:has()` permet de le lire
-   depuis le rail, qui est son parent. Si le navigateur ne connaît pas `:has()`,
-   la règle entière est ignorée et l'état statique ci-dessus subsiste : trait à
-   sa longueur définitive et point avec son halo. C'est la dégradation voulue,
-   d'où le choix de ne mettre QUE l'animation dans ce bloc. */
-@keyframes evoRailDraw {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(var(--evo-fill)); }
-}
-@keyframes evoNodeLand {
-  0%   { transform: scale(0.4); box-shadow: 0 0 0 0    rgba(0,203,190,0.45); }
-  55%  { transform: scale(1.35); box-shadow: 0 0 0 9px rgba(0,203,190,0.22); }
-  100% { transform: scale(1);    box-shadow: 0 0 0 5px rgba(0,203,190,0.16); }
-}
-.evolution__rail:has(.evo-card--current.is-visible)::after {
-  animation: evoRailDraw 0.85s var(--ease-out) both;
-}
-.evolution__rail:has(.evo-card--current.is-visible) .evo-card--current .evo-card__node {
-  /* Le délai place le rebond au moment où le trait atteint le point, pas
-     avant : 0,85 s de tracé moins le temps de montée de la pastille. */
-  animation: evoNodeLand 0.55s var(--ease-out) 0.62s both;
-}
 
 .evo-card__media {
   position: relative;
@@ -1805,23 +1725,10 @@ p { color: var(--gray); }
 }
 .evo-card:hover .evo-card__media img { transform: scale(1.05); }
 
-/* Étape à venir : cadre en pointillés + trois points qui « respirent ». */
-.evo-card__media--pending {
-  background: transparent;
-  border: 1px dashed #2B2B2B;
-}
-.evo-pending { display: flex; gap: 9px; }
-.evo-pending i {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: var(--teal);
-  opacity: 0.25;
-  animation: evoPending 1.8s var(--ease-soft) infinite;
-}
-.evo-pending i:nth-child(2) { animation-delay: 0.22s; }
-.evo-pending i:nth-child(3) { animation-delay: 0.44s; }
-@keyframes evoPending {
-  0%, 70%, 100% { opacity: 0.22; transform: translateY(0); }
+/* Le cadre en pointillés et ses trois points qui « respiraient » ont été
+   retirés le 2026-08-28 : la troisième carte porte désormais un vrai visuel,
+   le boîtier et un téléphone qui échangent par NFC. Un cadre vide se lisait
+   comme une page inachevée, ce que le client a signalé. */
   35%           { opacity: 1;    transform: translateY(-4px); }
 }
 
@@ -1863,10 +1770,7 @@ p { color: var(--gray); }
    850 px) : trois pavés géants empilés, une section de 2 500 px et un cadre
    « prochaine étape » vide grand comme l'écran. */
 @media (max-width: 900px) {
-  .evolution__rail { grid-template-columns: 1fr; padding-top: 0; gap: 18px; }
-  .evolution__rail::before,
-  .evolution__rail::after,
-  .evo-card__node { display: none; }
+  .evolution__rail { grid-template-columns: 1fr; gap: 18px; }
 
   .evo-card { flex-direction: row; align-items: center; gap: 24px; padding: 20px; }
   .evo-card__media {
