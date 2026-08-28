@@ -8,7 +8,7 @@
 # POURQUOI CE FICHIER EXISTE. Jusqu'au 2026-08-25, Pages servait la RACINE : tout
 # ce qui est versionné était servi. Mesuré ce jour-là sur
 # https://q-leap.github.io/qbot-website/ : CLAUDE.md répondait 200 (223 Ko de
-# notes internes, dont le tarif et les sept références clients), /admin/ aussi
+# notes internes, dont le tarif et les sept références clients)
 # (le gestionnaire de blog, mot de passe en clair), et Documentations/ servait
 # les PDF d'audit, la brochure et la charte. robots.txt ne protégeait rien de
 # tout cela : il demande poliment aux moteurs de ne pas regarder, il ne ferme
@@ -27,7 +27,7 @@
 # tard et oublié dans la liste ci-dessous part en ligne sans un mot, et rien ne
 # le signale. À chaque ajout d'un dossier qui n'est pas du site, l'inscrire ici.
 # Le contrôle est une commande, à passer avant la mise en ligne :
-#   for u in CLAUDE.md admin/ Documentations/website/ tools/ padel_alerte.py; do \
+#   for u in CLAUDE.md Documentations/website/ tools/ padel_alerte.py; do \
 #     curl -s -o /dev/null -w "%{http_code} $u\n" "https://q-bot.eu/$u"; done
 # doit répondre 404 sur chaque ligne. LE 2026-08-26, CE CONTRÔLE N'AVAIT JAMAIS ÉTÉ
 # PASSÉ DEPUIS L'ARRIVÉE DE padel_alerte.py, et l'audit RosoAI l'a trouvé servi : la
@@ -42,9 +42,7 @@
 exclude:
   - CLAUDE.md               # consignes de développement : tarif, références clients, arbitrages
   - claude.md.txt           # une version plus ancienne des mêmes consignes
-  - Documentations/         # PDF d'audit, brochure, charte, masters IA archivés, maquettes HTML
-  - admin/                  # gestionnaire de blog, contrôle d'accès en clair dans la page
-  - tools/                  # chaîne de rendu, scripts de génération, 2 pages HTML de travail
+  - Documentations/         # PDF d'audit, brochure, charte, masters IA archivés, maquettes HTML  - tools/                  # chaîne de rendu, scripts de génération, 2 pages HTML de travail
   - website 3/              # SECONDE copie des quatre pages de maquette anglaises
   - Screen modèle 3D/       # rendus CAO et enregistrement d'écran
   - padel_alerte.py         # script personnel, sans rapport avec le site (aussi sorti du suivi git)

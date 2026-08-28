@@ -60,10 +60,10 @@ NB_REDIRECTIONS = len(REDIRECTIONS)
 with io.open(os.path.join(RACINE, 'sitemap.xml'), encoding='utf-8') as _f:
     NB_PAGES = _f.read().count('<loc>')
 
-# La balise est cherchée par MOTIF et non par chaîne littérale : `admin/index.html`
-# l'écrit « noindex,nofollow » sans espace, et un remplacement littéral la ratait
-# en silence. Même famille de piège que le cadratin en entité et l'apostrophe
-# typographique, trois fois rencontrée sur ce dépôt : on ne retape pas, on filtre.
+# La balise est cherchée par MOTIF et non par chaîne littérale : le back-office,
+# supprimé le 2026-08-28, l'écrivait « noindex,nofollow » sans espace et un
+# remplacement littéral la ratait en silence. Même famille de piège que le
+# cadratin en entité et l'apostrophe typographique : on ne retape pas, on filtre.
 META = re.compile(r'[ \t]*<meta name="robots" content="noindex[^"]*">\n')
 COMMENTAIRE = re.compile(r'[ \t]*<!--\s*PRÉ-LANCEMENT.*?-->\n', re.S)
 
@@ -76,19 +76,17 @@ NOTE_ENDPOINT = re.compile(r'[ \t]*<!--\s*ROSOAI-EN-ATTENTE · (?:endpoint des f
 
 # CE QUI RESTE HORS INDEX POUR TOUJOURS. Ces balises ne sont PAS des verrous de
 # pré-lancement, elles ne doivent donc jamais être retirées :
-#   - admin/    : outil interne, que robots.txt ferme en plus par « Disallow: /admin/ » ;
 #   - 404.html  : une page d'erreur n'a rien à faire dans un index. GitHub Pages la
 #                 sert avec un vrai statut 404, donc le risque est théorique, mais une
 #                 page d'erreur indexée est un défaut classique et la balise coûte zéro.
 # Attention : ces fichiers portent la marque « PRÉ-LANCEMENT » comme les autres, parce
 # qu'ils ont été écrits avec le même gabarit. C'est cette liste qui tranche, pas la marque.
-JAMAIS = ('admin/', '404.html')
+JAMAIS = ('404.html',)
 
 ROBOTS_OUVERT = """# https://q-bot.eu/robots.txt
 
 User-agent: *
 Allow: /
-Disallow: /admin/
 
 # ══════════════════════════════════════════════════════════════════════════
 # MOTEURS DE RÉPONSE IA : AUTORISÉS, ET C'EST UNE DÉCISION.
@@ -158,8 +156,8 @@ CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
 
 
 def pages():
-    motifs = ['*.html', 'blog/*.html', 'en/*.html', 'en/blog/*.html',
-              '*/index.html', 'en/*/index.html', 'admin/*.html']
+    motifs = ['*.html', 'en/*.html',
+              '*/index.html', 'en/*/index.html']
     vus = set()
     for m in motifs:
         for f in glob.glob(os.path.join(RACINE, m)):
@@ -214,7 +212,7 @@ def main():
     if ecrit:
         io.open(p, 'w', encoding='utf-8').write(ROBOTS_OUVERT)
     print("  robots.txt remplacé par son contenu d'ouverture "
-          "(exploration autorisée, /admin/ fermé, moteurs IA autorisés)")
+          "(exploration autorisée, moteurs IA autorisés)")
 
     if ecrit:
         restants = [os.path.relpath(f, RACINE) for f in pages()
