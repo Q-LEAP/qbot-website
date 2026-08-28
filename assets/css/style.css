@@ -1796,35 +1796,10 @@ p { color: var(--gray); }
   }
 }
 
-/* ---- Breadcrumb ---- */
-.breadcrumb {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.breadcrumb__list {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8125rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-/* `--gray` et non `--muted` : le fil d'Ariane est posé sur le fond de page, donc sur
-   la boule là où elle passe (page des cas d'usage). Calculé au coeur du halo :
-   `--gray` tient 4,8:1, `--muted` tombe à 3,8. Et un lien de navigation gagne à être
-   plus lisible de toute façon. */
-.breadcrumb__list a { color: var(--gray); }
-.breadcrumb__list a:hover { color: var(--teal-text); }
-.breadcrumb__list span { color: var(--gray); }
-/* Le dernier élément du fil d'Ariane EST la page courante : ce n'était pas un
-   raccourci utile mais un lien vers soi-même, déjà désamorcé à la souris par un
-   `pointer-events: none` — donc encore focalisable au clavier et annoncé comme
-   lien par un lecteur d'écran. C'est désormais un `<span aria-current="page">`,
-   comme le veut le motif ARIA du fil d'Ariane. Le sélecteur sur `a` est conservé
-   pour un gabarit qui en porterait encore un. */
-.breadcrumb__list li:last-child a,
-.breadcrumb__list [aria-current="page"] { color: var(--black); font-weight: 500; pointer-events: none; }
+/* Le fil d'Ariane visible a été retiré le 2026-08-28, à la demande du client :
+   « supprimer la navigation bar qui est sous les titres ». Ses styles partent
+   avec lui plutôt que de rester dormants. Le BreadcrumbList des données
+   structurées reste, lui : il n'était pas affiché, il était lu. */
 
 /* ---- Made in Luxembourg badge ---- */
 .badge-lux {
@@ -3072,9 +3047,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 
 /* ── Breadcrumb ── */
-[data-theme="dark"] .breadcrumb { border-bottom-color: #2B2B2B; }
-[data-theme="dark"] .breadcrumb__list li:last-child a,
-[data-theme="dark"] .breadcrumb__list [aria-current="page"] { color: #E6E7E8; }
 
 /* ── Section label shimmer — surfaces sombres en dark mode : plein éclat ── */
 @supports (-webkit-background-clip: text) or (background-clip: text) {
@@ -3969,8 +3941,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
    sous 24 px de haut. Les cases à cocher des formulaires portent un
    `width:auto` en ligne, que seul un !important peut reprendre ; leur libellé
    entier reste de toute façon cliquable, ce qui satisfait déjà 2.5.8. */
-.breadcrumb__list a,
-.breadcrumb__list [aria-current="page"],
 .contact-info__item a {
   display: inline-block;
   padding: 5px 0;
