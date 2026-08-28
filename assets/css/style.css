@@ -329,7 +329,15 @@ p { color: var(--gray); }
 
 .btn--primary {
   background: var(--teal);
-  color: var(--dark);
+  /* ENCRE ADOUCIE LE 2026-08-28 : le client trouvait le noir pur trop dur sur
+     le teal. #231F20 est le gris le plus sombre de la charte, donc on ne sort
+     pas de la palette, et il reste très au-dessus du seuil : 8,0:1 sur le teal
+     de fond, 5,4:1 sur le teal foncé du survol, contre 10,3:1 pour du noir pur.
+     NE PAS L'ÉCLAIRCIR DAVANTAGE SANS MESURER. Le teal de charte est une
+     couleur CLAIRE : c'est le noir qui s'y lit, pas le blanc, qui y plafonne à
+     2:1. Ce piège a déjà coûté seize défauts de contraste le 2026-08-24, sur
+     les ronds numérotés des pages Démo. */
+  color: #231F20;
   border-color: var(--teal);
 }
 .btn--primary:hover {
