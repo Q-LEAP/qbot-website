@@ -1269,6 +1269,21 @@ p { color: var(--gray); }
   align-items: start;
 }
 
+/* Fiche technique sur deux colonnes, demandé le 2026-08-28.
+   DEUX LISTES CÔTE À CÔTE, PAS UNE LISTE À QUATRE PISTES. L'alignement des
+   valeurs repose sur `subgrid` (voir plus haut) : il fait qu'une liste a UNE
+   colonne de libellés, calée sur son libellé le plus long. Une seule liste
+   étalée sur quatre pistes casserait cette garantie, alors que deux listes
+   voisines la gardent, chacune pour elle. */
+.specs__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 64px;
+  align-items: start;
+  margin-top: 56px;
+}
+@media (max-width: 900px) { .specs__cols { grid-template-columns: 1fr; } }
+
 .specs__list { display: flex; flex-direction: column; gap: 24px; }
 
 /* ══ UNE SEULE COLONNE DE LIBELLÉS PAR FICHE ═══════════════════════════════

@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=5c8af8bb">
+  <link rel="stylesheet" href="assets/css/style.css?v=35bf17d9">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -215,56 +215,8 @@
           <li>Taille mémoire&nbsp;: 4 GB</li>
           <li>Connectivité&nbsp;: Wifi, Bluetooth, Gigabit Ethernet</li>
         </ul>
-      </div>
-      <div>
         <h3>Une interface de création intuitive</h3>
         <p>Q-Bot dispose d'une application web indépendante pour la création de scénario basés sur les écrans de l'app mobile pour un positionnement parfait. Aucune compétence technique n'est nécessaire.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======= SPECS PRINCIPALES ======= -->
-<section class="section" aria-labelledby="specs-main-title">
-  <div class="container">
-    <div class="specs__grid">
-      <div>
-        <span class="section-label">Fiche technique</span>
-        <h2 class="section-title" id="specs-main-title">Spécifications techniques</h2>
-        <div class="specs__list" role="list" aria-label="Spécifications">
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Processeur</span>
-            <span class="spec-item__value">Raspberry Pi 5</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Wi-Fi</span>
-            <span class="spec-item__value">IEEE 802.11ac (Wi-Fi 5 dual-band)</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Bluetooth</span>
-            <span class="spec-item__value">Intégré</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Système</span>
-            <span class="spec-item__value">Raspberry Pi OS Lite</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Écran</span>
-            <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Connexion internet</span>
-            <span class="spec-item__value">Aucune pendant les tests&nbsp;: aucun appel externe, aucune donnée qui sort de chez vous</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Dimensions</span>
-            <span class="spec-item__value">20 cm × 11 cm × 15 cm</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Fabrication</span>
-            <span class="spec-item__value">Made in Luxembourg, chez Q-Leap à Bertrange</span>
-          </div>
-        </div>
       </div>
       <div class="specs__image">
         <img
@@ -275,8 +227,55 @@
         >
       </div>
     </div>
+
+    <!-- La fiche technique vit ici depuis le 2026-08-28 : elle avait sa propre
+         section, le client la voulait sous ce titre et sur deux colonnes. Deux
+         listes cote a cote plutot qu'une liste a quatre pistes : chacune garde
+         sa propre colonne de libelles, ce que subgrid assure a l'interieur
+         d'une liste et pas entre deux. -->
+    <div class="specs__cols">
+      <div class="specs__list" role="list">
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Processeur</span>
+        <span class="spec-item__value">Raspberry Pi 5</span>
+        </div>
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Wi-Fi</span>
+        <span class="spec-item__value">IEEE 802.11ac (Wi-Fi 5 dual-band)</span>
+        </div>
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Bluetooth</span>
+        <span class="spec-item__value">Intégré</span>
+        </div>
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Système</span>
+        <span class="spec-item__value">Raspberry Pi OS Lite</span>
+        </div>
+      </div>
+      <div class="specs__list" role="list">
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Écran</span>
+        <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
+        </div>
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Connexion internet</span>
+        <span class="spec-item__value">Aucune pendant les tests&nbsp;: aucun appel externe, aucune donnée qui sort de chez vous</span>
+        </div>
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Dimensions</span>
+        <span class="spec-item__value">20 cm × 11 cm × 15 cm</span>
+        </div>
+        <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Fabrication</span>
+        <span class="spec-item__value">Made in Luxembourg, chez Q-Leap à Bertrange</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+
+<!-- ======= SPECS PRINCIPALES ======= -->
+
 
 <!-- ======= ÉDITEUR DE SCÉNARIOS ======= -->
 <!-- Sans visuel, à dessein : la maquette de l'éditeur est déjà l'illustration de
