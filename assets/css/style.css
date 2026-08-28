@@ -370,7 +370,8 @@ p { color: var(--gray); }
   transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1), box-shadow var(--transition);
   will-change: transform;
 }
-.nav--hidden { transform: translateY(-110%); }
+/* .nav--hidden : retiré le 2026-08-28. La barre ne se masque plus au
+   défilement, elle doit rester sous les yeux en permanence. */
 .nav::after {
   content: '';
   position: absolute;
@@ -448,8 +449,12 @@ p { color: var(--gray); }
   transition: transform var(--transition);
   transform-origin: left;
 }
-.nav__link:hover, .nav__link.active { color: var(--white); }
+.nav__link:hover { color: var(--white); }
 .nav__link:hover::after, .nav__link.active::after { transform: scaleX(1); }
+/* La page courante se lit sans comparaison : elle est la seule en teal, et son
+   trait est déjà posé. Le survol reste blanc, donc les deux états ne se
+   confondent pas quand la souris passe sur l'entrée active. */
+.nav__link.active { color: var(--teal); font-weight: 600; }
 
 .nav__actions {
   display: flex;

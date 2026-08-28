@@ -18,54 +18,16 @@ window.addEventListener('scroll', () => {
   nav?.classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
-// ── Smart hide / reveal au scroll ──
-{
-  let lastY    = -1;   // -1 = non initialisé ; évite un faux "scroll down" à la restauration
-  let ticking  = false;
-
-  function handleNavScroll() {
-    const y    = window.scrollY;
-    const navH = nav ? nav.offsetHeight : 72;
-
-    if (lastY < 0) { lastY = y; ticking = false; return; } // 1er appel : init seulement
-
-    const delta = y - lastY;
-
-    /* Seuil de 6 px avant de masquer la barre. Sans lui, UN pixel vers le bas
-       suffisait : au doigt, l'inertie du défilement mobile produit sans arrêt de
-       micro-variations, et la barre — donc le bouton de démo, seul CTA permanent
-       du téléphone — clignotait à chaque hésitation. La révélation, elle, reste
-       immédiate : on ne fait jamais attendre quelqu'un qui remonte. */
-    if (delta > 0 && delta < 6) { lastY = y; ticking = false; return; }
-
-    if (!navMenu?.classList.contains('open')) {
-      if (delta > 0 && y > navH) {
-        // Scrolle vers le bas → masquer
-        nav?.classList.add('nav--hidden');
-      } else if (delta < 0 || y <= navH) {
-        // Scrolle vers le haut ou en haut de page → révéler
-        nav?.classList.remove('nav--hidden');
-      }
-    }
-    lastY   = y;
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) { requestAnimationFrame(handleNavScroll); ticking = true; }
-  }, { passive: true });
-
-  // Révèle si la souris s'approche du haut (desktop uniquement)
-  document.addEventListener('mousemove', (e) => {
-    if (e.clientY < 72) nav?.classList.remove('nav--hidden');
-  }, { passive: true });
-}
+/* ── La barre reste visible ──
+   Le masquage au défilement vers le bas a été retiré le 2026-08-28 à la
+   demande du client : la barre doit rester sous les yeux en permanence.
+   Elle garde son ombre au défilement (au-dessus) et sa position collante,
+   qui vient du CSS. La classe .nav--hidden n'a plus d'utilisateur. */
 
 // ── Toggle mobile ──
 navToggle?.addEventListener('click', () => {
   const isOpen = navMenu.classList.toggle('open');
   navToggle.setAttribute('aria-expanded', String(isOpen));
-  if (isOpen) nav?.classList.remove('nav--hidden'); // toujours visible quand menu ouvert
 });
 
 // Ferme au clic extérieur
@@ -95,22 +57,31 @@ document.addEventListener('keydown', (e) => {
 
 /* ════════════════════════════════════════
    2. LIEN NAV ACTIF
+
+   La comparaison porte sur l'ADRESSE RÉSOLUE, pas sur le nom de fichier.
+   Comparer les noms marquait « Accueil » comme page courante sur toutes les
+   pages qui s'appellent index.html sans être l'accueil : les quatre pages
+   légales et les relais de redirection. Un « /faq/index.html » et un
+   « /index.html » ont le même nom et ne sont pas la même page.
 ════════════════════════════════════════ */
 {
-  const pathParts  = window.location.pathname.split('/');
-  const currentFile = pathParts[pathParts.length - 1] || 'index.html';
+  /* « /a/index.html » et « /a/ » désignent la même ressource : on ramène les
+     deux à la forme répertoire avant de comparer. */
+  const normaliser = (u) => u.pathname.replace(/index\.html$/, '');
+  const ici = normaliser(window.location);
 
   document.querySelectorAll('.nav__link').forEach(link => {
-    const href     = link.getAttribute('href') || '';
-    const linkFile = href.split('/').pop() || 'index.html';
-    if (linkFile === currentFile) {
-      link.classList.add('active');
-      /* La classe coloriait, elle n'annonçait rien : le lien de la page courante
-         était un lien ordinaire pour un lecteur d'écran. `aria-current` le dit.
-         Il reste un lien — c'est le motif attendu d'une navigation persistante,
-         contrairement au fil d'Ariane où le dernier élément est la page. */
-      link.setAttribute('aria-current', 'page');
-    }
+    const href = link.getAttribute('href');
+    if (!href) return;
+    let cible;
+    try { cible = normaliser(new URL(href, window.location.href)); } catch (e) { return; }
+    if (cible !== ici) return;
+    link.classList.add('active');
+    /* La classe coloriait, elle n'annonçait rien : le lien de la page courante
+       était un lien ordinaire pour un lecteur d'écran. `aria-current` le dit.
+       Il reste un lien — c'est le motif attendu d'une navigation persistante,
+       contrairement au fil d'Ariane où le dernier élément est la page. */
+    link.setAttribute('aria-current', 'page');
   });
 }
 
