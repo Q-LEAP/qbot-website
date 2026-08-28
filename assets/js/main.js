@@ -647,7 +647,6 @@ backToTop.addEventListener('click', () => {
        Caractéristiques. C'est ce qui a permis de supprimer l'observateur
        d'intersection qui s'en chargeait : une seule grandeur gouverne la carte
        affichée, le halo, l'index et le rail, donc rien ne peut se désynchroniser. */
-    ['.ucs', '--ucs-p', 5],
     /* La bande d'exemples d'appel : le troisième argument dit au moteur que c'est
        un rail ÉPINGLÉ (mesuré à sa course de collage et non à la ligne de lecture)
        et lui fait écrire `data-panel`, qui sert ici à marquer la carte en cours. */

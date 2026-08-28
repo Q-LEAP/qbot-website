@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=e83cc726">
+  <link rel="stylesheet" href="assets/css/style.css?v=217bd2fd">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -160,111 +160,92 @@
   </div>
 </section>
 
-<!-- ======= LES CINQ CAS, EN SÉQUENCE ═══════════════════════════════════════
-     Section épinglée : un cas à l'écran, et le défilement fait avancer la séquence.
-     Le numéro de l'étape et la progression sont écrits par le moteur de mouvement
-     (`--ucs-p` et `data-panel`), le même mécanisme que l'acte épinglé de la page
-     Caractéristiques. Sous 940 px et en mouvement réduit, plus d'épinglage du tout :
-     les cinq cas redeviennent une liste, ce qui est aussi l'état sans JavaScript. -->
-<section class="section ucs" aria-labelledby="ucs-title" data-panel="0">
+<!-- ======= LES CINQ CAS ═══════════════════════════════════════════════════
+     Une liste, et rien d'autre. La section a ete epinglee cinq ecrans jusqu'au
+     2026-08-28, un cas a l'ecran, la sequence pilotee par le moteur de
+     mouvement. Retire a la demande du client : « pas d'etape par etape en
+     scrollytelling, juste les uns au-dessus des autres ».
+     Ne pas la reepingler : c'est un arbitrage, pas une regression. -->
+<section class="section" aria-labelledby="ucs-title">
   <h2 class="sr-only" id="ucs-title">Cinq situations où la chaîne se débloque</h2>
-  <div class="ucs__stage">
-    <span class="ucs__glow" aria-hidden="true"></span>
-    <div class="container">
-      <div class="ucs__inner">
-        <div class="ucs__cards">
-          <article class="ucs__case" data-i="0">
+  <div class="container">
+    <div class="usecases">
         <div class="usecase">
-          <span class="usecase__cat">Banque et fintech</span>
-          <h3>Une connexion testée de bout en bout, 2FA comprise</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">Le blocage</span>
-              <p>Chaque test de connexion passe par une étape 2FA&nbsp;: une notification à valider, un code de Microsoft ou Google Authenticator, une demande LuxTrust ou itsme. Jouer ces tests sans personne devant l'écran voulait dire soit sauter la 2FA, ce qui vide le test de son sens, soit garder un testeur d'astreinte à toute heure.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
-              <p>L'app compagnon surveille l'application 2FA. Dès qu'une notification arrive, <span class="nb">Q-Bot</span> exécute le scénario de validation. Tout le parcours de connexion, 2FA comprise, se joue sans personne, sur un vrai appareil, à n'importe quelle heure.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>0</b><span>intervention humaine, à toute heure</span></p>
+        <span class="usecase__cat">Banque et fintech</span>
+        <h3>Une connexion testée de bout en bout, 2FA comprise</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">Le blocage</span>
+        <p>Chaque test de connexion passe par une étape 2FA&nbsp;: une notification à valider, un code de Microsoft ou Google Authenticator, une demande LuxTrust ou itsme. Jouer ces tests sans personne devant l'écran voulait dire soit sauter la 2FA, ce qui vide le test de son sens, soit garder un testeur d'astreinte à toute heure.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="1">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+        <p>L'app compagnon surveille l'application 2FA. Dès qu'une notification arrive, <span class="nb">Q-Bot</span> exécute le scénario de validation. Tout le parcours de connexion, 2FA comprise, se joue sans personne, sur un vrai appareil, à n'importe quelle heure.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>0</b><span>intervention humaine, à toute heure</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">Campagne de non-régression</span>
-          <h3>Des exécutions de nuit vraiment automatiques</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">Le blocage</span>
-              <p>La campagne tourne à chaque demande de fusion et chaque nuit. Plusieurs parcours butent sur la 2FA&nbsp;: à l'authentification, sur une opération sensible, ou à l'élévation de session. Une seule étape manuelle casse toute la chaîne.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
-              <p>Chaque verrou 2FA de la chaîne devient un appel. Quand le test atteint l'étape, il envoie <code>GET /scenarios/:id/execute</code> et <span class="nb">Q-Bot</span> s'en occupe. La compilation passe ou échoue sur la logique de l'application, plus sur l'absence d'un humain.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>1 appel</b><span>par verrou 2FA dans la chaîne</span></p>
+        <span class="usecase__cat">Campagne de non-régression</span>
+        <h3>Des exécutions de nuit vraiment automatiques</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">Le blocage</span>
+        <p>La campagne tourne à chaque demande de fusion et chaque nuit. Plusieurs parcours butent sur la 2FA&nbsp;: à l'authentification, sur une opération sensible, ou à l'élévation de session. Une seule étape manuelle casse toute la chaîne.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="2">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+        <p>Chaque verrou 2FA de la chaîne devient un appel. Quand le test atteint l'étape, il envoie <code>GET /scenarios/:id/execute</code> et <span class="nb">Q-Bot</span> s'en occupe. La compilation passe ou échoue sur la logique de l'application, plus sur l'absence d'un humain.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>1 appel</b><span>par verrou 2FA dans la chaîne</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">Code LuxTrust</span>
-          <h3>Le code à usage unique dans vos assertions</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">Le blocage</span>
-              <p>Les parcours qui passent par LuxTrust, courants dans la finance, l'administration et les grandes entreprises au Luxembourg, ont besoin du code affiché pour remplir un formulaire ou vérifier une réponse d'authentification. Aller le lire à la main interrompt le test.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
-              <p>Appelez <code>GET /get-luxtrust-otp</code> à l'endroit du test où le code est nécessaire. <span class="nb">Q-Bot</span> lit le code affiché par l'app LuxTrust sur le téléphone relié et le renvoie dans la réponse. Votre outil de test s'en sert directement.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>Quelques s</b><span>pour récupérer le code affiché</span></p>
+        <span class="usecase__cat">Code LuxTrust</span>
+        <h3>Le code à usage unique dans vos assertions</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">Le blocage</span>
+        <p>Les parcours qui passent par LuxTrust, courants dans la finance, l'administration et les grandes entreprises au Luxembourg, ont besoin du code affiché pour remplir un formulaire ou vérifier une réponse d'authentification. Aller le lire à la main interrompt le test.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="3">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+        <p>Appelez <code>GET /get-luxtrust-otp</code> à l'endroit du test où le code est nécessaire. <span class="nb">Q-Bot</span> lit le code affiché par l'app LuxTrust sur le téléphone relié et le renvoie dans la réponse. Votre outil de test s'en sert directement.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>Quelques s</b><span>pour récupérer le code affiché</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">Authentification d'entreprise</span>
-          <h3>Les parcours à plusieurs facteurs</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">Le blocage</span>
-              <p>Les applications d'entreprise enchaînent souvent mot de passe, validation par notification, puis code temporaire. Automatiser cela de bout en bout demande d'orchestrer plusieurs écrans&nbsp;: fragile en script, lent à la main.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
-              <p>Chaque étape est un scénario, construit visuellement. Votre outil de test les appelle dans l'ordre par l'API. <span class="nb">Q-Bot</span> joue chacune avec les bons temps d'attente, et le parcours complet se termine sans intervention.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>3 scénarios</b><span>enchaînés dans l'ordre, sans script</span></p>
+        <span class="usecase__cat">Authentification d'entreprise</span>
+        <h3>Les parcours à plusieurs facteurs</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">Le blocage</span>
+        <p>Les applications d'entreprise enchaînent souvent mot de passe, validation par notification, puis code temporaire. Automatiser cela de bout en bout demande d'orchestrer plusieurs écrans&nbsp;: fragile en script, lent à la main.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="4">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+        <p>Chaque étape est un scénario, construit visuellement. Votre outil de test les appelle dans l'ordre par l'API. <span class="nb">Q-Bot</span> joue chacune avec les bons temps d'attente, et le parcours complet se termine sans intervention.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>3 scénarios</b><span>enchaînés dans l'ordre, sans script</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">2FA par QR code</span>
-          <h3>Afficher, scanner, continuer</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">Le blocage</span>
-              <p>Certains parcours 2FA demandent au téléphone de scanner un QR code&nbsp;: pour confirmer une transaction, appairer une application d'authentification ou valider une session. Présenter un QR code à un appareil sous test automatisé n'a pas de solution évidente.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
-              <p>La chaîne envoie l'image à <span class="nb">Q-Bot</span> par <code>POST /display-image</code>. <span class="nb">Q-Bot</span> l'affiche en plein écran sur son petit écran intégré. Un scénario demande alors au téléphone d'ouvrir sa caméra et de la pointer dessus&nbsp;: le scan se fait, l'étape 2FA se résout.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>1 écran</b><span>le boîtier affiche, le téléphone scanne</span></p>
+        <span class="usecase__cat">2FA par QR code</span>
+        <h3>Afficher, scanner, continuer</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">Le blocage</span>
+        <p>Certains parcours 2FA demandent au téléphone de scanner un QR code&nbsp;: pour confirmer une transaction, appairer une application d'authentification ou valider une session. Présenter un QR code à un appareil sous test automatisé n'a pas de solution évidente.</p>
         </div>
-          </article>
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+        <p>La chaîne envoie l'image à <span class="nb">Q-Bot</span> par <code>POST /display-image</code>. <span class="nb">Q-Bot</span> l'affiche en plein écran sur son petit écran intégré. Un scénario demande alors au téléphone d'ouvrir sa caméra et de la pointer dessus&nbsp;: le scan se fait, l'étape 2FA se résout.</p>
         </div>
-      </div>
+        </div>
+        <p class="usecase__fig"><b>1 écran</b><span>le boîtier affiche, le téléphone scanne</span></p>
+        </div>
     </div>
-    <ol class="ucs__index" aria-hidden="true">
-      <li></li><li></li><li></li><li></li><li></li>
-    </ol>
-    <span class="ucs__rail" aria-hidden="true"></span>
   </div>
 </section>
 
@@ -470,6 +451,6 @@ assertTrue(
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=37afdaca" defer></script>
+<script src="assets/js/main.js?v=6e485407" defer></script>
 </body>
 </html>

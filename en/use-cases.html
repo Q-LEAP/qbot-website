@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=e83cc726">
+  <link rel="stylesheet" href="../assets/css/style.css?v=217bd2fd">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -160,111 +160,92 @@
   </div>
 </section>
 
-<!-- ======= LES CINQ CAS, EN SÉQUENCE ═══════════════════════════════════════
-     Section épinglée : un cas à l'écran, et le défilement fait avancer la séquence.
-     Le numéro de l'étape et la progression sont écrits par le moteur de mouvement
-     (`--ucs-p` et `data-panel`), le même mécanisme que l'acte épinglé de la page
-     Caractéristiques. Sous 940 px et en mouvement réduit, plus d'épinglage du tout :
-     les cinq cas redeviennent une liste, ce qui est aussi l'état sans JavaScript. -->
-<section class="section ucs" aria-labelledby="ucs-title" data-panel="0">
+<!-- ======= LES CINQ CAS ═══════════════════════════════════════════════════
+     Une liste, et rien d'autre. La section a ete epinglee cinq ecrans jusqu'au
+     2026-08-28, un cas a l'ecran, la sequence pilotee par le moteur de
+     mouvement. Retire a la demande du client : « pas d'etape par etape en
+     scrollytelling, juste les uns au-dessus des autres ».
+     Ne pas la reepingler : c'est un arbitrage, pas une regression. -->
+<section class="section" aria-labelledby="ucs-title">
   <h2 class="sr-only" id="ucs-title">Five situations where the pipeline unblocks</h2>
-  <div class="ucs__stage">
-    <span class="ucs__glow" aria-hidden="true"></span>
-    <div class="container">
-      <div class="ucs__inner">
-        <div class="ucs__cards">
-          <article class="ucs__case" data-i="0">
+  <div class="container">
+    <div class="usecases">
         <div class="usecase">
-          <span class="usecase__cat">Banking &amp; fintech</span>
-          <h3>End-to-end login with 2FA</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">The challenge</span>
-              <p>Every login test requires a 2FA step: a push notification approval, an OTP from Microsoft Authenticator or Google Authenticator, or a LuxTrust or itsme prompt. Running those tests unattended meant either skipping 2FA, which defeats the purpose, or keeping a tester on standby at all hours.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-              <p>The companion app monitors the 2FA app. The moment a notification arrives, <span class="nb">Q-Bot</span> executes the approval scenario automatically. The entire login flow, 2FA included, runs unattended on a real device, any time of day.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>0</b><span>human intervention, at any hour</span></p>
+        <span class="usecase__cat">Banking &amp; fintech</span>
+        <h3>End-to-end login with 2FA</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">The challenge</span>
+        <p>Every login test requires a 2FA step: a push notification approval, an OTP from Microsoft Authenticator or Google Authenticator, or a LuxTrust or itsme prompt. Running those tests unattended meant either skipping 2FA, which defeats the purpose, or keeping a tester on standby at all hours.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="1">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+        <p>The companion app monitors the 2FA app. The moment a notification arrives, <span class="nb">Q-Bot</span> executes the approval scenario automatically. The entire login flow, 2FA included, runs unattended on a real device, any time of day.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>0</b><span>human intervention, at any hour</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">CI/CD regression suite</span>
-          <h3>Fully automated nightly runs</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">The challenge</span>
-              <p>A regression suite runs on every pull request and nightly. Several flows gate on 2FA: at authentication, at sensitive operations, or at session escalation. One manual step breaks the entire pipeline.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-              <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. <span class="nb">Q-Bot</span> handles it. The build passes or fails on actual application logic, not on a missing human.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>1 call</b><span>per 2FA gate in the pipeline</span></p>
+        <span class="usecase__cat">CI/CD regression suite</span>
+        <h3>Fully automated nightly runs</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">The challenge</span>
+        <p>A regression suite runs on every pull request and nightly. Several flows gate on 2FA: at authentication, at sensitive operations, or at session escalation. One manual step breaks the entire pipeline.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="2">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+        <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. <span class="nb">Q-Bot</span> handles it. The build passes or fails on actual application logic, not on a missing human.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>1 call</b><span>per 2FA gate in the pipeline</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">LuxTrust OTP retrieval</span>
-          <h3>Live OTP in your test assertions</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">The challenge</span>
-              <p>Flows using LuxTrust, common in Luxembourg-based financial, government, and enterprise environments, require the current OTP to complete a form or verify an authentication response. Retrieving it manually interrupts the automated flow.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-              <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. <span class="nb">Q-Bot</span> reads the live OTP from the LuxTrust app running on the connected Android device and returns it in the response. Your test framework uses it directly.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>Seconds</b><span>to retrieve the live code</span></p>
+        <span class="usecase__cat">LuxTrust OTP retrieval</span>
+        <h3>Live OTP in your test assertions</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">The challenge</span>
+        <p>Flows using LuxTrust, common in Luxembourg-based financial, government, and enterprise environments, require the current OTP to complete a form or verify an authentication response. Retrieving it manually interrupts the automated flow.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="3">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+        <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. <span class="nb">Q-Bot</span> reads the live OTP from the LuxTrust app running on the connected Android device and returns it in the response. Your test framework uses it directly.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>Seconds</b><span>to retrieve the live code</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">Enterprise SSO</span>
-          <h3>Multi-step authentication flows</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">The challenge</span>
-              <p>Enterprise applications often use multi-step authentication: password, then a push approval, then a TOTP code. Automating this end-to-end requires orchestrating multiple screens. Doing it with scripts is fragile; manually is slow.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-              <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. <span class="nb">Q-Bot</span> handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>3 scenarios</b><span>chained in order, no script</span></p>
+        <span class="usecase__cat">Enterprise SSO</span>
+        <h3>Multi-step authentication flows</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">The challenge</span>
+        <p>Enterprise applications often use multi-step authentication: password, then a push approval, then a TOTP code. Automating this end-to-end requires orchestrating multiple screens. Doing it with scripts is fragile; manually is slow.</p>
         </div>
-          </article>
-          <article class="ucs__case" data-i="4">
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+        <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. <span class="nb">Q-Bot</span> handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
+        </div>
+        </div>
+        <p class="usecase__fig"><b>3 scenarios</b><span>chained in order, no script</span></p>
+        </div>
         <div class="usecase">
-          <span class="usecase__cat">QR code-based 2FA</span>
-          <h3>Display, scan, continue</h3>
-          <div class="usecase__grid">
-            <div class="usecase__part">
-              <span class="usecase__lab">The challenge</span>
-              <p>Some 2FA flows require the mobile device to scan a QR code: to confirm a transaction, pair an authenticator, or approve a session. Presenting a QR code to a device under automated test is a step that has no obvious automated solution.</p>
-            </div>
-            <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-              <p>The test pipeline sends the QR code image to <span class="nb">Q-Bot</span> via <code>POST /display-image</code>. <span class="nb">Q-Bot</span> renders it fullscreen on its small attached screen. A scenario then instructs the Android device to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
-            </div>
-          </div>
-          <p class="usecase__fig"><b>1 screen</b><span>the device shows, the phone scans</span></p>
+        <span class="usecase__cat">QR code-based 2FA</span>
+        <h3>Display, scan, continue</h3>
+        <div class="usecase__grid">
+        <div class="usecase__part">
+        <span class="usecase__lab">The challenge</span>
+        <p>Some 2FA flows require the mobile device to scan a QR code: to confirm a transaction, pair an authenticator, or approve a session. Presenting a QR code to a device under automated test is a step that has no obvious automated solution.</p>
         </div>
-          </article>
+        <div class="usecase__part usecase__part--sol">
+        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+        <p>The test pipeline sends the QR code image to <span class="nb">Q-Bot</span> via <code>POST /display-image</code>. <span class="nb">Q-Bot</span> renders it fullscreen on its small attached screen. A scenario then instructs the Android device to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
         </div>
-      </div>
+        </div>
+        <p class="usecase__fig"><b>1 screen</b><span>the device shows, the phone scans</span></p>
+        </div>
     </div>
-    <ol class="ucs__index" aria-hidden="true">
-      <li></li><li></li><li></li><li></li><li></li>
-    </ol>
-    <span class="ucs__rail" aria-hidden="true"></span>
   </div>
 </section>
 
@@ -469,6 +450,6 @@ assertTrue(
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=37afdaca" defer></script>
+<script src="../assets/js/main.js?v=6e485407" defer></script>
 </body>
 </html>
