@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=d789e849">
+  <link rel="stylesheet" href="../assets/css/style.css?v=e83cc726">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -155,8 +155,8 @@
 <section class="page-hero" aria-labelledby="page-title">
   <div class="container">
     <span class="section-label">Use cases</span>
-    <h1 id="page-title">Q-Bot in the wild</h1>
-    <p>From banking login flows to nightly CI regressions, here is how QA teams are putting Q-Bot to work.</p>
+    <h1 id="page-title"><span class="nb">Q-Bot</span> in the wild</h1>
+    <p>From banking login flows to nightly CI regressions, here is how QA teams are putting <span class="nb">Q-Bot</span> to work.</p>
   </div>
 </section>
 
@@ -183,8 +183,8 @@
               <p>Every login test requires a 2FA step: a push notification approval, an OTP from Microsoft Authenticator or Google Authenticator, or a LuxTrust or itsme prompt. Running those tests unattended meant either skipping 2FA, which defeats the purpose, or keeping a tester on standby at all hours.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With Q-Bot</span>
-              <p>The companion app monitors the 2FA app. The moment a notification arrives, Q-Bot executes the approval scenario automatically. The entire login flow, 2FA included, runs unattended on a real device, any time of day.</p>
+              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+              <p>The companion app monitors the 2FA app. The moment a notification arrives, <span class="nb">Q-Bot</span> executes the approval scenario automatically. The entire login flow, 2FA included, runs unattended on a real device, any time of day.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>0</b><span>human intervention, at any hour</span></p>
@@ -200,8 +200,8 @@
               <p>A regression suite runs on every pull request and nightly. Several flows gate on 2FA: at authentication, at sensitive operations, or at session escalation. One manual step breaks the entire pipeline.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With Q-Bot</span>
-              <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. Q-Bot handles it. The build passes or fails on actual application logic, not on a missing human.</p>
+              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+              <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. <span class="nb">Q-Bot</span> handles it. The build passes or fails on actual application logic, not on a missing human.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>1 call</b><span>per 2FA gate in the pipeline</span></p>
@@ -217,8 +217,8 @@
               <p>Flows using LuxTrust, common in Luxembourg-based financial, government, and enterprise environments, require the current OTP to complete a form or verify an authentication response. Retrieving it manually interrupts the automated flow.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With Q-Bot</span>
-              <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. Q-Bot reads the live OTP from the LuxTrust app running on the connected Android device and returns it in the response. Your test framework uses it directly.</p>
+              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+              <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. <span class="nb">Q-Bot</span> reads the live OTP from the LuxTrust app running on the connected Android device and returns it in the response. Your test framework uses it directly.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>Seconds</b><span>to retrieve the live code</span></p>
@@ -234,8 +234,8 @@
               <p>Enterprise applications often use multi-step authentication: password, then a push approval, then a TOTP code. Automating this end-to-end requires orchestrating multiple screens. Doing it with scripts is fragile; manually is slow.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With Q-Bot</span>
-              <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. Q-Bot handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
+              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+              <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. <span class="nb">Q-Bot</span> handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>3 scenarios</b><span>chained in order, no script</span></p>
@@ -251,8 +251,8 @@
               <p>Some 2FA flows require the mobile device to scan a QR code: to confirm a transaction, pair an authenticator, or approve a session. Presenting a QR code to a device under automated test is a step that has no obvious automated solution.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">With Q-Bot</span>
-              <p>The test pipeline sends the QR code image to Q-Bot via <code>POST /display-image</code>. Q-Bot renders it fullscreen on its small attached screen. A scenario then instructs the Android device to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
+              <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
+              <p>The test pipeline sends the QR code image to <span class="nb">Q-Bot</span> via <code>POST /display-image</code>. <span class="nb">Q-Bot</span> renders it fullscreen on its small attached screen. A scenario then instructs the Android device to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>1 screen</b><span>the device shows, the phone scans</span></p>
@@ -281,7 +281,7 @@
       <div class="section-header">
         <span class="section-label">REST API</span>
         <h2 class="section-title" id="api-title">One HTTP call, any test pipeline</h2>
-        <p class="section-subtitle">If it makes HTTP requests, it works with Q-Bot. No SDK. No plugin. No agent to install.</p>
+        <p class="section-subtitle">If it makes HTTP requests, it works with <span class="nb">Q-Bot</span>. No SDK. No plugin. No agent to install.</p>
       </div>
     </div>
     <div class="ucs-api__viewport">
@@ -393,7 +393,7 @@ assertTrue(
             <span class="spec-item__value">An HTTP step, a <code>curl</code> command, or a custom script</span>
           </div>
     </div>
-    <p class="ucs__note">Q-Bot runs on your local network. The API is available as long as the device is powered on. No authentication tokens, no rate limits, no external dependencies.</p>
+    <p class="ucs__note"><span class="nb">Q-Bot</span> runs on your local network. The API is available as long as the device is powered on. No authentication tokens, no rate limits, no external dependencies.</p>
   </div>
 </section>
 
@@ -430,7 +430,7 @@ assertTrue(
         </div>
       </div>
       <div class="footer__col">
-        <h3>Q-Bot</h3>
+        <h3><span class="nb">Q-Bot</span></h3>
         <ul role="list">
           <li><a href="./">Home</a></li>
           <li><a href="about.html">About</a></li>
@@ -460,7 +460,7 @@ assertTrue(
       </div>
     </div>
 <div class="footer__bottom">
-      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Legal links">
         <a href="terms-and-conditions-of-sale/">Terms of Sale</a>
         <a href="privacy/">Privacy</a>

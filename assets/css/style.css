@@ -361,6 +361,16 @@ p { color: var(--gray); }
 
 .btn--lg { padding: 14px 36px; font-size: 1rem; }
 
+/* « Q-Bot » ne se coupe pas en fin de ligne, demandé le 2026-08-28 : c'est le
+   nom complet du produit.
+   AUCUNE PROPRIÉTÉ CSS NE PEUT LE FAIRE SANS CE MARQUAGE. Une coupure après un
+   trait d'union est autorisée par la norme Unicode et aucune valeur de
+   `word-break` ou de `line-break` ne la retire. L'autre solution serait le
+   trait insécable U+2011, écarté : il ferait de « Q-Bot » et « Q‑Bot » deux
+   chaînes différentes pour un moteur de recherche et pour toute recherche dans
+   le dépôt. */
+.nb { white-space: nowrap; }
+
 /* ---- Navigation ---- */
 .nav {
   position: sticky;

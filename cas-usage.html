@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=d789e849">
+  <link rel="stylesheet" href="assets/css/style.css?v=e83cc726">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -155,8 +155,8 @@
 <section class="page-hero" aria-labelledby="page-title">
   <div class="container">
     <span class="section-label">Cas d'usage</span>
-    <h1 id="page-title">Q-Bot sur le terrain</h1>
-    <p>Du parcours de connexion bancaire à la campagne de tests de nuit, voici comment des équipes QA emploient Q-Bot.</p>
+    <h1 id="page-title"><span class="nb">Q-Bot</span> sur le terrain</h1>
+    <p>Du parcours de connexion bancaire à la campagne de tests de nuit, voici comment des équipes QA emploient <span class="nb">Q-Bot</span>.</p>
   </div>
 </section>
 
@@ -183,8 +183,8 @@
               <p>Chaque test de connexion passe par une étape 2FA&nbsp;: une notification à valider, un code de Microsoft ou Google Authenticator, une demande LuxTrust ou itsme. Jouer ces tests sans personne devant l'écran voulait dire soit sauter la 2FA, ce qui vide le test de son sens, soit garder un testeur d'astreinte à toute heure.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec Q-Bot</span>
-              <p>L'app compagnon surveille l'application 2FA. Dès qu'une notification arrive, Q-Bot exécute le scénario de validation. Tout le parcours de connexion, 2FA comprise, se joue sans personne, sur un vrai appareil, à n'importe quelle heure.</p>
+              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+              <p>L'app compagnon surveille l'application 2FA. Dès qu'une notification arrive, <span class="nb">Q-Bot</span> exécute le scénario de validation. Tout le parcours de connexion, 2FA comprise, se joue sans personne, sur un vrai appareil, à n'importe quelle heure.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>0</b><span>intervention humaine, à toute heure</span></p>
@@ -200,8 +200,8 @@
               <p>La campagne tourne à chaque demande de fusion et chaque nuit. Plusieurs parcours butent sur la 2FA&nbsp;: à l'authentification, sur une opération sensible, ou à l'élévation de session. Une seule étape manuelle casse toute la chaîne.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec Q-Bot</span>
-              <p>Chaque verrou 2FA de la chaîne devient un appel. Quand le test atteint l'étape, il envoie <code>GET /scenarios/:id/execute</code> et Q-Bot s'en occupe. La compilation passe ou échoue sur la logique de l'application, plus sur l'absence d'un humain.</p>
+              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+              <p>Chaque verrou 2FA de la chaîne devient un appel. Quand le test atteint l'étape, il envoie <code>GET /scenarios/:id/execute</code> et <span class="nb">Q-Bot</span> s'en occupe. La compilation passe ou échoue sur la logique de l'application, plus sur l'absence d'un humain.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>1 appel</b><span>par verrou 2FA dans la chaîne</span></p>
@@ -217,8 +217,8 @@
               <p>Les parcours qui passent par LuxTrust, courants dans la finance, l'administration et les grandes entreprises au Luxembourg, ont besoin du code affiché pour remplir un formulaire ou vérifier une réponse d'authentification. Aller le lire à la main interrompt le test.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec Q-Bot</span>
-              <p>Appelez <code>GET /get-luxtrust-otp</code> à l'endroit du test où le code est nécessaire. Q-Bot lit le code affiché par l'app LuxTrust sur le téléphone relié et le renvoie dans la réponse. Votre outil de test s'en sert directement.</p>
+              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+              <p>Appelez <code>GET /get-luxtrust-otp</code> à l'endroit du test où le code est nécessaire. <span class="nb">Q-Bot</span> lit le code affiché par l'app LuxTrust sur le téléphone relié et le renvoie dans la réponse. Votre outil de test s'en sert directement.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>Quelques s</b><span>pour récupérer le code affiché</span></p>
@@ -234,8 +234,8 @@
               <p>Les applications d'entreprise enchaînent souvent mot de passe, validation par notification, puis code temporaire. Automatiser cela de bout en bout demande d'orchestrer plusieurs écrans&nbsp;: fragile en script, lent à la main.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec Q-Bot</span>
-              <p>Chaque étape est un scénario, construit visuellement. Votre outil de test les appelle dans l'ordre par l'API. Q-Bot joue chacune avec les bons temps d'attente, et le parcours complet se termine sans intervention.</p>
+              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+              <p>Chaque étape est un scénario, construit visuellement. Votre outil de test les appelle dans l'ordre par l'API. <span class="nb">Q-Bot</span> joue chacune avec les bons temps d'attente, et le parcours complet se termine sans intervention.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>3 scénarios</b><span>enchaînés dans l'ordre, sans script</span></p>
@@ -251,8 +251,8 @@
               <p>Certains parcours 2FA demandent au téléphone de scanner un QR code&nbsp;: pour confirmer une transaction, appairer une application d'authentification ou valider une session. Présenter un QR code à un appareil sous test automatisé n'a pas de solution évidente.</p>
             </div>
             <div class="usecase__part usecase__part--sol">
-              <span class="usecase__lab">Avec Q-Bot</span>
-              <p>La chaîne envoie l'image à Q-Bot par <code>POST /display-image</code>. Q-Bot l'affiche en plein écran sur son petit écran intégré. Un scénario demande alors au téléphone d'ouvrir sa caméra et de la pointer dessus&nbsp;: le scan se fait, l'étape 2FA se résout.</p>
+              <span class="usecase__lab">Avec <span class="nb">Q-Bot</span></span>
+              <p>La chaîne envoie l'image à <span class="nb">Q-Bot</span> par <code>POST /display-image</code>. <span class="nb">Q-Bot</span> l'affiche en plein écran sur son petit écran intégré. Un scénario demande alors au téléphone d'ouvrir sa caméra et de la pointer dessus&nbsp;: le scan se fait, l'étape 2FA se résout.</p>
             </div>
           </div>
           <p class="usecase__fig"><b>1 écran</b><span>le boîtier affiche, le téléphone scanne</span></p>
@@ -281,7 +281,7 @@
       <div class="section-header">
         <span class="section-label">API REST</span>
         <h2 class="section-title" id="api-title">Un appel HTTP, et n'importe quelle chaîne de tests</h2>
-        <p class="section-subtitle">Si votre outil sait faire une requête HTTP, il sait piloter Q-Bot. Aucun SDK, aucun greffon, aucun agent à installer.</p>
+        <p class="section-subtitle">Si votre outil sait faire une requête HTTP, il sait piloter <span class="nb">Q-Bot</span>. Aucun SDK, aucun greffon, aucun agent à installer.</p>
       </div>
     </div>
     <div class="ucs-api__viewport">
@@ -393,7 +393,7 @@ assertTrue(
             <span class="spec-item__value">Une étape HTTP, une commande <code>curl</code> ou un script maison</span>
           </div>
     </div>
-    <p class="ucs__note">Q-Bot tourne sur votre réseau local. L'API répond tant que le boîtier est allumé. Aucun jeton d'authentification, aucune limite de débit, aucune dépendance extérieure.</p>
+    <p class="ucs__note"><span class="nb">Q-Bot</span> tourne sur votre réseau local. L'API répond tant que le boîtier est allumé. Aucun jeton d'authentification, aucune limite de débit, aucune dépendance extérieure.</p>
   </div>
 </section>
 
@@ -431,7 +431,7 @@ assertTrue(
         </div>
       </div>
       <div class="footer__col">
-        <h3>Q-Bot</h3>
+        <h3><span class="nb">Q-Bot</span></h3>
         <ul role="list">
           <li><a href="./">Accueil</a></li>
           <li><a href="a-propos.html">À propos</a></li>
@@ -461,7 +461,7 @@ assertTrue(
       </div>
     </div>
 <div class="footer__bottom">
-      <p class="footer__copy">Copyright &copy;2026 Q-Bot powered by Q-Leap</p>
+      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Liens légaux">
         <a href="conditions-vente/">Conditions de vente</a>
         <a href="confidentialite/">Confidentialité</a>
