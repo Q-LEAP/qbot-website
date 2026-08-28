@@ -210,6 +210,31 @@
 
 
 
+
+<!-- ======= INTRO ======= -->
+<section class="section section--gray" aria-labelledby="intro-title">
+  <div class="container">
+    <div class="intro__grid">
+      <div>
+        <span class="section-label">The solution</span>
+        <h2 class="section-title" id="intro-title">2FA automation with LuxTrust and smartphones</h2>
+        <p style="margin-top:16px;">
+          Born from an innovation combining electronics, software and design, Q-Bot automates LuxTrust dual authentication without human intervention, directly from your existing testing tools.
+        </p>
+        <a href="technical-specs.html" class="btn btn--outline" style="margin-top:28px;">
+          View technical specs
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="intro__image">
+        <!-- Rendu de la géométrie réelle (assets/models/qbot.glb), pas une image
+             générée : cf. tools/render/. -->
+        <img src="../assets/img/qbot-specs.jpg" alt="Three-quarter view of the Q-Bot enclosure" width="1400" height="1050" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Lien d'évitement de la séquence. Quatre écrans épinglés, c'est quatre
      hauteurs de fenêtre à traverser : à la souris on ne le sent pas, au clavier
      ou au lecteur d'écran c'est un couloir. Masqué au repos, révélé à la prise
@@ -401,57 +426,8 @@
   <span class="scrolly__cta-label">Technical Specs</span>
 </a>
 
-<!-- ======= INTRO ======= -->
-<section class="section section--gray" id="after-sequence" aria-labelledby="intro-title">
-  <div class="container">
-    <div class="intro__grid">
-      <div>
-        <span class="section-label">The solution</span>
-        <h2 class="section-title" id="intro-title">2FA automation with LuxTrust and smartphones</h2>
-        <p style="margin-top:16px;">
-          Born from an innovation combining electronics, software and design, Q-Bot automates LuxTrust dual authentication without human intervention, directly from your existing testing tools.
-        </p>
-        <a href="technical-specs.html" class="btn btn--outline" style="margin-top:28px;">
-          View technical specs
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-      </div>
-      <div class="intro__image">
-        <!-- Rendu de la géométrie réelle (assets/models/qbot.glb), pas une image
-             générée : cf. tools/render/. -->
-        <img src="../assets/img/qbot-specs.jpg" alt="Three-quarter view of the Q-Bot enclosure" width="1400" height="1050" loading="lazy">
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======= INTRO 2 — LuxTrust ======= -->
-<section class="section" aria-labelledby="luxtrust-title">
-  <div class="container">
-    <div class="intro__grid">
-      <div class="intro__image intro__image--dock">
-        <!-- Photo (brochure officielle, page 1, 300 dpi) : une vraie demande de
-             transaction LuxTrust sur le téléphone docké. -->
-        <img
-          src="../assets/img/qbot-photo-dock.jpg"
-          alt="A smartphone docked in the Q-Bot cradle, showing a transaction approval request in the LuxTrust application"
-          width="699" height="860"
-          loading="lazy"
-        >
-      </div>
-      <div>
-        <span class="section-label">LuxTrust</span>
-        <h2 class="section-title" id="luxtrust-title">Automate authentication for all apps including the LuxTrust mobile app</h2>
-        <p>
-          Q-Bot, a 100&nbsp;% Made in Luxembourg solution, automates two-factor authentication (2FA), whether via mobile applications like LuxTrust (the leading solution in Luxembourg) or via other authentication apps deployed in other countries.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ======= FEATURES ======= -->
-<section class="section section--gray" aria-labelledby="features-title">
+<section class="section" id="after-sequence" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Benefits</span>
@@ -492,7 +468,7 @@
 </section>
 
 <!-- ======= WHO IS Q-Bot FOR ======= -->
-<section class="section" aria-labelledby="audience-title">
+<section class="section section--gray" aria-labelledby="audience-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Who is it for?</span>
@@ -514,6 +490,31 @@
         <h3>All types of applications</h3>
         <p>Q-Bot supports your Web, Mobile or Desktop applications. Use cases are numerous: authenticating a user, creating a user account, confirming an e-commerce transaction, resetting a user's password, validating a money transfer, signing a document, requesting an official document...</p>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======= INTRO 2 — LuxTrust ======= -->
+<section class="section" aria-labelledby="luxtrust-title">
+  <div class="container">
+    <div class="intro__grid">
+      <div class="intro__image intro__image--dock">
+        <!-- Photo (brochure officielle, page 1, 300 dpi) : une vraie demande de
+             transaction LuxTrust sur le téléphone docké. -->
+        <img
+          src="../assets/img/qbot-photo-dock.jpg"
+          alt="A smartphone docked in the Q-Bot cradle, showing a transaction approval request in the LuxTrust application"
+          width="699" height="860"
+          loading="lazy"
+        >
+      </div>
+      <div>
+        <span class="section-label">LuxTrust</span>
+        <h2 class="section-title" id="luxtrust-title">Automate authentication for all apps including the LuxTrust mobile app</h2>
+        <p>
+          Q-Bot, a 100&nbsp;% Made in Luxembourg solution, automates two-factor authentication (2FA), whether via mobile applications like LuxTrust (the leading solution in Luxembourg) or via other authentication apps deployed in other countries.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -545,8 +546,56 @@
   </div>
 </section>
 
+<!-- ======= FAQ PREVIEW ======= -->
+<section class="section" aria-labelledby="faq-home-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title" id="faq-home-title">The main questions around Q-Bot</h2>
+    </div>
+    <div class="faq__list">
+      <div class="faq-item">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b1" aria-controls="faq-a1">
+          What is Q-Bot?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a1" role="region" aria-labelledby="faq-b1">
+          <p>Q-Bot is a one-of-a-kind robot designed to automate two-factor authentication (2FA) in the real apps that carry it. It enables the automation of testing processes that were previously inaccessible.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b2" aria-controls="faq-a2">
+          What problem does Q-Bot solve?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a2" role="region" aria-labelledby="faq-b2">
+          <p>Q-Bot enables automation of critical test cases requiring two-factor authentication: 2FA login, document signing, transaction validation, official requests. Without Q-Bot, these scenarios require human intervention, making full automation impossible.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b3" aria-controls="faq-a3">
+          Why is Q-Bot the ideal ally for testers?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a3" role="region" aria-labelledby="faq-b3">
+          <p>Testers can cover all application features without any omissions. Q-Bot is simple (no software installation), fast (the 2FA step resolves in under 10 seconds), deterministic (the tap lands on the genuine app, there is nothing to recognise), and accessible via Web interface or API.</p>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:40px;">
+      <a href="faq.html" class="btn btn--outline">View all questions</a>
+    </div>
+  </div>
+</section>
+
 <!-- ======= PRODUCT EVOLUTION ======= -->
-<section class="section evolution" aria-labelledby="evolution-title">
+<section class="section section--gray evolution" aria-labelledby="evolution-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Innovation continues...</span>
@@ -633,54 +682,6 @@
     <!-- End Sendinblue form -->
   </div>
 </div>
-
-<!-- ======= FAQ PREVIEW ======= -->
-<section class="section section--gray" aria-labelledby="faq-home-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">FAQ</span>
-      <h2 class="section-title" id="faq-home-title">The main questions around Q-Bot</h2>
-    </div>
-    <div class="faq__list">
-      <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b1" aria-controls="faq-a1">
-          What is Q-Bot?
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="faq-a1" role="region" aria-labelledby="faq-b1">
-          <p>Q-Bot is a one-of-a-kind robot designed to automate two-factor authentication (2FA) in the real apps that carry it. It enables the automation of testing processes that were previously inaccessible.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b2" aria-controls="faq-a2">
-          What problem does Q-Bot solve?
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="faq-a2" role="region" aria-labelledby="faq-b2">
-          <p>Q-Bot enables automation of critical test cases requiring two-factor authentication: 2FA login, document signing, transaction validation, official requests. Without Q-Bot, these scenarios require human intervention, making full automation impossible.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b3" aria-controls="faq-a3">
-          Why is Q-Bot the ideal ally for testers?
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="faq-a3" role="region" aria-labelledby="faq-b3">
-          <p>Testers can cover all application features without any omissions. Q-Bot is simple (no software installation), fast (the 2FA step resolves in under 10 seconds), deterministic (the tap lands on the genuine app, there is nothing to recognise), and accessible via Web interface or API.</p>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:40px;">
-      <a href="faq.html" class="btn btn--outline">View all questions</a>
-    </div>
-  </div>
-</section>
 
 <!-- ======= CTA ======= -->
 <section class="section" aria-labelledby="cta-title">
