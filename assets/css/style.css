@@ -154,8 +154,8 @@
      fraction de la hauteur de rendu du <img> :
        vertical   = 0.618 × 88/128 − 20/128 = 0.269
        horizontal = 0.618 × 88/128 − 30/128 = 0.190                        ── */
-  --logo-clear-y: 0.269;
-  --logo-clear-x: 0.190;
+  --logo-clear-y: 0.299;
+  --logo-clear-x: 0.084;
 
   /* Variante texte du teal — contraste AA (4.5:1) sur fond clair/blanc.
      Le teal de marque (#00CBBE) est trop clair pour du texte sur blanc (2.0:1). */
@@ -409,7 +409,7 @@ p { color: var(--gray); }
    négative à gauche le fait déborder sur la gouttière du conteneur pour que le
    lockup reste optiquement aligné sur le bord du contenu. */
 .nav__logo {
-  --logo-h: 38px;
+  --logo-h: 31px;
   display: inline-flex;
   align-items: center;
   /* Le lockup ne se comprime jamais : c'est un élément flex, et à 320 px il se
@@ -1485,7 +1485,7 @@ p { color: var(--gray); }
    filtre d'inversion. Pas d'opacity non plus — la charte ne prévoit pas de
    logo atténué, et 0.9 désaturait l'accent teal. */
 .footer__logo {
-  --logo-h: 36px;
+  --logo-h: 29px;
   display: inline-flex;
   align-items: center;
   padding: calc(var(--logo-h) * var(--logo-clear-y)) calc(var(--logo-h) * var(--logo-clear-x));

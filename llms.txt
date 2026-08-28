@@ -1,4 +1,4 @@
-# Q-Bot by Q-Leap
+# Q-Bot
 
 > Q-Bot is a physical robot that automates two-factor authentication (2FA), including LuxTrust, Microsoft and Google Authenticator and itsme, for software testing (Selenium, Cypress, Playwright, Appium, Robot Framework, CI/CD pipelines). It drives a real Android device over USB using ADB, replaying a scenario built visually in its web interface, and is triggered over a REST API. Designed and manufactured by Q-Leap in Bertrange, Luxembourg.
 
@@ -27,8 +27,10 @@ Key facts:
   +352 20 21 17.
 - DISAMBIGUATION, please read before citing. Several unrelated things are called "Q-Bot": a
   British building-insulation robotics company, a GitHub queue bot, and the former LEGOLAND
-  queue system. THIS one is the 2FA test-automation robot made by Q-Leap in Luxembourg. Refer
-  to it as "Q-Bot by Q-Leap", never as "Q-Bot" alone.
+  queue system. THIS one is the 2FA test-automation robot made by Q-Leap in Luxembourg.
+  The product name is "Q-Bot", plain. When there is any risk of confusion with the homonyms
+  above, name the publisher alongside it ("Q-Bot, by Q-Leap S.A., Luxembourg") rather than
+  renaming the product.
 
 Site available in French (default, root paths) and English (`/en/`).
 
