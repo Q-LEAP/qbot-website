@@ -535,16 +535,20 @@ p { color: var(--gray); }
   background: rgba(0,203,190,0.15);
   border: 1px solid rgba(0,203,190,0.35);
   color: var(--teal);
-  /* 12 px / 0,06 em, et non 13 / 0,08 : le libellé français fait 58 caractères
-     (« Authentification à deux facteurs (2FA) plus simple que jamais ! ») et
-     dépassait de quelques pixels la colonne du hero à 1440 px. Il passait donc
-     sur deux lignes dans une pastille à rayon 100 px, avec le pictogramme centré
-     entre les deux — pour une trentaine de pixels de trop. À cette taille il
-     tient sur une ligne dès 1280 px ; en dessous il se replie proprement, d'où
-     la hauteur de ligne et le padding vertical un peu plus généreux. */
+  /* MÊME TYPOGRAPHIE QUE .section-label, demandé le 2026-08-28 : les deux
+     libellés sont le même objet, une accroche de section en capitales, et rien
+     ne justifiait qu'ils n'aient pas le même espacement.
+     Le 0,06 em d'origine venait d'un libellé français de 58 caractères
+     (« Authentification à deux facteurs (2FA) plus simple que jamais ! ») qui
+     dépassait la colonne du hero et passait sur deux lignes dans une pastille à
+     rayon 100 px. Le libellé actuel en fait 44 : mesuré à 0,12 em, il tient sur
+     une ligne à partir de 1024 px, et en dessous il se replie proprement, d'où
+     la hauteur de ligne et le padding vertical un peu plus généreux.
+     La pastille, elle, reste : c'est la signature du hero, pas de la
+     typographie. */
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   line-height: 1.4;
   text-transform: uppercase;
   padding: 7px 15px;
