@@ -42,7 +42,8 @@
 exclude:
   - CLAUDE.md               # consignes de développement : tarif, références clients, arbitrages
   - claude.md.txt           # une version plus ancienne des mêmes consignes
-  - Documentations/         # PDF d'audit, brochure, charte, masters IA archivés, maquettes HTML  - tools/                  # chaîne de rendu, scripts de génération, 2 pages HTML de travail
+  - Documentations/         # PDF d'audit, brochure, charte, masters IA archivés, maquettes HTML
+  - tools/                  # chaîne de rendu, scripts de génération, 2 pages HTML de travail
   - website 3/              # SECONDE copie des quatre pages de maquette anglaises
   - Screen modèle 3D/       # rendus CAO et enregistrement d'écran
   - padel_alerte.py         # script personnel, sans rapport avec le site (aussi sorti du suivi git)

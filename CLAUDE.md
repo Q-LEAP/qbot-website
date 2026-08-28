@@ -4593,3 +4593,147 @@ Les deux audits sur les 45 pages, à 1440 et 390 px : **0 constat**. 121 blocs J
 en mouvement réduit : un seul `h1`, 0 saut de niveau, 0 révélation invisible, 0 débordement,
 0 erreur console, 0 cadratin, 0 emoji, 0 coquille. Vérifié aussi que les aperçus de FAQ des deux
 accueils restent cohérents : ce sont des résumés délibérés, pas des copies des réponses.
+
+
+## Le lot de retours du 2026-08-28, et où il s'arrête
+
+Une liste de quarante-sept retours du client et de son directeur, traitée à sa demande
+**un retour = un commit = un push sur `main`**, pour qu'on puisse revenir sur n'importe
+lequel sans défaire les autres. Vingt-deux commits, de `e54f4da` à la présente note. La
+session s'est arrêtée en cours de route : ce qui suit dit où, et avec quoi reprendre.
+
+### LA MACHINE N'A PAS DE PYTHON, ET C'EST LE PREMIER PIÈGE DE LA REPRISE
+
+Le poste Windows du 2026-08-28 n'a que les alias Microsoft Store : `python3` et `python`
+répondent, mais ne lancent rien. **Aucun `tools/*.py` de ce dépôt n'y est exécutable**, ce
+qui vise en particulier `bump-assets.py`, `maj-sitemap.py`, `gen-*.py`, `go-live.py` et les
+deux audits.
+
+Le plus urgent des cinq a donc un jumeau Node, `tools/bump-assets.mjs`, au comportement
+identique. **Les deux fichiers doivent rester d'accord** ; si l'un change, changer l'autre.
+
+    node tools/bump-assets.mjs      # après TOUTE modification d'un CSS ou d'un JS
+
+Ne pas sauter cette commande : c'est exactement le défaut du 2026-08-25, où le client
+servait l'ancien script depuis son cache et où rien du travail de la journée n'arrivait
+chez lui.
+
+Sur un poste qui a Python, les scripts d'origine redeviennent utilisables et restent la
+référence pour tout le reste (plan du site, audits, générateurs).
+
+### LE PIÈGE CRLF, RENCONTRÉ DEUX FOIS DANS LA MÊME JOURNÉE
+
+L'arbre de travail est en **CRLF** (`core.autocrlf`). Pour une expression régulière
+JavaScript, **le retour chariot est un terminateur de ligne** : l'ancre de début de ligne en
+mode multiligne matche donc AUSSI entre le retour chariot et le saut de ligne. Conséquences
+observées, toutes deux invisibles à la relecture :
+
+1. une réindentation `replace(/^[ \t]*/gm, …)` a inséré son indentation en **fin** de ligne,
+   laissant des espaces traînants sur chaque ligne réécrite ;
+2. une suppression de ligne `replace(/^\s*- admin\/.*\r?\n/m, '')` dans `_config.yml` a mangé
+   le saut de ligne de la ligne PRÉCÉDENTE : `- tools/` s'est retrouvé aspiré dans le
+   commentaire de `- Documentations/`, **et le dossier `tools/` a cessé d'être exclu de la
+   publication** pendant quelques commits. Réparé le jour même.
+
+Règle : on découpe explicitement sur `/\r?\n/`, on ne s'ancre pas en début de ligne pour
+supprimer ou réindenter. Et la commande de contrôle de `_config.yml` doit être passée après
+toute modification de ce fichier, parce que l'exclusion est silencieuse par construction.
+
+Au passage, quatrième et cinquième variantes du piège « on n'retape pas une chaîne, on
+l'extrait » : l'**espace insécable écrite en entité** `&nbsp;` là où l'on tapait U+00A0, et
+l'**apostrophe droite** là où l'on tapait la typographique. Après le cadratin en `&mdash;`,
+l'emoji en `&#128272;` et le NFD de « marché », cela fait cinq.
+
+### Ce qui est fait, et qu'il ne faut pas défaire
+
+Chaque point ci-dessous est un arbitrage du client, pas un choix technique :
+
+- **le blog est supprimé en entier**, index, six articles de 2023 et huit guides, soit
+  vingt-quatre pages. Les onze relais d'anciennes adresses WordPress ne sont PAS supprimés :
+  ils renvoient à l'accueil de leur langue, suivant la règle « plus aucune 404 » du
+  2026-08-25. Le levier de visibilité IA que portaient les guides disparaît avec eux, le
+  client en a été informé avant d'exécuter ;
+- **la page Modèle 3D est supprimée**, mais **la séquence 3D épinglée de l'accueil reste** :
+  c'est un autre objet, elle vit dans `index.html` et `assets/js/scrolly.js` ;
+- **le back-office `admin/` est supprimé** : c'était un éditeur d'articles de blog ;
+- **la navigation** : Accueil, Caractéristiques, Cas d'usage, FAQ. « À propos » et
+  « Contact » sortent du menu et restent dans le pied de page. La barre ne se masque plus au
+  défilement ;
+- **le logo est le mot-symbole seul**, sans « powered by Q-Leap », et le produit s'appelle
+  « Q-Bot » partout, y compris dans les métadonnées. Le nom long survit comme
+  `alternateName` du `Product` ;
+- **les cotes sont 20 × 11 × 15 cm** et **la feuille A3 a disparu du site**. La feuille au
+  sol de la séquence 3D est passée en A4 à l'échelle réelle ;
+- **la fiche technique tient en huit lignes**, sous le titre du nano ordinateur, sur deux
+  colonnes. La section « Spécifications techniques » n'existe plus ;
+- **les cinq cas d'usage ne sont plus épinglés**, ils se lisent les uns sous les autres ;
+- **le fil d'Ariane visible est retiré** des seize pages qui le portaient. Le
+  `BreadcrumbList` des données structurées reste, il n'était pas affiché, il est lu ;
+- **l'aperçu FAQ quitte l'accueil** ;
+- **les images ne s'agrandissent plus au survol** ;
+- **le rail de progression de la section évolution est retiré**, et sa troisième carte porte
+  un vrai visuel NFC au lieu d'un cadre en pointillés ;
+- **tous les boutons de démonstration disent « Réserver une démo »** / « Book a demo » ;
+- **l'encre des boutons teal est `#231F20`** et non du noir pur. Mesuré : 8,0:1 sur le teal,
+  5,4:1 sur le teal foncé. **Ne pas l'éclaircir davantage sans mesurer** : le teal de charte
+  est une couleur claire, le blanc y plafonne à 2,04:1 ;
+- **« Q-Bot » est marqué insécable** dans le texte rendu, par une classe `.nb`. Le trait
+  insécable U+2011 a été écarté à dessein : il ferait de « Q-Bot » deux chaînes différentes
+  pour un moteur de recherche.
+
+### Ce qui reste à faire
+
+**Le ton.** L'accueil français est passé au registre professionnel et validé par le client.
+Le même registre doit être étendu, **page par page**, aux vingt-deux autres pages, puis à
+l'anglais. Deux paragraphes de l'accueil sont volontairement restés en l'état, « Tous types
+de projets IT » et « Tous types d'applications », parce qu'ils viennent mot pour mot du
+WordPress : demander avant d'y toucher.
+
+**La homepage bis**, en français ET en anglais, validée par le client : une variante à
+comparer avec l'accueil actuel, construite à partir du contenu de la page Démo
+(`commandez.html`). Nom de fichier proposé et non tranché : `accueil-bis.html`, hors plan du
+site, hors robots, non liée depuis le site.
+
+**La retouche de la photo du poste de travail.** Mesuré sur `qbot-photo-poste.jpg` : le
+cadre du téléphone est à 3,4° de la verticale de l'image, la silhouette du boîtier à 1,1°.
+Le téléphone est donc réellement de travers DANS LA SCÈNE, ce n'est pas la photo qui penche,
+et une rotation globale ferait pencher l'écran et le bureau sans rien corriger. Le client a
+choisi de tenter la rotation du téléphone seul, d'environ 2,5°, avec recomposition : il est
+enfoncé dans un socle sombre, donc les raccords tombent sur du noir. À montrer avant de
+commiter, et à annuler si le cadre métallique se voit mal raccordé.
+
+**La page de réservation** avec un Microsoft Bookings, en gardant le formulaire de contact.
+Bloquée : il manque l'URL du Bookings.
+
+**Ce que le client doit fournir**, et sans quoi les items correspondants ne peuvent pas
+avancer : l'URL Microsoft Bookings ; la vidéo d'authentification LuxTrust à intégrer ; les
+visuels de l'interface, qu'il doit demander à ses supérieurs (la maquette reste en attendant,
+arbitrage du 2026-08-27) ; les logos des applications d'authentification et des outils de
+test, avec l'accord d'usage des marques ; et les noms complets, intitulés et accords de
+Sylvain, Julien, Joao et Nikola, que le client veut mettre en avant en précisant que Q-Bot
+est une idée de Sylvain et Joao et que ce sont eux qui font les démonstrations.
+
+**Deux points laissés en suspens dans le code**, signalés dans leurs commits :
+
+- « API REST, mets juste un bouton où il y a écrit tous les cas d'usage » : seul le libellé
+  du bouton a été changé. Si la demande était de réduire la section entière à ce bouton, les
+  trois points d'entrée et les quatre faits d'intégration disparaissent, ce qui contredit la
+  note voisine disant que le directeur veut les caractéristiques techniques ;
+- le pied de page est à trois, trois et quatre entrées depuis le retrait du blog et de la
+  page 3D, alors qu'il avait été équilibré à quatre partout le 2026-08-25. À rééquilibrer
+  quand la page de réservation aura pris sa place, plutôt qu'en inventant une entrée.
+
+### Ce qui est à discuter avec Marie
+
+Le client a demandé que tout ce qui touche à Marie soit fait, et soumis à discussion avec
+elle quand il la verra. Relèvent de ce lot : la reprise du ton sur l'ensemble du site, le
+contenu de la page Démo à reprendre pour la homepage bis, et la mise en avant de l'équipe.
+
+### Contrôles disponibles sans Python
+
+Un balayage de liens internes, de longueurs de titre et de comptage de `h1` a été écrit en
+Node pendant cette session et tourne en une seconde sur l'ensemble du dépôt. Dernier relevé :
+**71 pages, 402 références internes, 0 cassée, aucun titre au-delà de 62 caractères, un seul
+`h1` par page de contenu**. Les deux audits complets (`audit-a11y.py`, `audit-visibilite.py`)
+n'ont PAS pu être rejoués sur ce poste : à repasser depuis un poste avec Python avant toute
+mise en ligne.
