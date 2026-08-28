@@ -14,7 +14,7 @@ dossier qu'elle avait créé.
 REDIRECTIONS = {
     # ---- pages de contenu, correspondance directe ----
     'about/':                       ('a-propos.html', 'fr'),
-    'blog/':                        ('blog.html', 'fr'),
+    'blog/':                        ('index.html', 'fr'),
     'caracteristiques-techniques/': ('caracteristiques.html', 'fr'),
     'contact/':                     ('contact.html', 'fr'),
     'faq/':                         ('faq.html', 'fr'),
@@ -27,10 +27,10 @@ REDIRECTIONS = {
 
     # ---- articles ----
     'automatiser-lutilisation-des-tokens-dans-vos-tests-logiciels/':
-        ('blog/automatiser-tokens-tests-logiciels.html', 'fr'),
-    'lancement-merkur/':            ('blog/innovation-merkur.html', 'fr'),
+        ('index.html', 'fr'),
+    'lancement-merkur/':            ('index.html', 'fr'),
     # même titre que notre article 2FA, au mot près
-    'test-tests-logiciels/':        ('blog/authentification-deux-facteurs.html', 'fr'),
+    'test-tests-logiciels/':        ('index.html', 'fr'),
 
     # ---- la page « vidéos » : le film vit maintenant dans la page d'accueil ----
     'video/':                       ('index.html', 'fr'),
@@ -53,13 +53,13 @@ REDIRECTIONS = {
     'en/december-2023/':      ('en/index.html#evolution-title', 'en'),
 
     # ---- archives WordPress (catégories, étiquettes, auteurs) ----
-    'category/presse/':                 ('blog.html', 'fr'),
-    'category/timeline/':               ('blog.html', 'fr'),
-    'tag/2fa/':                         ('blog.html', 'fr'),
-    'tag/automatisation-des-tests/':    ('blog.html', 'fr'),
-    'author/marie-krust/':              ('blog.html', 'fr'),
-    'author/sstefancic/':               ('blog.html', 'fr'),
-    'en/category/timeline-en/':         ('en/blog.html', 'en'),
+    'category/presse/':                 ('index.html', 'fr'),
+    'category/timeline/':               ('index.html', 'fr'),
+    'tag/2fa/':                         ('index.html', 'fr'),
+    'tag/automatisation-des-tests/':    ('index.html', 'fr'),
+    'author/marie-krust/':              ('index.html', 'fr'),
+    'author/sstefancic/':               ('index.html', 'fr'),
+    'en/category/timeline-en/':         ('en/index.html', 'en'),
 
     # ---- thème WordPress de démonstration ----
     # ARBITRÉ PAR LE CLIENT LE 2026-08-25 : plus aucune 404. Ces dix-huit adresses
