@@ -1398,7 +1398,7 @@ p { color: var(--gray); }
   border-color: #2B2B2B;
 }
 
-/* .specs__image img : radius + ombre + hover sont regroupés dans la section
+/* .specs__image img : radius et ombre sont regroupés dans la section
    « Image produit » avec ceux de .intro__image. */
 
 /* ---- Contact ---- */
@@ -1723,7 +1723,6 @@ p { color: var(--gray); }
   object-fit: contain;
   transition: transform 0.85s var(--ease-out);
 }
-.evo-card:hover .evo-card__media img { transform: scale(1.05); }
 
 /* Le cadre en pointillés et ses trois points qui « respiraient » ont été
    retirés le 2026-08-28 : la troisième carte porte désormais un vrai visuel,
@@ -2082,7 +2081,7 @@ p { color: var(--gray); }
   }
 }
 
-/* ── Image produit — cadre clippé + hover ──
+/* ── Image produit — cadre clippé ──
    Le cadre porte le border-radius et le clipping ; l'image dedans est
    sur-dimensionnée (--media-scale) pour laisser de la marge au parallaxe
    interne sans jamais découvrir un bord vide. Voir « MOTION SYSTEM ».
@@ -2095,15 +2094,16 @@ p { color: var(--gray); }
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
+/* AUCUN AGRANDISSEMENT AU SURVOL SUR LES IMAGES, retiré le 2026-08-28 à la
+   demande du client : « ça n'apporte pas grand-chose ». La sur-échelle au
+   REPOS reste, elle : ce n'est pas un effet, c'est la marge dont le
+   contre-parallaxe a besoin pour ne pas découvrir les bords du cadre. */
 .intro__image img {
   --media-scale: 1.08;
   display: block;
   width: 100%;
   transform: scale(var(--media-scale));
   transition: transform 0.85s var(--ease-out);
-}
-.intro__image:hover img {
-  --media-scale: 1.13;
 }
 
 /* Variante « produit » — rendus 3D détourés (PNG transparents) plutôt que
@@ -2119,7 +2119,6 @@ p { color: var(--gray); }
   border: 1px solid #212121;
 }
 .intro__image--product img { --media-scale: 1; }
-.intro__image--product:hover img { --media-scale: 1.05; }
 
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
    restent donc portés par l'image (un cadre clippé arrondirait aussi les
@@ -2134,7 +2133,6 @@ p { color: var(--gray); }
   box-shadow: var(--shadow-lg);
   transition: transform 0.85s var(--ease-out);
 }
-.specs__image:hover img { transform: scale(1.04); }
 
 /* ── Timeline dot — glow au reveal ── */
 .timeline-item__dot {
@@ -4008,10 +4006,7 @@ label > input[type="checkbox"] {
    haute que celle de l'image — et les pourcentages du projecteur se rapportent au
    cadre. Les deux boîtes doivent coïncider. */
 .pin-modes__zoom { overflow: hidden; align-self: start; }
-/* Le survol de `.specs__image` pose un `scale(1.04)` : sous un projecteur aux
-   coordonnées figées, l'image glisserait dessous. */
-.pin-modes .pin-modes__zoom img,
-.pin-modes .pin-modes__zoom:hover img { transform: none; }
+.pin-modes .pin-modes__zoom img { transform: none; }
 
 .pin-modes__zoom::after {
   content: '';
@@ -4261,7 +4256,6 @@ label > input[type="checkbox"] {
   overflow: hidden;
   --media-radius: var(--radius);
 }
-.article-figure img { --media-scale: 1.03; }
 
 /* Le trait des titres de partie. Il se dessine de haut en bas avec l'arrivée du
    titre, puis reste : il marque la structure, il ne l'anime pas en boucle. */
