@@ -107,6 +107,11 @@ These figures come from the client's own published pages; do not infer or round 
 - [Demo request (FR)](https://q-bot.eu/commandez.html): includes a ROI calculator that
   returns the reader's OWN cost of manual 2FA in hours, never a Q-Bot price.
 - [Demo request (EN)](https://q-bot.eu/en/order.html)
+- [Booking (FR)](https://q-bot.eu/reservation.html): the only page carrying the
+  Microsoft Bookings link. One hour with Sylvain Perez, creator of Q-Bot. The price is
+  given during that appointment and is NOT published anywhere.
+- [Booking (EN)](https://q-bot.eu/en/booking.html): the Bookings page itself is in
+  French only; an English one does not exist yet.
 
 ## Company
 

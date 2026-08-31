@@ -3,11 +3,11 @@
 # ══════════════════════════════════════════════════════════════════════════
 # PRÉ-LANCEMENT : le site entier est fermé aux robots le temps de la mise au
 # point. Le pendant de ce fichier est la balise
-# <meta name="robots" content="noindex, nofollow"> présente sur les 18 pages.
+# <meta name="robots" content="noindex, nofollow"> présente sur les 20 pages.
 #
 # LE JOUR DE LA MISE EN LIGNE : remplacer tout ce qui suit par le contenu
 # d'ouverture (voir le bas de ce fichier, en commentaire), et retirer la balise
-# meta des 18 pages. Chercher « PRÉ-LANCEMENT » dans le dépôt pour tout
+# meta des 20 pages. Chercher « PRÉ-LANCEMENT » dans le dépôt pour tout
 # retrouver d'un coup.
 # ══════════════════════════════════════════════════════════════════════════
 
