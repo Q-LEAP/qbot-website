@@ -5041,3 +5041,62 @@ zéro et l'on conclut à tort que le film est noir. C'est **WebKit** qui décode
 codecs du système. Et une toile ne rend ses pixels que si la page et la vidéo ont la
 MÊME origine, sinon `getImageData` lève une erreur de sécurité : il faut servir une
 page depuis le dossier de la vidéo.
+
+
+## L'audit RosoAI vit HORS de ce dépôt, et il en est au contrôle n°6 (2026-08-31)
+
+Ce fichier ne le disait nulle part, et deux défauts du contrôle n°5 sont restés quatre
+jours en ligne pour cette raison. Le dispositif est dans
+`/Volumes/CCCOMA_X64F/Roso SEO Squad - q-bot.eu` : onze agents en markdown, un
+orchestrateur, et les livrables du client dans `audit-livrables/q-bot/`. L'état vit dans
+`audit_state.json` et porte le **commit audité**, ce qui permet de mesurer le delta d'un
+contrôle au suivant. Le périmètre est le NOUVEAU site en préproduction,
+`https://q-leap.github.io/qbot-website/` ; le live `q-bot.eu` est un héritage à migrer.
+
+**Contrôle n°6, commit `ec1ee15` : 6,4/10 à périmètre comparable, 8,9/10 sur le périmètre
+auditable.** Les deux notes bougent en sens inverse, et c'est tout le sujet : la qualité
+technique est au plus haut, la surface de contenu citable au plus bas.
+
+### Le garde-fou à rejouer à chaque passage, parce que c'est lui qui trouve
+
+**Ne pas vérifier que les exclusions répondent 404. Énumérer tout ce que l'hébergement
+répond en 200, et vérifier que tout y a sa place.** C'est cette inversion qui a trouvé la
+CAO du produit encore servie, et elle tient en quelques lignes : `git ls-files`, une
+requête par fichier, puis on écarte les pages, les relais et les actifs employés. Passée
+le 2026-08-31 sur 226 fichiers : 150 servis, 76 non servis, deux intrus.
+
+### Ce que le contrôle n°6 a fait corriger, et qui vaut d'être retenu
+
+- **Le dessin industriel du produit était servi en 200**, `assets/3d/Q-Leap Box_v3-08.obj`
+  pour 32 257 622 octets. Sorti du suivi git ET de `_config.yml`, les fichiers restant sur
+  le disque pour la chaîne du GLB. **L'historique git les contient toujours** et le dépôt
+  est public : les en retirer vraiment demande une réécriture d'historique, décision du
+  client.
+- **Les 4 pages légales appelaient Google Fonts** pour une police déjà servie en local, sur
+  la page de politique de confidentialité elle-même. Elles étaient les seules pages du site
+  à appeler un tiers ; il n'en reste aucune. Et `gen-legal.py` les réintroduisait, tout en
+  portant **deux empreintes d'actifs écrites à la main** qui rejouaient la panne de cache
+  du 2026-08-25.
+- **Les deux outils d'audit annonçaient « aucun défaut » sans avoir rien mesuré.** Lancés
+  sans serveur local, ils affichaient des `TIMEOUT` puis la même conclusion qu'un contrôle
+  réussi. Ils sortent désormais en **code 2** avec la marche à suivre, et leur ligne de
+  résultat dit « N page(s) lue(s) sur M ». Un garde-fou qui ne crie pas ne protège pas.
+
+### La régression, et c'est une décision du client
+
+La suppression du blog et des 8 guides le 2026-08-28 fait passer le site de 44 à 20 pages,
+de 90 H2 en forme de question à **10**, et de 74 capsules-réponses à **4**. Les 34 réponses
+de FAQ sont la seule surface citable substantielle qui reste, et elles sont intactes.
+
+Ce n'est pas un défaut d'exécution et il ne faut pas le traiter comme tel. Mais c'est la
+seule vraie question ouverte : assumer une plaquette de 20 pages dont l'autorité repose sur
+l'entité et la FAQ, ou remettre trois ou quatre pages piliers sans blog. `gen-guides.py`
+est encore dans le dépôt.
+
+### Les six autres points ouverts
+
+4 Mo d'actifs orphelins encore servis (surtout les vignettes des guides et du blog
+supprimés) · le texte des 4 pages légales qui décrit encore le WordPress, à faire relire
+par qui l'a écrit · l'historique git qui contient la CAO · un Bookings en anglais, la page
+Microsoft ne se traduisant pas · les incrustations anglaises du film sur les pages
+françaises · `a-propos.html` à −20,1 % de parité, seule paire hors bande.
