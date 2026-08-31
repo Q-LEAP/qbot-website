@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant · Q-Bot: Automate 2FA on Real Devices | Q-Leap</title>
+  <meta name="description" content="Q-Bot drives two-factor authentication on a real Android phone, on demand from your test pipeline. Your test runs go all the way, without a human.">
+  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
+       hors index le temps de la mise au point ; le pendant de cette balise est le
+       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Q-Bot: Automate 2FA on Real Devices">
+  <meta property="og:description" content="Q-Bot drives two-factor authentication on a real Android phone, on demand from your test pipeline. Your test runs go all the way, without a human.">
+  <meta property="og:url" content="https://q-bot.eu/en/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Q-Bot">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Q-Bot: Automate 2FA on Real Devices">
+  <meta name="twitter:description" content="Q-Bot drives two-factor authentication on a real Android phone, on demand from your test pipeline. Your test runs go all the way, without a human.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/style.css?v=4a078a22">
+  <link rel="stylesheet" href="../assets/css/scrolly.css?v=faaf73c1">
+  <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
+       pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
+       local est refusé : ouvert en file://, un script « module » local a l'origine
+       « null » et aucun en-tête CORS ne peut l'accompagner, alors que jsDelivr envoie
+       « * » ; et un fetch local y est interdit, ce qui vaut aussi pour le décodeur.
+       Vérifié sur Chromium et WebKit : local en http(s), extérieur au double-clic. -->
+  <script type="module">
+    const local = location.protocol !== 'file:';
+    const m = await import(local
+      ? '../assets/js/model-viewer-4.3.1.min.js'
+      : 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js');
+    if (local) m.ModelViewerElement.dracoDecoderLocation = '../assets/js/draco/';
+  </script>
+</head>
+<body class="page-home">
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Main navigation">
+      <a href="./" class="nav__logo" aria-label="Q-Bot, home">
+        <img src="../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
+      </a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="./" class="nav__link">Home</a></li>
+        <li><a href="technical-specs.html" class="nav__link">Technical Specs</a></li>
+        <li><a href="use-cases.html" class="nav__link">Use Cases</a></li>
+        <li><a href="faq.html" class="nav__link">FAQ</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="contact.html" class="btn btn--primary">Book a demo</a>
+                <div class="nav__lang">
+          <a href="../accueil-bis.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= HERO ======= -->
+<main id="main">
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <div class="hero__label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          2FA Automation for QA Teams
+        </div>
+        <h1 class="hero__title" id="hero-title">
+          Strong authentication no longer blocks your tests.<br><em>Your campaigns run to the end.</em>
+        </h1>
+        <p class="hero__desc">
+          <span class="nb">Q-Bot</span> drives two-factor authentication on a real Android phone, on demand from your test pipeline. The last manual step of your test runs disappears, <strong>without a human in the loop</strong>.
+        </p>
+        <div class="hero__actions">
+          <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+          <a href="technical-specs.html" class="btn btn--outline-white btn--lg">Learn more</a>
+        </div>
+      </div>
+      <!-- Photo du produit (brochure officielle, page 3, 300 dpi), pas un rendu.
+           Cf. la note détaillée côté français : cadre fixe, film plus bas dans la
+           page en lecture à la demande. -->
+      <div class="hero__shot">
+        <img
+          src="../assets/img/qbot-photo-poste.jpg"
+          alt="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface shown on the adjacent screen"
+          width="1400" height="840"
+          fetchpriority="high"
+        >
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section section--gray" id="roi" aria-labelledby="roi-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Return on investment</span>
+      <h2 class="section-title" id="roi-title">What 2FA costs you today</h2>
+      <p class="section-subtitle">Two numbers, yours. Everything is computed in your browser, nothing is sent.</p>
+    </div>
+
+    <div class="roi" data-roi>
+      <div class="roi__panel roi__inputs">
+        <div class="roi__field">
+          <label class="roi__label" for="roi-people">Testers tied up by 2FA</label>
+          <div class="roi__row">
+            <input class="roi__range" type="range" id="roi-people" data-roi-in="people"
+                   min="1" max="20" step="1" value="3" style="--roi-p:10.5%">
+            <output class="roi__val" for="roi-people" data-roi-out="people">3</output>
+          </div>
+        </div>
+        <div class="roi__field">
+          <label class="roi__label" for="roi-min">Time each one loses per day</label>
+          <div class="roi__row">
+            <input class="roi__range" type="range" id="roi-min" data-roi-in="min"
+                   min="5" max="120" step="5" value="35" style="--roi-p:26.1%">
+            <output class="roi__val" for="roi-min" data-roi-out="min">35&nbsp;min</output>
+          </div>
+        </div>
+        <p class="roi__hint">Finding someone available, unlocking the phone, reading the code, typing it in, restarting the run.</p>
+      </div>
+
+      <div class="roi__panel roi__result">
+        <p class="roi__lead">Time given back to your teams</p>
+        <p class="roi__figure" data-roi-out="hours" aria-live="polite">36&nbsp;h&nbsp;45</p>
+        <p class="roi__unit">per month</p>
+        <p class="roi__equiv">That is <strong data-roi-out="days">5.3</strong> testing days, at seven hours a day.</p>
+        <p class="roi__formula" data-roi-out="formula">3 testers × 35 min × 21 working days</p>
+        <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+      </div>
+    </div>
+
+    <p class="roi__note">And that is only the time you can count. A nightly run that stops on a 2FA step at two in the morning does not cost thirty minutes: it costs a day of feedback.</p>
+  </div>
+</section>
+<section class="section" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">How it works</span>
+      <h2 class="section-title" id="how-title">How does <span class="nb">Q-Bot</span> automate your 2FA?</h2>
+      <p class="section-subtitle">Your test calls the <span class="nb">Q-Bot</span> API, or the companion app detects the 2FA notification on the phone by itself. <span class="nb">Q-Bot</span> then replays the saved scenario: taps, swipes and wait times land on the device's physical screen over ADB. The step clears in under ten seconds and the test resumes.</p>
+    </div>
+    <div class="split-2">
+      <div>
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">1</div>
+            <div>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Build</h3>
+              <p style="font-size:.9375rem; margin:0;">Build the scenario in the web interface: upload a screenshot of the 2FA screen, place numbered tap points, set wait times. No scripting required.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">2</div>
+            <div>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Trigger</h3>
+              <p style="font-size:.9375rem; margin:0;">Your test scenario calls the <span class="nb">Q-Bot</span> API. Or the companion app fires on its own, the instant a 2FA notification reaches the device.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">3</div>
+            <div>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Execute</h3>
+              <p style="font-size:.9375rem; margin:0;"><span class="nb">Q-Bot</span> replays the scenario on the Android device connected over USB: taps, swipes and waits, via ADB.</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">4</div>
+            <div>
+              <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Continue</h3>
+              <p style="font-size:.9375rem; margin:0;">2FA handled. Pipeline unblocked. The test continues from exactly where it left off.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="intro__image intro__image--dock">
+        <!-- Photo (brochure officielle, page 1, 300 dpi) : la validation 2FA telle
+             qu'elle se produit vraiment, sur le téléphone docké. -->
+        <img
+          src="../assets/img/qbot-photo-dock.jpg"
+          alt="A smartphone docked in the Q-Bot cradle, showing a transaction approval request in the LuxTrust application"
+          width="699" height="860"
+          loading="lazy"
+        >
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section section--gray" aria-labelledby="process-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Process</span>
+      <h2 class="section-title" id="process-title">Up and running in 4 steps</h2>
+      <p class="section-subtitle">From order to your first automated 2FA tests: allow 48 to 72 hours.</p>
+    </div>
+    <div class="order-process" role="list">
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">1</div>
+        <h3>Book an appointment</h3>
+        <p>Schedule a slot with Sylvain Perez <a href="https://calendly.com/q-bot/30min" target="_blank" rel="noopener">via Calendly</a> or <a href="tel:+352202117">by phone</a>. Demo included.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">2</div>
+        <h3>Personalised onboarding</h3>
+        <p>Our team prepares your <span class="nb">Q-Bot</span> and configures network access according to your needs.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">3</div>
+        <h3>Delivery &amp; installation</h3>
+        <p><span class="nb">Q-Bot</span> is delivered to you. Plug it in, connect it to Wi-Fi, and it is ready.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">4</div>
+        <h3>First 2FA tests</h3>
+        <p>Create your first scenario via the Web interface and trigger it from Selenium, Cypress or the tool in your pipeline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" id="inclus" aria-labelledby="pricing-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">What's included</span>
+      <h2 class="section-title" id="pricing-title">One subscription, all inclusive</h2>
+      <p class="section-subtitle">No installation fees, no surprises. <span class="nb">Q-Bot</span> fits into your test budget like a standard tool.</p>
+    </div>
+    <div class="split-2">
+      <div class="pricing-highlight">
+        <p style="color:rgba(255,255,255,0.6); font-size:.875rem; text-transform:uppercase; letter-spacing:.1em; font-weight:600;">Monthly subscription</p>
+        <p style="color:rgba(255,255,255,0.6); font-size:.875rem; margin-bottom:8px;">All-inclusive rental, no commitment</p>
+        <ul>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span><span class="nb">Q-Bot</span> robot rental</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Technical support included</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Robot replacement in case of failure</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Automatic software updates</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Web interface + REST API included</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Email and phone support</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20,6 9,17 4,12"/></svg><span>Onboarding and training included</span>
+          </li>
+        </ul>
+        <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+      </div>
+      <div>
+        <h3 style="font-size:1.375rem; font-weight:700; color:var(--black); margin-bottom:20px;">Why rental?</h3>
+        <p>Because <span class="nb">Q-Bot</span> is a physical robot that keeps evolving. Rental always gives you the latest version, software updates included, and it covers the hardware risk: if the unit fails, Q-Leap replaces it. No long-term commitment, and the spend stays an operating expense.</p>
+        <div style="display:flex; flex-direction:column; gap:16px; margin-top:28px;">
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:40px; height:40px; background:var(--teal-light); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <strong style="color:var(--black); display:block; margin-bottom:4px;">Zero hardware risk</strong>
+              <span style="font-size:.9375rem; color:var(--gray);">If the robot fails, Q-Leap replaces it. You don't lose a day of testing.</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:40px; height:40px; background:var(--teal-light); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" aria-hidden="true"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            </div>
+            <div>
+              <strong style="color:var(--black); display:block; margin-bottom:4px;">Always up to date</strong>
+              <span style="font-size:.9375rem; color:var(--gray);">Software updates are deployed automatically. No maintenance on your end.</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:40px; height:40px; background:var(--teal-light); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>
+              <strong style="color:var(--black); display:block; margin-bottom:4px;">Tax-deductible operational expense</strong>
+              <span style="font-size:.9375rem; color:var(--gray);">The monthly subscription fits easily into your QA operational budget.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section section--gray" aria-labelledby="guarantee-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Our commitments</span>
+      <h2 class="section-title" id="guarantee-title">What you get with <span class="nb">Q-Bot</span></h2>
+    </div>
+    <div class="guarantee-grid">
+      <div class="guarantee-item">
+        <div class="guarantee-item__icon"><svg class="" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.5 2.5 0 1 1-3.5-3.5l9.4-9.4a4 4 0 0 0-1.5-1.5z"/></svg></div>
+        <h3>Responsive support</h3>
+        <p>The Q-Leap team is available by email and phone. Guaranteed response time within 24 business hours.</p>
+      </div>
+      <div class="guarantee-item">
+        <div class="guarantee-item__icon"><svg class="" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 3 21 9 15 9"/></svg></div>
+        <h3>Replacement guaranteed</h3>
+        <p>In case of an unrepairable remote failure, we send a working robot. No prolonged interruption.</p>
+      </div>
+      <div class="guarantee-item">
+        <div class="guarantee-item__icon"><svg class="" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+        <h3>Complete confidentiality</h3>
+        <p><span class="nb">Q-Bot</span> operates on your local network. Scenarios and their step images stay on the device. No data leaves your premises.</p>
+      </div>
+      <div class="guarantee-item">
+        <div class="guarantee-item__icon"><svg class="" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 15c-1.5 1.5-2 6-2 6s4.5-.5 6-2"/><path d="M9 15l-3-3c1-5 5-9 12-9 0 7-4 11-9 12z"/><circle cx="14" cy="10" r="1.6"/></svg></div>
+        <h3>Continuous updates</h3>
+        <p>The embedded software is regularly updated to support new 2FA apps on the market.</p>
+      </div>
+      <div class="guarantee-item">
+        <div class="guarantee-item__icon"><svg class="" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>Made in Luxembourg</h3>
+        <p><span class="nb">Q-Bot</span> is designed and assembled at Q-Leap's premises in Bertrange. Guaranteed proximity for your support.</p>
+      </div>
+      <div class="guarantee-item">
+        <div class="guarantee-item__icon"><svg class="" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22z"/></svg></div>
+        <h3>Training included</h3>
+        <p>Full onboarding with your QA team to master the Web interface and API from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" aria-labelledby="usecases-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Use cases</span>
+      <h2 class="section-title" id="usecases-title">Five situations where the pipeline unblocks</h2>
+      <p class="section-subtitle">From banking login flows to nightly CI regressions, here is how QA teams are putting <span class="nb">Q-Bot</span> to work.</p>
+    </div>
+    <div style="margin-top:32px;">
+      <a href="use-cases.html" class="btn btn--outline">See the five use cases
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="section section--gray" aria-labelledby="cta-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-title" style="margin-bottom:32px;">Ready to eliminate your last manual test step?</h2>
+    <div class="cta-block__actions">
+      <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
+        </div>
+        <p class="footer__desc">
+          The only solution for automating 2FA, designed and manufactured in Luxembourg by Q-Leap.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Social media">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><svg class="footer__badge-ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3><span class="nb">Q-Bot</span></h3>
+        <ul role="list">
+          <li><span aria-current="page">Home</span></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Product</h3>
+        <ul role="list">
+          <li><a href="technical-specs.html">Technical Specs</a></li>
+          <li><a href="use-cases.html">Use Cases</a></li>
+          <li><a href="order.html">Demo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="contact.html">Contact us</a></li>
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by Q-Leap</p>
+      <nav class="footer__legal" aria-label="Legal links">
+        <a href="terms-and-conditions-of-sale/">Terms of Sale</a>
+        <a href="privacy/">Privacy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js?v=59e47520" defer></script>
+<script src="../assets/js/scrolly.js?v=130fc8b1" defer></script>
+
+<!-- Repère de variante : une seule ligne à retirer le jour où cette page
+     serait retenue. Encre noire sur le teal de charte (8,0:1), jamais du blanc. -->
+<div style="position:fixed;z-index:9999;bottom:14px;left:14px;background:#00CBBE;color:#231F20;font:700 12px/1 Roboto,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:9px 13px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.5);pointer-events:none">Homepage variant, not published</div>
+</body>
+</html>

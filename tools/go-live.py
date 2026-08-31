@@ -81,7 +81,12 @@ NOTE_ENDPOINT = re.compile(r'[ \t]*<!--\s*ROSOAI-EN-ATTENTE · (?:endpoint des f
 #                 page d'erreur indexée est un défaut classique et la balise coûte zéro.
 # Attention : ces fichiers portent la marque « PRÉ-LANCEMENT » comme les autres, parce
 # qu'ils ont été écrits avec le même gabarit. C'est cette liste qui tranche, pas la marque.
-JAMAIS = ('404.html',)
+# Pages que le jour J ne doit JAMAIS sortir de l'index :
+#  - « 404.html », une page d'erreur ne s'indexe pas ;
+#  - les deux variantes d'accueil, maquettes de comparaison hors plan du site
+#    et non liées. Elles sont attrapées par les motifs de « pages() », donc
+#    sans cette ligne le jour J publierait un accueil EN DOUBLE.
+JAMAIS = ('404.html', 'accueil-bis.html', 'en/home-bis.html')
 
 ROBOTS_OUVERT = """# https://q-bot.eu/robots.txt
 
