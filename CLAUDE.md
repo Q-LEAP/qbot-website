@@ -4715,8 +4715,12 @@ que des pixels sombres du socle : le raccord est propre, et le résultat n'est p
 meilleur que l'original. Si l'assise gêne vraiment le client, la sortie est une
 nouvelle photo ou un rendu depuis « assets/models/qbot.glb », pas une retouche.
 
-**La page de réservation** avec un Microsoft Bookings, en gardant le formulaire de
-contact. TOUJOURS BLOQUÉE : il manque l'URL du Bookings.
+**La page de réservation. FAITE le 2026-08-31**, l'URL ayant été fournie ce jour-là :
+« reservation.html » et « en/booking.html », le formulaire de contact conservé sur sa
+page. Voir la section « La réservation a sa page » plus bas. Le seul point encore en
+attente de ce côté est le Bookings ANGLAIS, la page Microsoft ne se traduisant pas ;
+le marqueur « BOOKINGS-EN-A-VENIR » de « en/booking.html » le signale, et il n'y aura
+qu'une URL à remplacer.
 
 ### Ce qui est à discuter avec Marie
 
