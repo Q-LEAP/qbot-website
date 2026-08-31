@@ -61,6 +61,10 @@ def film(bloc, langue):
     choisi sans aucune incrustation, celles du film étant en anglais.
 
     Le préfixe de profondeur est LU dans le balisage du donneur, jamais déduit."""
+    # Le film COMPLET de la page Démo (24,7 Mo, lecture à la demande) n'a rien à
+    # faire sur une variante d'accueil : elle reçoit la boucle légère à la place.
+    bloc = re.sub(r'\n[ \t]*<!-- FILM-COMPLET[\s\S]*?<!-- /FILM-COMPLET -->', '', bloc)
+
     m = re.search(r'<div class="intro__image intro__image--dock">[\s\S]*?</div>', bloc)
     if not m:
         return bloc                      # la photo a pu disparaître du donneur
@@ -147,6 +151,8 @@ def genere(lot):
                         ('noindex', r'name="robots" content="noindex')):
         if not re.search(motif, out):
             sys.exit('ECHEC %s : invariant perdu (%s)' % (lot['sortie'], quoi))
+    if 'qbot-demo.mp4' in out:
+        sys.exit('ECHEC %s : le film complet de 24,7 Mo a suivi, il ne doit pas' % lot['sortie'])
     if 'qbot-action.mp4' not in out:
         sys.exit('ECHEC %s : la boucle du boîtier en action n\'a pas été posée' % lot['sortie'])
     if out.count('<h1') != 1:

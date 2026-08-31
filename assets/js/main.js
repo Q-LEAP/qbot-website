@@ -1907,3 +1907,67 @@ backToTop.addEventListener('click', () => {
     });
   });
 }());
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   21. LE FILM COMPLET : LECTURE À LA DEMANDE, RIEN AVANT LE CLIC
+
+   Le film pèse 24,7 Mo. Le module 18 charge la boucle de 2,6 Mo à l'approche de
+   sa section ; à ce poids-là ce serait indéfendable. Ici RIEN n'est demandé avant
+   le clic.
+
+   IL N'Y A AUCUNE BALISE <video> DANS LA PAGE SERVIE. Le balisage porte un LIEN
+   habillé de l'affiche, et c'est ce module qui crée le lecteur. C'est la leçon du
+   2026-08-24 : le client avait vu un film démarrer seul et boucler alors que la
+   balise ne portait ni « autoplay » ni « loop », vraisemblablement à cause d'un
+   réglage de navigateur. Ajouter des attributs n'y aurait rien changé ; ne rien
+   avoir à démarrer, si.
+
+   Trois choses à ne pas défaire :
+
+   • SANS JAVASCRIPT LE LIEN RESTE UN LIEN, et le film s'ouvre dans le lecteur du
+     navigateur. L'état au repos est un état complet, comme pour la boucle et pour
+     la carte de contact.
+   • LE LECTEUR EST MUET AU DÉPART. Le client a demandé le site « sans le son » ;
+     les contrôles sont là, donc le visiteur peut le rétablir s'il le veut. Rien
+     ne surprend personne.
+   • L'AFFICHE REVIENT À LA FIN. Le film ne boucle pas : laisser la dernière image
+     figée ferait croire à un blocage, et le visiteur n'aurait aucun moyen évident
+     de le relancer.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var cadres = document.querySelectorAll('.video__wrapper--demande[data-film-src]');
+  if (!cadres.length) return;
+
+  Array.prototype.forEach.call(cadres, function (cadre) {
+    var amorce = cadre.querySelector('.video__amorce');
+    if (!amorce) return;
+
+    amorce.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      var v = document.createElement('video');
+      v.className = 'video__player';
+      v.src = cadre.getAttribute('data-film-src');
+      v.controls = true;
+      v.muted = true;
+      v.playsInline = true;
+      v.preload = 'auto';
+      v.setAttribute('tabindex', '-1');
+
+      amorce.hidden = true;
+      cadre.insertBefore(v, cadre.firstChild);
+      /* Le focus passe sur le lecteur : un visiteur au clavier vient d'activer un
+         lien qui disparaît, sans cela son focus retombe sur le document. */
+      v.focus();
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+
+      v.addEventListener('ended', function () {
+        if (v.parentNode) v.parentNode.removeChild(v);
+        amorce.hidden = false;
+        amorce.focus();
+      });
+    });
+  });
+}());

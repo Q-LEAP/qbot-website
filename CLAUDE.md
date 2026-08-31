@@ -4701,8 +4701,12 @@ hors robots, non liées, et inscrites dans la liste « JAMAIS » de « go-live.p
 quoi le jour J aurait publié un accueil en double. À soumettre au client pour qu'il
 compare.
 
-**La retouche de la photo du poste de travail. TENTÉE ET ÉCARTÉE le 2026-08-31, la
-photo est intacte.** Deux raisons, et la seconde est de principe. D'abord la prémisse
+**La retouche de la photo du poste de travail. FERMÉE PAR LE CLIENT le 2026-08-31 :
+« on oublie pour la photo du poste de travail ».** Ce n'est donc plus un point à
+reprendre, et il ne faut ni la retenter, ni proposer une nouvelle photo ou un rendu.
+Ce qui suit reste écrit pour la raison de fond, qui vaut au-delà de ce cas.
+
+Tentée et écartée avant cette décision, la photo est intacte. Deux raisons, et la seconde est de principe. D'abord la prémisse
 de cette note ne se reproduit pas : le téléphone penche en arrière dans son socle,
 donc ses arêtes longues convergent en perspective (mesuré −24° à gauche, −19° à
 droite) et aucune n'est comparable à la verticale de l'image, si bien que je ne

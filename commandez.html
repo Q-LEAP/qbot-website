@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=f17ca7a1">
+  <link rel="stylesheet" href="assets/css/style.css?v=9ac6739d">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -407,6 +407,26 @@
         >
       </div>
     </div>
+    <!-- FILM-COMPLET
+         Film produit QBV1.2.12, 50,9 s en 960x540 (24,7 Mo), envoyé en entier sur
+         décision du client le 2026-08-31. EN LECTURE À LA DEMANDE : aucune balise
+         <video> dans la page servie, donc zéro octet et rien qui puisse démarrer
+         seul. Le module 21 crée le lecteur au clic ; sans JavaScript le lien ouvre
+         le film dans le lecteur du navigateur.
+         Muet au départ, contrôles visibles : le visiteur rétablit le son s'il veut.
+         Les incrustations du film sont en ANGLAIS, ce que la page française ne peut
+         pas corriger : c'est le film du client, tel qu'il l'a fourni. -->
+    <div class="video__wrapper video__wrapper--film video__wrapper--demande"
+         data-film-src="assets/video/qbot-demo.mp4" style="margin-top:40px;">
+      <a class="video__amorce" href="assets/video/qbot-demo.mp4" aria-label="Voir le film de démonstration de Q-Bot, 51 secondes">
+        <img class="video__affiche" src="assets/img/qbot-demo-poster.jpg"
+             alt="Le boîtier Q-Bot posé sur un bureau, un smartphone inséré dans son socle affichant une validation d'authentification"
+             width="960" height="540" loading="lazy">
+        <span class="video__lecture" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="video__duree">51 s</span>
+      </a>
+    </div>
+    <!-- /FILM-COMPLET -->
   </div>
 </section>
 
@@ -618,6 +638,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=589f1521" defer></script>
+<script src="assets/js/main.js?v=ff158493" defer></script>
 </body>
 </html>
