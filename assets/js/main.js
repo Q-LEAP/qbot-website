@@ -270,7 +270,7 @@ if ('IntersectionObserver' in window) {
          cohérent — le bloc prend l'arrivée standard des cartes du site. */
       '.pricing-highlight',
       '.blog-card',
-      '.calendly-box',
+      '.booking-box',
       /* Exclu de « media » : le bloc contient aussi un bouton, un masque
          clippé lui rognerait les angles (cf. .specs__image dans style.css). */
       '.specs__image',
@@ -1150,7 +1150,7 @@ backToTop.addEventListener('click', () => {
 
   function bounded(v) { return Math.max(-MAX, Math.min(MAX, v)); }
 
-  var SELECTORS = '.hero__actions .btn, .page-hero .btn, .calendly-box .btn, .cta-section .btn';
+  var SELECTORS = '.hero__actions .btn, .page-hero .btn, .booking-box .btn, .cta-section .btn';
   document.querySelectorAll(SELECTORS).forEach(function (btn) {
     btn.addEventListener('mousemove', function (e) {
       var rect = btn.getBoundingClientRect();

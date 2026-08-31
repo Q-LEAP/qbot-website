@@ -1494,14 +1494,14 @@ p { color: var(--gray); }
 .contact-info__item a, .contact-info__item p { font-size: 0.9375rem; color: var(--dark); font-weight: 500; }
 .contact-info__item a:hover { color: var(--teal-text); }
 
-.calendly-box {
+.booking-box {
   background: var(--teal-light);
   border: 1px solid rgba(0,203,190,0.2);
   border-radius: var(--radius);
   padding: 32px;
 }
-.calendly-box h3 { margin-bottom: 8px; font-size: 1rem; }
-.calendly-box p { font-size: 0.9rem; margin-bottom: 16px; }
+.booking-box h3 { margin-bottom: 8px; font-size: 1rem; }
+.booking-box p { font-size: 0.9rem; margin-bottom: 16px; }
 
 /* ---- Footer ---- */
 .footer {
@@ -3092,8 +3092,8 @@ a:focus-visible { border-radius: var(--radius-sm); }
 [data-theme="dark"] .contact-info__item p,
 [data-theme="dark"] .contact-info__item a { color: #E6E7E8; }
 
-/* ── Calendly box ── */
-[data-theme="dark"] .calendly-box {
+/* ── Bloc de réservation ── */
+[data-theme="dark"] .booking-box {
   background: rgba(0, 203, 190, 0.06);
   border-color: rgba(0, 203, 190, 0.16);
 }
@@ -4442,7 +4442,7 @@ label > input[type="checkbox"] {
      carte garde sa bordure au lieu de n'avoir plus rien du tout.
    - l'abrégé `mask` remet `mask-composite` à `add`. Les abrégés doivent donc
      être déclarés AVANT les longues, jamais après.
-   - `[data-theme="dark"] .calendly-box` (0,2,0) fixe déjà une couleur de
+   - `[data-theme="dark"] .booking-box` (0,2,0) fixe déjà une couleur de
      bordure : la remettre à transparent demande la même spécificité, sinon la
      règle est simplement ignorée. Idem pour `.evo-card:hover`.
    - `--ring-a` doit être enregistrée par `@property` pour être interpolable.
@@ -4461,11 +4461,11 @@ label > input[type="checkbox"] {
 @keyframes ringTurn { to { --ring-a: 360deg; } }
 
 .pricing-highlight,
-.calendly-box,
+.booking-box,
 .evo-card--current { position: relative; }
 
 .pricing-highlight::before,
-.calendly-box::before,
+.booking-box::before,
 .evo-card--current::before {
   content: '';
   position: absolute;
@@ -4488,17 +4488,17 @@ label > input[type="checkbox"] {
 /* La bordure d'origine s'effacerait sous l'anneau : elle ne cède la place que
    là où l'anneau existe vraiment. */
 @supports (mask-composite: exclude) or (-webkit-mask-composite: xor) {
-  [data-theme="dark"] .calendly-box,
+  [data-theme="dark"] .booking-box,
   .evo-card--current,
   .evo-card--current:hover { border-color: transparent; }
 }
 
 .pricing-highlight.is-visible::before,
-.calendly-box.is-visible::before,
+.booking-box.is-visible::before,
 .evo-card--current.is-visible::before { animation: ringTurn 4s linear 3; }
 
 .pricing-highlight:hover::before,
-.calendly-box:hover::before,
+.booking-box:hover::before,
 .evo-card--current:hover::before { animation: ringTurn 4s linear infinite; }
 
 /* ══ NOTE D'ARTICLE ════════════════════════════════════════════════════════
