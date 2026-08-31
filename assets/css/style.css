@@ -865,14 +865,20 @@ p { color: var(--gray); }
      « normal » du navigateur, soit 1,2 : serré pour une question qui passe à la
      ligne, ce que toutes font sur téléphone. */
   line-height: 1.4;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  /* PAS DE FLEX ICI. Un <span> posé dans un conteneur flex devient un élément
+     flex à part entière (blocification, CSS Flexbox §4). Depuis que « Q-Bot »
+     est entouré d'un <span class="nb"> (2026-08-28), « Qu'est-ce que »,
+     « Q-Bot » et « ? » étaient donc TROIS éléments, que justify-content:
+     space-between étalait sur toute la largeur du bouton. Mesuré à 1440 px :
+     « What is » à x=179, « Q-Bot » à x=425, « ? » à x=661.
+     Un bloc simple avec l'icône positionnée remet le texte en contenu en ligne,
+     donc n'importe quel <span> ajouté plus tard s'y insère sans rien casser. */
+  display: block;
+  position: relative;
   width: 100%;
   background: none;
   border: none;
-  padding: 20px 24px;
+  padding: 20px 64px 20px 24px;
   text-align: left;
   font-size: 0.9375rem;
   font-weight: 700;
@@ -883,8 +889,11 @@ p { color: var(--gray); }
 .faq-item.open .faq-item__question { color: var(--teal-text); }
 
 .faq-item__icon {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 24px; height: 24px;
-  flex-shrink: 0;
   border: 2px solid var(--border);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -895,7 +904,7 @@ p { color: var(--gray); }
   background: var(--teal);
   border-color: var(--teal);
   color: var(--white);
-  transform: rotate(45deg);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 .faq-item__answer {
