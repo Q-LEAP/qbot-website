@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=9ac6739d">
+  <link rel="stylesheet" href="../assets/css/style.css?v=f17ca7a1">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -373,10 +373,16 @@
     <div class="split-2" style="margin-top:28px; align-items:center;">
       <p style="margin:0; font-size:0.9375rem;">Both paths can coexist in the same environment: use whichever fits each scenario. Either way, taps reach the phone over <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, Android's standard tool for driving a device connected by USB. The loop alongside shows the gesture: the notification arrives, the scenario plays, the phone screen changes.</p>
     <!-- LE BOÎTIER EN ACTION, en boucle muette et compacte.
-         Extrait du film produit QBV1.2.12 fourni le 2026-08-31, réduit à 4,6 s en
-         960x540 (2,6 Mo). Le segment est choisi POUR NE PORTER AUCUNE INCRUSTATION :
-         celles du film sont en anglais, un extrait muet et sans texte se lit donc
-         aussi bien sur la page française que sur l'anglaise.
+         Film produit QBV1.2.12 fourni le 2026-08-31, EN ENTIER : 50,9 s en 960x540,
+         24,7 Mo. Le client a demandé le film complet ici plutôt qu'un extrait, le
+         2026-08-31, et il a arbitré le poids.
+         DEUX CHOSES QU'IL FAUT SAVOIR : les incrustations du film sont en ANGLAIS,
+         y compris sur cette page française, et l'une porte une faute (« and execute
+         2FA scenarios ») ; et une dizaine de ses cinquante secondes sont des écrans
+         de texte sur fond noir, donc la boucle n'est pas produit du début à la fin.
+         Ce sont des propriétés du film fourni, pas de la page.
+         Lisibilité vérifiée à la taille réelle du cadre (542 px) : les incrustations
+         se lisent sans peine.
          Il occupe la moitié d'une colonne et non la pleine largeur : le but est de
          voir le geste, pas de remplir l'écran.
          `data-film` et non `src` : le module 18 ne demande le fichier que quand la
@@ -386,8 +392,8 @@
          `aria-hidden` + `tabindex="-1"` : boucle muette, sans commande, et ce qu'elle
          montre est dit par le texte à côté. -->
       <div class="video__wrapper video__wrapper--film">
-        <video class="video__player" data-film="../assets/video/qbot-action.mp4"
-               poster="../assets/img/qbot-action-poster.jpg"
+        <video class="video__player" data-film="../assets/video/qbot-demo.mp4"
+               poster="../assets/img/qbot-demo-poster.jpg"
                muted loop playsinline
                aria-hidden="true" tabindex="-1"></video>
       </div>
@@ -545,6 +551,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=ff158493" defer></script>
+<script src="../assets/js/main.js?v=589f1521" defer></script>
 </body>
 </html>

@@ -785,63 +785,6 @@ p { color: var(--gray); }
    « boucle » : ce serait une interface. Le client a demandé « vraiment juste une
    vidéo loop » le 2026-08-25. */
 .video__wrapper--film .video__player { pointer-events: none; }
-/* ── Le film complet, en LECTURE À LA DEMANDE ──────────────────────────────
-   Il pèse 24,7 Mo (50,9 s en 960x540, encodé le 2026-08-31 sur décision du client
-   d'envoyer le film entier). Il ne peut donc être servi ni au chargement, ni même à
-   l'approche de la section comme la boucle du module 18. Le balisage porte un LIEN
-   habillé de l'affiche, que le module 21 remplace par un <video> au clic : ZÉRO
-   OCTET tant que personne ne le demande.
-   IL N'Y A AUCUNE BALISE <video> DANS LA PAGE SERVIE, et c'est délibéré : c'est la
-   leçon du 2026-08-24, où le client avait vu un film partir seul et boucler alors
-   que la balise ne portait ni « autoplay » ni « loop ». Rien à démarrer, rien qui
-   puisse démarrer. Sans JavaScript, le lien ouvre le film dans le lecteur du
-   navigateur : l'état au repos reste un état complet. */
-.video__wrapper--demande { max-width: 820px; }
-/* Les contrôles du lecteur créé doivent répondre : la règle de la boucle coupe
-   « pointer-events » pour interdire le menu contextuel, ici il faut l'inverse. */
-.video__wrapper--demande .video__player { pointer-events: auto; }
-.video__amorce {
-  position: absolute;
-  inset: 0;
-  display: block;
-  z-index: 1;
-  cursor: pointer;
-}
-.video__affiche { width: 100%; height: 100%; object-fit: cover; display: block; }
-.video__lecture {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex; align-items: center; justify-content: center;
-  width: 68px; height: 68px;
-  border-radius: 50%;
-  background: var(--teal);
-  color: #001A18;                /* le teal de charte est CLAIR : jamais de blanc dessus */
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-  transition: transform .25s cubic-bezier(0.16, 1, 0.3, 1), background .2s ease;
-}
-.video__amorce:hover .video__lecture,
-.video__amorce:focus-visible .video__lecture {
-  transform: translate(-50%, -50%) scale(1.08);
-  background: var(--teal-tint);
-}
-/* Pastille noire et non un texte à ombre portée : la durée est posée sur le gris
-   CLAIR du film, où du blanc plafonnait à 1,2:1. Défaut relevé le 2026-08-24. */
-.video__duree {
-  position: absolute;
-  right: 12px; bottom: 12px;
-  z-index: 3;                    /* au-dessus de la vignette du cadre, qui est en 2 */
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  background: rgba(0, 0, 0, 0.66);
-  color: #fff;
-  font-size: 0.8125rem;
-  font-weight: 500;
-}
-@media (max-width: 640px) {
-  .video__lecture { width: 56px; height: 56px; }
-}
-
 .video__wrapper--film::after {
   content: '';
   position: absolute;
