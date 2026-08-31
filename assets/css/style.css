@@ -1616,20 +1616,41 @@ p { color: var(--gray); }
   max-height: none;
   overflow: visible;
 }
-.booking-modal::backdrop { background: rgba(0, 0, 0, 0.74); }
+.booking-modal::backdrop {
+  background: rgba(0, 0, 0, 0.78);
+  animation: bookingVoile .32s ease both;
+}
+/* Le flou est le langage du site depuis la passe « verre sombre » du 2026-08-20 :
+   « saturate(130%) » compense la désaturation qu'il provoque. */
+@supports (backdrop-filter: blur(6px)) {
+  .booking-modal::backdrop { backdrop-filter: blur(6px) saturate(130%); }
+}
+@keyframes bookingVoile { from { opacity: 0; } to { opacity: 1; } }
 .booking-modal__box {
   display: flex;
   flex-direction: column;
   height: 100%;
   background: var(--white);
-  border: 1px solid var(--border);
+  /* Filet et halo teal repris À L'IDENTIQUE du cadre du film du hero et de celui de
+     la visionneuse 3D : c'est la façon dont ce site encadre un média. */
+  border: 1px solid rgba(0, 203, 190, 0.22);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(0, 203, 190, 0.10);
+  animation: bookingIn .34s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* Même courbe que les cartes du site, et une amplitude volontairement faible : une
+   fenêtre qui bondit se remarque, une fenêtre qui se pose ne se remarque pas. */
+@keyframes bookingIn {
+  from { opacity: 0; transform: translateY(12px) scale(.988); }
+  to   { opacity: 1; transform: none; }
 }
 /* La barre est à NOUS, le contenu est à Microsoft : elle porte notre noir de charte
    pour que la frontière entre les deux soit lisible. */
 .booking-modal__bar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1639,7 +1660,26 @@ p { color: var(--gray); }
   background: var(--dark);
   color: #fff;
 }
-.booking-modal__titre { margin: 0; font-size: 0.9375rem; font-weight: 700; }
+/* Le même filet teal dégradé que le bas de la barre de navigation : c'est le signe
+   le plus court qui dise « ce bandeau est à nous, ce qui suit est à Microsoft ». */
+.booking-modal__bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,203,190,0.12) 25%, rgba(0,203,190,0.25) 50%, rgba(0,203,190,0.12) 75%, transparent 100%);
+}
+.booking-modal__legende { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.booking-modal__legende svg { color: var(--teal); flex-shrink: 0; }
+.booking-modal__titre {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;       /* la tenue des titres du site */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .booking-modal__close {
   display: flex;
   align-items: center;
@@ -1655,7 +1695,7 @@ p { color: var(--gray); }
   color: #fff;
   transition: background .2s ease;
 }
-.booking-modal__close:hover { background: rgba(255, 255, 255, 0.24); }
+.booking-modal__close:hover { background: var(--teal); color: #001A18; }
 .booking-modal__zone { position: relative; flex: 1; min-height: 0; }
 .booking-modal__iframe {
   display: block;
@@ -1678,7 +1718,7 @@ p { color: var(--gray); }
   gap: 10px;
   margin: 0;
   font-size: 0.9375rem;
-  color: var(--muted);
+  color: var(--gray);
   pointer-events: none;
 }
 .booking-modal.is-pret .booking-modal__chargement { display: none; }
@@ -3300,6 +3340,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
 [data-theme="dark"] .booking-box {
   background: rgba(0, 203, 190, 0.06);
   border-color: rgba(0, 203, 190, 0.16);
+}
+
+/* La fenêtre de réservation : surface sombre, mais on REPOSE le filet teal. Une
+   entrée dans la liste générique ci-dessus l'écraserait, sa spécificité (0,2,0)
+   passant devant celle de la règle de base (0,1,0). Même piège que
+   « .booking-box », documenté plus bas dans ce fichier. */
+[data-theme="dark"] .booking-modal__box {
+  background: #101010;
+  border-color: rgba(0, 203, 190, 0.22);
 }
 
 /* ── Breadcrumb ── */

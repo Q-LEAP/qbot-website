@@ -1793,10 +1793,24 @@ backToTop.addEventListener('click', () => {
 
       var barre = document.createElement('div');
       barre.className = 'booking-modal__bar';
+
+      /* Pictogramme au trait, en teal : le même langage que les icônes du site.
+         Jamais d'emoji, règle du dépôt. */
+      var legende = document.createElement('div');
+      legende.className = 'booking-modal__legende';
+      legende.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
+        'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">' +
+        '<rect x="3" y="4" width="18" height="17" rx="2"/>' +
+        '<line x1="3" y1="9" x2="21" y2="9"/>' +
+        '<line x1="8" y1="2" x2="8" y2="5"/>' +
+        '<line x1="16" y1="2" x2="16" y2="5"/></svg>';
+
       var h = document.createElement('p');
       h.className = 'booking-modal__titre';
       h.id = idt;
       h.textContent = titre;
+      legende.appendChild(h);
+
       var croix = document.createElement('button');
       croix.type = 'button';
       croix.className = 'booking-modal__close';
@@ -1804,7 +1818,7 @@ backToTop.addEventListener('click', () => {
       croix.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
         'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">' +
         '<line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>';
-      barre.appendChild(h);
+      barre.appendChild(legende);
       barre.appendChild(croix);
 
       var zone = document.createElement('div');
