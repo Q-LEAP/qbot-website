@@ -15,6 +15,7 @@ La cible sous-dimensionnée qui reste est signalée pour être passée au calcul
 l'exception d'espacement, que ce script fait aussi (cercle de 24 px de diamètre
 centré sur la boîte, sans intersection avec une autre cible).
 """
+import sys
 import io, sys
 from playwright.sync_api import sync_playwright
 
@@ -147,10 +148,18 @@ JS = r"""
 with sync_playwright() as p:
     b = p.chromium.launch()
     total = {}
+    injoignables = []
     for path in PAGES:
         pg = b.new_page(viewport={'width': LARGEUR, 'height': 900}, reduced_motion='reduce')
         try: pg.goto('http://127.0.0.1:8137/' + path, wait_until='load', timeout=25000)
-        except Exception: print('  TIMEOUT', path); pg.close(); continue
+        except Exception:
+            # UN GARDE-FOU QUI NE CRIE PAS NE PROTEGE PAS. Sans ce compteur, l'outil
+            # annonçait « aucun défaut » alors qu'il n'avait rien chargé du tout :
+            # un audit lancé sans serveur local rendait exactement la même
+            # conclusion qu'un audit réussi. Relevé par l'audit RosoAI n°5, §6.5.
+            injoignables.append(path)
+            pg.close()
+            continue
         pg.evaluate("""async()=>{const h=document.body.scrollHeight;
           for(let y=0;y<h;y+=600){window.scrollTo({top:y,behavior:'instant'});await new Promise(r=>setTimeout(r,55));}
           window.scrollTo({top:0,behavior:'instant'});await new Promise(r=>setTimeout(r,500));}""")
@@ -159,7 +168,16 @@ with sync_playwright() as p:
             total.setdefault(k, []).append(path)
         pg.close()
     b.close()
-print(f"  {LARGEUR} px · {len(PAGES)} pages · {len(total)} type(s) de constat\n")
+lues = len(PAGES) - len(injoignables)
+if injoignables:
+    print(f"\n  ECHEC : {len(injoignables)} page(s) sur {len(PAGES)} n'ont pas pu etre chargees.")
+    print("  Le resultat ci-dessous ne veut RIEN dire. Verifier que le serveur local")
+    print("  tourne sur le port 8137, depuis la racine du depot :")
+    print("     python3 -m http.server 8137")
+    for x in injoignables[:8]: print(f"     - {x}")
+    sys.exit(2)
+
+print(f"  {LARGEUR} px · {lues} page(s) lue(s) sur {len(PAGES)} · {len(total)} type(s) de constat\n")
 if not total: print('    aucun défaut')
 for (c,m,t), pages in sorted(total.items()):
     print(f"   {c:24s} {m[:34]:34s} {t[:30]:30s} ({len(pages)} page(s)) {pages[0] if len(pages)<3 else ''}")

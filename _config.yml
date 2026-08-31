@@ -40,6 +40,10 @@
 # ══════════════════════════════════════════════════════════════════════════════
 
 exclude:
+  # Dessin industriel du produit (OBJ 30,8 Mio + FBX 5,2 Mio) : servi en 200
+  # jusqu'au 2026-08-31, alors qu'aucune page ne le lie. Seul
+  # « assets/models/qbot.glb » est employé. Relevé par l'audit RosoAI n°5.
+  - assets/3d/
   - CLAUDE.md               # consignes de développement : tarif, références clients, arbitrages
   - claude.md.txt           # une version plus ancienne des mêmes consignes
   - Documentations/         # PDF d'audit, brochure, charte, masters IA archivés, maquettes HTML

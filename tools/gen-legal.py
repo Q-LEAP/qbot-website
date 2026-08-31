@@ -255,12 +255,19 @@ for page in PAGES:
   <link rel="apple-touch-icon" href="{p}assets/img/apple-touch-icon.png">
   <meta name="theme-color" content="#000000">
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- PAS DE GOOGLE FONTS. Roboto est servie par le site, en local : « style.css »
+       déclare ses @font-face sur « assets/fonts/roboto-latin.woff2 ». Les trois
+       balises qui étaient ici venaient du WordPress et ne servaient à rien : trois
+       requêtes vers deux origines tierces, bloquantes au rendu, pour une police
+       déjà présente, et l'IP du visiteur qui part chez Google SUR LA PAGE DE
+       POLITIQUE DE CONFIDENTIALITÉ. Retirées le 2026-08-31, relevé RosoAI n°5.
 
-  <link rel="stylesheet" href="{p}assets/css/style.css?v=2026.46-08-29b">
+       ET AUCUNE EMPREINTE ÉCRITE À LA MAIN. Ce gabarit portait
+       « style.css?v=2026.46-08-29b », périmé de plusieurs jours : une régénération
+       aurait réintroduit la panne de cache du 2026-08-25. Le chemin est nu, et
+       « tools/bump-assets » y pose l'empreinte réelle (il sait aussi bien remplacer
+       un « ?v= » existant qu'en ajouter un absent). -->
+  <link rel="stylesheet" href="{p}assets/css/style.css">
   {orga}
   <script type="application/ld+json">
   {{
@@ -329,7 +336,10 @@ for page in PAGES:
 
 {pied}
 
-<script src="{p}assets/js/main.js?v=2026.19-08-23" defer></script>
+<!-- Chemin nu : « tools/bump-assets » y pose l'empreinte réelle. Une
+     empreinte écrite à la main ici se périme et rejoue la panne de cache
+     du 2026-08-25. -->
+<script src="{p}assets/js/main.js" defer></script>
 </body>
 </html>
 """

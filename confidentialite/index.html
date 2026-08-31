@@ -36,9 +36,14 @@
   <meta name="theme-color" content="#000000">
 
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Roboto est SERVIE PAR LE SITE, en local : « style.css » déclare ses
+         @font-face sur « assets/fonts/roboto-latin.woff2 ». Les trois balises
+         Google Fonts qui étaient ici venaient du WordPress et ne servaient à
+         rien : trois requêtes vers deux origines tierces, bloquantes au rendu,
+         pour une police déjà présente. Et l'IP de chaque visiteur partait chez
+         Google SUR LA PAGE DE POLITIQUE DE CONFIDENTIALITÉ elle-même.
+         Retirées le 2026-08-31, relevé par l'audit RosoAI n°5. Le générateur
+         « tools/gen-legal.py » est corrigé aussi, sinon il les réintroduit. -->
 
   <link rel="stylesheet" href="../assets/css/style.css?v=f17ca7a1">
   <script type="application/ld+json">

@@ -35,10 +35,10 @@ Key facts:
 Site available in French (default, root paths) and English (`/en/`).
 
 
-## Pre-launch status (last updated 2026-08-26)
+## Pre-launch status (last updated 2026-08-31)
 
 This site is a staging build of a migration that has not gone live yet. `robots.txt` disallows
-all crawlers and all 18 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
+all crawlers and all 20 pages carry `noindex, nofollow`. That closure is deliberate, it is not a
 misconfiguration, and it will be lifted in one step on switch-over day.
 
 One item is open and awaiting a decision by the client, not work left undone,

@@ -37,3 +37,15 @@ padel_alerte.py
 # auto-signé. Une clé privée n'a rien à faire dans un dépôt public, même de test.
 *.pem
 *.key
+
+# ── Dessin industriel du produit ──────────────────────────────────────
+# « assets/3d/ » contient les exports CAO du boîtier : l'OBJ de 30,8 Mio et le
+# FBX de 5,2 Mio dont « assets/models/qbot.glb » (556 Ko) est généré. Ils étaient
+# SERVIS EN 200 par GitHub Pages, donc téléchargeables par n'importe qui, et
+# lisibles sur github.com puisque le dépôt est public. Relevé par l'audit RosoAI
+# n°5 du 2026-08-27, encore en ligne le 2026-08-31.
+# Aucune page ne les lie : seul le GLB est employé. Sortis du suivi le 2026-08-31,
+# les fichiers restent sur le disque pour la chaîne de génération du GLB.
+# ATTENTION : l'historique git les contient toujours. Les en retirer vraiment
+# demanderait une réécriture d'historique, qui est une décision du client.
+assets/3d/

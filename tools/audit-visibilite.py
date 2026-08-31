@@ -9,6 +9,7 @@ Serveur statique attendu sur le port 8137. La liste des pages vient de
 une page d'erreur ne se canonicalise pas et ne se partage pas. Sans cette
 exemption elle produit 15 faux constats à elle seule.
 """
+import sys
 import io, json, re, os
 from playwright.sync_api import sync_playwright
 
@@ -56,8 +57,12 @@ pb=[]
 titres={}
 with sync_playwright() as p:
     b=p.chromium.launch(); pg=b.new_page(viewport={'width':1440,'height':900})
+    injoignables=[]
     for path in PAGES:
-        pg.goto('http://127.0.0.1:8137/'+path, wait_until='load')
+        # Meme garde-fou que dans audit-a11y : sans lui, une page non chargee
+        # passait pour une page sans defaut. Audit RosoAI n5, §6.5.
+        try: pg.goto('http://127.0.0.1:8137/'+path, wait_until='load', timeout=25000)
+        except Exception: injoignables.append(path); continue
         d=pg.evaluate(JS)
         A=lambda m: pb.append((path,m))
         err404 = (path == '404.html')
@@ -110,6 +115,13 @@ for l in locs:
 if len(re.findall(r'<lastmod>', sm))!=len(locs): pb.append(('sitemap','lastmod manquant sur certaines URL'))
 if sm.count('hreflang')< len(locs)*3: pb.append(('sitemap','paires hreflang incomplètes'))
 
-print(f"  {len(PAGES)} pages · {len(pb)} constat(s)\n")
+if injoignables:
+    print(f"\n  ECHEC : {len(injoignables)} page(s) sur {len(PAGES)} n'ont pas pu etre chargees.")
+    print("  Le resultat ci-dessous ne veut RIEN dire. Lancer un serveur local :")
+    print("     python3 -m http.server 8137")
+    for x in injoignables[:8]: print(f"     - {x}")
+    sys.exit(2)
+
+print(f"  {len(PAGES)-len(injoignables)} page(s) lue(s) sur {len(PAGES)} · {len(pb)} constat(s)\n")
 for path,m in pb: print(f"   {path:44s} {m}")
 if not pb: print("    aucun défaut")
