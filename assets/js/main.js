@@ -1767,30 +1767,63 @@ backToTop.addEventListener('click', () => {
     var btn = cadre.querySelector('[data-booking-load]');
     if (!demande || !btn) return;
 
-    if (location.protocol !== 'https:') {
-      demande.parentNode.removeChild(demande);
-      return;
-    }
+    /* Hors https on n'ARME PAS, et on ne retire rien : le CSS montre alors le lien
+       externe comme action principale du bloc. Retirer le bloc laisserait un pied de
+       cadre qui commence par « Ou », ce qui ne veut plus rien dire. */
+    if (location.protocol !== 'https:') return;
 
     /* Le bouton est caché par défaut : c'est cette classe qui le montre, donc il
        n'existe que là où quelque chose sait y répondre. */
     cadre.classList.add('is-armee');
 
     btn.addEventListener('click', function () {
+      var zone = document.createElement('div');
+      zone.className = 'booking-frame__zone';
+
       var f = document.createElement('iframe');
       f.className = 'booking-frame__iframe';
       f.src = cadre.getAttribute('data-booking-src');
       f.title = cadre.getAttribute('data-booking-title') || 'Agenda de réservation';
-      /* `eager` et non `lazy`, contrairement à la carte du module 19 : le cadre
-         mesure 720 px et remplace un bloc plus court, donc il peut naître à
-         cheval sur le bas de la fenêtre. Un cadre différé serait un cadre vide
-         juste après le clic qui le demande, ce qui est exactement le contraire
-         de ce que le visiteur vient d'exprimer. */
+      /* `eager` et non `lazy`, contrairement à la carte du module 19 : le cadre est
+         haut et remplace un bloc court, donc il peut naître à cheval sur le bas de
+         la fenêtre. Un cadre différé serait un cadre vide juste après le clic qui le
+         demande, ce qui est exactement le contraire de ce que le visiteur exprime. */
       f.loading = 'eager';
       f.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-      demande.parentNode.removeChild(demande);
-      cadre.insertBefore(f, cadre.firstChild);
       f.setAttribute('tabindex', '-1');
+
+      /* L'agenda met plusieurs secondes à peindre. Sans cet état, on regarde un
+         rectangle vide sans savoir si c'est en cours ou en panne. Le cadre garde sa
+         hauteur définitive dès le clic, donc la page ne saute qu'UNE fois. */
+      var att = document.createElement('p');
+      att.className = 'booking-frame__chargement';
+      att.setAttribute('role', 'status');
+      att.appendChild(document.createTextNode(
+        cadre.getAttribute('data-booking-attente') || 'Chargement'));
+      for (var i = 0; i < 3; i++) att.appendChild(document.createElement('i'));
+
+      /* Filet : si l'agenda ne répond pas, on cesse de faire tourner les points et
+         on renvoie au lien du pied, qui n'est jamais retiré. */
+      var minuteur = setTimeout(function () {
+        var lent = cadre.getAttribute('data-booking-lent');
+        if (lent) att.textContent = lent;
+      }, 20000);
+      /* MESURÉ, PAS SUPPOSÉ : l'agenda peint 0,28 s après son événement « load »,
+         soit 1,0 s après la navigation. Aucune attente minimale longue ne se
+         justifie donc, elle ne ferait que retarder un chargement rapide. Ce
+         plancher de 400 ms, calé sur la durée du fondu, sert uniquement à éviter
+         que l'indicateur ne clignote sur un cache chaud. */
+      var depart = Date.now();
+      f.addEventListener('load', function () {
+        clearTimeout(minuteur);
+        var reste = 400 - (Date.now() - depart);
+        setTimeout(function () { cadre.classList.add('is-pret'); }, reste > 0 ? reste : 0);
+      });
+
+      zone.appendChild(f);
+      zone.appendChild(att);
+      demande.parentNode.removeChild(demande);
+      cadre.insertBefore(zone, cadre.firstChild);
       f.focus();
     }, { once: true });
   });

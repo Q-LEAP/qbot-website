@@ -62,11 +62,15 @@ FR = dict(
     faits=[('Avec', 'Sylvain Perez, créateur de Q-Bot et CEO de Q-Leap'),
            ('Durée', 'Une heure')],
     cadre_titre='Agenda de réservation Q-Bot',
+    cadre_accroche='Les disponibilités de Sylvain Perez, en direct',
     cadre_note=("L’agenda est fourni par Microsoft Bookings, qui dépose ses propres cookies. "
                 "Il vous demandera votre nom, votre adresse électronique et votre téléphone."),
     cadre_bouton='Afficher l’agenda',
-    cadre_pied='L’agenda ne s’affiche pas&nbsp;?',
-    cadre_lien='Ouvrir la page de réservation dans un nouvel onglet',
+    cadre_lien_court='Ouvrir l’agenda',
+    cadre_attente='Chargement de l’agenda',
+    cadre_lent='L’agenda tarde à répondre. Le lien ci-dessous l’ouvre dans un nouvel onglet.',
+    cadre_pied='Ou',
+    cadre_lien='ouvrir la page de réservation dans un nouvel onglet',
     s2_label='Le contenu', s2_titre=f'Ce que la démonstration montre',
     montre=[(ECRAN, 'Le boîtier en fonctionnement',
              f'{NB} pilote la vraie application 2FA sur un téléphone Android relié en USB, '
@@ -104,11 +108,15 @@ EN = dict(
     faits=[('With', 'Sylvain Perez, creator of Q-Bot and CEO of Q-Leap'),
            ('Duration', 'One hour')],
     cadre_titre='Q-Bot booking calendar',
+    cadre_accroche='Sylvain Perez’s live availability',
     cadre_note=("The calendar is provided by Microsoft Bookings, which sets its own cookies. "
                 "It will ask for your name, email address and phone number."),
     cadre_bouton='Show the calendar',
-    cadre_pied='Calendar not showing?',
-    cadre_lien='Open the booking page in a new tab',
+    cadre_lien_court='Open the calendar',
+    cadre_attente='Loading the calendar',
+    cadre_lent='The calendar is slow to respond. The link below opens it in a new tab.',
+    cadre_pied='Or',
+    cadre_lien='open the booking page in a new tab',
     s2_label='The content', s2_titre='What the demonstration shows',
     montre=[(ECRAN, 'The device at work',
              f'{NB} drives the genuine 2FA app on an Android phone connected over USB, triggered '
@@ -154,11 +162,17 @@ def corps(L):
 {faits}
     </ul>
 
-    <div class="booking-frame" data-booking-src="{BOOKINGS}" data-booking-title="{L['cadre_titre']}">
+    <div class="booking-frame"
+         data-booking-src="{BOOKINGS}"
+         data-booking-title="{L['cadre_titre']}"
+         data-booking-attente="{L['cadre_attente']}"
+         data-booking-lent="{L['cadre_lent']}">
       <div class="booking-frame__ask">
         <svg class="booking-frame__ask-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="5"/><line x1="16" y1="2" x2="16" y2="5"/></svg>
+        <p class="booking-frame__ask-titre">{L['cadre_accroche']}</p>
         <p class="booking-frame__ask-note">{L['cadre_note']}</p>
         <button type="button" class="booking-frame__ask-btn" data-booking-load>{L['cadre_bouton']}</button>
+        <a class="booking-frame__ask-link" href="{BOOKINGS}" target="_blank" rel="noopener">{L['cadre_lien_court']} {FLECHE}</a>
       </div>
       <p class="booking-frame__foot">
         <span>{L['cadre_pied']}</span>
@@ -253,9 +267,9 @@ def genere(L):
             sys.exit('ECHEC %s : invariant perdu (%s)' % (L['sortie'], quoi))
     if out.count('<h1') != 1:
         sys.exit('ECHEC %s : %d h1' % (L['sortie'], out.count('<h1')))
-    if out.count(BOOKINGS) != 2:
-        sys.exit('ECHEC %s : %d mention(s) de l\'URL Bookings, 2 attendues '
-                 '(source du cadre + lien de secours)' % (L['sortie'], out.count(BOOKINGS)))
+    if out.count(BOOKINGS) != 3:
+        sys.exit('ECHEC %s : %d mention(s) de l\'URL Bookings, 3 attendues (source du '
+                 'cadre + action de repli + lien de pied)' % (L['sortie'], out.count(BOOKINGS)))
     if '—' in re.sub(r'<!--[\s\S]*?-->', '', out):
         sys.exit('ECHEC %s : cadratin dans le contenu' % L['sortie'])
 

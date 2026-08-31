@@ -1522,9 +1522,29 @@ p { color: var(--gray); }
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
-  padding: 40px 32px;
+  gap: 16px;
+  padding: 44px 32px;
+  max-width: 640px;              /* le cadre fait 1 132 px : sans mesure, le texte s'y perd */
 }
+.booking-frame__ask-titre {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--black);
+}
+.booking-frame__ask-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  background: var(--teal);
+  color: #001A18;
+  font-weight: 500;
+  transition: background .2s ease, transform .2s ease;
+}
+.booking-frame__ask-link:hover { background: var(--teal-tint); transform: translateY(-1px); }
 .booking-frame__ask-pin { color: var(--teal); flex-shrink: 0; }
 .booking-frame__ask-note {
   font-size: 0.875rem;
@@ -1535,8 +1555,17 @@ p { color: var(--gray); }
 /* Le bouton n'apparaît QUE si le module 20 l'a armé. Sans JavaScript il serait
    un clic mort, et l'état au repos de ce site doit être un état complet : il
    reste alors la mention et le lien « nouvel onglet » du pied du cadre. */
+/* Par défaut, et donc aussi sans JavaScript, hors https et sur petit écran :
+   c'est le LIEN externe qui est l'action principale. Le bouton d'affichage n'apparaît
+   qu'armé par le module 20 ET au-delà de 900 px, en dessous de quoi l'agenda ferait
+   4,7 écrans de panneau blanc sur un téléphone (1 838 px mesurés à 342 px de large).
+   Mieux vaut alors l'ouvrir en plein écran dans son propre onglet. */
 .booking-frame__ask-btn { display: none; }
-.booking-frame.is-armee .booking-frame__ask-btn { display: inline-flex; }
+@media (min-width: 900px) {
+  .booking-frame.is-armee .booking-frame__ask-btn { display: inline-flex; }
+  .booking-frame.is-armee .booking-frame__ask-link { display: none; }
+  .booking-frame.is-armee .booking-frame__foot { display: flex; }
+}
 .booking-frame__ask-btn {
   font: inherit;
   font-weight: 500;
@@ -1550,17 +1579,58 @@ p { color: var(--gray); }
   transition: background .2s ease, transform .2s ease;
 }
 .booking-frame__ask-btn:hover { background: var(--teal-tint); transform: translateY(-1px); }
-/* L'agenda est une interface CLAIRE : sans fond blanc explicite on verrait le
-   fond sombre de la page pendant son chargement. */
+/* HAUTEURS MESURÉES DANS L'AGENDA LUI-MÊME, PAS CHOISIES. Le contenu de Bookings
+   (service, personnel, calendrier, créneaux, formulaire) fait 1 523 px de haut pour
+   1 130 px de large, et 1 818 px pour 720 px. Un cadre plus court imposerait un
+   DÉFILEMENT IMBRIQUÉ : la molette du visiteur serait capturée par le cadre au
+   milieu de la page, et son doigt s'y battrait sur tablette. Le cadre est donc
+   assez haut pour tout contenir, et c'est la PAGE qui défile. */
+.booking-frame__zone { position: relative; }
 .booking-frame__iframe {
   display: block;
   width: 100%;
-  height: 720px;
+  height: 1560px;
   border: 0;
   background: #fff;
+  opacity: 0;
+  transition: opacity .45s ease;
 }
-.booking-frame__foot {
+.booking-frame.is-pret .booking-frame__iframe { opacity: 1; }
+/* L'agenda met plusieurs secondes à peindre. Sans cet état, on regarde un grand
+   rectangle vide sans savoir si c'est en cours ou en panne : c'est la leçon de
+   l'indicateur de chargement de la séquence 3D. */
+.booking-frame__chargement {
+  position: absolute;
+  inset: 0;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--gray);
+  pointer-events: none;
+}
+.booking-frame.is-pret .booking-frame__chargement { display: none; }
+.booking-frame__chargement i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  animation: bookingPulse 1.1s ease-in-out infinite;
+}
+.booking-frame__chargement i:nth-child(2) { animation-delay: .18s; }
+.booking-frame__chargement i:nth-child(3) { animation-delay: .36s; }
+@keyframes bookingPulse {
+  0%, 100% { opacity: .25; transform: scale(.8); }
+  50%      { opacity: 1;   transform: scale(1.15); }
+}
+/* Le pied ne se montre QUE là où il est un vrai recours, c'est-à-dire quand
+   l'action principale est l'agenda embarqué (règle @media plus haut). Partout
+   ailleurs cette action EST déjà le lien externe, et le pied dirait deux fois la
+   même chose. Le « display » par défaut est donc posé ICI, dans la règle de base :
+   une règle « display: none » écrite plus haut serait écrasée par celle-ci, à
+   spécificité égale c'est l'ordre qui tranche. */
+.booking-frame__foot {
+  display: none;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 12px;
@@ -1571,10 +1641,13 @@ p { color: var(--gray); }
   color: var(--gray);
 }
 .booking-frame__foot a { color: var(--teal-text); font-weight: 500; }
+@media (max-width: 1199px) {
+  /* 1 818 px mesurés à 720 px de large : le cadre suit, pour ne pas imbriquer un défilement */
+  .booking-frame__iframe { height: 1860px; }
+}
 @media (max-width: 640px) {
-  .booking-frame__ask { padding: 28px 20px; }
+  .booking-frame__ask { padding: 30px 20px; }
   .booking-frame__foot { padding: 14px 20px; }
-  .booking-frame__iframe { height: 640px; }
 }
 .booking-box h3 { margin-bottom: 8px; font-size: 1rem; }
 .booking-box p { font-size: 0.9rem; margin-bottom: 16px; }
