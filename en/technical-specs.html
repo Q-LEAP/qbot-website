@@ -370,7 +370,28 @@
               <p style="margin-top:16px;"><a href="use-cases.html#case-night" class="evo-card__link">The full case: night runs that really are automatic<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
       </article>
     </div>
-    <p style="margin-top:28px; font-size:0.9375rem;">Both paths can coexist in the same environment: use whichever fits each scenario. Either way, taps reach the phone over <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, Android's standard tool for driving a device connected by USB.</p>
+    <div class="split-2" style="margin-top:28px; align-items:center;">
+      <p style="margin:0; font-size:0.9375rem;">Both paths can coexist in the same environment: use whichever fits each scenario. Either way, taps reach the phone over <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, Android's standard tool for driving a device connected by USB. The loop alongside shows the gesture: the notification arrives, the scenario plays, the phone screen changes.</p>
+    <!-- LE BOÎTIER EN ACTION, en boucle muette et compacte.
+         Extrait du film produit QBV1.2.12 fourni le 2026-08-31, réduit à 4,6 s en
+         960x540 (2,6 Mo). Le segment est choisi POUR NE PORTER AUCUNE INCRUSTATION :
+         celles du film sont en anglais, un extrait muet et sans texte se lit donc
+         aussi bien sur la page française que sur l'anglaise.
+         Il occupe la moitié d'une colonne et non la pleine largeur : le but est de
+         voir le geste, pas de remplir l'écran.
+         `data-film` et non `src` : le module 18 ne demande le fichier que quand la
+         section approche, avec 200 px d'avance. Sans JavaScript, en mouvement réduit,
+         en économiseur de données ou sur connexion lente, il reste l'affiche, qui est
+         une vraie image de l'extrait.
+         `aria-hidden` + `tabindex="-1"` : boucle muette, sans commande, et ce qu'elle
+         montre est dit par le texte à côté. -->
+      <div class="video__wrapper video__wrapper--film">
+        <video class="video__player" data-film="../assets/video/qbot-action.mp4"
+               poster="../assets/img/qbot-action-poster.jpg"
+               muted loop playsinline
+               aria-hidden="true" tabindex="-1"></video>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -524,6 +545,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=638c0857" defer></script>
+<script src="../assets/js/main.js?v=589f1521" defer></script>
 </body>
 </html>

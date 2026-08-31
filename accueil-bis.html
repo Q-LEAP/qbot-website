@@ -217,15 +217,13 @@
           </div>
         </div>
       </div>
-      <div class="intro__image intro__image--dock">
-        <!-- Photo (brochure officielle, page 1, 300 dpi) : la validation 2FA telle
-             qu'elle se produit vraiment, sur le téléphone docké. -->
-        <img
-          src="assets/img/qbot-photo-dock.jpg"
-          alt="Un smartphone inséré dans le socle du Q-Bot, affichant une demande de validation de transaction dans l'application LuxTrust"
-          width="699" height="860"
-          loading="lazy"
-        >
+      <div class="video__wrapper video__wrapper--film">
+        <!-- Boucle muette, sans commande, chargée par le module 18 quand la
+             section approche. Sans JavaScript il reste l'affiche. La boucle montre le geste : la notification arrive, le scénario se joue. -->
+        <video class="video__player" data-film="assets/video/qbot-action.mp4"
+               poster="assets/img/qbot-action-poster.jpg"
+               muted loop playsinline
+               aria-hidden="true" tabindex="-1"></video>
       </div>
     </div>
   </div>
@@ -456,7 +454,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=638c0857" defer></script>
+<script src="assets/js/main.js?v=589f1521" defer></script>
 <script src="assets/js/scrolly.js?v=130fc8b1" defer></script>
 
 <!-- Repère de variante : une seule ligne à retirer le jour où cette page

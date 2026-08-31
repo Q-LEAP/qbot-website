@@ -54,6 +54,32 @@ def section(txt, ident, ou):
             return txt[i:j]
     sys.exit('ECHEC : section « %s » non refermée dans %s' % (ident, ou))
 
+def film(bloc, langue):
+    """Dans la section « Comment Q-Bot automatise votre 2FA », la photo fixe du
+    téléphone docké cède la place à la BOUCLE du boîtier en action : même sujet, en
+    mouvement. Extrait de QBV1.2.12 fourni le 2026-08-31, 4,6 s en 960x540 (2,6 Mo),
+    choisi sans aucune incrustation, celles du film étant en anglais.
+
+    Le préfixe de profondeur est LU dans le balisage du donneur, jamais déduit."""
+    m = re.search(r'<div class="intro__image intro__image--dock">[\s\S]*?</div>', bloc)
+    if not m:
+        return bloc                      # la photo a pu disparaître du donneur
+    pref = re.search(r'src="([^"]*)assets/img/qbot-photo-dock\.jpg"', m.group(0))
+    pref = pref.group(1) if pref else ''
+    alt = ('La boucle montre le geste : la notification arrive, le scénario se joue.'
+           if langue == 'fr' else
+           'The loop shows the gesture: the notification arrives, the scenario plays.')
+    neuf = ('<div class="video__wrapper video__wrapper--film">\n'
+            '        <!-- Boucle muette, sans commande, chargée par le module 18 quand la\n'
+            '             section approche. Sans JavaScript il reste l\'affiche. %s -->\n'
+            '        <video class="video__player" data-film="%sassets/video/qbot-action.mp4"\n'
+            '               poster="%sassets/img/qbot-action-poster.jpg"\n'
+            '               muted loop playsinline\n'
+            '               aria-hidden="true" tabindex="-1"></video>\n'
+            '      </div>' % (alt, pref, pref))
+    return bloc.replace(m.group(0), neuf)
+
+
 def reteinte(bloc, gris):
     """Impose la teinte de fond, l'alternance étant refaite après réordonnancement."""
     def r(m):
@@ -95,8 +121,12 @@ def genere(lot):
     # ── alternance des fonds, calculée depuis la fin ──
     # le bloc d'appel final est mis en gris, la section qui le précède doit donc
     # être claire, et ainsi de suite en remontant jusqu'au hero.
-    blocs = [reteinte(section(cont, i, lot['contenu']), gris=(k % 2 == 0))
-             for k, i in enumerate(SECTIONS)]
+    blocs = []
+    for k, i in enumerate(SECTIONS):
+        b = section(cont, i, lot['contenu'])
+        if i == 'how-title':
+            b = film(b, lot['langue'])
+        blocs.append(reteinte(b, gris=(k % 2 == 0)))
     cta = reteinte(cta, gris=True)
 
     repere = (
@@ -117,6 +147,8 @@ def genere(lot):
                         ('noindex', r'name="robots" content="noindex')):
         if not re.search(motif, out):
             sys.exit('ECHEC %s : invariant perdu (%s)' % (lot['sortie'], quoi))
+    if 'qbot-action.mp4' not in out:
+        sys.exit('ECHEC %s : la boucle du boîtier en action n\'a pas été posée' % lot['sortie'])
     if out.count('<h1') != 1:
         sys.exit('ECHEC %s : %d h1' % (lot['sortie'], out.count('<h1')))
     if 'application/ld+json' in out:
