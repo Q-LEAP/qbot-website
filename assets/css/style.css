@@ -1501,15 +1501,20 @@ p { color: var(--gray); }
   padding: 32px;
 }
 
-/* ── Agenda de réservation, chargé au clic ─────────────────────────────────
-   Même raison que la carte de contact : l'iframe Microsoft déposerait ses
-   cookies avant que le visiteur ait rien demandé.
-   ET UNE RAISON DE PLUS, PROPRE À BOOKINGS : sa politique dit
-   « frame-ancestors https: », donc l'encadrement ne marche QUE depuis une page
-   servie en https. Sur http (serveur de développement) ou en file:// le cadre
-   resterait vide sans erreur visible ; le module 20 retire alors le bloc de
-   demande, et le lien « nouvel onglet » du pied reste visible dans tous les
-   cas. Un cadre vide ne doit jamais être un cul-de-sac. */
+/* ── Agenda de réservation, en fenêtre modale ──────────────────────────────
+   L'agenda s'ouvre PAR-DESSUS la page et non plus dans son flux. Ce n'est pas un
+   choix d'esthétique : le contenu de Bookings fait 1 523 px de haut à 1 130 px de
+   large et 1 838 px à 342 px. Inséré dans la page, il imposait donc soit un
+   défilement imbriqué qui capture la molette, soit 4,7 écrans de panneau blanc sur
+   un téléphone. Dans une fenêtre dédiée, un défilement interne est ATTENDU.
+
+   La fenêtre est un <dialog> natif : le piège de focus, la touche Échap, le fond
+   assombri et le retour du focus sur le bouton d'origine sont donnés par le
+   navigateur, sans une ligne de JavaScript pour les émuler.
+
+   ET BOOKINGS N'ACCEPTE L'ENCADREMENT QUE DEPUIS UNE PAGE HTTPS
+   (« frame-ancestors https: »). Hors https, ou sans <dialog>, ou sans JavaScript,
+   le module 20 n'arme pas le bouton et c'est le lien externe qui reste l'action. */
 .booking-facts { margin-top: 28px; }
 .booking-frame {
   margin-top: 32px;
@@ -1524,14 +1529,23 @@ p { color: var(--gray); }
   align-items: flex-start;
   gap: 16px;
   padding: 44px 32px;
-  max-width: 640px;              /* le cadre fait 1 132 px : sans mesure, le texte s'y perd */
+  max-width: 640px;              /* le cadre est large : sans mesure, le texte s'y perd */
 }
+.booking-frame__ask-pin { color: var(--teal); flex-shrink: 0; }
 .booking-frame__ask-titre {
   margin: 0;
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--black);
 }
+.booking-frame__ask-note {
+  font-size: 0.875rem;
+  color: var(--gray);
+  margin: 0;
+  max-width: 62ch;
+}
+/* Par défaut, et donc sans JavaScript comme hors https : c'est le LIEN externe qui
+   est l'action principale. Le bouton n'apparaît qu'armé par le module 20. */
 .booking-frame__ask-link {
   display: inline-flex;
   align-items: center;
@@ -1540,33 +1554,17 @@ p { color: var(--gray); }
   padding: 10px 20px;
   border-radius: var(--radius);
   background: var(--teal);
-  color: #001A18;
+  color: #001A18;                /* le teal de charte est CLAIR : jamais de blanc dessus */
   font-weight: 500;
   transition: background .2s ease, transform .2s ease;
 }
 .booking-frame__ask-link:hover { background: var(--teal-tint); transform: translateY(-1px); }
-.booking-frame__ask-pin { color: var(--teal); flex-shrink: 0; }
-.booking-frame__ask-note {
-  font-size: 0.875rem;
-  color: var(--gray);
-  margin: 0;
-  max-width: 62ch;
-}
-/* Le bouton n'apparaît QUE si le module 20 l'a armé. Sans JavaScript il serait
-   un clic mort, et l'état au repos de ce site doit être un état complet : il
-   reste alors la mention et le lien « nouvel onglet » du pied du cadre. */
-/* Par défaut, et donc aussi sans JavaScript, hors https et sur petit écran :
-   c'est le LIEN externe qui est l'action principale. Le bouton d'affichage n'apparaît
-   qu'armé par le module 20 ET au-delà de 900 px, en dessous de quoi l'agenda ferait
-   4,7 écrans de panneau blanc sur un téléphone (1 838 px mesurés à 342 px de large).
-   Mieux vaut alors l'ouvrir en plein écran dans son propre onglet. */
 .booking-frame__ask-btn { display: none; }
-@media (min-width: 900px) {
-  .booking-frame.is-armee .booking-frame__ask-btn { display: inline-flex; }
-  .booking-frame.is-armee .booking-frame__ask-link { display: none; }
-  .booking-frame.is-armee .booking-frame__foot { display: flex; }
-}
+.booking-frame.is-armee .booking-frame__ask-btn { display: inline-flex; }
+.booking-frame.is-armee .booking-frame__ask-link { display: none; }
 .booking-frame__ask-btn {
+  align-items: center;
+  gap: 8px;
   font: inherit;
   font-weight: 500;
   cursor: pointer;
@@ -1575,60 +1573,15 @@ p { color: var(--gray); }
   border: none;
   border-radius: var(--radius);
   background: var(--teal);
-  color: #001A18;                 /* le teal de charte est CLAIR : jamais de blanc dessus */
+  color: #001A18;
   transition: background .2s ease, transform .2s ease;
 }
 .booking-frame__ask-btn:hover { background: var(--teal-tint); transform: translateY(-1px); }
-/* HAUTEURS MESURÉES DANS L'AGENDA LUI-MÊME, PAS CHOISIES. Le contenu de Bookings
-   (service, personnel, calendrier, créneaux, formulaire) fait 1 523 px de haut pour
-   1 130 px de large, et 1 818 px pour 720 px. Un cadre plus court imposerait un
-   DÉFILEMENT IMBRIQUÉ : la molette du visiteur serait capturée par le cadre au
-   milieu de la page, et son doigt s'y battrait sur tablette. Le cadre est donc
-   assez haut pour tout contenir, et c'est la PAGE qui défile. */
-.booking-frame__zone { position: relative; }
-.booking-frame__iframe {
-  display: block;
-  width: 100%;
-  height: 1560px;
-  border: 0;
-  background: #fff;
-  opacity: 0;
-  transition: opacity .45s ease;
-}
-.booking-frame.is-pret .booking-frame__iframe { opacity: 1; }
-/* L'agenda met plusieurs secondes à peindre. Sans cet état, on regarde un grand
-   rectangle vide sans savoir si c'est en cours ou en panne : c'est la leçon de
-   l'indicateur de chargement de la séquence 3D. */
-.booking-frame__chargement {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 0.9375rem;
-  color: var(--gray);
-  pointer-events: none;
-}
-.booking-frame.is-pret .booking-frame__chargement { display: none; }
-.booking-frame__chargement i {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--teal);
-  animation: bookingPulse 1.1s ease-in-out infinite;
-}
-.booking-frame__chargement i:nth-child(2) { animation-delay: .18s; }
-.booking-frame__chargement i:nth-child(3) { animation-delay: .36s; }
-@keyframes bookingPulse {
-  0%, 100% { opacity: .25; transform: scale(.8); }
-  50%      { opacity: 1;   transform: scale(1.15); }
-}
-/* Le pied ne se montre QUE là où il est un vrai recours, c'est-à-dire quand
-   l'action principale est l'agenda embarqué (règle @media plus haut). Partout
-   ailleurs cette action EST déjà le lien externe, et le pied dirait deux fois la
-   même chose. Le « display » par défaut est donc posé ICI, dans la règle de base :
-   une règle « display: none » écrite plus haut serait écrasée par celle-ci, à
-   spécificité égale c'est l'ordre qui tranche. */
+/* Le pied n'est un recours que si la fenêtre est bien le chemin principal. Sinon
+   l'action principale EST déjà ce lien, et le pied le dirait deux fois. Le
+   « display » par défaut est posé ICI, dans la règle de base : une règle
+   « display: none » écrite plus haut serait écrasée par celle-ci, à spécificité
+   égale c'est l'ordre qui tranche. */
 .booking-frame__foot {
   display: none;
   flex-wrap: wrap;
@@ -1640,15 +1593,116 @@ p { color: var(--gray); }
   font-size: 0.875rem;
   color: var(--gray);
 }
+.booking-frame.is-armee .booking-frame__foot { display: flex; }
 .booking-frame__foot a { color: var(--teal-text); font-weight: 500; }
-@media (max-width: 1199px) {
-  /* 1 818 px mesurés à 720 px de large : le cadre suit, pour ne pas imbriquer un défilement */
-  .booking-frame__iframe { height: 1860px; }
-}
 @media (max-width: 640px) {
   .booking-frame__ask { padding: 30px 20px; }
   .booking-frame__foot { padding: 14px 20px; }
 }
+
+/* ── La fenêtre elle-même ── */
+.booking-modal {
+  /* Un <dialog> auquel on fixe des dimensions perd le centrage du navigateur :
+     il faut le lui redonner explicitement, sinon la fenêtre se colle en haut à
+     gauche et chevauche la barre de navigation. */
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  width: min(1120px, 94vw);
+  max-width: none;
+  height: min(920px, 92vh);
+  max-height: none;
+  overflow: visible;
+}
+.booking-modal::backdrop { background: rgba(0, 0, 0, 0.74); }
+.booking-modal__box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+/* La barre est à NOUS, le contenu est à Microsoft : elle porte notre noir de charte
+   pour que la frontière entre les deux soit lisible. */
+.booking-modal__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+  padding: 12px 12px 12px 20px;
+  background: var(--dark);
+  color: #fff;
+}
+.booking-modal__titre { margin: 0; font-size: 0.9375rem; font-weight: 700; }
+.booking-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;                   /* WCAG 2.5.8 : une cible de fermeture se rate mal */
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  transition: background .2s ease;
+}
+.booking-modal__close:hover { background: rgba(255, 255, 255, 0.24); }
+.booking-modal__zone { position: relative; flex: 1; min-height: 0; }
+.booking-modal__iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;              /* Bookings est clair : sinon on voit le fond sombre pendant le chargement */
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.booking-modal.is-pret .booking-modal__iframe { opacity: 1; }
+/* Sans cet état, on regarde un rectangle vide sans savoir si c'est en cours ou en
+   panne : c'est la leçon de l'indicateur de la séquence 3D. */
+.booking-modal__chargement {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+.booking-modal.is-pret .booking-modal__chargement { display: none; }
+.booking-modal__chargement i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal);
+  animation: bookingPulse 1.1s ease-in-out infinite;
+}
+.booking-modal__chargement i:nth-child(2) { animation-delay: .18s; }
+.booking-modal__chargement i:nth-child(3) { animation-delay: .36s; }
+@keyframes bookingPulse {
+  0%, 100% { opacity: .25; transform: scale(.8); }
+  50%      { opacity: 1;   transform: scale(1.15); }
+}
+/* Sur téléphone la fenêtre prend tout l'écran : à 342 px de large, une fenêtre
+   flottante avec des marges ne laisserait pas la place au calendrier. */
+@media (max-width: 640px) {
+  .booking-modal {
+    width: 100vw; height: 100vh;
+    max-height: 100dvh;
+  }
+  .booking-modal__box { border-radius: 0; border: 0; }
+}
+
 .booking-box h3 { margin-bottom: 8px; font-size: 1rem; }
 .booking-box p { font-size: 0.9rem; margin-bottom: 16px; }
 

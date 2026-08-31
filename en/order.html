@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=58615863">
+  <link rel="stylesheet" href="../assets/css/style.css?v=e0247b5e">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -152,7 +152,13 @@
         <li><a href="faq.html" class="nav__link">FAQ</a></li>
       </ul>
       <div class="nav__actions">
-        <a href="booking.html" class="btn btn--primary">Book a demo</a>
+        <a href="booking.html" data-booking-open
+       data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
+       data-booking-title="Q-Bot booking calendar"
+       data-booking-attente="Loading the calendar"
+       data-booking-lent="The calendar is slow to respond. Open it in a new tab."
+       data-booking-fermer="Close the calendar"
+       class="btn btn--primary">Book a demo</a>
                 <div class="nav__lang">
           <a href="../commandez.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
         </div>
@@ -612,6 +618,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=3162db85" defer></script>
+<script src="../assets/js/main.js?v=b979a68e" defer></script>
 </body>
 </html>

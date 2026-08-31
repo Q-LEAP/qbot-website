@@ -1735,68 +1735,90 @@ backToTop.addEventListener('click', () => {
 
 
 /* ═══════════════════════════════════════════════════════════════════════
-   20. L'AGENDA DE RÉSERVATION NE SE CHARGE QU'AU CLIC
+   20. L'AGENDA DE RÉSERVATION S'OUVRE DANS UNE FENÊTRE, AU CLIC
 
-   Même raison que la carte de contact (module 19) : l'iframe Microsoft
-   déposerait ses cookies avant que le visiteur ait rien demandé, sur un site
-   qui publie une page Confidentialité.
+   Deux raisons, dans cet ordre.
 
-   ET UNE RAISON DE PLUS, PROPRE À BOOKINGS : sa politique de sécurité dit
-   « frame-ancestors https: », donc l'encadrement ne fonctionne QUE depuis une
-   page servie en https. Sur http (serveur de développement) ou en file://
-   (fichier ouvert à la main), le cadre resterait VIDE, sans erreur exploitable
-   depuis la page parente. Le bloc de demande est donc retiré hors https plutôt
-   que de laisser un bouton sans effet.
+   • RIEN N'EST DEMANDÉ À MICROSOFT AVANT QUE LE VISITEUR NE LE DEMANDE. L'iframe
+     est créée au clic, comme la carte de contact du module 19 : aucun cookie tiers
+     n'est déposé sur une page qui publie une politique de confidentialité.
+   • LE CONTENU DE BOOKINGS EST TROP HAUT POUR LE FLUX DE LA PAGE. Mesuré :
+     1 523 px à 1 130 px de large, 1 838 px à 342 px. Inséré dans la page il
+     imposait un défilement imbriqué, qui capture la molette du visiteur au milieu
+     de la page ; dans une fenêtre dédiée, un défilement interne est ATTENDU.
 
-   Deux choses à ne pas défaire :
+   LA FENÊTRE EST UN <dialog> NATIF, et c'est ce qui rend ce module court : le piège
+   de focus, la touche Échap, le fond assombri et le RETOUR DU FOCUS sur le bouton
+   d'origine sont donnés par le navigateur. Une fenêtre bricolée en <div> demande
+   d'émuler les quatre, et c'est là qu'on se trompe.
 
-   • le lien « nouvel onglet » du pied du cadre est écrit dans le HTML et n'est
-     JAMAIS retiré. Sans JavaScript, hors https, ou si Microsoft refusait un
-     jour l'encadrement, il reste une façon de réserver. L'état au repos est un
-     état complet, comme pour le film de l'accueil et la carte de contact ;
-   • le focus passe sur le cadre une fois posé. Un visiteur au clavier vient
-     d'activer un bouton qui disparaît ; sans cela son focus retombe sur le
-     document et il perd sa place.
+   TROIS REPLIS, et le bouton n'est ARMÉ que si aucun ne s'applique. Sans armement,
+   le CSS montre le lien externe comme action principale du bloc :
+   • pas de JavaScript : rien n'arme, le lien reste ;
+   • pas de https : Bookings répond « frame-ancestors https: », donc la fenêtre
+     resterait vide sur http ou en file:// ;
+   • pas de <dialog> : navigateur trop ancien.
+
+   L'IFRAME EST DÉTRUITE À LA FERMETURE. Dans une fenêtre fermée elle continuerait
+   de faire tourner les scripts de Microsoft, et la réouverture ne coûte qu'une
+   seconde (mesuré : l'agenda peint 1,0 s après la navigation).
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
+  /* Deux sortes de déclencheurs : le cadre de la page de réservation, et le bouton
+     « Réserver une démo » de la barre de navigation, présent sur toutes les pages.
+     Le second reste un LIEN vers la page de réservation : on n'intercepte son clic
+     que si la fenêtre peut réellement s'ouvrir. */
   var cadres = document.querySelectorAll('.booking-frame[data-booking-src]');
-  if (!cadres.length) return;
+  var liens = document.querySelectorAll('a[data-booking-open][data-booking-src]');
+  if (!cadres.length && !liens.length) return;
+  if (location.protocol !== 'https:') return;
+  if (typeof document.createElement('dialog').showModal !== 'function') return;
 
-  Array.prototype.forEach.call(cadres, function (cadre) {
-    var demande = cadre.querySelector('.booking-frame__ask');
-    var btn = cadre.querySelector('[data-booking-load]');
-    if (!demande || !btn) return;
+  var n = 0;
 
-    /* Hors https on n'ARME PAS, et on ne retire rien : le CSS montre alors le lien
-       externe comme action principale du bloc. Retirer le bloc laisserait un pied de
-       cadre qui commence par « Ou », ce qui ne veut plus rien dire. */
-    if (location.protocol !== 'https:') return;
+  /* `source` est l'élément qui porte les attributs data-booking-* : le cadre sur la
+     page de réservation, le lien de la barre partout ailleurs. */
+  function ouvre(source) {
+    var cadre = source;
+    {
+      var titre = cadre.getAttribute('data-booking-title') || 'Agenda';
+      var idt = 'booking-modal-titre-' + (++n);
 
-    /* Le bouton est caché par défaut : c'est cette classe qui le montre, donc il
-       n'existe que là où quelque chose sait y répondre. */
-    cadre.classList.add('is-armee');
+      var fen = document.createElement('dialog');
+      fen.className = 'booking-modal';
+      fen.setAttribute('aria-labelledby', idt);
 
-    btn.addEventListener('click', function () {
+      var boite = document.createElement('div');
+      boite.className = 'booking-modal__box';
+
+      var barre = document.createElement('div');
+      barre.className = 'booking-modal__bar';
+      var h = document.createElement('p');
+      h.className = 'booking-modal__titre';
+      h.id = idt;
+      h.textContent = titre;
+      var croix = document.createElement('button');
+      croix.type = 'button';
+      croix.className = 'booking-modal__close';
+      croix.setAttribute('aria-label', cadre.getAttribute('data-booking-fermer') || 'Fermer');
+      croix.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
+        'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">' +
+        '<line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>';
+      barre.appendChild(h);
+      barre.appendChild(croix);
+
       var zone = document.createElement('div');
-      zone.className = 'booking-frame__zone';
+      zone.className = 'booking-modal__zone';
 
       var f = document.createElement('iframe');
-      f.className = 'booking-frame__iframe';
+      f.className = 'booking-modal__iframe';
       f.src = cadre.getAttribute('data-booking-src');
-      f.title = cadre.getAttribute('data-booking-title') || 'Agenda de réservation';
-      /* `eager` et non `lazy`, contrairement à la carte du module 19 : le cadre est
-         haut et remplace un bloc court, donc il peut naître à cheval sur le bas de
-         la fenêtre. Un cadre différé serait un cadre vide juste après le clic qui le
-         demande, ce qui est exactement le contraire de ce que le visiteur exprime. */
+      f.title = titre;
       f.loading = 'eager';
       f.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-      f.setAttribute('tabindex', '-1');
 
-      /* L'agenda met plusieurs secondes à peindre. Sans cet état, on regarde un
-         rectangle vide sans savoir si c'est en cours ou en panne. Le cadre garde sa
-         hauteur définitive dès le clic, donc la page ne saute qu'UNE fois. */
       var att = document.createElement('p');
-      att.className = 'booking-frame__chargement';
+      att.className = 'booking-modal__chargement';
       att.setAttribute('role', 'status');
       att.appendChild(document.createTextNode(
         cadre.getAttribute('data-booking-attente') || 'Chargement'));
@@ -1804,27 +1826,66 @@ backToTop.addEventListener('click', () => {
 
       /* Filet : si l'agenda ne répond pas, on cesse de faire tourner les points et
          on renvoie au lien du pied, qui n'est jamais retiré. */
-      var minuteur = setTimeout(function () {
-        var lent = cadre.getAttribute('data-booking-lent');
-        if (lent) att.textContent = lent;
+      var lent = setTimeout(function () {
+        var m = cadre.getAttribute('data-booking-lent');
+        if (m) att.textContent = m;
       }, 20000);
-      /* MESURÉ, PAS SUPPOSÉ : l'agenda peint 0,28 s après son événement « load »,
-         soit 1,0 s après la navigation. Aucune attente minimale longue ne se
-         justifie donc, elle ne ferait que retarder un chargement rapide. Ce
-         plancher de 400 ms, calé sur la durée du fondu, sert uniquement à éviter
-         que l'indicateur ne clignote sur un cache chaud. */
+
+      /* MESURÉ : l'agenda peint 0,28 s après son « load ». Aucune attente minimale
+         longue ne se justifie, elle ne ferait que retarder un chargement rapide. Ce
+         plancher de 400 ms, calé sur le fondu, évite un clignotement sur cache chaud.
+         Le test « isConnected » couvre le cas d'une fermeture avant la fin du
+         chargement, où la fenêtre n'est plus dans le document. */
       var depart = Date.now();
       f.addEventListener('load', function () {
-        clearTimeout(minuteur);
+        clearTimeout(lent);
         var reste = 400 - (Date.now() - depart);
-        setTimeout(function () { cadre.classList.add('is-pret'); }, reste > 0 ? reste : 0);
+        setTimeout(function () {
+          if (fen.isConnected) fen.classList.add('is-pret');
+        }, reste > 0 ? reste : 0);
       });
 
       zone.appendChild(f);
       zone.appendChild(att);
-      demande.parentNode.removeChild(demande);
-      cadre.insertBefore(zone, cadre.firstChild);
-      f.focus();
-    }, { once: true });
+      boite.appendChild(barre);
+      boite.appendChild(zone);
+      fen.appendChild(boite);
+      document.body.appendChild(fen);
+
+      croix.addEventListener('click', function () { fen.close(); });
+      /* Clic sur le fond : la cible est le <dialog> lui-même, la boîte étant à
+         l'intérieur. C'est la façon standard de distinguer les deux. */
+      fen.addEventListener('click', function (e) { if (e.target === fen) fen.close(); });
+
+      /* showModal() n'empêche pas partout la page de défiler derrière : on la
+         verrouille explicitement, et on restaure la valeur d'origine. */
+      var deb = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+
+      fen.addEventListener('close', function () {
+        clearTimeout(lent);
+        document.documentElement.style.overflow = deb;
+        if (fen.parentNode) fen.parentNode.removeChild(fen);
+      });
+
+      fen.showModal();
+      croix.focus();
+    }
+  }
+
+  Array.prototype.forEach.call(cadres, function (cadre) {
+    var btn = cadre.querySelector('[data-booking-load]');
+    if (!btn) return;
+    /* Cette classe montre le bouton et le pied du cadre : ils n'existent donc que
+       là où quelque chose sait y répondre. */
+    cadre.classList.add('is-armee');
+    btn.addEventListener('click', function () { ouvre(cadre); });
+  });
+
+  Array.prototype.forEach.call(liens, function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      ouvre(a);
+    });
   });
 }());

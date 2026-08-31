@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=58615863">
+  <link rel="stylesheet" href="assets/css/style.css?v=e0247b5e">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -135,7 +135,13 @@
         <li><a href="faq.html" class="nav__link">FAQ</a></li>
       </ul>
       <div class="nav__actions">
-        <a href="reservation.html" class="btn btn--primary">Réserver une démo</a>
+        <a href="commandez.html" data-booking-open
+       data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
+       data-booking-title="Agenda de réservation Q-Bot"
+       data-booking-attente="Chargement de l’agenda"
+       data-booking-lent="L’agenda tarde à répondre. Ouvrez-le dans un nouvel onglet."
+       data-booking-fermer="Fermer l’agenda"
+       class="btn btn--primary">Réserver une démo</a>
                 <div class="nav__lang">
           <a href="en/booking.html" hreflang="en" aria-label="Cette page est en français. Passer à la version anglaise." title="Cette page est en français. Passer à la version anglaise."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> FR</a>
         </div>
@@ -172,13 +178,14 @@
          data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
          data-booking-title="Agenda de réservation Q-Bot"
          data-booking-attente="Chargement de l’agenda"
-         data-booking-lent="L’agenda tarde à répondre. Le lien ci-dessous l’ouvre dans un nouvel onglet.">
+         data-booking-lent="L’agenda tarde à répondre. Ouvrez-le dans un nouvel onglet."
+         data-booking-fermer="Fermer l’agenda">
       <div class="booking-frame__ask">
         <svg class="booking-frame__ask-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="5"/><line x1="16" y1="2" x2="16" y2="5"/></svg>
         <p class="booking-frame__ask-titre">Les disponibilités de Sylvain Perez, en direct</p>
         <p class="booking-frame__ask-note">L’agenda est fourni par Microsoft Bookings, qui dépose ses propres cookies. Il vous demandera votre nom, votre adresse électronique et votre téléphone.</p>
-        <button type="button" class="booking-frame__ask-btn" data-booking-load>Afficher l’agenda</button>
-        <a class="booking-frame__ask-link" href="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2" target="_blank" rel="noopener">Ouvrir l’agenda <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <button type="button" class="booking-frame__ask-btn" data-booking-load>Réserver une démo</button>
+        <a class="booking-frame__ask-link" href="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2" target="_blank" rel="noopener">Réserver une démo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
       <p class="booking-frame__foot">
         <span>Ou</span>
@@ -286,6 +293,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=3162db85" defer></script>
+<script src="assets/js/main.js?v=b979a68e" defer></script>
 </body>
 </html>

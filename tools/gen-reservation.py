@@ -22,8 +22,9 @@ jour où l'option est activée côté Bookings, la ligne est à ajouter ici.
 import io, os, re, sys
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BOOKINGS = ('https://outlook.office.com/book/'
-            'DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import bookings_conf as conf
+BOOKINGS = conf.URL          # source unique, cf. tools/bookings_conf.py
 
 FLECHE = ('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
           'stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>')
@@ -61,14 +62,15 @@ FR = dict(
                 "et vous recevez une confirmation par courriel."),
     faits=[('Avec', 'Sylvain Perez, créateur de Q-Bot et CEO de Q-Leap'),
            ('Durée', 'Une heure')],
-    cadre_titre='Agenda de réservation Q-Bot',
+    cadre_titre=conf.LIBELLES['fr']['titre'],
     cadre_accroche='Les disponibilités de Sylvain Perez, en direct',
     cadre_note=("L’agenda est fourni par Microsoft Bookings, qui dépose ses propres cookies. "
                 "Il vous demandera votre nom, votre adresse électronique et votre téléphone."),
-    cadre_bouton='Afficher l’agenda',
-    cadre_lien_court='Ouvrir l’agenda',
-    cadre_attente='Chargement de l’agenda',
-    cadre_lent='L’agenda tarde à répondre. Le lien ci-dessous l’ouvre dans un nouvel onglet.',
+    cadre_bouton='Réserver une démo',
+    cadre_lien_court='Réserver une démo',
+    cadre_fermer=conf.LIBELLES['fr']['fermer'],
+    cadre_attente=conf.LIBELLES['fr']['attente'],
+    cadre_lent=conf.LIBELLES['fr']['lent'],
     cadre_pied='Ou',
     cadre_lien='ouvrir la page de réservation dans un nouvel onglet',
     s2_label='Le contenu', s2_titre=f'Ce que la démonstration montre',
@@ -107,14 +109,15 @@ EN = dict(
                 "a confirmation by email."),
     faits=[('With', 'Sylvain Perez, creator of Q-Bot and CEO of Q-Leap'),
            ('Duration', 'One hour')],
-    cadre_titre='Q-Bot booking calendar',
+    cadre_titre=conf.LIBELLES['en']['titre'],
     cadre_accroche='Sylvain Perez’s live availability',
     cadre_note=("The calendar is provided by Microsoft Bookings, which sets its own cookies. "
                 "It will ask for your name, email address and phone number."),
-    cadre_bouton='Show the calendar',
-    cadre_lien_court='Open the calendar',
-    cadre_attente='Loading the calendar',
-    cadre_lent='The calendar is slow to respond. The link below opens it in a new tab.',
+    cadre_bouton='Book a demo',
+    cadre_lien_court='Book a demo',
+    cadre_fermer=conf.LIBELLES['en']['fermer'],
+    cadre_attente=conf.LIBELLES['en']['attente'],
+    cadre_lent=conf.LIBELLES['en']['lent'],
     cadre_pied='Or',
     cadre_lien='open the booking page in a new tab',
     s2_label='The content', s2_titre='What the demonstration shows',
@@ -166,7 +169,8 @@ def corps(L):
          data-booking-src="{BOOKINGS}"
          data-booking-title="{L['cadre_titre']}"
          data-booking-attente="{L['cadre_attente']}"
-         data-booking-lent="{L['cadre_lent']}">
+         data-booking-lent="{L['cadre_lent']}"
+         data-booking-fermer="{L['cadre_fermer']}">
       <div class="booking-frame__ask">
         <svg class="booking-frame__ask-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="5"/><line x1="16" y1="2" x2="16" y2="5"/></svg>
         <p class="booking-frame__ask-titre">{L['cadre_accroche']}</p>
@@ -245,6 +249,16 @@ def genere(L):
     if n != 1:
         sys.exit('ECHEC %s : sélecteur de langue non repris (%d)' % (L['sortie'], n))
 
+    # ── bouton de la barre : il ne doit pas viser la page elle-même ──
+    # Sans JavaScript (ou hors https) ce lien NAVIGUE, et un lien vers la page
+    # courante est un clic mort. Il vise donc la page Démo, comme le faisait
+    # contact.html avant que la réservation ait sa propre page.
+    voisine = 'order.html' if lang == 'en' else 'commandez.html'
+    entre, nb = re.subn(r'(<a href=")(?:reservation|booking)\.html("\s+data-booking-open)',
+                        r'\g<1>%s\g<2>' % voisine, entre)
+    if nb != 1:
+        sys.exit('ECHEC %s : bouton de barre non repointé (%d)' % (L['sortie'], nb))
+
     # ── pied de page : l'entrée devient le marqueur de page courante ──
     lien = f'<li><a href="{os.path.basename(L["sortie"])}">{L["label"]}</a></li>'
     span = f'<li><span aria-current="page">{L["label"]}</span></li>'
@@ -267,9 +281,10 @@ def genere(L):
             sys.exit('ECHEC %s : invariant perdu (%s)' % (L['sortie'], quoi))
     if out.count('<h1') != 1:
         sys.exit('ECHEC %s : %d h1' % (L['sortie'], out.count('<h1')))
-    if out.count(BOOKINGS) != 3:
-        sys.exit('ECHEC %s : %d mention(s) de l\'URL Bookings, 3 attendues (source du '
-                 'cadre + action de repli + lien de pied)' % (L['sortie'], out.count(BOOKINGS)))
+    if out.count(BOOKINGS) != 4:
+        sys.exit('ECHEC %s : %d mention(s) de l\'URL Bookings, 4 attendues (source du '
+                 'cadre, action de repli, lien de pied, et bouton de la barre de '
+                 'navigation depuis maj-nav-booking.py)' % (L['sortie'], out.count(BOOKINGS)))
     if '—' in re.sub(r'<!--[\s\S]*?-->', '', out):
         sys.exit('ECHEC %s : cadratin dans le contenu' % L['sortie'])
 
