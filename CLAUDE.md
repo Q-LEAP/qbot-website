@@ -4968,7 +4968,12 @@ Celles du film sont en anglais, et le même fichier sert les deux langues.
 demandé à l'approche de la section, pause hors champ, rien du tout en mouvement
 réduit, économiseur de données ou connexion lente).
 
-**Le film ENTIER n'est pas dans le dépôt, et c'est une décision en attente du
+**PÉRIMÉ, VOIR LA SECTION FFMPEG CI-DESSUS.** Le film entier est dans le dépôt
+depuis le 2026-08-31 (décision du client), en 1280x720 pour 4,95 Mo, et c'est ffmpeg
+qui l'a encodé. Ce qui suit décrit l'état d'avant, quand `avconvert` était la seule
+voie ; le raisonnement sur le poids reste juste, ses chiffres non.
+
+**Le film ENTIER n'était pas dans le dépôt, et c'était une décision en attente du
 client.** Mesuré : même trimé (10 à 46 s) et rabaissé en 640x360, il pèse 9,78 Mo,
 parce qu'`avconvert` est le seul encodeur de cette machine et qu'il n'a AUCUN réglage
 de débit. Le poids des pages étant un arbitrage du client depuis le 2026-08-11, dix
@@ -4979,6 +4984,55 @@ archivé non plus : il vit dans `/Volumes/CCCOMA_X64F/Q-Bot/Version/`.
 ffmpeg, ni MP4Box, ni pyobjc). Le silence vient de `muted`, sans contrôles et avec
 `pointer-events: none`, donc irréversible pour le visiteur. Dette d'environ 0,3 Mo à
 solder le jour où `ffmpeg -an` sera disponible.
+
+### FFMPEG EST DISPONIBLE, ET CELA CHANGE TOUT LE TRAVAIL VIDÉO
+
+**`avconvert` n'est plus la seule voie, et il ne faut plus s'en servir pour encoder.**
+Autorisé par le client le 2026-08-31. Il n'y a ni `brew` ni `port` sur cette machine,
+mais un **binaire statique arm64** suffit, et il ne s'installe nulle part : on le pose
+dans le dossier de travail, rien à désinstaller, aucun `PATH` touché.
+
+    curl -sSL -o ff.zip https://www.osxexperts.net/ffmpeg9arm.zip
+    unzip -q ff.zip -d ffbin/ && xattr -d com.apple.quarantine ffbin/ffmpeg
+    ffbin/ffmpeg -version        # 9.0, libx264, natif arm64
+
+**L'ÉCART AVEC `avconvert` EST D'UN FACTEUR CINQ, ET IL FAUT LE SAVOIR.** Le film
+produit, 50,9 s :
+
+| outil | réglage | résultat |
+|---|---|---|
+| avconvert | Preset960x540 | 960x540, **24,7 Mo** |
+| avconvert | Preset640x480 | 640x360, 13,0 Mo |
+| ffmpeg | libx264 CRF 20 | **1280x720, 4,95 Mo** |
+| ffmpeg | libx264 CRF 22 | 1280x720, 3,57 Mo |
+
+Autrement dit : `avconvert` donnait cinq fois plus lourd pour une résolution
+INFÉRIEURE, parce qu'il n'a aucun réglage de débit et applique un débit fixe quel que
+soit le contenu. Sur ce film dont un tiers est du texte statique sur fond noir, la
+différence est énorme. Vérifié à la taille réelle du cadre (542 px) : source, ancien
+encodage et nouveau sont **indiscernables**.
+
+La commande employée, et le modèle pour les suivantes :
+
+    ffbin/ffmpeg -i source.mp4 -an \
+      -vf "scale=1280:720:flags=lanczos" -c:v libx264 -preset slow -crf 20 \
+      -pix_fmt yuv420p -profile:v high -level 4.0 -movflags +faststart sortie.mp4
+
+Trois options qui ne sont pas décoratives : **`-an` retire réellement la piste
+audio** (le client veut le site sans le son, et jusqu'ici on ne pouvait que la couper
+par `muted` en gardant ses octets) ; **`-movflags +faststart`** met l'index en tête
+pour que la lecture démarre sans attendre le fichier entier ; **`-pix_fmt yuv420p`**
+est ce qui rend le fichier lisible partout.
+
+**PIÈGE DE SHELL RENCONTRÉ** : en zsh, `scale=$2:$3:flags=lanczos` perd le `:fl`
+derrière un paramètre positionnel, et ffmpeg reçoit `540ags`. Il faut accolader,
+`scale=${2}:${3}:flags=lanczos`.
+
+**ET UN PIÈGE DE MÉTHODE, LE MIEN** : dans la même passe, un remplacement écrit SANS
+assertion a échoué en silence sur le docstring d'un générateur, et je ne m'en suis
+aperçu qu'en relisant le fichier. C'est la règle du dépôt, et elle vaut aussi quand on
+croit la chaîne triviale : **toute substitution porte une assertion, et on extrait la
+chaîne du fichier au lieu de la retaper.**
 
 ### NOTE D'OUTILLAGE VIDÉO, et elle vaut pour tout travail de ce genre ici
 

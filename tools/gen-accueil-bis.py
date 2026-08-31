@@ -56,9 +56,10 @@ def section(txt, ident, ou):
 
 def film(bloc, langue):
     """Dans la section « Comment Q-Bot automatise votre 2FA », la photo fixe du
-    téléphone docké cède la place à la BOUCLE du boîtier en action : même sujet, en
-    mouvement. Extrait de QBV1.2.12 fourni le 2026-08-31, 4,6 s en 960x540 (2,6 Mo),
-    choisi sans aucune incrustation, celles du film étant en anglais.
+    téléphone docké cède la place au FILM produit, en boucle muette : QBV1.2.12 en
+    entier, 50,9 s en 1280x720 pour 4,95 Mo (ffmpeg, libx264 CRF 20, « -an », donc
+    sans piste audio du tout). Le client a demandé la version entière ici le
+    2026-08-31.
 
     Le préfixe de profondeur est LU dans le balisage du donneur, jamais déduit."""
     m = re.search(r'<div class="intro__image intro__image--dock">[\s\S]*?</div>', bloc)

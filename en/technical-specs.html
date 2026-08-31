@@ -373,9 +373,13 @@
     <div class="split-2" style="margin-top:28px; align-items:center;">
       <p style="margin:0; font-size:0.9375rem;">Both paths can coexist in the same environment: use whichever fits each scenario. Either way, taps reach the phone over <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, Android's standard tool for driving a device connected by USB. The loop alongside shows the gesture: the notification arrives, the scenario plays, the phone screen changes.</p>
     <!-- LE BOÎTIER EN ACTION, en boucle muette et compacte.
-         Film produit QBV1.2.12 fourni le 2026-08-31, EN ENTIER : 50,9 s en 960x540,
-         24,7 Mo. Le client a demandé le film complet ici plutôt qu'un extrait, le
-         2026-08-31, et il a arbitré le poids.
+         Film produit QBV1.2.12 fourni le 2026-08-31, EN ENTIER : 50,9 s en 1280x720
+         pour 4,95 Mo, réencodé avec ffmpeg (libx264, CRF 20, « -an »). L'audio est
+         RÉELLEMENT retiré du fichier, pas seulement coupé par « muted ».
+         L'encodage d'« avconvert » qu'il remplace pesait 24,7 Mo en 960x540 : cinq
+         fois plus lourd pour une résolution INFÉRIEURE, cet outil n'ayant aucun
+         réglage de débit. Vérifié à la taille réelle du cadre (542 px) : la source,
+         l'ancien encodage et celui-ci sont indiscernables.
          DEUX CHOSES QU'IL FAUT SAVOIR : les incrustations du film sont en ANGLAIS,
          y compris sur cette page française, et l'une porte une faute (« and execute
          2FA scenarios ») ; et une dizaine de ses cinquante secondes sont des écrans
