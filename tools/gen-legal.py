@@ -54,7 +54,7 @@ PAGES = [
          url='https://q-bot.eu/conditions-vente/',
          alt='https://q-bot.eu/en/terms-and-conditions-of-sale/',
          alt_rel='../en/terms-and-conditions-of-sale/',
-         titre='Conditions générales de vente | Q-Bot by Q-Leap',
+         titre='Conditions générales de vente Q-Bot | Q-Leap',
          desc="Conditions générales de vente de Q-Bot, robot d'automatisation de la 2FA, "
               "édité par Q-Leap S.A. au Luxembourg.",
          label='Mentions légales', fil='Conditions de vente'),
@@ -62,7 +62,7 @@ PAGES = [
          bornes=(6, 56), gabarit='blog/innovation-merkur.html',
          url='https://q-bot.eu/confidentialite/',
          alt='https://q-bot.eu/en/privacy/', alt_rel='../en/privacy/',
-         titre='Confidentialité des données | Q-Bot by Q-Leap',
+         titre='Confidentialité des données Q-Bot | Q-Leap',
          desc="Politique de confidentialité de Q-Bot et de l'application Q-Bot Mobile : "
               "données collectées, finalités, vos droits, conservation.",
          label='Mentions légales', fil='Confidentialité'),
@@ -70,7 +70,7 @@ PAGES = [
          bornes=(6, 176), gabarit='en/blog/innovation-merkur.html',
          url='https://q-bot.eu/en/terms-and-conditions-of-sale/',
          alt='https://q-bot.eu/conditions-vente/', alt_rel='../../conditions-vente/',
-         titre='General terms and conditions | Q-Bot by Q-Leap',
+         titre='Q-Bot general terms and conditions | Q-Leap',
          desc='General terms and conditions of sale for Q-Bot, the 2FA test automation robot '
               'published by Q-Leap S.A. in Luxembourg.',
          label='Legal', fil='Terms and conditions'),
@@ -78,7 +78,7 @@ PAGES = [
          bornes=(6, 56), gabarit='en/blog/innovation-merkur.html',
          url='https://q-bot.eu/en/privacy/',
          alt='https://q-bot.eu/confidentialite/', alt_rel='../../confidentialite/',
-         titre='Data privacy | Q-Bot by Q-Leap',
+         titre='Q-Bot data privacy | Q-Leap',
          desc='Privacy policy for Q-Bot and the Q-Bot Mobile app: data collected, purposes, '
               'your rights, retention.',
          label='Legal', fil='Privacy'),
