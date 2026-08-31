@@ -4683,45 +4683,40 @@ Chaque point ci-dessous est un arbitrage du client, pas un choix technique :
 
 ### Ce qui reste à faire
 
-**Le ton.** L'accueil français est passé au registre professionnel et validé par le client.
-Le même registre doit être étendu, **page par page**, aux vingt-deux autres pages, puis à
-l'anglais. Deux paragraphes de l'accueil sont volontairement restés en l'état, « Tous types
-de projets IT » et « Tous types d'applications », parce qu'ils viennent mot pour mot du
-WordPress : demander avant d'y toucher.
+**ANNOTÉ LE 2026-08-31 : trois des quatre points ci-dessous sont refermés.** Voir la
+section « La reprise du 2026-08-31 » en fin de fichier pour le détail. En résumé :
+le ton est fait sur les treize pages, la homepage bis est écrite, la retouche photo a
+été tentée et écartée. Ne reste que la page de réservation, toujours bloquée.
 
-**La homepage bis**, en français ET en anglais, validée par le client : une variante à
-comparer avec l'accueil actuel, construite à partir du contenu de la page Démo
-(`commandez.html`). Nom de fichier proposé et non tranché : `accueil-bis.html`, hors plan du
-site, hors robots, non liée depuis le site.
+**Le ton. FAIT le 2026-08-31**, sur les six pages françaises puis les sept anglaises.
+Le périmètre annoncé ici, vingt-deux pages, était périmé : le blog est parti le
+2026-08-28, il restait treize pages de contenu. Les quatre pages légales sont hors
+périmètre, c'est du texte client repris mot pour mot. Restent volontairement en
+l'état, dans les DEUX langues : « Tous types de projets IT » et « Tous types
+d'applications », qui viennent mot pour mot du WordPress. Demander avant d'y toucher.
 
-**La retouche de la photo du poste de travail.** Mesuré sur `qbot-photo-poste.jpg` : le
-cadre du téléphone est à 3,4° de la verticale de l'image, la silhouette du boîtier à 1,1°.
-Le téléphone est donc réellement de travers DANS LA SCÈNE, ce n'est pas la photo qui penche,
-et une rotation globale ferait pencher l'écran et le bureau sans rien corriger. Le client a
-choisi de tenter la rotation du téléphone seul, d'environ 2,5°, avec recomposition : il est
-enfoncé dans un socle sombre, donc les raccords tombent sur du noir. À montrer avant de
-commiter, et à annuler si le cadre métallique se voit mal raccordé.
+**La homepage bis. FAITE le 2026-08-31** : « accueil-bis.html » et
+« en/home-bis.html », générées par « tools/gen-accueil-bis.py ». Hors plan du site,
+hors robots, non liées, et inscrites dans la liste « JAMAIS » de « go-live.py » sans
+quoi le jour J aurait publié un accueil en double. À soumettre au client pour qu'il
+compare.
 
-**La page de réservation** avec un Microsoft Bookings, en gardant le formulaire de contact.
-Bloquée : il manque l'URL du Bookings.
+**La retouche de la photo du poste de travail. TENTÉE ET ÉCARTÉE le 2026-08-31, la
+photo est intacte.** Deux raisons, et la seconde est de principe. D'abord la prémisse
+de cette note ne se reproduit pas : le téléphone penche en arrière dans son socle,
+donc ses arêtes longues convergent en perspective (mesuré −24° à gauche, −19° à
+droite) et aucune n'est comparable à la verticale de l'image, si bien que je ne
+retrouve ni les 3,4° ni les 1,1° annoncés. Ensuite, et c'est la vraie objection :
+UNE ROTATION 2D NE CORRIGE PAS UNE ORIENTATION 3D. Elle ne réoriente pas l'objet,
+elle rompt l'accord de perspective entre le téléphone et son socle, ce qui se voit
+immédiatement (dans un sens le téléphone semble basculer hors de son berceau). Les
+deux sens ont été rendus à 2,5° autour du point d'assise, avec bouchage n'empruntant
+que des pixels sombres du socle : le raccord est propre, et le résultat n'est pas
+meilleur que l'original. Si l'assise gêne vraiment le client, la sortie est une
+nouvelle photo ou un rendu depuis « assets/models/qbot.glb », pas une retouche.
 
-**Ce que le client doit fournir**, et sans quoi les items correspondants ne peuvent pas
-avancer : l'URL Microsoft Bookings ; la vidéo d'authentification LuxTrust à intégrer ; les
-visuels de l'interface, qu'il doit demander à ses supérieurs (la maquette reste en attendant,
-arbitrage du 2026-08-27) ; les logos des applications d'authentification et des outils de
-test, avec l'accord d'usage des marques ; et les noms complets, intitulés et accords de
-Sylvain, Julien, Joao et Nikola, que le client veut mettre en avant en précisant que Q-Bot
-est une idée de Sylvain et Joao et que ce sont eux qui font les démonstrations.
-
-**Deux points laissés en suspens dans le code**, signalés dans leurs commits :
-
-- « API REST, mets juste un bouton où il y a écrit tous les cas d'usage » : seul le libellé
-  du bouton a été changé. Si la demande était de réduire la section entière à ce bouton, les
-  trois points d'entrée et les quatre faits d'intégration disparaissent, ce qui contredit la
-  note voisine disant que le directeur veut les caractéristiques techniques ;
-- le pied de page est à trois, trois et quatre entrées depuis le retrait du blog et de la
-  page 3D, alors qu'il avait été équilibré à quatre partout le 2026-08-25. À rééquilibrer
-  quand la page de réservation aura pris sa place, plutôt qu'en inventant une entrée.
+**La page de réservation** avec un Microsoft Bookings, en gardant le formulaire de
+contact. TOUJOURS BLOQUÉE : il manque l'URL du Bookings.
 
 ### Ce qui est à discuter avec Marie
 
@@ -4737,3 +4732,133 @@ Node pendant cette session et tourne en une seconde sur l'ensemble du dépôt. D
 `h1` par page de contenu**. Les deux audits complets (`audit-a11y.py`, `audit-visibilite.py`)
 n'ont PAS pu être rejoués sur ce poste : à repasser depuis un poste avec Python avant toute
 mise en ligne.
+
+
+## La reprise du 2026-08-31 : le ton, et deux défauts en ligne
+
+Session de reprise après la série du 2026-08-28, faite depuis un autre poste. Trois des
+quatre chantiers ouverts sont refermés, et deux défauts qui étaient EN LIGNE ont été
+trouvés en chemin, dont un que le client subissait sans le savoir.
+
+### Le registre professionnel, sur les treize pages
+
+Le périmètre annoncé par la note de reprise, « vingt-deux pages », était périmé : le blog
+est parti le 2026-08-28, il reste **six pages de contenu en français et sept en anglais**.
+Les quatre pages légales sont hors périmètre, c'est du texte client repris mot pour mot.
+
+**La règle, telle que l'accueil validé la définit** : pas de point d'exclamation, un titre
+descriptif plutôt qu'un impératif ou une question rhétorique, un fait vérifiable plutôt
+qu'une appréciation, aucun anglicisme marketing, et on nomme ce que le produit fait au lieu
+d'une métaphore.
+
+**LES TITRES EN QUESTION SONT CONSERVÉS, ET CE N'EST PAS UNE INCOHÉRENCE.** « Comment Q-Bot
+automatise votre 2FA ? », « Pourquoi la location ? » et les dix-sept questions de la FAQ
+portent chacune une réponse autonome de 40 à 60 mots : c'est la forme citable que l'audit
+RosoAI mesure. Seule l'unique question rhétorique SANS réponse avait été reprise, sur
+l'accueil. Ne pas « finir le travail » en supprimant les autres.
+
+**« Onboarding » reste en anglais et part en français**, parce que c'est un anglicisme
+inutile dans une langue et du vocabulaire natif dans l'autre. Même chose pour
+« Absolutely » en tête d'une réponse de FAQ, qui reflète le « Absolument » français. Un
+balayage de registre les remontera toujours : ce sont des conservations, pas des oublis.
+
+**L'accueil anglais était resté en arrière de l'accueil français**, qui avait été validé
+seul le 2026-08-28. Les deux disaient donc deux choses différentes au même endroit. Seize
+reformulations pour les remettre au même niveau, dont le titre du hero : « Stop babysitting
+2FA. Start shipping faster. » devient le miroir de la formule française. C'est bien ce
+registre parlé que le directeur visait.
+
+**Neuf fautes trouvées en relisant, qui ne relèvent pas du ton** : « le marché
+Luxembourgeois » (un adjectif de nationalité ne prend pas la majuscule), « cliquez sur ce
+lien et accéder à son agenda » (infinitif au lieu d'un impératif), « La compilation passe ou
+échoue » (calque de *build*, dans un paragraphe qui parle d'une campagne ; l'anglais dit
+bien « pipeline »), « plus sur l'absence d'un humain » (négation perdue, sens inversé),
+« X c'est une équipe » (construction orale), et côté anglais trois calques du français dont
+« The unique solution », où « unique » ne veut pas dire « seul », plus « specialized » seule
+graphie américaine d'un site qui écrit « optimised », et « his live agenda » qui présumait
+le genre de l'interlocuteur.
+
+**Leçon de méthode : chaque remplacement porte une assertion.** L'utilitaire employé exige
+qu'une chaîne corresponde exactement une fois et n'écrit RIEN sinon. Il a mordu du premier
+coup, sur un « Plug & Play&nbsp;: » retapé là où le fichier écrit une espace ASCII. C'est la
+sixième variante du piège « on n'retape pas une chaîne, on l'extrait ».
+
+### LES EMPREINTES D'ACTIFS ÉTAIENT PÉRIMÉES, POUR LA DEUXIÈME FOIS
+
+Treize commits du 2026-08-28 ont modifié `style.css`, `main.js` ou `scrolly.js` **sans que
+le versionneur soit lancé**. Les pages publiées déclaraient `style.css?v=030c006d` quand le
+fichier réel vaut `171826db`. Le navigateur d'un visiteur déjà venu servait donc l'ancienne
+feuille et l'ancien script : rien de ce que cette session avait fait en CSS ou en JS ne
+pouvait l'atteindre.
+
+**Le contrôle qui l'attrape en une seconde** : relancer le versionneur et vérifier qu'il
+n'annonce AUCUNE page à mettre à jour. S'il a quelque chose à écrire alors que rien n'a
+changé depuis le dernier commit, c'est qu'il n'a pas été lancé au bon moment.
+
+    node tools/bump-assets.mjs      # ou la version .py, les deux doivent rester d'accord
+
+C'est trouvé par accident, en constatant qu'un « bump » sur un arbre revenu à sa version
+commitée modifiait quand même dix-neuf pages.
+
+### UN SPAN DANS UN CONTENEUR FLEX DEVIENT UN ÉLÉMENT FLEX
+
+Défaut en ligne depuis `ab2d870`, et parfaitement visible : les questions de FAQ se lisaient
+**« What is · · · Q-Bot · · · ? »**, étalées sur toute la largeur du bouton. Mesuré à
+1440 px dans un bouton de 758 px : « What is » à x=179, « Q-Bot » à x=425, « ? » à x=661.
+Vingt-six boutons, quatre pages, deux langues.
+
+La cause est une règle de Flexbox, pas une faute de frappe : un élément placé dans un
+conteneur flex est **blocifié**, donc devient un élément flex à part entière. Depuis que
+« Q-Bot » est entouré d'un `<span class="nb">`, la question n'était plus un texte mais TROIS
+éléments, que le `justify-content: space-between` du bouton écartait au maximum. Le span ne
+demandait que `white-space: nowrap` ; c'est le conteneur qui l'a transformé.
+
+**RÈGLE QUI EN DÉCOULE, et elle vaut pour tout ajout futur de `.nb`** : avant de poser un
+span dans du texte, vérifier que son parent n'est pas `display: flex` ou `grid`. La sonde
+tient en une ligne et doit être rejouée après tout ajout :
+
+    [...document.querySelectorAll('.nb')].filter(x => /flex|grid/.test(getComputedStyle(x.parentElement).display)).length
+
+Le correctif porte sur le CONTENEUR, jamais sur le span. `.faq-item__question` cesse d'être
+un flex : bloc simple, icône positionnée en absolu, centrage vertical par `top: 50%` et
+`translateY(-50%)`, et l'état ouvert devient `translateY(-50%) rotate(45deg)`, sans quoi la
+rotation perdait le centrage. C'est un correctif CSS et non un emballage des vingt-six
+libellés, parce qu'un futur ajout de question oublierait l'emballage et ne peut pas oublier
+une règle. La liste tarifaire, elle, garde son flex (il porte le retrait d'une puce qui passe
+à la ligne) et c'est son texte qui est emballé.
+
+**Ce défaut cassait aussi un outil du dépôt.** `tools/sync-faq-jsonld.py` annonçait
+vingt-cinq entrées à recaler et ses recalages étaient FAUX : il voulait écrire
+`'How do I use\nQ-Bot\n?'` dans les données structurées, parce que `innerText` insère un
+saut de ligne autour d'un élément de niveau bloc. **Un outil dont les corrections empirent le
+fichier mesure autre chose que ce qu'on croit** : ne pas lancer `--ecrire` sur la foi du
+nombre. Après correction il retombe à une divergence réelle, un « Demander une démo » resté
+dans le JSON-LD alors que le bouton dit « Réserver une démo » depuis le 2026-08-28.
+
+### La photo du poste de travail : tentée, écartée
+
+Voir la note de reprise annotée. Le résumé qui compte : **une rotation 2D ne corrige pas une
+orientation 3D**, elle rompt l'accord de perspective entre l'objet et son support. La photo
+est intacte, et la sortie, si l'assise gêne vraiment, est une nouvelle photo ou un rendu
+depuis `assets/models/qbot.glb`, pas une retouche.
+
+### La homepage bis
+
+`accueil-bis.html` et `en/home-bis.html`, générées par `tools/gen-accueil-bis.py`. Six
+sections reprises de la page Démo, le hero et l'appel final venant de l'accueil. 6 268 px
+contre 10 632 pour l'accueil actuel.
+
+**Hors plan du site, hors robots, non liées**, et, ce qui n'allait pas de soi, **inscrites
+dans la liste `JAMAIS` de `go-live.py`**, qui énumère par `glob` sur le disque et non depuis
+le plan du site : sans cela le jour J leur aurait retiré leur `noindex` et le site se serait
+retrouvé avec deux accueils indexables. Conséquence heureuse de leur absence du plan : les
+deux audits énumérant leurs pages depuis `sitemap.xml`, elles en sont exclues d'office.
+
+Deux pièges à connaître si on refait ce genre d'assemblage :
+
+- **l'alternance des fonds ne survit pas à un réordonnancement** des sections, et deux fonds
+  gris côte à côte suffisent à casser le rythme de la page. Elle est recalculée en partant de
+  la fin ;
+- **ne pas retirer `scrolly.css`** sous prétexte que la séquence 3D n'est pas reprise : cette
+  feuille porte aussi `main .section-label` et `.visually-hidden`, et la retirer aurait changé
+  l'aspect de tous les libellés de section, donc de la maquette même qu'on compare.
