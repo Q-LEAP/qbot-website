@@ -4866,3 +4866,120 @@ Deux pièges à connaître si on refait ce genre d'assemblage :
 - **ne pas retirer `scrolly.css`** sous prétexte que la séquence 3D n'est pas reprise : cette
   feuille porte aussi `main .section-label` et `.visually-hidden`, et la retirer aurait changé
   l'aspect de tous les libellés de section, donc de la maquette même qu'on compare.
+
+
+## La réservation : une page, une fenêtre, et un agenda Microsoft (2026-08-31)
+
+Suite de la même journée. L'URL du Bookings a été fournie, ce qui a débloqué le
+dernier chantier ouvert de la note de reprise, puis le client a fait évoluer la forme
+deux fois. État final, et ce qu'il ne faut pas défaire.
+
+### Ce qui existe
+
+`reservation.html` et `en/booking.html`, **générées** par `tools/gen-reservation.py`
+depuis l'habillage de la page contact, qui garde son formulaire. Elles sont les
+SEULES pages à porter le lien Microsoft Bookings.
+
+`tools/bookings_conf.py` est la **source unique** de l'URL et des libellés de la
+fenêtre. Le bouton de la barre de navigation porte les mêmes attributs sur les
+23 pages : sans source unique, un changement d'agenda en laisserait forcément une
+derrière. **Pour changer d'agenda**, la marche à suivre est en tête du module :
+
+    python3 tools/gen-reservation.py
+    python3 tools/maj-nav-booking.py
+    python3 tools/gen-accueil-bis.py
+    node tools/bump-assets.mjs
+
+### L'agenda s'ouvre dans une fenêtre, et pourquoi pas dans la page
+
+Mesuré : le contenu de Bookings fait **1 523 px de haut à 1 130 px de large et
+1 838 px à 342 px**. Inséré dans le flux, il imposait soit un défilement imbriqué qui
+capture la molette, soit 4,7 écrans de panneau blanc sur un téléphone. Dans une
+fenêtre dédiée, un défilement interne est attendu et non subi.
+
+C'est un **`<dialog>` natif**, et c'est ce qui rend le module 20 court : piège de
+focus, touche Échap, fond assombri et retour du focus sur le bouton d'origine sont
+donnés par le navigateur. Deux pièges :
+
+- **un `<dialog>` auquel on fixe des dimensions perd le centrage** : il faut lui
+  redonner `inset: 0` et `margin: auto`, sinon la fenêtre se colle en haut à gauche ;
+- `showModal()` n'empêche pas partout la page de défiler derrière, d'où le
+  verrouillage explicite de `overflow` et sa restitution à la fermeture.
+
+**BOOKINGS N'ACCEPTE L'ENCADREMENT QUE DEPUIS UNE PAGE HTTPS** (`frame-ancestors
+https:`). Donc **cet encadrement ne se vérifie PAS sur `http://127.0.0.1` ni en
+`file://`** : il faut un serveur https local avec un certificat auto-signé et
+Playwright lancé avec `ignore_https_errors`. `*.pem` et `*.key` sont dans
+`.gitignore` pour cette raison. Le module n'ARME donc le bouton que si la page est en
+https et que `<dialog>` existe ; sinon le CSS montre le lien externe comme action
+principale, et le bouton de la barre reste un simple lien vers la page de réservation.
+
+L'iframe est **détruite à la fermeture** : dans une fenêtre fermée elle continuerait
+de faire tourner les scripts de Microsoft. Rouvrir ne coûte qu'une seconde.
+
+### Deux faux positifs qui m'ont coûté six essais
+
+- **UN IFRAME INJECTÉ HORS DU CHAMP VISIBLE NE SE CHARGE PAS** en navigateur
+  invisible. J'ai conclu tour à tour à un refus CSP, à un problème d'URL, puis à
+  `main.js`, avant de constater qu'un iframe nu placé en position fixe et visible se
+  chargeait parfaitement. Un contrôle d'encadrement doit garder le cadre AU CENTRE de
+  la fenêtre pendant l'attente ;
+- **Microsoft étrangle les essais répétés** : une même vérification a donné 195
+  requêtes, puis 1, puis 157 après une pause. Un échec isolé se rejoue avant d'être
+  appelé défaut.
+
+Mesure utile au passage : l'agenda peint **0,28 s après son événement `load`**, soit
+1,0 s après la navigation. Aucune attente minimale longue ne se justifie donc dans
+l'indicateur de chargement ; il n'a qu'un plancher de 400 ms contre le clignotement.
+
+### La direction artistique de la fenêtre
+
+Toutes les valeurs sont reprises d'un élément existant : le filet
+`rgba(0, 203, 190, 0.22)` et le halo `0 0 60px rgba(0, 203, 190, 0.10)` viennent du
+cadre du film du hero, le filet dégradé sous le bandeau est celui de la barre de
+navigation, le survol de la croix est celui des boutons primaires. La boîte est
+sombre (`#101010`) pour que l'attente se lise sur une surface du site.
+
+**Inscrire `.booking-modal__box` dans la liste générique des surfaces sombres
+écraserait la bordure teal** : `[data-theme="dark"] .x` (0,2,0) passe devant la règle
+de base (0,1,0). D'où une règle dédiée qui repose les DEUX propriétés. Même piège que
+`.booking-box`.
+
+**Le contenu de l'agenda vient d'une autre origine : aucune règle du site ne
+l'atteint.** Son bandeau ardoise, son fond clair et le rectangle blanc derrière le
+logo se règlent dans le back-office Bookings, pas ici.
+
+### La boucle du boîtier en action
+
+`assets/video/qbot-action.mp4`, 4,6 s en 960x540 pour 2,60 Mo, extrait du film
+`QBV1.2.12.mp4` fourni le 2026-08-31. Placée dans la section « Déclenchement » des
+deux fiches techniques, et dans la homepage bis à la place de la photo fixe du
+téléphone docké.
+
+**L'EXTRAIT EST 39,0 à 43,6 s PARCE QUE C'EST LE SEUL SEGMENT SANS INCRUSTATION.**
+Celles du film sont en anglais, et le même fichier sert les deux langues.
+
+**Le module 18 est généralisé** : il gérait un film, il en gère plusieurs. Ne pas en
+écrire un second, le site garde un seul mécanisme avec tous ses garde-fous (fichier
+demandé à l'approche de la section, pause hors champ, rien du tout en mouvement
+réduit, économiseur de données ou connexion lente).
+
+**Le film ENTIER n'est pas dans le dépôt, et c'est une décision en attente du
+client.** Mesuré : même trimé (10 à 46 s) et rabaissé en 640x360, il pèse 9,78 Mo,
+parce qu'`avconvert` est le seul encodeur de cette machine et qu'il n'a AUCUN réglage
+de débit. Le poids des pages étant un arbitrage du client depuis le 2026-08-11, dix
+mégaoctets de plus ne se posent pas sans lui demander. Le master de 94,6 Mo n'est pas
+archivé non plus : il vit dans `/Volumes/CCCOMA_X64F/Q-Bot/Version/`.
+
+**La piste audio reste dans le fichier** : aucun outil ici ne peut la retirer (ni
+ffmpeg, ni MP4Box, ni pyobjc). Le silence vient de `muted`, sans contrôles et avec
+`pointer-events: none`, donc irréversible pour le visiteur. Dette d'environ 0,3 Mo à
+solder le jour où `ffmpeg -an` sera disponible.
+
+### NOTE D'OUTILLAGE VIDÉO, et elle vaut pour tout travail de ce genre ici
+
+**Le Chromium de Playwright NE DÉCODE PAS le H.264.** Ses images reviennent toutes à
+zéro et l'on conclut à tort que le film est noir. C'est **WebKit** qui décode, sur les
+codecs du système. Et une toile ne rend ses pixels que si la page et la vidéo ont la
+MÊME origine, sinon `getImageData` lève une erreur de sécurité : il faut servir une
+page depuis le dossier de la vidéo.
