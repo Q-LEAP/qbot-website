@@ -1732,3 +1732,66 @@ backToTop.addEventListener('click', () => {
     });
   });
 }());
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   20. L'AGENDA DE RÉSERVATION NE SE CHARGE QU'AU CLIC
+
+   Même raison que la carte de contact (module 19) : l'iframe Microsoft
+   déposerait ses cookies avant que le visiteur ait rien demandé, sur un site
+   qui publie une page Confidentialité.
+
+   ET UNE RAISON DE PLUS, PROPRE À BOOKINGS : sa politique de sécurité dit
+   « frame-ancestors https: », donc l'encadrement ne fonctionne QUE depuis une
+   page servie en https. Sur http (serveur de développement) ou en file://
+   (fichier ouvert à la main), le cadre resterait VIDE, sans erreur exploitable
+   depuis la page parente. Le bloc de demande est donc retiré hors https plutôt
+   que de laisser un bouton sans effet.
+
+   Deux choses à ne pas défaire :
+
+   • le lien « nouvel onglet » du pied du cadre est écrit dans le HTML et n'est
+     JAMAIS retiré. Sans JavaScript, hors https, ou si Microsoft refusait un
+     jour l'encadrement, il reste une façon de réserver. L'état au repos est un
+     état complet, comme pour le film de l'accueil et la carte de contact ;
+   • le focus passe sur le cadre une fois posé. Un visiteur au clavier vient
+     d'activer un bouton qui disparaît ; sans cela son focus retombe sur le
+     document et il perd sa place.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var cadres = document.querySelectorAll('.booking-frame[data-booking-src]');
+  if (!cadres.length) return;
+
+  Array.prototype.forEach.call(cadres, function (cadre) {
+    var demande = cadre.querySelector('.booking-frame__ask');
+    var btn = cadre.querySelector('[data-booking-load]');
+    if (!demande || !btn) return;
+
+    if (location.protocol !== 'https:') {
+      demande.parentNode.removeChild(demande);
+      return;
+    }
+
+    /* Le bouton est caché par défaut : c'est cette classe qui le montre, donc il
+       n'existe que là où quelque chose sait y répondre. */
+    cadre.classList.add('is-armee');
+
+    btn.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.className = 'booking-frame__iframe';
+      f.src = cadre.getAttribute('data-booking-src');
+      f.title = cadre.getAttribute('data-booking-title') || 'Agenda de réservation';
+      /* `eager` et non `lazy`, contrairement à la carte du module 19 : le cadre
+         mesure 720 px et remplace un bloc plus court, donc il peut naître à
+         cheval sur le bas de la fenêtre. Un cadre différé serait un cadre vide
+         juste après le clic qui le demande, ce qui est exactement le contraire
+         de ce que le visiteur vient d'exprimer. */
+      f.loading = 'eager';
+      f.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+      demande.parentNode.removeChild(demande);
+      cadre.insertBefore(f, cadre.firstChild);
+      f.setAttribute('tabindex', '-1');
+      f.focus();
+    }, { once: true });
+  });
+}());

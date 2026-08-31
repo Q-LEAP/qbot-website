@@ -30,3 +30,10 @@ _qbot-render.glb
 # du suivi le 2026-08-26, le fichier reste sur le disque. Il est aussi inscrit
 # dans `_config.yml` comme filet, au cas où il reviendrait dans le dépôt.
 padel_alerte.py
+
+# ── Certificats d'essai ───────────────────────────────────────────────
+# Tester l'encadrement de Microsoft Bookings oblige à servir le site en https
+# (sa politique dit « frame-ancestors https: »), donc à fabriquer un certificat
+# auto-signé. Une clé privée n'a rien à faire dans un dépôt public, même de test.
+*.pem
+*.key

@@ -60,14 +60,13 @@ FR = dict(
                 "dans votre propre fuseau horaire. Vous réservez vous-même, sans passer par nous, "
                 "et vous recevez une confirmation par courriel."),
     faits=[('Avec', 'Sylvain Perez, créateur de Q-Bot et CEO de Q-Leap'),
-           ('Durée', 'Une heure'),
-           ('Tarif', 'Communiqué pendant la démonstration, une fois votre besoin cadré'),
-           ('Engagement', 'Aucun')],
-    boite_titre='Ouvrir l’agenda',
-    boite_texte=("Le créneau se choisit dans l’agenda de Sylvain Perez. La page de "
-                 "réservation s’ouvre dans un nouvel onglet."),
-    bouton='Réserver une démo',
-    boite_note='Nom, adresse électronique et téléphone vous seront demandés par le formulaire de réservation.',
+           ('Durée', 'Une heure')],
+    cadre_titre='Agenda de réservation Q-Bot',
+    cadre_note=("L’agenda est fourni par Microsoft Bookings, qui dépose ses propres cookies. "
+                "Il vous demandera votre nom, votre adresse électronique et votre téléphone."),
+    cadre_bouton='Afficher l’agenda',
+    cadre_pied='L’agenda ne s’affiche pas&nbsp;?',
+    cadre_lien='Ouvrir la page de réservation dans un nouvel onglet',
     s2_label='Le contenu', s2_titre=f'Ce que la démonstration montre',
     montre=[(ECRAN, 'Le boîtier en fonctionnement',
              f'{NB} pilote la vraie application 2FA sur un téléphone Android relié en USB, '
@@ -103,14 +102,13 @@ EN = dict(
                 "own time zone. You book it yourself, without going through us, and you receive "
                 "a confirmation by email."),
     faits=[('With', 'Sylvain Perez, creator of Q-Bot and CEO of Q-Leap'),
-           ('Duration', 'One hour'),
-           ('Price', 'Given during the demonstration, once your needs are clear'),
-           ('Commitment', 'None')],
-    boite_titre='Open the calendar',
-    boite_texte=("The slot is chosen in Sylvain Perez's calendar. The booking page opens in a "
-                 "new tab."),
-    bouton='Book a demo',
-    boite_note='The booking form will ask for your name, email address and phone number.',
+           ('Duration', 'One hour')],
+    cadre_titre='Q-Bot booking calendar',
+    cadre_note=("The calendar is provided by Microsoft Bookings, which sets its own cookies. "
+                "It will ask for your name, email address and phone number."),
+    cadre_bouton='Show the calendar',
+    cadre_pied='Calendar not showing?',
+    cadre_lien='Open the booking page in a new tab',
     s2_label='The content', s2_titre='What the demonstration shows',
     montre=[(ECRAN, 'The device at work',
              f'{NB} drives the genuine 2FA app on an Android phone connected over USB, triggered '
@@ -143,29 +141,29 @@ def corps(L):
   </div>
 </section>
 
-<!-- ======= CHOIX DU CRÉNEAU ======= -->
+<!-- ======= CHOIX DU CRÉNEAU =======
+     L'agenda occupe toute la largeur du conteneur : Bookings est une interface
+     complète (service, personnel, calendrier, créneaux) et une demi-colonne la
+     rendrait illisible. -->
 <section class="section" aria-labelledby="creneau-title">
   <div class="container">
-    <div class="split-2">
-      <div>
-        <span class="section-label">{L['s1_label']}</span>
-        <h2 class="section-title" id="creneau-title">{L['s1_titre']}</h2>
-        <p class="section-subtitle">{L['s1_chapeau']}</p>
-        <ul class="specs__list" role="list">
+    <span class="section-label">{L['s1_label']}</span>
+    <h2 class="section-title" id="creneau-title">{L['s1_titre']}</h2>
+    <p class="section-subtitle">{L['s1_chapeau']}</p>
+    <ul class="specs__list booking-facts" role="list">
 {faits}
-        </ul>
+    </ul>
+
+    <div class="booking-frame" data-booking-src="{BOOKINGS}" data-booking-title="{L['cadre_titre']}">
+      <div class="booking-frame__ask">
+        <svg class="booking-frame__ask-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="5"/><line x1="16" y1="2" x2="16" y2="5"/></svg>
+        <p class="booking-frame__ask-note">{L['cadre_note']}</p>
+        <button type="button" class="booking-frame__ask-btn" data-booking-load>{L['cadre_bouton']}</button>
       </div>
-      <div>
-        <div class="booking-box" style="margin-top:0;">
-          <h3>{L['boite_titre']}</h3>
-          <p>{L['boite_texte']}</p>
-          <a href="{BOOKINGS}" class="btn btn--primary btn--lg" target="_blank" rel="noopener">
-            {L['bouton']}
-            {FLECHE}
-          </a>
-          <p style="font-size:.8125rem; margin:16px 0 0;">{L['boite_note']}</p>
-        </div>
-      </div>
+      <p class="booking-frame__foot">
+        <span>{L['cadre_pied']}</span>
+        <a href="{BOOKINGS}" target="_blank" rel="noopener">{L['cadre_lien']} {FLECHE}</a>
+      </p>
     </div>
   </div>
 </section>
@@ -255,8 +253,9 @@ def genere(L):
             sys.exit('ECHEC %s : invariant perdu (%s)' % (L['sortie'], quoi))
     if out.count('<h1') != 1:
         sys.exit('ECHEC %s : %d h1' % (L['sortie'], out.count('<h1')))
-    if out.count(BOOKINGS) != 1:
-        sys.exit('ECHEC %s : %d lien Bookings' % (L['sortie'], out.count(BOOKINGS)))
+    if out.count(BOOKINGS) != 2:
+        sys.exit('ECHEC %s : %d mention(s) de l\'URL Bookings, 2 attendues '
+                 '(source du cadre + lien de secours)' % (L['sortie'], out.count(BOOKINGS)))
     if '—' in re.sub(r'<!--[\s\S]*?-->', '', out):
         sys.exit('ECHEC %s : cadratin dans le contenu' % L['sortie'])
 

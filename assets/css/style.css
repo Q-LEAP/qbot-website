@@ -1500,6 +1500,82 @@ p { color: var(--gray); }
   border-radius: var(--radius);
   padding: 32px;
 }
+
+/* ── Agenda de réservation, chargé au clic ─────────────────────────────────
+   Même raison que la carte de contact : l'iframe Microsoft déposerait ses
+   cookies avant que le visiteur ait rien demandé.
+   ET UNE RAISON DE PLUS, PROPRE À BOOKINGS : sa politique dit
+   « frame-ancestors https: », donc l'encadrement ne marche QUE depuis une page
+   servie en https. Sur http (serveur de développement) ou en file:// le cadre
+   resterait vide sans erreur visible ; le module 20 retire alors le bloc de
+   demande, et le lien « nouvel onglet » du pied reste visible dans tous les
+   cas. Un cadre vide ne doit jamais être un cul-de-sac. */
+.booking-facts { margin-top: 28px; }
+.booking-frame {
+  margin-top: 32px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.booking-frame__ask {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 40px 32px;
+}
+.booking-frame__ask-pin { color: var(--teal); flex-shrink: 0; }
+.booking-frame__ask-note {
+  font-size: 0.875rem;
+  color: var(--gray);
+  margin: 0;
+  max-width: 62ch;
+}
+/* Le bouton n'apparaît QUE si le module 20 l'a armé. Sans JavaScript il serait
+   un clic mort, et l'état au repos de ce site doit être un état complet : il
+   reste alors la mention et le lien « nouvel onglet » du pied du cadre. */
+.booking-frame__ask-btn { display: none; }
+.booking-frame.is-armee .booking-frame__ask-btn { display: inline-flex; }
+.booking-frame__ask-btn {
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px 20px;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--teal);
+  color: #001A18;                 /* le teal de charte est CLAIR : jamais de blanc dessus */
+  transition: background .2s ease, transform .2s ease;
+}
+.booking-frame__ask-btn:hover { background: var(--teal-tint); transform: translateY(-1px); }
+/* L'agenda est une interface CLAIRE : sans fond blanc explicite on verrait le
+   fond sombre de la page pendant son chargement. */
+.booking-frame__iframe {
+  display: block;
+  width: 100%;
+  height: 720px;
+  border: 0;
+  background: #fff;
+}
+.booking-frame__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 0;
+  padding: 16px 32px;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--gray);
+}
+.booking-frame__foot a { color: var(--teal-text); font-weight: 500; }
+@media (max-width: 640px) {
+  .booking-frame__ask { padding: 28px 20px; }
+  .booking-frame__foot { padding: 14px 20px; }
+  .booking-frame__iframe { height: 640px; }
+}
 .booking-box h3 { margin-bottom: 8px; font-size: 1rem; }
 .booking-box p { font-size: 0.9rem; margin-bottom: 16px; }
 
@@ -3040,6 +3116,7 @@ a:focus-visible { border-radius: var(--radius-sm); }
 [data-theme="dark"] .sidebar-card,
 [data-theme="dark"] .contact-form,
 [data-theme="dark"] .pricing-card,
+[data-theme="dark"] .booking-frame,
 [data-theme="dark"] .guarantee-item {
   background: #141414;
   border-color: #2B2B2B;
