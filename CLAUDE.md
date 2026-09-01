@@ -5379,3 +5379,123 @@ aucune sous 35 mots, la seule hors fenêtre étant trop LONGUE (66 et 70 mots).
 dépend du moment où l'on arrête de compter, et l'accueil charge son modèle 3D en `eager`.
 Seule la page parcourue est stable : accueil 5,01 Mo, `caracteristiques` 5,36 Mo, tout le
 reste sous 0,25 Mo.
+
+
+## Retours du 2026-09-01 : le vocabulaire, le visuel de « La solution », le rythme
+
+Quatre retours du client, plus une question laissée ouverte pour Sylvain Perez.
+
+### « Authentification forte » devient « authentification 2FA »
+
+Six occurrences, quatre fichiers, deux langues : les deux titres de hero, les deux
+variantes d'accueil, et les deux phrases sur les projets RPA. Contrôle : **0 occurrence
+de « authentification forte » et de « strong authentication » sur tout le site.**
+
+**L'ANGLAIS NE DIT PAS « 2FA AUTHENTICATION »**, qui est un pléonasme : le titre devient
+« 2FA no longer blocks your tests. » C'est la règle du dépôt appliquée à l'envers de son
+sens habituel — le français rend l'intention, l'anglais dit ce qui se dit en anglais.
+
+**CE QUE CE REMPLACEMENT COÛTE, ET IL FAUT LE SAVOIR** : « authentification forte » est le
+terme réglementaire français (DSP2), donc une requête réelle, et il ne figure plus nulle
+part. « 2FA » est cité 66 fois côté français, « double authentification » 12 fois,
+« authentification à deux facteurs » **une seule fois**. Le site est donc très fort sur le
+sigle et faible sur les deux formulations longues, qui sont celles que tape quelqu'un qui
+ne connaît pas encore le produit. À arbitrer par le client : réintroduire « authentification
+forte » une fois, dans une réponse de FAQ, ne contredirait pas le titre du hero.
+
+### Le visuel de « La solution » montre enfin le mécanisme
+
+La section s'intitule « Automatiser la double authentification (2FA) » et montrait un rendu
+du boîtier : **le titre parle d'un mécanisme, l'image montrait un objet**, déjà visible
+trois fois sur la page (hero, séquence 3D, feuille de route).
+
+`assets/img/qbot-2fa-flux.jpg` (+ `-en`) est un **schéma** construit en HTML puis capturé,
+dans le langage de `tools/render/guide-thumbs.html` : chaîne de tests → appel HTTP
+(`GET /scenarios/:id/execute`) → Q-Bot et son téléphone Android → appuis dans la vraie
+application 2FA → le test continue. Aucune licence tierce, aucune image générée, et
+l'alternative textuelle dit « Schéma », donc rien n'est présenté pour ce qu'il n'est pas.
+Régénéré par `tools/render/shoot-solution-visual.py`.
+
+**NOUVEAU MODIFICATEUR `.intro__image--schema`, ET IL EST OBLIGATOIRE ICI.** Le cadre
+sur-dimensionne son image de 8 % au repos, marge dont le contre-parallaxe interne a besoin
+sur une PHOTO. Sur un schéma dont le libellé teal est posé à 5,8 % du bord, cette
+sur-échelle le rogne. La classe la ramène à 1 et retire le contre-parallaxe dans `main.js`,
+exactement comme `--product`. Même famille que la pastille « MADE IN LUXEMBOURG » rognée le
+2026-08-26 : **une image dont un bord porte de l'information ne se sur-cadre pas.**
+
+**ET LA PREMIÈRE MESURE DU CADRE ÉTAIT FAUSSE.** J'avais relevé 741 px de large à 2560 px :
+c'était la boîte TRANSFORMÉE, lue avant la fin de la révélation, la variante « média »
+partant à `--media-scale + 0.05`. **`getBoundingClientRect()` inclut la transformation** ;
+il faut `offsetWidth`, ou mesurer une fois la révélation finie. La vraie boîte fait
+656 × 492 px. Relevé après : rapport source/affiché de 1,14 au plus serré, **0 rognage**.
+
+### Le rythme entre « La solution » et la séquence : 484 → 420 px
+
+Deux leviers, mesurés avant et après :
+
+- **`.scrolly__step` : `padding-top` de 96 à 48 px.** Le contenu étant CENTRÉ dans le pas,
+  ce retrait le repousse de la MOITIÉ de sa valeur : la première carte descendait de 48 px
+  sans raison. Elle reste largement sous la barre de navigation ;
+- **la section qui précède la séquence perd 40 px de remplissage bas** (112 → 72). Le rythme
+  de 112 px vaut entre deux blocs de TEXTE ; ici la suivante ouvre sur une scène 3D sombre
+  et vide, et les 112 px s'ajoutent à ce vide au lieu de séparer deux choses.
+
+**Deux pièges, tous deux silencieux :**
+
+1. **la séquence n'est PAS le frère immédiat de la section** : le lien d'évitement « sortir
+   de la séquence » est inséré entre les deux. Écrit `.section:has(+ .scrolly)`, la règle ne
+   correspondait à rien, sans erreur, comme tout sélecteur qui ne matche pas. Le contrôle
+   qui l'attrape est `element.matches(...)` dans le navigateur, pas la lecture du CSS ;
+2. **borné à `min-width: 901px`, et ce n'est pas une précaution de principe** : sur téléphone
+   `--section-py` vaut 64 px, donc une valeur fixe de 72 px AUGMENTERAIT l'écart de 8 px.
+
+**ET J'AI MESURÉ TOUTE LA GÉOMÉTRIE EN MOUVEMENT RÉDUIT AVANT DE M'EN APERCEVOIR.** La note
+du 2026-08-25 dit qu'une sonde de disposition doit mesurer en `reduced_motion`, parce que les
+révélations échelonnées faussent les largeurs. **Cette règle ne vaut PAS pour la séquence
+épinglée** : le mouvement réduit y change la mise en page elle-même (la scène cesse d'être
+collante, `--scrolly-screens` retombe à `auto`, `.scrolly__step` reçoit son propre
+remplissage). Toute mesure de cette section se fait en mouvement NORMAL, révélations
+attendues.
+
+### Une passe sur les mots-clés
+
+Relevé sur le texte rendu des 16 pages du plan. FR : **2FA 66 · téléphone 42 · robot 23 ·
+LuxTrust 21 · Android 17 · double authentification 12 · Selenium 11 · automatisation des
+tests 7 · authentification à deux facteurs 1.** EN : **2FA 67 · phone 31 · robot 24 ·
+LuxTrust 23 · Android 20 · two-factor authentication 13 · test automation 8.**
+
+Deux titres ne contenaient pas le mot-clé du produit et le portent désormais, sur les quatre
+pages concernées (titre, `og:title` et `twitter:title` ensemble, la règle du dépôt étant que
+les métadonnées sociales suivent le titre) : les deux FAQ et les deux pages de cas d'usage.
+Tous restent sous 62 caractères et distincts. **Les autres titres n'ont pas été touchés** :
+ils portent déjà « 2FA » ou « LuxTrust », et réécrire un titre qui fonctionne pour y caser un
+mot de plus se paie en lisibilité.
+
+**Ce que la passe recommande et qui n'est PAS fait**, parce que c'est de la rédaction et non
+une correction : la famille longue (« double authentification », « authentification à deux
+facteurs ») est sous-représentée en français au regard du sigle, et c'est elle que tape
+quelqu'un qui ne connaît pas encore le produit.
+
+**Faux positif à connaître** : `accueil-bis.html` porte un titre de 69 caractères. C'est la
+maquette de comparaison, hors plan du site et `noindex` ; les audits l'ignorent puisqu'ils
+énumèrent depuis `sitemap.xml`. Ce n'est pas un défaut.
+
+### LAISSÉ OUVERT : « Android » ou « smartphone », à voir avec Sylvain Perez
+
+Le client signale que le périmètre Android est un frein commercial et demande de voir avec
+Sylvain s'il ne faut pas dire simplement « smartphone ». **Rien n'a été changé**, et voici ce
+que cette conversation doit peser, parce que le site a déjà tranché l'inverse deux fois :
+
+- l'étape 1 de l'audit RosoAI (2026-08-24) a **retiré** « automatiser la 2FA dans 100 % des
+  cas de tests » précisément parce que Q-Bot pilote un appareil Android ;
+- la question 17 de la FAQ, ajoutée le 2026-08-25 sur décision du client, s'intitule
+  « Q-Bot fonctionne-t-il avec iOS (iPhone) ? » et répond non ;
+- `llms.txt` énonce la limite noir sur blanc et interdit d'écrire « 100 % of test cases » ;
+- « Android » est cité 17 fois côté français et 20 côté anglais.
+
+Dire « smartphone » sans qualifier ne serait donc pas un adoucissement de formulation mais
+**une promesse que le produit ne tient pas**, et elle contredirait une réponse de FAQ à deux
+clics de là. Deux formulations tiennent les deux bouts, si l'objectif est d'ouvrir sans
+mentir : « un vrai smartphone (Android) » en accroche, la limite restant énoncée dans la FAQ
+et la fiche technique ; ou l'inverse, garder « Android » et rendre la limite moins frontale
+en la déplaçant plus bas dans la page. La décision est au client, pas ici.
