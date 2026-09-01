@@ -4959,7 +4959,14 @@ label > input[type="checkbox"] {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 44px;
 }
-@media (max-width: 760px) {
+/* UNE SEULE COLONNE SOUS 1200 PX, et le seuil est mesuré, pas choisi. Sur deux
+   colonnes la cellule tombe à 466 px à 1024 px de large : les deux premières
+   lignes passent alors sur deux lignes de texte, les autres non, et comme une
+   rangée de grille prend la hauteur de sa plus haute cellule, l'inégalité se
+   voit sur DEUX points au lieu d'un. Signalé par le client le 2026-09-01.
+   En une colonne l'item dispose de 1132 px et tout tient sur une ligne.
+   Le seuil de 760 px d'origine ne changeait rien à cette bande-là. */
+@media (max-width: 1199px) {
   .api-facts--deux { grid-template-columns: 1fr; }
 }
 

@@ -5777,3 +5777,37 @@ L'anglais n'est pas la traduction du français, comme toujours ici, mais les deu
 même structure : « Your automated tests get past two-factor authentication. No shared
 secret. » — « get past » est la formulation que les gens emploient réellement dans les forums
 et les articles anglophones sur le sujet.
+
+
+## Les listes de faits s'alignent, et la cause n'était pas la phrase (2026-09-01)
+
+Signalé par le client sur une puce de `caracteristiques` : « moyen de changer la phrase pour
+que ça rentre en une ligne ? Comme ça tous les points sont espacés de la même manière. »
+
+**LA PHRASE N'ÉTAIT QU'UNE MOITIÉ DE LA CAUSE.** `.api-facts--deux` est une grille à DEUX
+colonnes, et **une rangée de grille prend la hauteur de sa plus haute cellule** : la puce
+longue passait sur deux lignes et entraînait sa VOISINE avec elle. Un point trop long en
+abîmait donc deux, et raccourcir la seule phrase signalée ne suffisait pas — mesuré :
+après ce seul raccourci, la liste passait de « toutes à 48 px » (uniforme par accident, tout
+tenait sur deux lignes) à `[48, 48, 24, 24, 48, 48]`, c'est-à-dire **pire qu'avant**.
+
+Trois choses ont donc été faites ensemble :
+
+- **quatre puces raccourcies** dans la première liste et **une** dans la seconde, à 70
+  caractères au plus. Budget mesuré, pas estimé : dans une cellule de 544 px, 70 caractères
+  tiennent, 79 ne tiennent plus. On teste les candidats **dans le navigateur** en remplaçant
+  le contenu de la puce, on ne compte pas les caractères sur le papier ;
+- **la liste passe à une colonne sous 1200 px** au lieu de 760. Entre 1024 et 1199 la cellule
+  tombait à 466 px et deux puces débordaient ; en une colonne l'item dispose de 1132 px et
+  tout tient. Le seuil de 760 px ne servait à rien dans cette bande ;
+- **une puce a retrouvé son sens au passage.** Elle listait « Selenium, Cypress, Playwright,
+  Robot Framework, JUnit et de simples scripts shell » — 97 caractères, et surtout un
+  DOUBLON : la grille de compatibilité, à quelques centaines de pixels plus bas sur la même
+  page, liste déjà ces outils et six autres. Le fait que cette puce devait porter est celui
+  de la section API, « compatible HTTP ». Elle dit désormais « Compatible avec toute chaîne
+  capable d'un appel HTTP », ce qui est plus court, plus fort et non redondant.
+
+Relevé après : **listes uniformes à 600, 768, 901, 1024, 1100, 1200, 1280, 1440, 1600, 1920
+et 2560 px**, dans les deux langues. Reste 390 px, où une puce sur six tient sur une ligne
+quand les autres en prennent deux : dans une colonne de 342 px c'est inévitable, et rallonger
+une phrase pour égaliser des pixels serait pire que l'inégalité.
