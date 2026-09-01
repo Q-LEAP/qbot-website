@@ -5244,9 +5244,18 @@ de page anglais est resté en arrière. Contrôlé après : **0 occurrence de «
 et de « L-1717 » sur le site entier**. Les conditions de vente ne portent pas de date de
 mise à jour (le live n'en a pas), il n'y en avait donc aucune à avancer.
 
-**Ce qui reste au client** : la liste des finalités garde « Analyser le volume et
-l'historique de votre utilisation de nos services », qui ne peut plus concerner le site mais
-peut concerner les prestations. À trancher par qui a écrit le texte.
+**La liste des finalités perd « Analyser le volume et l'historique de votre utilisation de
+nos services » (2026-09-01, décision du client).** Le site ne mesure ni volume ni historique
+de navigation, et il n'a aucun moyen de le faire. Les deux listes tombent à six items.
+
+**PIÈGE DE LA SUPPRESSION D'UN ITEM DE LISTE** : le vidage du `<ul>` en cours n'a de sens
+que si l'amendement a quelque chose à écrire à la place. Sans cette condition, un item retiré
+au MILIEU d'une liste la ferme et la suivante en rouvre une seconde : le texte rendu est le
+même, la sémantique et la puce ne le sont pas. Le contrôle est de compter les `<ul>` et leurs
+enfants, pas de relire le texte — relevé après : deux listes de 6 et 4 items dans les deux
+langues, comme avant, l'item en moins.
+
+**Il ne reste plus rien à arbitrer sur ces quatre pages.**
 
 ### 3. ON NE RÉÉCRIT PAS L'HISTOIRE GIT, ET C'EST UNE MESURE QUI LE DIT
 

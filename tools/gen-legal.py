@@ -176,6 +176,11 @@ SECTIONS_AMENDEES = {
                     "n'existe pas. La seule application est Q-Bot Mobile, dont la section "
                     "dédiée dit qu'elle ne collecte aucune donnée identifiante.",
              blocs=[]),
+        dict(de=26, a=26, titre='Analyser le volume et l\u2019historique',
+             raison="item supprim\u00e9 : le site ne mesure ni volume ni historique de "
+                    "navigation, et il n'a aucun moyen de le faire. Retir\u00e9 sur "
+                    "d\u00e9cision du client le 2026-09-01.",
+             blocs=[]),
         dict(de=40, a=41, titre='Lieu de stockage des données et transferts',
              raison="le site est hébergé sur GitHub Pages : « exclusivement au sein de "
                     "l'Union européenne » n'est plus vrai",
@@ -228,6 +233,8 @@ SECTIONS_AMENDEES = {
         dict(de=19, a=20, titre='Data from mobile devices',
              raison="see conf-fr",
              blocs=[]),
+        dict(de=26, a=26, titre='To analyze the volume and history',
+             raison="voir conf-fr", blocs=[]),
         dict(de=40, a=41, titre='Data storage location and transfers',
              raison="see conf-fr",
              blocs=[
@@ -400,11 +407,17 @@ def corps(page):
     out, liste, vu_chapeau = [], [], False
     for i in range(debut, fin):
         if i in amend:
-            if liste:
-                out.append('      <ul>\n' + '\n'.join(liste) + '\n      </ul>')
-                liste = []
-            for tag, txt in amend[i]['blocs']:
-                out.append(f'      <{tag}>{txt}</{tag}>')
+            # UNE SUPPRESSION SEULE NE COUPE PAS LA LISTE QUI L'ENTOURE : on ne
+            # ferme le <ul> en cours que s'il y a quelque chose à écrire à la
+            # place. Sinon un item retiré au milieu d'une liste la scindait en
+            # deux, ce qui ne se voit pas dans le texte rendu mais casse la
+            # sémantique et la puce.
+            if amend[i]['blocs']:
+                if liste:
+                    out.append('      <ul>\n' + '\n'.join(liste) + '\n      </ul>')
+                    liste = []
+                for tag, txt in amend[i]['blocs']:
+                    out.append(f'      <{tag}>{txt}</{tag}>')
             continue
         if i in saute:
             continue
