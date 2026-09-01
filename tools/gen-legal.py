@@ -253,6 +253,23 @@ SECTIONS_AMENDEES = {
 # (ancien, nouveau, nombre d'occurrences attendu, raison). Le compte est écrit et
 # non deviné : une retouche qui ne correspond plus arrête le script.
 RETOUCHES = {
+    # LES CONDITIONS DE VENTE NE SONT AMENDÉES QUE SUR CE POINT, et il ne relève
+    # pas de la migration : c'est un fait d'état civil de la société. Leur clause
+    # de définitions donnait encore l'ancien siège, alors que le numéro RCS y est
+    # le même (B.167.970) et que le PostalAddress des 23 pages, le foundingLocation
+    # et les deux politiques de confidentialité disent Bertrange. Le pied de page
+    # FRANÇAIS du live dit Bertrange lui aussi ; seul son pied de page anglais est
+    # resté en arrière. Confirmé par le client le 2026-09-01.
+    'cv-fr': [
+        ("ayant son si\u00e8ge social \u00e0 L-1717 Luxembourg, 10 rue Mathias Hardt",
+         "ayant son si\u00e8ge social \u00e0 L-8070 Bertrange, 10B rue des M\u00e9rovingiens", 1,
+         "si\u00e8ge actuel ; l'ordre code postal puis rue est celui du document"),
+    ],
+    'cv-en': [
+        ("having its registered office at L-1717 Luxembourg, 10 rue Mathias Hardt",
+         "having its registered office at L-8070 Bertrange, 10B rue des M\u00e9rovingiens", 1,
+         "voir cv-fr"),
+    ],
     'conf-fr': [
         ("notamment lors de commandes et lors de la cr\u00e9ation d\u2019un compte client "
          "ou lors de votre inscription ou notre formulaire de contact",

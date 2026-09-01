@@ -5234,12 +5234,19 @@ elles décrivent le contrat de location, pas le site.
 Effet de bord voulu : les deux politiques portent désormais la même date, ce qui referme
 l'année de retard de l'anglais signalée depuis le 2026-08-25.
 
-**Ce qui reste au client** : les adresses de siège des DEUX pages de conditions de vente
-(une « Mathias Hardt » côté FR, deux côté EN) n'ont pas été touchées, l'adresse de
-notification d'un contrat n'étant pas du même ordre qu'une identification de responsable de
-traitement. Et la liste des finalités garde « Analyser le volume et l'historique de votre
-utilisation de nos services », qui ne peut plus concerner le site mais peut concerner les
-prestations : à trancher par qui a écrit le texte.
+**L'ADRESSE DU SIÈGE DES CONDITIONS DE VENTE EST CORRIGÉE AUSSI (2026-09-01, confirmé par
+le client).** Leur clause de définitions donnait encore « L-1717 Luxembourg, 10 rue Mathias
+Hardt », une seule fois par page et non deux comme je l'avais d'abord annoncé. Ce n'est pas
+un écart de migration mais un fait d'état civil : le numéro RCS y est le même (B.167.970),
+le `PostalAddress` des 23 pages, le `foundingLocation` et les deux politiques disent
+Bertrange, et **le pied de page FRANÇAIS du live dit Bertrange lui aussi** — seul son pied
+de page anglais est resté en arrière. Contrôlé après : **0 occurrence de « Mathias Hardt »
+et de « L-1717 » sur le site entier**. Les conditions de vente ne portent pas de date de
+mise à jour (le live n'en a pas), il n'y en avait donc aucune à avancer.
+
+**Ce qui reste au client** : la liste des finalités garde « Analyser le volume et
+l'historique de votre utilisation de nos services », qui ne peut plus concerner le site mais
+peut concerner les prestations. À trancher par qui a écrit le texte.
 
 ### 3. ON NE RÉÉCRIT PAS L'HISTOIRE GIT, ET C'EST UNE MESURE QUI LE DIT
 
