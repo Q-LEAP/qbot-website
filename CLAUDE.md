@@ -5186,3 +5186,122 @@ Les deux versionneurs d'actifs à 0 page à mettre à jour, donc les empreintes 
 celles des fichiers. Les deux pages À propos menées au navigateur en normal et en mouvement
 réduit, à 1440 et 390 px : un seul `h1`, 0 révélation invisible, 0 débordement, 0 image
 cassée, 0 erreur console, et 0 `.nb` dans un conteneur flex.
+
+
+## Les politiques de confidentialité décrivent enfin ce site (2026-09-01)
+
+Quatre arbitrages du client sur les points laissés ouverts par le contrôle n°6, dont trois
+qui ferment un point pour de bon. À ne pas rouvrir aux passages suivants.
+
+### 1. LE SOCLE DE CONTENU NE REVIENT PAS. C'EST UN REFUS, PAS UNE ATTENTE
+
+« Mon directeur veut pas. » La suppression du blog et des huit guides le 2026-08-28 a fait
+passer le site de 74 capsules-réponses à 4 et de 90 titres en question à 10 ; l'audit
+proposait de remettre trois ou quatre pages piliers sans blog. **C'est non.** Le site
+assume d'être une plaquette technique de 20 pages dont l'autorité repose sur l'entité (le
+fondateur nommé et relié, `legalName`, `foundingDate` au jour près, `knowsAbout`, la
+citation de presse) et sur les 34 réponses de FAQ, qui sont intactes et de bonne facture.
+
+`tools/gen-guides.py`, `gen-index-guides.py` et `vignettes_guides.py` restent dans le
+dépôt : ce sont des outils, pas du contenu publié, et ils ne risquent pas d'être
+« décommentés » par accident comme l'était le bandeau de références. **Ne pas reproposer de
+remettre des guides**, et ne pas compter la baisse de surface citable comme un défaut : elle
+est le résultat d'une décision informée, prise deux fois.
+
+### 2. LES DEUX POLITIQUES DE CONFIDENTIALITÉ SONT REPRISES
+
+« Fix ça en fonction du nouveau site. » Elles décrivaient le WordPress qu'elles remplacent.
+Mesuré avant reprise sur les 21 pages : **0 `document.cookie`, 0 balise d'analytics,
+0 requête vers un tiers au chargement**, aucun compte client, aucune commande, et un
+hébergement GitHub Pages. Le texte, lui, annonçait des cookies « sous réserve de vos
+choix », des scripts et pixels tiers, un traitement « notamment par Google Analytics » et
+des serveurs « exclusivement situés au sein de l'Union européenne ».
+
+**UNE POLITIQUE QUI ANNONCE PLUS DE COLLECTE QU'IL N'Y EN A N'EST PAS PRUDENTE, ELLE EST
+FAUSSE**, et sur ce point le sens de la correction est agréable : la nouvelle version
+collecte moins, il suffisait de le dire.
+
+**Les écarts avec le live sont ÉNUMÉRÉS dans `tools/gen-legal.py`, et nulle part ailleurs** :
+`SECTIONS_AMENDEES` pour les sections remplacées ou supprimées, `RETOUCHES` pour les
+corrections ponctuelles, chacune avec sa raison **et son assertion**. Si le live est relevé
+à nouveau et que le texte visé a bougé, le script s'arrête au lieu de remplacer le mauvais
+paragraphe ou de laisser tomber l'amendement en silence. Quatre sections reprises
+(cookies, contenus tiers, appareils mobiles, lieu de stockage) et neuf retouches, dont
+l'adresse du siège anglaise restée à Mathias Hardt, trois « Q-LEAP NV » pour une SA, une
+phrase dupliquée et `bot.q-leap.eu`. **Les conditions de vente ne sont pas touchées** :
+elles décrivent le contrat de location, pas le site.
+
+Effet de bord voulu : les deux politiques portent désormais la même date, ce qui referme
+l'année de retard de l'anglais signalée depuis le 2026-08-25.
+
+**Ce qui reste au client** : les adresses de siège des DEUX pages de conditions de vente
+(une « Mathias Hardt » côté FR, deux côté EN) n'ont pas été touchées, l'adresse de
+notification d'un contrat n'étant pas du même ordre qu'une identification de responsable de
+traitement. Et la liste des finalités garde « Analyser le volume et l'historique de votre
+utilisation de nos services », qui ne peut plus concerner le site mais peut concerner les
+prestations : à trancher par qui a écrit le texte.
+
+### 3. ON NE RÉÉCRIT PAS L'HISTOIRE GIT, ET C'EST UNE MESURE QUI LE DIT
+
+« Fais ce qui est le plus logique. » Mesuré : `assets/models/qbot.glb`, **servi
+publiquement** et téléchargeable en un clic depuis la séquence 3D de l'accueil, porte
+**191 214 triangles contre 199 322 pour le FBX**, soit 96 % de la géométrie aux soudures de
+sommets près. **La forme du boîtier est donc déjà publiée, à dessein.** Une réécriture
+d'historique coûterait un `push --force`, ne supprimerait rien de github.com sans passer par
+leur support (les objets déréférencés restent joignables par leur empreinte) et ne
+retirerait pas de la vue ce qu'elle prétend protéger.
+
+Ce que l'exclusion du 2026-08-31 a réglé reste réel et acquis : 37 Mo de **CAO éditable**
+téléchargeables depuis le site du produit. La seule décision qui irait plus loin est le
+passage du dépôt en privé, qui demande un plan GitHub payant. Le raisonnement est écrit dans
+`.gitignore`, à côté de la ligne d'exclusion, pour que le point cesse d'être rouvert.
+
+### 4. LE BOOKINGS ANGLAIS EST REPORTÉ
+
+« Plus tard la version anglaise. » Le marqueur `BOOKINGS-EN-A-VENIR` de `en/booking.html`
+reste, il n'y aura qu'une URL à remplacer. Les incrustations anglaises du film sur les pages
+françaises restent aussi : c'est une propriété du fichier fourni.
+
+### `gen-legal.py` était MORT depuis trois jours, et il aurait fait cinq régressions
+
+Trouvé en voulant l'utiliser. Il extrayait son habillage de `blog/innovation-merkur.html` et
+`en/blog/innovation-merkur.html`, **supprimés le 2026-08-28** : il s'arrêtait sur une
+`ValueError`. Et une fois réparé naïvement, une régénération aurait défait cinq passes
+sitewide, toutes silencieusement :
+
+1. le **fil d'Ariane visible**, retiré du site le 2026-08-28, revenait sur les quatre pages
+   légales et sur elles seules ;
+2. l'**appel à l'action** disait encore « Vous souhaitez en savoir plus ? » et « Prendre
+   rendez-vous » là où le site dit « Voir Q-Bot en action » et « Réserver une démo » ;
+3. `og:site_name` revenait à « Q-Bot by Q-Leap », alors que le produit s'appelle « Q-Bot »
+   partout depuis le 2026-08-28 ;
+4. les **36 `<span class="nb">Q-Bot</span>`** des deux politiques disparaissaient ;
+5. le pied de page du gabarit marque SA PROPRE entrée comme courante : « À propos »
+   arrivait sur les quatre pages légales en texte mort au lieu d'un lien.
+
+**LA LEÇON EST GÉNÉRALE : UN GÉNÉRATEUR QUI N'A PAS TOURNÉ DEPUIS UNE PASSE SITEWIDE EST
+UNE RÉGRESSION EN ATTENTE.** Le contrôle qui les a toutes attrapées est le même à chaque
+fois : régénérer, puis **comparer au fichier d'avant**, et n'accepter que les écarts qu'on
+sait nommer. Les libellés qui vieillissent sont donc **extraits d'une page du site** plutôt
+qu'écrits dans le script, et les bornes d'extraction sont structurelles (`<header class="nav"`)
+et non des commentaires de bandeau : `a-propos.html` porte ses bandeaux « ======= », pas
+`en/about.html`, et un découpage par commentaire marchait sur une langue et échouait sur
+l'autre.
+
+**Et un piège d'outillage à connaître** : `bump-assets` remplace le paramètre `?v=` **partout
+dans le fichier, commentaires compris**. Le commentaire du gabarit citait un chemin versionné
+en exemple : il en est ressorti en bouillie (« style.css?v=f17ca7a1'empreinte réelle »). Ne
+jamais écrire d'exemple de chemin versionné dans une page.
+
+### Contrôles
+
+`gen-legal.py` **idempotent** (deux exécutions, même empreinte MD5). Les deux audits sur les
+21 pages à 1440 et 390 px : **0 constat**. 75 pages, 738 liens relatifs, 0 cassé. 52 relais,
+0 défaut. `sync-faq-jsonld.py` idempotent, `maj-sitemap.py` sans écart, `maj-nav-booking.py`
+à 23 « déjà à jour » APRÈS régénération, donc les attributs de la fenêtre de réservation ont
+survécu. Les quatre pages légales menées au navigateur en normal et en mouvement réduit, à
+1440 et 390 px : un seul `h1`, 0 révélation invisible, 0 débordement, 0 erreur console,
+**0 cadratin, 0 emoji**, 0 `.nb` dans un conteneur flex, et plus aucun fil d'Ariane visible.
+Contrôlé enfin qu'aucune des formules retirées ne subsiste : 0 « Google Analytics »,
+0 « bot.q-leap.eu », 0 « Q-LEAP NV », 0 « Mathias Hardt » et 0 « exclusivement situés » dans
+les deux politiques.
