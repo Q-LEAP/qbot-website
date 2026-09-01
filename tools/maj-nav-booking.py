@@ -21,10 +21,17 @@ import bookings_conf as conf
 
 ECRIRE = '--ecrire' in sys.argv
 
-# le bouton de la barre, dans les deux langues, avec ou sans préfixe de profondeur
+# LE MOTIF DOIT RECONNAÎTRE LE BOUTON DÉJÀ ÉQUIPÉ, sans quoi ce script ne sert
+# qu'une fois. Sa première version exigeait des attributs À VALEUR
+# (`data-booking-xxx="…"`) et ne pouvait donc pas revoir un bouton portant
+# `data-booking-open`, qui est un attribut NU. Relevé le 2026-09-01 : sur les
+# 23 pages équipées, il n'en reconnaissait plus AUCUNE. Autrement dit la « source
+# unique » de « bookings_conf.py » ne l'était plus : le jour où l'agenda change
+# d'URL, la commande annoncée en tête de ce fichier n'aurait rien mis à jour, et
+# elle l'aurait annoncé sans erreur.
 BOUTON = re.compile(
     r'<a href="((?:\.\./)?)(reservation\.html|booking\.html|commandez\.html|order\.html)"'
-    r'((?:\s+data-booking-[a-z]+="[^"]*")*)'
+    r'((?:\s+data-booking-open|\s+data-booking-[a-z]+="[^"]*")*)'
     r'\s+class="btn btn--primary">(Réserver une démo|Book a demo)</a>')
 
 def pages():
@@ -41,7 +48,13 @@ for f in pages():
     t = io.open(f, encoding='utf-8').read()
     if '<header' not in t:
         continue
-    m = BOUTON.search(t)
+    # ON NE CHERCHE QUE DANS LA BARRE. Sans cette borne, le motif attrapait sur
+    # « faq.html » un appel à l'action du CORPS de la page, qui porte le même
+    # libellé et la même classe : le script annonçait « 1 bouton équipé » en
+    # visant le mauvais élément, et laissait la vraie barre inchangée.
+    d = t.find('class="nav__actions"')
+    fin = t.find('</nav>', d) if d != -1 else -1
+    m = BOUTON.search(t, d, fin) if fin != -1 else None
     if not m:
         sautes.append(rel + ' (bouton de barre non reconnu)')
         continue
