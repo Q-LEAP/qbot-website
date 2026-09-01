@@ -35,16 +35,19 @@
   <link rel="apple-touch-icon" href="../../assets/img/apple-touch-icon.png">
   <meta name="theme-color" content="#000000">
 
-  <!-- Google Fonts -->
-    <!-- Roboto est SERVIE PAR LE SITE, en local : « style.css » déclare ses
-         @font-face sur « assets/fonts/roboto-latin.woff2 ». Les trois balises
-         Google Fonts qui étaient ici venaient du WordPress et ne servaient à
-         rien : trois requêtes vers deux origines tierces, bloquantes au rendu,
-         pour une police déjà présente. Et l'IP de chaque visiteur partait chez
-         Google SUR LA PAGE DE POLITIQUE DE CONFIDENTIALITÉ elle-même.
-         Retirées le 2026-08-31, relevé par l'audit RosoAI n°5. Le générateur
-         « tools/gen-legal.py » est corrigé aussi, sinon il les réintroduit. -->
+  <!-- PAS DE GOOGLE FONTS. Roboto est servie par le site, en local : « style.css »
+       déclare ses @font-face sur « assets/fonts/roboto-latin.woff2 ». Les trois
+       balises qui étaient ici venaient du WordPress et ne servaient à rien : trois
+       requêtes vers deux origines tierces, bloquantes au rendu, pour une police
+       déjà présente, et l'IP du visiteur qui part chez Google SUR LA PAGE DE
+       POLITIQUE DE CONFIDENTIALITÉ. Retirées le 2026-08-31, relevé RosoAI n°5.
 
+       ET AUCUNE EMPREINTE ÉCRITE À LA MAIN. Ce gabarit en portait une, périmée de
+       plusieurs jours : une régénération aurait réintroduit la panne de cache du
+       2026-08-25. Le chemin est nu, et « tools/bump-assets » y pose l'empreinte
+       réelle. NE PAS écrire ici un exemple de chemin versionné : ce script-là
+       remplace le paramètre de version PARTOUT dans le fichier, commentaires
+       compris, et rendrait cette phrase illisible. -->
   <link rel="stylesheet" href="../../assets/css/style.css?v=f17ca7a1">
   <script type="application/ld+json">
   {
@@ -117,25 +120,17 @@
 
 <a href="#main" class="skip-nav">Skip to main content</a>
 
-<!-- ======= NAVIGATION ======= -->
 <header class="nav" role="banner">
   <div class="container">
     <nav class="nav__inner" aria-label="Main navigation">
-      <a href="../" class="nav__logo" aria-label="Q-Bot, home">
-        <img src="../../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
-      </a>
-
-      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu">
-        <span></span><span></span><span></span>
-      </button>
-
+      <a href="../" class="nav__logo"><img src="../../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84"></a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu"><span></span><span></span><span></span></button>
       <ul class="nav__menu" id="main-menu" role="list">
         <li><a href="../" class="nav__link">Home</a></li>
         <li><a href="../technical-specs.html" class="nav__link">Technical Specs</a></li>
         <li><a href="../use-cases.html" class="nav__link">Use Cases</a></li>
         <li><a href="../faq.html" class="nav__link">FAQ</a></li>
       </ul>
-
       <div class="nav__actions">
         <a href="../booking.html" data-booking-open
        data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
@@ -171,21 +166,15 @@
 <section class="section" aria-label="Privacy">
   <div class="container">
     <div class="article-body">
-      <p class="legal-date"><time datetime="2024-06-11">Last update: June, 11th 2024</time></p>
-      <p>The Q-BOT website is produced by the company <a href="https://q-leap.eu">Q-LEAP SA</a>, owner of the Brand with its registered office at 10 rue Mathias Hardt L-1717 Luxembourg registered in the Luxembourg Trade Register under number B167970.</p>
+      <p class="legal-date"><time datetime="2026-09-01">Last update: 1 September 2026</time></p>
+      <p>The Q-BOT website is produced by the company <a href="https://q-leap.eu">Q-LEAP SA</a>, owner of the Brand with its registered office at 10B rue des Mérovingiens L-8070 Bertrange registered in the Luxembourg Trade Register under number B167970.</p>
       <h2>Personal data collected on the site</h2>
-      <p><a href="https://q-leap.eu">Q-LEAP SA</a> is responsible for the processing of personal data. <a href="https://q-leap.eu">Q-LEAP SA</a> undertakes not to communicate, free of charge or with consideration, the contact details of its customers (*except for third parties involved in the execution of orders (carriers, banking services) and/or its newsletter subscribers to a third party. The customer has the right to access, modify, rectify and delete data concerning him/her, which he/she can exercise by contacting <a href="https://q-leap.eu">Q-LEAP SA.</a> When you use our website, in particular when you place an order, create a customer account, register or use our contact form, we collect and process personal data about you such as: your first and last name, your email address, your cell phone number, and any information you wish to share with us to facilitate the processing of your requests. Some data is collected automatically as a result of your actions on the site (see the paragraph on cookies below).</p>
+      <p><a href="https://q-leap.eu">Q-LEAP SA</a> is responsible for the processing of personal data. <a href="https://q-leap.eu">Q-LEAP SA</a> undertakes not to communicate, free of charge or with consideration, the contact details of its customers (*except for third parties involved in the execution of orders (carriers, banking services) and/or its newsletter subscribers to a third party. The customer has the right to access, modify, rectify and delete data concerning him/her, which he/she can exercise by contacting <a href="https://q-leap.eu">Q-LEAP SA.</a> When you use our website, in particular when you subscribe to our newsletter or use our contact form, we collect and process personal data about you such as: your first and last name, your email address, your cell phone number, and any information you wish to share with us to facilitate the processing of your requests. No other data is collected automatically as a result of your browsing (see the paragraph on cookies below).</p>
       <h2>Cookies</h2>
-      <p>When you connect to our Site, we may install various cookies on your terminal, subject to your choices (see below “Your choices concerning cookies”), which allow us to recognize your terminal’s browser during the period of validity of the cookie concerned. These cookies allow us:</p>
-      <ul>
-        <li>to establish statistics and volumes of frequentation and use of the various elements composing our Site (headings and contents visited, course), allowing us to improve the interest and the ergonomics of our services;</li>
-        <li>to adapt the presentation of our Site to the display preferences of your terminal (language used, display resolution, operating system used, etc.) during your visits to our Site, according to the hardware and software for viewing or reading that your terminal has;</li>
-        <li>to memorize information relating to a form that you have filled out on our Site (registration or access to your account);</li>
-      </ul>
-      <h2>Data collected through standard Internet technologies</h2>
-      <p>Our sites and applications may also include third-party scripts, pixels and redirects. These technologies allow third party service providers to collect certain information such as your browser type, and the web page that referred you to our websites. These third party service providers process the information they collect for auditing, research, and reporting information about our sites and applications and the advertisements viewed on them. We do not share your identifying information with these third parties in connection with their use of these technologies.</p>
-      <h2>Data from mobile devices</h2>
-      <p>Some mobile devices, depending on the features you have enabled (e.g., “Push” or “Geolocation”) when downloading one of our applications, send information including: your phone model, operating system version, connectivity type, and the name and version of the application you are using. This data, necessary for the proper functioning of mobile applications, is automatically processed by our servers and those of some of our partners (in particular Google Analytics) in order to provide you with a service adapted to the technical characteristics of your device and to measure the audience of our application.</p>
+      <p>This site sets no cookie, uses no tracker and does not measure its audience. There is therefore no consent banner: there is nothing to consent to.</p>
+      <p>The site stores one single piece of information in your browser, in session storage: your reading position, for the time of a language switch, so that you are returned to the same place on the page. It is erased as soon as it is read back, it never leaves your browser, and it cannot identify you.</p>
+      <h2>Third-party content, loaded only if you ask for it</h2>
+      <p>The site calls no third-party service when a page loads: no script, no pixel, no redirect, no remote font. Two external contents load only after you click, and that click is announced where it happens: the map on the Contact page, provided by Google Maps, and the demonstration booking calendar, provided by Microsoft Bookings. Until you click, your browser contacts neither Google nor Microsoft. Once you do, those providers receive your IP address and may set their own cookies, under their respective policies.</p>
       <h2>Purposes of the processing and legal basis</h2>
       <p>The primary purpose of collecting your personal data is to provide you with a safe, optimal, efficient and personalized experience. To this end, you agree that we may use your personal data to:</p>
       <ul>
@@ -198,7 +187,7 @@
         <li>For our newsletters, we process your personal data on the basis of the explicit consent you have given for this.</li>
       </ul>
       <h2>Recipients of your data</h2>
-      <p>The personal data collected on the site is intended to be used by <a href="https://q-leap.eu">Q-LEAP SA.</a> It may be passed on to third parties to process transactions or provide services you have requested.  <a href="https://q-leap.eu">Q-LEAP SA</a> ensures compliance with data protection requirements for all its subcontractors.  <a href="https://q-leap.eu">Q-LEAP NV</a> does not sell or rent your personal data to third parties for marketing purposes under any circumstances. In addition, <a href="https://q-leap.eu">Q-LEAP SA</a> does not disclose your personal data to third parties, except if:</p>
+      <p>The personal data collected on the site is intended to be used by <a href="https://q-leap.eu">Q-LEAP SA.</a> It may be passed on to third parties to process transactions or provide services you have requested.  <a href="https://q-leap.eu">Q-LEAP SA</a> ensures compliance with data protection requirements for all its subcontractors.  <a href="https://q-leap.eu">Q-LEAP SA</a> does not sell or rent your personal data to third parties for marketing purposes under any circumstances. In addition, <a href="https://q-leap.eu">Q-LEAP SA</a> does not disclose your personal data to third parties, except if:</p>
       <ul>
         <li>You make the request or authorize the disclosure;</li>
         <li>Disclosure is required;</li>
@@ -210,11 +199,13 @@
       <h2>Data retention</h2>
       <p><a href="https://q-leap.eu">Q-LEAP SA</a> will not retain your personal data beyond the period necessary to achieve the purposes for which it was collected. The data processed for marketing purposes will be kept by the company from the moment you give your permission until such time as your permission is revoked. If the authorization is revoked, the data may no longer be processed for marketing purposes, but may be retained for the purpose of managing any disputes and/or litigation and/or ensuring your security. The data retention time provided by <a href="https://q-leap.eu">Q-LEAP SA</a> is in accordance with local regulations and the provisions of the Data Protection Authority.</p>
       <h2>Data storage location and transfers</h2>
-      <p>Hosting servers on which <a href="https://q-leap.eu">Q-LEAP SA</a> process and keep its databases are exclusively located within the European Union. <a href="https://q-leap.eu">Q-LEAP NV</a> undertakes to inform you immediately, insofar as we are legally entitled to do so, in the event of a request from an administrative or judicial authority relating to your data.</p>
+      <p>This site is a static site, with no database: it keeps nothing. It is hosted on GitHub&nbsp;Pages (GitHub,&nbsp;Inc., a Microsoft company), whose delivery network serves the pages from servers located in several countries, including outside the European Union.</p>
+      <p>Requests sent from the contact form do not travel through the site: they open your own mail application with the message prefilled, and are sent only if you send them yourself. Newsletter sign-ups are passed to Brevo (formerly Sendinblue), our processor for sending newsletters.</p>
+      <p><a href="https://q-leap.eu">Q-LEAP SA</a> undertakes to inform you immediately, insofar as we are legally entitled to do so, in the event of a request from an administrative or judicial authority relating to your data.</p>
       <h2>Security and data integrity</h2>
-      <p><a href="https://q-leap.eu">Q-LEAP SA</a> attaches the utmost importance to the security and integrity of its customers’ personal data. Thus, and in accordance with the General Data Protection Regulation (GDPR), adopted by the European Parliament and entered into force on 25 May 2018,  <a href="https://q-leap.eu">Q-LEAP SA</a>  undertakes to take all necessary precautions to preserve the security of the data and in particular to protect them against any accidental or illicit destruction, accidental loss, alteration, distribution or unauthorized access, as well as against any other form of illicit processing or communication to unauthorized persons. To this end, <a href="https://q-leap.eu">Q-LEAP SA</a> implements industry standard security measures to protect personal data from unauthorized disclosure. However, if a security breach occurs, <a href="https://q-leap.eu">Q-LEAP SA</a> will inform you as soon as possible and will make its best efforts to take all possible measures to neutralize the intrusion and minimize its impact. In the event that you suffer damage as a result of the exploitation of a security breach by a third party, <a href="https://q-leap.eu">Q-LEAP SA</a> undertakes to provide you with all the necessary assistance so that you can assert your rights. It should be borne in mind that anyone discovering a security breach and exploiting it may be subject to criminal sanctions and that <a href="https://q-leap.eu">Q-LEAP NV</a> will take all necessary measures to preserve the data and rights of its users and its own and to limit the impact of a malicious action.</p>
+      <p><a href="https://q-leap.eu">Q-LEAP SA</a> attaches the utmost importance to the security and integrity of its customers’ personal data. Thus, and in accordance with the General Data Protection Regulation (GDPR), adopted by the European Parliament and entered into force on 25 May 2018,  <a href="https://q-leap.eu">Q-LEAP SA</a>  undertakes to take all necessary precautions to preserve the security of the data and in particular to protect them against any accidental or illicit destruction, accidental loss, alteration, distribution or unauthorized access, as well as against any other form of illicit processing or communication to unauthorized persons. To this end, <a href="https://q-leap.eu">Q-LEAP SA</a> implements industry standard security measures to protect personal data from unauthorized disclosure. However, if a security breach occurs, <a href="https://q-leap.eu">Q-LEAP SA</a> will inform you as soon as possible and will make its best efforts to take all possible measures to neutralize the intrusion and minimize its impact. In the event that you suffer damage as a result of the exploitation of a security breach by a third party, <a href="https://q-leap.eu">Q-LEAP SA</a> undertakes to provide you with all the necessary assistance so that you can assert your rights. It should be borne in mind that anyone discovering a security breach and exploiting it may be subject to criminal sanctions and that <a href="https://q-leap.eu">Q-LEAP SA</a> will take all necessary measures to preserve the data and rights of its users and its own and to limit the impact of a malicious action.</p>
       <h2>Privacy policy for the <span class="nb">Q-Bot</span> Mobile application</h2>
-      <p><span style="font-size: 16.0016px;">Your privacy is important to us. That’s why we process as little data as possible. That’s why we process as little data as possible.</span></p>
+      <p><span style="font-size: 16.0016px;">Your privacy is important to us. That’s why we process as little data as possible.</span></p>
       <p><span style="font-size: 16.0016px;"><span class="nb">Q-Bot</span> Mobile app scans the local environment to find and connect to your <span class="nb">Q-Bot</span> Device through BLE (Bluetooth Low Energy). Depending on the device, the <span class="nb">Q-Bot</span> Mobile app would require location, bluetooth, accessibility and nearby permissions enabled. In addition, <span class="nb">Q-Bot</span> Mobile app listens to notifications received by another app the user previously selected and sends the text of the notifications to <span class="nb">Q-Bot</span> Device via BLE.</span></p>
       <p><span style="font-size: 16.0016px;">The bluetooth, location and nearby permission enable the <span class="nb">Q-Bot</span> app to scan, identify and connect to the <span class="nb">Q-Bot</span> device through BLE. The accessibility permission is required for the <span class="nb">Q-Bot</span> app to select a particular app whose 2FA test cases need to be automated. The accessibility permission enables the <span class="nb">Q-Bot</span> to read the notifications received by the selected app. Please note, the accessibility permission does not enable <span class="nb">Q-Bot</span> app to help individuals with accessibility, rather it provides a means for the user to listen to the notification of the other app selected by the user.</span></p>
       <p><span style="font-size: 16.0016px;"><span class="nb">Q-Bot</span> Mobile app does not communicate nor exchange data with any other system except with <span class="nb">Q-Bot</span> Device. The data sent to <span class="nb">Q-Bot</span> Device corresponds to the text received by the app the user selected. The text is used to trigger actions on <span class="nb">Q-Bot</span> Device but it is not saved. The <span class="nb">Q-Bot</span> app and the device work together to automate 2FA use case scenarios for the QA team.</span></p>
@@ -222,7 +213,7 @@
       <h2>Updates to this policy</h2>
       <p><a href="https://q-leap.eu">Q-LEAP SA</a> reserves the right to change this Privacy Policy at any time, including in response to changes in applicable laws and regulations. We recommend that you check these policies from time to time to stay informed of our procedures and policies regarding your personal information. Any updates to this policy will be posted on this page.</p>
       <h2>General information</h2>
-      <p>In accordance with REGULATION (EU) 2016/679 OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL of 27 April 2016 on the protection of individuals with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (General Data Protection Regulation – GDPR. The personal information provided on the bot.q-leap.eu website is processed in accordance with the Luxembourg law of August 2, 2002 on the protection of persons with regard to the processing of personal data as amended, and in accordance with the EU Data Protection Regulation 2018 (GDPR). The customer has the right to access, modify, rectify and delete data concerning him/her at any time. These rights can be exercised electronically by contacting us at <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>.</p>
+      <p>In accordance with REGULATION (EU) 2016/679 OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL of 27 April 2016 on the protection of individuals with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (General Data Protection Regulation – GDPR. The personal information provided on the q-bot.eu website is processed in accordance with the Luxembourg law of August 2, 2002 on the protection of persons with regard to the processing of personal data as amended, and in accordance with the EU Data Protection Regulation 2018 (GDPR). The customer has the right to access, modify, rectify and delete data concerning him/her at any time. These rights can be exercised electronically by contacting us at <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>.</p>
       <h2>Contact us</h2>
       <p>Visit our <a href="../../contact.html">contact page</a> if you have any questions or contact us directly by email at <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a></p>
     </div>
@@ -232,16 +223,14 @@
 <!-- ======= CONTACT CTA ======= -->
 <section class="section section--dark" aria-labelledby="cta-legal-title">
   <div class="container cta-block">
-    <span class="section-label" style="color:var(--teal);">Demonstration</span>
-    <h2 class="section-title" id="cta-legal-title" style="color:var(--white); margin-bottom:16px;">
-      See <span class="nb">Q-Bot</span> in action
-    </h2>
-    <a href="../../contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+    <h2 class="section-title" id="cta-legal-title" style="color:var(--white); margin-bottom:16px;">See <span class="nb">Q-Bot</span> in action</h2>
+    <div class="cta-block__actions">
+      <a href="../contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+    </div>
   </div>
 </section>
 </main>
 
-<!-- ======= FOOTER ======= -->
 <footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer__grid">
@@ -302,6 +291,9 @@
   </div>
 </footer>
 
+<!-- Chemin nu : « tools/bump-assets » y pose l'empreinte réelle. Une
+     empreinte écrite à la main ici se périme et rejoue la panne de cache
+     du 2026-08-25. -->
 <script src="../../assets/js/main.js?v=589f1521" defer></script>
 </body>
 </html>

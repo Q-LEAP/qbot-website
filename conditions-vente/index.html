@@ -35,16 +35,19 @@
   <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
   <meta name="theme-color" content="#000000">
 
-  <!-- Google Fonts -->
-    <!-- Roboto est SERVIE PAR LE SITE, en local : « style.css » déclare ses
-         @font-face sur « assets/fonts/roboto-latin.woff2 ». Les trois balises
-         Google Fonts qui étaient ici venaient du WordPress et ne servaient à
-         rien : trois requêtes vers deux origines tierces, bloquantes au rendu,
-         pour une police déjà présente. Et l'IP de chaque visiteur partait chez
-         Google SUR LA PAGE DE POLITIQUE DE CONFIDENTIALITÉ elle-même.
-         Retirées le 2026-08-31, relevé par l'audit RosoAI n°5. Le générateur
-         « tools/gen-legal.py » est corrigé aussi, sinon il les réintroduit. -->
+  <!-- PAS DE GOOGLE FONTS. Roboto est servie par le site, en local : « style.css »
+       déclare ses @font-face sur « assets/fonts/roboto-latin.woff2 ». Les trois
+       balises qui étaient ici venaient du WordPress et ne servaient à rien : trois
+       requêtes vers deux origines tierces, bloquantes au rendu, pour une police
+       déjà présente, et l'IP du visiteur qui part chez Google SUR LA PAGE DE
+       POLITIQUE DE CONFIDENTIALITÉ. Retirées le 2026-08-31, relevé RosoAI n°5.
 
+       ET AUCUNE EMPREINTE ÉCRITE À LA MAIN. Ce gabarit en portait une, périmée de
+       plusieurs jours : une régénération aurait réintroduit la panne de cache du
+       2026-08-25. Le chemin est nu, et « tools/bump-assets » y pose l'empreinte
+       réelle. NE PAS écrire ici un exemple de chemin versionné : ce script-là
+       remplace le paramètre de version PARTOUT dans le fichier, commentaires
+       compris, et rendrait cette phrase illisible. -->
   <link rel="stylesheet" href="../assets/css/style.css?v=f17ca7a1">
   <script type="application/ld+json">
   {
@@ -117,25 +120,21 @@
 
 <a href="#main" class="skip-nav">Aller au contenu principal</a>
 
-<!-- ======= NAVIGATION ======= -->
 <header class="nav" role="banner">
   <div class="container">
     <nav class="nav__inner" aria-label="Navigation principale">
       <a href="../" class="nav__logo" aria-label="Q-Bot, accueil">
         <img src="../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
       </a>
-
       <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
         <span></span><span></span><span></span>
       </button>
-
       <ul class="nav__menu" id="main-menu" role="list">
         <li><a href="../" class="nav__link">Accueil</a></li>
         <li><a href="../caracteristiques.html" class="nav__link">Caractéristiques</a></li>
         <li><a href="../cas-usage.html" class="nav__link">Cas d'usage</a></li>
         <li><a href="../faq.html" class="nav__link">FAQ</a></li>
       </ul>
-
       <div class="nav__actions">
         <a href="../reservation.html" data-booking-open
        data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
@@ -375,7 +374,6 @@
 </section>
 </main>
 
-<!-- ======= FOOTER ======= -->
 <footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer__grid">
@@ -436,6 +434,9 @@
   </div>
 </footer>
 
+<!-- Chemin nu : « tools/bump-assets » y pose l'empreinte réelle. Une
+     empreinte écrite à la main ici se périme et rejoue la panne de cache
+     du 2026-08-25. -->
 <script src="../assets/js/main.js?v=589f1521" defer></script>
 </body>
 </html>
