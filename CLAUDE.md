@@ -5707,3 +5707,73 @@ pratique contre laquelle Q-Bot se positionne : un jeton de test ne teste pas le 
 nuage.** C'est l'angle que personne n'occupe. Ce n'est pas une recommandation de publier — le
 retour du contenu a été refusé par le directeur du client le 2026-09-01 — c'est le relevé de
 ce qui est vacant, pour le jour où la question se reposera.
+
+
+## Le titre du hero, refait d'après les concurrents réels (2026-09-01)
+
+Demandé par le client : « on peut avoir une meilleure catch phrase », en regardant les
+concurrents, en restant pro et premium, et en pesant le référencement.
+
+### Ce que disent vraiment les concurrents, relevé sur leurs pages
+
+| | Titre de leur page d'accueil |
+|---|---|
+| mabl | « Don't build tests, build trust » |
+| Sauce Labs | « Verify AI-generated code at the pace it's written. » |
+| Kobiton | « Mobile App Testing on Real Devices » |
+| BrowserStack | « Everything you need for testing » |
+| Katalon | « The AI platform for software quality » |
+| Mailosaur | « Preview, test, and trust every customer touchpoint » |
+| Perfecto | « Perfecto AI: Smarter App Testing for Enterprise Teams » |
+
+**Deux familles, et il faut choisir laquelle** : ceux qui déclarent la CATÉGORIE, mot-clé
+compris (Kobiton, Katalon, BrowserStack) et ceux qui posent une PROMESSE sans aucun mot-clé
+(mabl, Sauce Labs). Les premiers sont trouvables, les seconds sont mémorables.
+
+**ET LE MARCHÉ ENTIER DIT « IA » EN CE MOMENT** : Perfecto AI, la plateforme IA de Katalon,
+les agents de BrowserStack, ceux de mabl, le code généré par IA de Sauce Labs. Q-Bot est
+exactement l'inverse, et c'est vrai : du matériel, une vraie application, rien de deviné.
+C'est un contre-pied qui se tient tout seul.
+
+### Ce qui n'allait pas dans l'ancien titre
+
+« L'authentification 2FA ne bloque plus vos tests. Vos campagnes vont au bout. »
+
+- **c'était une négation** : il fallait déjà connaître le problème pour sentir la promesse ;
+- **il ne portait pas le verbe de la requête.** On cherche « automatiser », il disait
+  « ne bloque plus » ;
+- la seconde phrase ne disait rien de vérifiable : au bout de quoi ?
+
+### Le titre retenu, et pourquoi ces mots-là
+
+> **Vos tests automatisés passent la double authentification.**
+> *Sans clé secrète.*
+
+- **il est affirmatif** et il tient en une proposition ;
+- **il porte les deux expressions longues que le relevé disait faibles** : « tests
+  automatisés » et « double authentification ». Le sigle « 2FA », lui, est déjà cité 68 fois
+  et vit dans le `<title>` : les deux se complètent au lieu de se répéter ;
+- **« sans clé secrète » est le différenciateur le plus tranchant, et il est sourcé.** Le
+  relevé de SERP du même jour montre que la méthode dominante pour automatiser la 2FA est la
+  clé secrète TOTP partagée, et que la documentation Selenium recommande carrément un jeton de
+  test dédié. Trois mots suffisent donc à dire ce que Q-Bot fait autrement, à un lecteur qui
+  est du métier.
+
+**LE POIDS SEO D'UN TITRE DE HERO EST RÉEL MAIS SECONDAIRE, et il ne faut pas le surestimer.**
+Le `<title>` et le contenu de la page pèsent davantage ; un `h1` aide à comprendre la
+structure, ce n'est pas un levier de classement à lui seul. Et pour CE site, tant qu'il est en
+`noindex`, sa valeur de référencement est **nulle**. Ce qui compte vraiment ici est autre
+chose : c'est la phrase qu'un moteur de réponse citera en premier, donc elle doit être
+**autonome, affirmative et vérifiable**. C'est ce critère qui a tranché, pas le comptage de
+mots-clés.
+
+**Coût de mise en page : zéro.** Mesuré avant/après en remplaçant le titre dans le navigateur :
+**exactement la même hauteur** à 1440 px (5 lignes en français, 4 en anglais) et **37 px de
+MOINS** à 390 px. Une version plus longue avait été écrite d'abord (« Sans clé secrète, sans
+simulateur, sans personne devant l'écran. ») : elle montait à 8 lignes et 515 px, et faisait
+gonfler le hero de 193 px. Un titre de hero se mesure, il ne se juge pas sur le papier.
+
+L'anglais n'est pas la traduction du français, comme toujours ici, mais les deux portent la
+même structure : « Your automated tests get past two-factor authentication. No shared
+secret. » — « get past » est la formulation que les gens emploient réellement dans les forums
+et les articles anglophones sur le sujet.
