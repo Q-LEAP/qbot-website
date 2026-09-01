@@ -41,8 +41,8 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=f17ca7a1">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=faaf73c1">
+  <link rel="stylesheet" href="assets/css/style.css?v=c74b66bf">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=247f6a17">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
        local est refusé : ouvert en file://, un script « module » local a l'origine
@@ -192,7 +192,7 @@
           Automatisation de la 2FA pour les équipes QA
         </div>
         <h1 class="hero__title" id="hero-title">
-          L'authentification forte ne bloque plus vos tests.<br><em>Vos campagnes vont au bout.</em>
+          L'authentification 2FA ne bloque plus vos tests.<br><em>Vos campagnes vont au bout.</em>
         </h1>
         <p class="hero__desc">
           <span class="nb">Q-Bot</span> pilote la double authentification sur un vrai téléphone Android, à la demande de votre chaîne de tests. La dernière étape manuelle de vos campagnes disparaît, <strong>sans intervention humaine</strong>.
@@ -251,20 +251,25 @@
           <span class="nb">Q-Bot</span> se connecte en un clic pour automatiser la double authentification dans tous vos cas de test, et pour tout type de solution 2FA.
         </div>
         <p style="margin-top:16px;">
-          Cette solution s'intègre à toutes vos campagnes d'automatisation pour gérer les parcours utilisateurs nécessitant une authentification forte, sans intervention manuelle.
+          Cette solution s'intègre à toutes vos campagnes d'automatisation pour gérer les parcours utilisateurs nécessitant une authentification 2FA, sans intervention manuelle.
         </p>
         <a href="caracteristiques.html" class="btn btn--outline" style="margin-top:28px;">
           En savoir plus
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="intro__image">
-        <!-- Rendu de la géométrie réelle (assets/models/qbot.glb, lui-même issu du
-             FBX v3), pas une image générée : cf. tools/render/. -->
+      <div class="intro__image intro__image--schema">
+        <!-- SCHÉMA, pas une photo, et l'alternative textuelle le dit. Construit en
+             HTML puis capturé : tools/render/solution-visual.html, régénéré par
+             tools/render/shoot-solution-visual.py. Il remplace un rendu du boîtier
+             (2026-09-01, retour du client) : le titre de la section parle d'un
+             MÉCANISME, l'image montrait un OBJET, déjà présent trois fois sur la
+             page. La classe --schema annule la sur-échelle du cadre, qui rognerait
+             le libellé du schéma. -->
         <img
-          src="assets/img/qbot-specs.jpg"
-          alt="Le boîtier Q-Bot vu de trois quarts"
-          width="1400" height="1050"
+          src="assets/img/qbot-2fa-flux.jpg"
+          alt="Schéma : votre chaîne de tests appelle Q-Bot par un appel HTTP, Q-Bot appuie dans la vraie application 2FA du téléphone Android relié en USB, et le test continue"
+          width="1500" height="1125"
           loading="lazy"
         >
       </div>
@@ -517,7 +522,7 @@
     <div class="section-header">
       <span class="section-label">Pour qui ?</span>
       <h2 class="section-title" id="audience-title">À qui s'adresse <span class="nb">Q-Bot</span>&nbsp;?</h2>
-      <p class="section-subtitle">À toute équipe dont les tests automatisés butent sur une validation 2FA&nbsp;: testeurs, automaticiens, développeurs, chefs de projet. <span class="nb">Q-Bot</span> sert aussi les projets d'automatisation de processus métier (RPA) qui demandent une authentification forte. Une seule condition, et c'est la vraie limite&nbsp;: que le second facteur passe par une application Android.</p>
+      <p class="section-subtitle">À toute équipe dont les tests automatisés butent sur une validation 2FA&nbsp;: testeurs, automaticiens, développeurs, chefs de projet. <span class="nb">Q-Bot</span> sert aussi les projets d'automatisation de processus métier (RPA) qui demandent une authentification 2FA. Une seule condition, et c'est la vraie limite&nbsp;: que le second facteur passe par une application Android.</p>
     </div>
     <div class="grid-2">
       <article class="feature-card">
@@ -772,7 +777,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=589f1521" defer></script>
+<script src="assets/js/main.js?v=010b9f4b" defer></script>
 <script src="assets/js/scrolly.js?v=130fc8b1" defer></script>
 </body>
 </html>

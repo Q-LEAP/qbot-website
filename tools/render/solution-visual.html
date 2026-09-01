@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr" class="fr">
+<head>
+<meta charset="UTF-8">
+<title>Visuel de la section « La solution »</title>
+<!--
+  SCHÉMA DE L'AUTOMATISATION DE LA 2FA, pour la section « La solution » des deux
+  accueils. Rendu par tools/render/shoot-solution-visual.py.
+
+  POURQUOI UN SCHÉMA ET PAS UNE PHOTO DU PRODUIT. La section s'intitule
+  « Automatiser la double authentification (2FA) » et montrait un rendu du boîtier :
+  le titre parle d'un MÉCANISME, l'image montrait un OBJET. Signalé par le client le
+  2026-09-01. Le boîtier est déjà montré trois fois sur la page (hero, séquence 3D,
+  feuille de route) ; ce qui manquait, c'est ce que le produit FAIT.
+
+  MÊME LANGAGE QUE tools/render/guide-thumbs.html, et pour les mêmes raisons :
+  teal #00CBBE et noir plus la rampe de gris de la charte, Roboto servie depuis le
+  dépôt, pictogrammes en SVG au trait, aucun emoji, aucun cadratin, aucune licence
+  tierce à surveiller.
+
+  DIMENSION MESURÉE UNE FOIS LA RÉVÉLATION FINIE : le cadre fait au plus 656 x 492 px
+  à 2560 px de large, donc 1312 px à densité 2. La planche fait 760 x 570 en CSS,
+  capturée à densité 2 puis réduite à 1500 x 1125 (14 % de marge).
+
+  Les deux langues cohabitent dans le DOM ; la classe de <html> décide.
+-->
+<style>
+  @font-face { font-family: Roboto; src: url('../../assets/fonts/roboto-latin.woff2') format('woff2');
+               font-weight: 100 900; font-display: block; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --teal: #00CBBE; --g1: #E6E7E8; --g2: #BCBEC0; --g3: #808285; --fond: #0B0B0B; }
+  body { background: #222; font-family: Roboto, system-ui, sans-serif; }
+  html.fr .en, html.en .fr { display: none; }
+
+  .board {
+    width: 760px; height: 570px; position: relative; overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, #14201F 0%, var(--fond) 62%);
+    color: var(--g1); display: flex; flex-direction: column;
+    padding: 38px 44px 34px; gap: 14px;
+  }
+  .board::after {
+    content: ''; position: absolute; inset: auto -30% -45% -30%; height: 70%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(0,203,190,.16), transparent 70%);
+    pointer-events: none;
+  }
+  .kicker {
+    font-size: 15px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--teal); position: relative; padding-left: 13px; flex: none;
+  }
+  .kicker::before { content:''; position:absolute; left:0; top:2px; bottom:2px; width:3px; background:var(--teal); }
+
+  .flow { flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+          position: relative; z-index: 1; }
+
+  .node {
+    display: flex; align-items: center; gap: 16px;
+    border: 1px solid rgba(255,255,255,.11); border-left: 3px solid var(--teal);
+    border-radius: 10px; padding: 16px 20px;
+    background: linear-gradient(100deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+  }
+  .node--end { border-left-color: var(--teal); }
+  .ico { flex: none; width: 34px; height: 34px; display: grid; place-items: center;
+         border-radius: 8px; background: rgba(0,203,190,.12); color: var(--teal); }
+  .ico svg { width: 20px; height: 20px; }
+  /* `display: block` : sans lui, le titre et sa précision, tous deux des <span>,
+     se suivaient sur la MÊME ligne. */
+  .t { display: block; font-size: 20px; font-weight: 700; line-height: 1.25; }
+  .s { display: block; font-size: 14px; color: var(--g3); margin-top: 4px; line-height: 1.35; }
+  .node > span:last-child { min-width: 0; }
+
+  /* Le lien entre deux étapes : un trait, une pointe, et le geste écrit à côté. */
+  .link { display: flex; align-items: center; gap: 12px; padding: 4px 0 4px 17px; }
+  .rail { flex: none; width: 2px; height: 42px; background: linear-gradient(var(--teal), rgba(0,203,190,.25)); border-radius: 2px; }
+  .link .lab { font-size: 13.5px; color: var(--g2); line-height: 1.35; }
+  .link code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+               font-size: 13px; color: var(--teal); }
+</style>
+</head>
+<body>
+
+<div class="board" id="solution">
+  <span class="kicker"><span class="fr">Automatisation 2FA</span><span class="en">2FA automation</span></span>
+  <div class="flow">
+
+    <div class="node">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+      <span>
+        <span class="t"><span class="fr">Votre chaîne de tests</span><span class="en">Your test pipeline</span></span>
+        <span class="s">Selenium · Cypress · Playwright · Robot Framework</span>
+      </span>
+    </div>
+
+    <div class="link">
+      <span class="rail"></span>
+      <span class="lab"><span class="fr">un appel HTTP, depuis le test<br><code>GET /scenarios/:id/execute</code></span><span class="en">one HTTP call, from the test<br><code>GET /scenarios/:id/execute</code></span></span>
+    </div>
+
+    <div class="node">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="12" height="16" rx="2"/><line x1="6" y1="8" x2="12" y2="8"/><path d="M17 9v6"/><path d="M21 9v6"/></svg></span>
+      <span>
+        <span class="t">Q-Bot</span>
+        <span class="s"><span class="fr">boîtier posé sur le bureau, téléphone Android relié en USB</span><span class="en">enclosure on the desk, Android phone connected over USB</span></span>
+      </span>
+    </div>
+
+    <div class="link">
+      <span class="rail"></span>
+      <span class="lab"><span class="fr">les appuis se font dans la <strong>vraie</strong> application 2FA<br>LuxTrust · itsme · Microsoft · Google Authenticator</span><span class="en">the taps happen in the <strong>real</strong> 2FA app<br>LuxTrust · itsme · Microsoft · Google Authenticator</span></span>
+    </div>
+
+    <div class="node node--end">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg></span>
+      <span>
+        <span class="t"><span class="fr">Le test continue</span><span class="en">The test carries on</span></span>
+        <span class="s"><span class="fr">sans personne devant l'écran, de jour comme de nuit</span><span class="en">with nobody watching the screen, day or night</span></span>
+      </span>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

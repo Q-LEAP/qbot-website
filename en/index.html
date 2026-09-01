@@ -36,8 +36,8 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=f17ca7a1">
-  <link rel="stylesheet" href="../assets/css/scrolly.css?v=faaf73c1">
+  <link rel="stylesheet" href="../assets/css/style.css?v=c74b66bf">
+  <link rel="stylesheet" href="../assets/css/scrolly.css?v=247f6a17">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
        local est refusé : ouvert en file://, un script « module » local a l'origine
@@ -184,7 +184,7 @@
           2FA Automation for QA Teams
         </div>
         <h1 class="hero__title" id="hero-title">
-          Strong authentication no longer blocks your tests.<br><em>Your campaigns run to the end.</em>
+          2FA no longer blocks your tests.<br><em>Your campaigns run to the end.</em>
         </h1>
         <p class="hero__desc">
           <span class="nb">Q-Bot</span> drives two-factor authentication on a real Android phone, on demand from your test pipeline. The last manual step of your test runs disappears, <strong>without a human in the loop</strong>.
@@ -232,10 +232,10 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="intro__image">
-        <!-- Rendu de la géométrie réelle (assets/models/qbot.glb), pas une image
-             générée : cf. tools/render/. -->
-        <img src="../assets/img/qbot-specs.jpg" alt="Three-quarter view of the Q-Bot enclosure" width="1400" height="1050" loading="lazy">
+      <div class="intro__image intro__image--schema">
+        <!-- SCHÉMA, pas une photo, et l'alternative textuelle le dit. Construit en
+             HTML puis capturé : tools/render/solution-visual.html. Voir index.html. -->
+        <img src="../assets/img/qbot-2fa-flux-en.jpg" alt="Diagram: your test pipeline calls Q-Bot over HTTP, Q-Bot taps in the real 2FA app on the Android phone connected over USB, and the test carries on" width="1500" height="1125" loading="lazy">
       </div>
     </div>
   </div>
@@ -479,7 +479,7 @@
     <div class="section-header">
       <span class="section-label">Who is it for?</span>
       <h2 class="section-title" id="audience-title">Who is <span class="nb">Q-Bot</span> for?</h2>
-      <p class="section-subtitle">Any team whose automated tests stall on a 2FA step: testers, automation engineers, developers, project managers. <span class="nb">Q-Bot</span> also serves business process automation (RPA) projects that require strong authentication. One condition only, and it is the real limit: the second factor has to run in an Android app.</p>
+      <p class="section-subtitle">Any team whose automated tests stall on a 2FA step: testers, automation engineers, developers, project managers. <span class="nb">Q-Bot</span> also serves business process automation (RPA) projects that require 2FA. One condition only, and it is the real limit: the second factor has to run in an Android app.</p>
     </div>
     <div class="grid-2">
       <article class="feature-card">
@@ -707,7 +707,7 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=589f1521" defer></script>
+<script src="../assets/js/main.js?v=010b9f4b" defer></script>
 <script src="../assets/js/scrolly.js?v=130fc8b1" defer></script>
 </body>
 </html>
