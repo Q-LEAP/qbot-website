@@ -55,6 +55,12 @@ function pages() {
       if (e.isDirectory()) {
         if (IGNORE.has(e.name) || e.name.normalize('NFC').startsWith('Screen mod')) continue;
         marcher(p);
+      } else if (e.name.startsWith('.')) {
+        // « ._page.html » : fork de ressources macOS sur ce volume exFAT, pas une
+        // page. Le jumeau Python ne le voit pas (glob ignore les noms cachés) et
+        // les deux doivent rester d'accord : sans cette ligne, le décompte des
+        // deux scripts diverge dès qu'une page est écrite depuis un Mac.
+        continue;
       } else if (e.name.endsWith('.html')) {
         // les pages de redirection ne chargent ni feuille ni script
         if (fs.readFileSync(p, 'utf8').slice(0, 1200).includes('<meta http-equiv="refresh"')) continue;

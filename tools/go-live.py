@@ -21,8 +21,8 @@ CE QU'IL FAIT
      PRÉ-LANCEMENT qui l'accompagne, sur toutes les pages ;
   2. remplace robots.txt par son contenu d'ouverture ;
   3. si `--endpoint` est fourni, renseigne `data-endpoint` sur les formulaires
-     qui n'en ont pas encore. IL N'Y EN A PLUS AUCUN À BRANCHER : les quatre
-     newsletters pointent sur le Brevo du client depuis le 2026-08-26, et les deux
+     qui n'en ont pas encore. IL N'Y EN A PLUS AUCUN À BRANCHER : les bandes
+     newsletter pointent sur le Brevo du client depuis le 2026-08-26, et les
      formulaires de CONTACT partent volontairement par le logiciel de courrier du
      visiteur, sur décision du client du 2026-08-26 (pas de sous-traitant tiers
      pour le contact). L'option reste en place au cas où cette décision change,
@@ -59,6 +59,22 @@ from redirections_map import REDIRECTIONS  # noqa: E402
 NB_REDIRECTIONS = len(REDIRECTIONS)
 with io.open(os.path.join(RACINE, 'sitemap.xml'), encoding='utf-8') as _f:
     NB_PAGES = _f.read().count('<loc>')
+
+# MÊME RAISON POUR LES DEUX COMPTES DE FORMULAIRES, et ils avaient déjà vieilli :
+# le rappel de fin annonçait « quatre newsletters » alors que les deux index de
+# blog qui en portaient une ont été supprimés le 2026-08-28. Il n'en reste que
+# deux, sur les deux accueils. On les compte dans les pages, pas de mémoire.
+def _compte(motif):
+    n = 0
+    for _p in glob.glob(os.path.join(RACINE, '*.html')) + \
+              glob.glob(os.path.join(RACINE, 'en', '*.html')):
+        with io.open(_p, encoding='utf-8') as _f:
+            n += _f.read().count(motif)
+    return n
+
+
+NB_NEWSLETTER = _compte('data-endpoint-kind="brevo"')
+NB_CONTACT = _compte('data-endpoint=""')
 
 # La balise est cherchée par MOTIF et non par chaîne littérale : le back-office,
 # supprimé le 2026-08-28, l'écrivait « noindex,nofollow » sans espace et un
@@ -151,9 +167,9 @@ CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
  4. NE SUPPRIMER LE WORDPRESS QU'APRÈS l'étape 2. Les quatre pages légales
     vivent désormais dans ce dépôt, aux mêmes adresses, donc rien ne se perd ;
     mais tant que le WordPress répond encore, on peut comparer.
- 5. Rien à faire pour les formulaires. Les deux formulaires de contact passent
+ 5. Rien à faire pour les formulaires. Les {NB_CONTACT} formulaires de contact passent
     par le logiciel de courrier du visiteur, PAR DÉCISION DU CLIENT du 2026-08-26,
-    et ce n'est donc pas un point ouvert. Les quatre newsletters postent sur son
+    et ce n'est donc pas un point ouvert. Les {NB_NEWSLETTER} newsletters postent sur son
     Brevo ; il lui reste à désactiver le reCAPTCHA de ce formulaire, sans quoi
     elles retombent sur le même repli courrier.
 ────────────────────────────────────────────────────────────────────────────
