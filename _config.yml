@@ -85,3 +85,9 @@ exclude:
   - assets/img/logo-qdigital.png
   - assets/img/group-icon.png
   - assets/img/favicon-16.png
+  # Le schéma du flux 2FA, construit le 2026-09-01 pour la section « La solution »
+  # puis remplacé le même jour par le visuel fourni par le client. Gardé dans git
+  # (il se remet en place en changeant un `src`), mais plus servi : la règle du
+  # jour est qu'aucun actif servi n'est sans référence.
+  - assets/img/qbot-2fa-flux.jpg
+  - assets/img/qbot-2fa-flux-en.jpg

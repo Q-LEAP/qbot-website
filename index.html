@@ -41,8 +41,8 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=c74b66bf">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=247f6a17">
+  <link rel="stylesheet" href="assets/css/style.css?v=f17ca7a1">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=1a650976">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
        local est refusé : ouvert en file://, un script « module » local a l'origine
@@ -258,18 +258,21 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="intro__image intro__image--schema">
-        <!-- SCHÉMA, pas une photo, et l'alternative textuelle le dit. Construit en
-             HTML puis capturé : tools/render/solution-visual.html, régénéré par
-             tools/render/shoot-solution-visual.py. Il remplace un rendu du boîtier
-             (2026-09-01, retour du client) : le titre de la section parle d'un
-             MÉCANISME, l'image montrait un OBJET, déjà présent trois fois sur la
-             page. La classe --schema annule la sur-échelle du cadre, qui rognerait
-             le libellé du schéma. -->
+      <div class="intro__image">
+        <!-- Visuel fourni par le client le 2026-09-01, recadré au carré (1086 x 1086,
+             de 300 à 1386 sur l'original) pour que le boîtier et le téléphone tiennent
+             entiers : le sujet est presque carré, un cadrage 4/3 coupait soit le haut
+             du téléphone soit le bas du boîtier.
+             IMAGE DE SYNTHÈSE, ET IL FAUT LE SAVOIR : elle vient d'un générateur, ce
+             que le dépôt avait écarté le 2026-08-24. Remise sur demande explicite du
+             client. Deux points signalés : la ligne sous « Q-BOT » gravé est illisible
+             (la signature habituelle de ces images), et l'écran du téléphone montre une
+             validation LuxTrust inventée citant MyGuichet, alors que le site déclare
+             par ailleurs n'avoir aucun lien avec LuxTrust. -->
         <img
-          src="assets/img/qbot-2fa-flux.jpg"
-          alt="Schéma : votre chaîne de tests appelle Q-Bot par un appel HTTP, Q-Bot appuie dans la vraie application 2FA du téléphone Android relié en USB, et le test continue"
-          width="1500" height="1125"
+          src="assets/img/qbot-2fa-dock.jpg"
+          alt="Le boîtier Q-Bot posé sur un bureau, un smartphone Android inséré dans son socle, une demande de validation 2FA affichée à l'écran"
+          width="1086" height="1086"
           loading="lazy"
         >
       </div>
@@ -777,7 +780,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=010b9f4b" defer></script>
+<script src="assets/js/main.js?v=589f1521" defer></script>
 <script src="assets/js/scrolly.js?v=130fc8b1" defer></script>
 </body>
 </html>

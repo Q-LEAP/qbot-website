@@ -610,7 +610,7 @@ backToTop.addEventListener('click', () => {
     /* Exclut .intro__image--product : ce contre-mouvement est fait pour une
        photo qui remplit son cadre ; sur un rendu détouré, il fait sortir le
        produit de son halo et le rogne au bord du cadre. */
-    ['.intro__image:not(.intro__image--product):not(.intro__image--schema) img', -14],
+    ['.intro__image:not(.intro__image--product) img',  -14],
     ['.blog__featured-img img',                        -12],
     /* Titres de section : dérive très légère, juste assez pour que le bloc de
        texte et son image ne défilent pas exactement à la même vitesse. */

@@ -65,8 +65,10 @@
 /* LA SECTION QUI PRÉCÈDE LA SÉQUENCE SE RAPPROCHE D'ELLE. Le rythme de 112 px
    entre deux sections vaut entre deux blocs de TEXTE ; ici la suivante ouvre sur
    une scène 3D sombre et vide, et les 112 px s'ajoutent à ce vide au lieu de le
-   séparer de quelque chose. Ramené à 72 px, mesuré le 2026-09-01 à la demande du
-   client. `:has()` : un moteur qui ne le connaît pas garde les 112 px, donc le
+   séparer de quelque chose. Ramené à 72 px puis à 48 px, en deux fois, le
+   2026-09-01 à la demande du client. Écart mesuré entre la fin de « La solution »
+   et la carte « LE PRODUIT » : 484 px à l'origine, 420 après le premier pas,
+   380 après le second. `:has()` : un moteur qui ne le connaît pas garde les 112 px, donc le
    rythme d'origine — dégradation sans casse.
 
    DEUX SÉLECTEURS, ET LE PREMIER EST CELUI QUI SERT : la séquence n'est PAS le
@@ -81,7 +83,7 @@
      page (la carte passe en `fixed` au bas de l'écran) : la gêne signalée n'y
      existe pas. */
   .section:has(+ .skip-nav + .scrolly),
-  .section:has(+ .scrolly) { padding-bottom: 72px; }
+  .section:has(+ .scrolly) { padding-bottom: 48px; }
 }
 
 /* ── La scène : elle reste, le texte passe ─────────────────────────────── */
@@ -276,12 +278,13 @@
   display: grid;
   align-content: center;
   /* Le padding haut dégage la barre de navigation : au centre de son pas, la
-     carte se lit intégralement, libellé compris. RAMENÉ DE 96 À 48 PX le
-     2026-09-01 : le contenu étant CENTRÉ dans le pas, ce retrait le repousse de
-     la MOITIÉ de sa valeur, donc la première carte descendait de 48 px sans
-     raison. La carte reste largement sous la barre (72 px), et le client
-     signalait que « LE PRODUIT » arrivait trop loin après « LA SOLUTION ». */
-  padding: 48px clamp(24px, 7vw, 96px) 0;
+     carte se lit intégralement, libellé compris. RAMENÉ DE 96 À 48 PUIS À 16 PX
+     le 2026-09-01, en deux fois, le client ayant demandé de resserrer encore : le
+     contenu étant CENTRÉ dans le pas, ce retrait le repousse de la MOITIÉ de sa
+     valeur, donc la première carte descendait de 48 px sans raison. Elle reste
+     très loin sous la barre de navigation (son bord haut tombe vers 300 px dans
+     une fenêtre de 900), donc ce retrait ne la protégeait de rien. */
+  padding: 16px clamp(24px, 7vw, 96px) 0;
   max-width: 620px;
   pointer-events: none;
 }

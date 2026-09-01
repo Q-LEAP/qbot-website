@@ -2417,16 +2417,6 @@ p { color: var(--gray); }
 }
 .intro__image--product img { --media-scale: 1; }
 
-/* Variante « schéma » — une planche construite en HTML puis capturée
-   (tools/render/solution-visual.html), pas une photo. Elle porte son propre fond
-   sombre et son propre cadrage, donc pas de surface ajoutée comme sur la variante
-   « produit » ; en revanche la sur-échelle DOIT retomber à 1. À 1,08 le cadre
-   rogne 4 % de chaque côté, et le libellé teal du schéma, posé à 5,8 % du bord,
-   passait à la trappe. Même raison que la pastille « MADE IN LUXEMBOURG » rognée
-   le 2026-08-26 : une image dont un bord porte de l'information ne se sur-cadre
-   pas. Le contre-parallaxe interne est retiré avec elle, dans main.js. */
-.intro__image--schema img { --media-scale: 1; }
-
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
    restent donc portés par l'image (un cadre clippé arrondirait aussi les
    angles du bouton), et le bloc entier se déplace d'un seul tenant au

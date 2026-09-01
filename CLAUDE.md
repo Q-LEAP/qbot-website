@@ -5409,6 +5409,11 @@ La section s'intitule « Automatiser la double authentification (2FA) » et mont
 du boîtier : **le titre parle d'un mécanisme, l'image montrait un objet**, déjà visible
 trois fois sur la page (hero, séquence 3D, feuille de route).
 
+**REMPLACÉ LE JOUR MÊME par un visuel fourni par le client**, voir la section suivante.
+Le schéma reste dans git et son outillage aussi, mais il est exclu de l'hébergement : la
+règle du jour est qu'aucun actif servi n'est sans référence. Il se remet en place en
+changeant un `src`.
+
 `assets/img/qbot-2fa-flux.jpg` (+ `-en`) est un **schéma** construit en HTML puis capturé,
 dans le langage de `tools/render/guide-thumbs.html` : chaîne de tests → appel HTTP
 (`GET /scenarios/:id/execute`) → Q-Bot et son téléphone Android → appuis dans la vraie
@@ -5499,3 +5504,38 @@ clics de là. Deux formulations tiennent les deux bouts, si l'objectif est d'ouv
 mentir : « un vrai smartphone (Android) » en accroche, la limite restant énoncée dans la FAQ
 et la fiche technique ; ou l'inverse, garder « Android » et rendre la limite moins frontale
 en la déplaçant plus bas dans la page. La décision est au client, pas ici.
+
+
+## Le visuel de « La solution » : celui du client, et deux réserves (2026-09-01)
+
+Le schéma construit le matin est remplacé par une image fournie par le client :
+`assets/img/qbot-2fa-dock.jpg`, le boîtier sur un bureau, un smartphone Android inséré,
+une demande de validation 2FA à l'écran.
+
+**Recadrée au carré (1086 × 1086, de 300 à 1386 sur l'original de 1086 × 1448) parce que le
+sujet est presque carré** : le boîtier occupe 950 px de large pour 960 de haut, donc un
+cadrage en 4/3 coupe soit le haut du téléphone soit le bas du boîtier. Le cadre n'impose
+aucun rapport, il prend celui de l'image ; à 1440 px la colonne d'image fait 526 × 526
+contre 479 px de texte, les deux colonnes sont donc équilibrées. Agrandissement mesuré :
+1,03 à 1440 px, 0,83 à 2560 px, **aucun agrandissement au-delà de 1,03**.
+
+**DEUX RÉSERVES SIGNALÉES AU CLIENT, ET ELLES SONT DANS LE COMMENTAIRE DE LA PAGE :**
+
+1. **c'est une image de synthèse**, ce que le dépôt avait écarté le 2026-08-24 en retirant
+   tous les rendus IA. La signature habituelle est présente : la ligne gravée sous
+   « Q-BOT » est illisible, du texte qui imite du texte. Elle est minuscule à la taille
+   d'affichage, mais elle est là. Remise **sur demande explicite du client**, donc la note
+   du 2026-08-24 (« ne pas les remettre en ligne ») connaît ici son exception, décidée par
+   le propriétaire des images ;
+2. **l'écran du téléphone montre une validation LuxTrust inventée**, citant MyGuichet, un
+   service réel de l'État luxembourgeois. Le site déclare par ailleurs, dans `llms.txt` et
+   dans le guide LuxTrust, n'avoir **aucun lien** avec LuxTrust. C'est le point qui mérite
+   un avis de Sylvain Perez, pas la question du rendu.
+
+**Le modificateur `.intro__image--schema` est retiré**, faute d'emploi : une classe CSS
+morte et un `:not()` qui ne filtre rien sont exactement ce qu'un audit relève. **La leçon
+qu'il portait reste vraie et doit être réappliquée si un schéma revient dans un
+`.intro__image`** : le cadre sur-dimensionne son contenu de 8 %, marge dont le
+contre-parallaxe a besoin sur une PHOTO ; sur un schéma dont un libellé est posé près du
+bord, elle le rogne. Il faut alors `--media-scale: 1` **et** sortir l'image de la table du
+contre-parallaxe dans `main.js`.
