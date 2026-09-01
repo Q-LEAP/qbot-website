@@ -5641,3 +5641,69 @@ client le 2026-08-25. Le périmètre n'a pas changé, seule sa mise en avant a c
 plus annoncé en accroche, il est énoncé dans la FAQ, la fiche technique et la liste de
 compatibilité. **Si un jour la question « pourquoi mon iPhone ne marche pas » remonte du
 terrain, c'est ici qu'il faudra revenir.**
+
+
+## Ce que le web dit de Q-Bot, et qui n'est plus vrai (2026-09-01)
+
+Relevé aux outils gratuits, à la demande du client : recherche en direct et lecture de pages.
+Aucun volume, aucune difficulté, aucun backlink — ces données n'existent pas sans un outil
+payant ou sans la Search Console, et **il ne faut jamais en inventer**.
+
+### La niche française est occupée par un article de presse de 2023, et par un blog
+
+Sur « automatiser authentification LuxTrust tests automatisés », le seul résultat du sujet est
+la **reprise ITnation de l'article Merkur**. Elle décrit l'ANCIEN produit : récupération de la
+valeur de l'OTP, token LuxTrust, moins de dix secondes. C'est donc ce récit-là que le moteur
+résume quand on cherche le sujet.
+
+**ET LA NICHE N'EST PLUS TOUT À FAIT VIDE**, contrairement à ce que l'audit initial avait
+établi : `latavernedutesteur.fr` publie depuis août 2024 une **série de trois articles** sur
+« l'automatisation de tests dans un environnement sécurisé avec de l'authentification
+multi-facteur », en français, signée Jonathan Bernales. C'est le concurrent éditorial le plus
+proche, et il est francophone.
+
+### Le web décrit encore l'actionneur et la caméra
+
+Une recherche de marque produit ce résumé : « le bouton du token est poussé par un actionneur
+piloté logiciellement, le code est capturé par une caméra ». C'est le récit retiré du site le
+2026-08-19. Il vit sur des pages tierces qui ne sont pas dans ce dépôt : `krishworkstech.com`
+(portfolio du sous-traitant), `3dprint.lu` (le partenaire d'impression), l'article ITnation,
+et une page d'inscription webinaire sur le **propre Odoo de Q-Leap**. **Corriger le site ne
+corrige pas ces pages-là**, et ce sont elles qui alimentent les résumés des moteurs tant que
+`q-bot.eu` est fermé.
+
+### La fiche annuaire existe, et elle annonce les deux revendications retirées
+
+L'audit RosoAI notait « fiche G2/Capterra toujours absente ». **Il en existe une**, sur
+Ministry of Testing, et sa description est, mot pour mot :
+
+> Automate the use of tokens on 100% of your tests.
+
+Soit le vocabulaire du token (retiré le 2026-08-19) **et** le « 100 % » (retiré le
+2026-08-24), dans la même phrase. Elle pointe en outre vers `bot.q-leap.eu`.
+
+### Le point qui entre dans la séquence du jour J
+
+`https://bot.q-leap.eu/` répond **301 vers `https://q-bot.eu/`**, et cette redirection est
+servie par le WordPress. Elle n'est pas décorative : c'est l'adresse que porte la fiche
+annuaire. **Le jour où le WordPress est supprimé, ce lien tombe.** C'est désormais l'étape 4
+de `tools/go-live.py`, avant la suppression du WordPress, avec la commande de contrôle.
+
+### Ce que la SERP anglaise oppose, et ce qu'elle ne dit pas
+
+Deux pages occupent le sujet. **Perforce / Perfecto** (« The Essential Guide to Automated 2FA
+& MFA Testing », mis à jour le 27/11/2024, ~1 200 mots) tient le format que l'audit RosoAI
+recommande : titres en question, réponse encadrée en tête de section, et un aveu utile
+(« l'automatisation de ces fonctionnalités n'est pas complètement possible avec Appium »).
+Sa réponse est un **parc d'appareils réels dans le nuage**. Un article Medium tient l'autre
+moitié du sujet, la **clé secrète TOTP** ; sa page refuse d'être lue par outillage (HTTP 403),
+donc on n'en sait que ce que le moteur en résume.
+
+**Et la documentation officielle de Selenium déconseille d'automatiser la 2FA**, en proposant
+un jeton de test dédié. C'est la position la plus citée du domaine, et c'est exactement la
+pratique contre laquelle Q-Bot se positionne : un jeton de test ne teste pas le vrai parcours.
+
+**Aucune de ces pages ne parle de piloter un appareil physique posé sur le bureau, hors
+nuage.** C'est l'angle que personne n'occupe. Ce n'est pas une recommandation de publier — le
+retour du contenu a été refusé par le directeur du client le 2026-09-01 — c'est le relevé de
+ce qui est vacant, pour le jour où la question se reposera.

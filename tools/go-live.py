@@ -164,10 +164,23 @@ CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
  3. Créer la propriété Search Console et demander l'indexation. Relever le
     nombre de pages indexées : c'est le seul indicateur qui dise si la mise en
     ligne a réussi. Point de départ : 0 sur {NB_PAGES}.
- 4. NE SUPPRIMER LE WORDPRESS QU'APRÈS l'étape 2. Les quatre pages légales
+ 4. AVANT DE SUPPRIMER LE WORDPRESS, TRAITER « bot.q-leap.eu ».
+    Relevé le 2026-09-01 : « https://bot.q-leap.eu/ » répond 301 vers
+    « https://q-bot.eu/ », et cette redirection est servie par le WordPress. Elle
+    n'est pas décorative : la fiche Q-Bot de Ministry of Testing pointe vers cette
+    adresse, et c'est aujourd'hui le seul annuaire qui référence le produit. Le
+    jour où le WordPress disparaît, ce lien tombe.
+       curl -s -o /dev/null -w '%{{http_code}} %{{redirect_url}}\\n' https://bot.q-leap.eu/
+    Deux issues : garder la redirection vivante côté DNS/hébergement, ou faire
+    corriger la fiche avant. La fiche est de toute façon à corriger : elle annonce
+    « Automate the use of tokens on 100% of your tests », soit les DEUX
+    revendications retirées du site (le vocabulaire du token le 2026-08-19, le
+    « 100 % » le 2026-08-24).
+
+ 5. NE SUPPRIMER LE WORDPRESS QU'APRÈS l'étape 2. Les quatre pages légales
     vivent désormais dans ce dépôt, aux mêmes adresses, donc rien ne se perd ;
     mais tant que le WordPress répond encore, on peut comparer.
- 5. Rien à faire pour les formulaires. Les {NB_CONTACT} formulaires de contact passent
+ 6. Rien à faire pour les formulaires. Les {NB_CONTACT} formulaires de contact passent
     par le logiciel de courrier du visiteur, PAR DÉCISION DU CLIENT du 2026-08-26,
     et ce n'est donc pas un point ouvert. Les {NB_NEWSLETTER} newsletters postent sur son
     Brevo ; il lui reste à désactiver le reCAPTCHA de ce formulaire, sans quoi
