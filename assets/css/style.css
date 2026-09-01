@@ -2417,6 +2417,60 @@ p { color: var(--gray); }
 }
 .intro__image--product img { --media-scale: 1; }
 
+/* Variante « ajustée » — l'image tient exactement entre le libellé de section et
+   le bouton, demandé par le client le 2026-09-01. Mesuré avant : l'image carrée
+   dépassait la colonne de texte de 47 px à 1440 et de 233 px à 2560.
+
+   LE MÉCANISME EST DE SORTIR L'IMAGE DU CALCUL DE LA RANGÉE. En position absolue
+   elle ne compte plus dans la hauteur de la grille : la rangée est donc dictée
+   par le TEXTE seul, et le cadre, étiré par défaut, en prend la hauteur. L'image
+   la remplit à ratio constant. Aucun recadrage : `object-fit: cover` aurait
+   rogné 35 % de la hauteur à 2560 px, où la colonne de texte est bien plus courte
+   que l'image est large.
+
+   Elle est collée à DROITE (`inset: 0 0 0 auto`), donc sur la gouttière du
+   conteneur, jamais centrée dans sa colonne : c'est la règle du dépôt.
+
+   Le rayon et l'ombre passent sur l'IMAGE et quittent le cadre : celui-ci est
+   plus large qu'elle dès que le texte est court, et son ombre dessinerait une
+   boîte autour du vide. Même raison que sur `.specs__image`.
+
+   Et la sur-échelle retombe à 1, comme sur la variante « produit » : à 1,08 une
+   image dimensionnée au pixel près déborderait de son cadre. Le contre-parallaxe
+   interne est retiré avec elle, dans main.js. */
+.intro__image--fit {
+  /* `align-self` EXPLICITE : la grille est en `align-items: center`, donc le cadre
+     n'était pas étiré et, son contenu étant hors flux, il tombait à 0 px de haut.
+     C'est l'étirement qui lui donne la hauteur de la rangée, dictée par le texte. */
+  align-self: stretch;
+  border-radius: 0;
+  box-shadow: none;
+}
+.intro__image--fit img {
+  --media-scale: 1;
+  position: absolute;
+  /* DEUX PLAFONDS ET AUCUNE TAILLE IMPOSÉE, et c'est ce qui préserve le rapport.
+     Écrit `height: 100%` avec un `max-width` qui mord, la boîte devenait
+     387 x 516 et l'image était ÉCRASÉE : mesuré à 901 et à 1024 px, où la colonne
+     est plus étroite que la rangée n'est haute. Avec deux maxima et des
+     dimensions automatiques, le navigateur choisit lui-même la contrainte qui
+     s'applique et garde le carré. */
+  top: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+@media (max-width: 900px) {
+  /* En une colonne, l'image reprend le flux : il n'y a plus de rangée à suivre. */
+  .intro__image--fit { border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+  .intro__image--fit img { position: static; height: auto; width: 100%;
+                           border-radius: 0; box-shadow: none; }
+}
+
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
    restent donc portés par l'image (un cadre clippé arrondirait aussi les
    angles du bouton), et le bloc entier se déplace d'un seul tenant au

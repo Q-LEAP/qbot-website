@@ -66,9 +66,8 @@
    entre deux sections vaut entre deux blocs de TEXTE ; ici la suivante ouvre sur
    une scène 3D sombre et vide, et les 112 px s'ajoutent à ce vide au lieu de le
    séparer de quelque chose. Ramené à 72 px puis à 48 px, en deux fois, le
-   2026-09-01 à la demande du client. Écart mesuré entre la fin de « La solution »
-   et la carte « LE PRODUIT » : 484 px à l'origine, 420 après le premier pas,
-   380 après le second. `:has()` : un moteur qui ne le connaît pas garde les 112 px, donc le
+   2026-09-01 à la demande du client. L'essentiel du resserrement ne vient pas
+   d'ici mais du calage de la carte en haut de son pas, voir plus bas. `:has()` : un moteur qui ne le connaît pas garde les 112 px, donc le
    rythme d'origine — dégradation sans casse.
 
    DEUX SÉLECTEURS, ET LE PREMIER EST CELUI QUI SERT : la séquence n'est PAS le
@@ -276,15 +275,20 @@
   min-height: 100vh;
   min-height: 100svh;
   display: grid;
-  align-content: center;
+  /* LA CARTE EST CALÉE EN HAUT DE SON PAS, PLUS CENTRÉE. Centrée, sa position
+     dépendait de la hauteur de la fenêtre et elle arrivait à environ 300 px du
+     haut : c'est l'essentiel de l'écart que le client a demandé de réduire trois
+     fois. Calée en haut, l'écart est écrit dans le remplissage ci-dessous et il
+     ne bouge plus avec la fenêtre. La carte se lit alors en regard du HAUT de la
+     scène, ce qui est cohérent : c'est là que le produit commence. */
+  align-content: start;
   /* Le padding haut dégage la barre de navigation : au centre de son pas, la
-     carte se lit intégralement, libellé compris. RAMENÉ DE 96 À 48 PUIS À 16 PX
-     le 2026-09-01, en deux fois, le client ayant demandé de resserrer encore : le
-     contenu étant CENTRÉ dans le pas, ce retrait le repousse de la MOITIÉ de sa
-     valeur, donc la première carte descendait de 48 px sans raison. Elle reste
-     très loin sous la barre de navigation (son bord haut tombe vers 300 px dans
-     une fenêtre de 900), donc ce retrait ne la protégeait de rien. */
-  padding: 16px clamp(24px, 7vw, 96px) 0;
+     carte se lit intégralement, libellé compris. LA VALEUR EST DÉSORMAIS L'ÉCART
+     LUI-MÊME, puisque la carte est calée en haut : 164 px donnent 200 px entre la
+     fin de « La solution » et la carte « LE PRODUIT » à 1440, 194 aux autres
+     largeurs. Le client a demandé ce resserrement en trois fois, le 2026-09-01 :
+     484 px à l'origine, puis 420, puis 380, puis 200. */
+  padding: 164px clamp(24px, 7vw, 96px) 0;
   max-width: 620px;
   pointer-events: none;
 }

@@ -5539,3 +5539,56 @@ qu'il portait reste vraie et doit être réappliquée si un schéma revient dans
 contre-parallaxe a besoin sur une PHOTO ; sur un schéma dont un libellé est posé près du
 bord, elle le rogne. Il faut alors `--media-scale: 1` **et** sortir l'image de la table du
 contre-parallaxe dans `main.js`.
+
+
+## L'image tient dans la colonne de texte, et la carte se cale en haut (2026-09-01)
+
+Deux derniers réglages demandés par le client sur la même section.
+
+### `.intro__image--fit` : la hauteur de l'image est celle du texte
+
+Demandé : « que l'image tienne entre LA SOLUTION et En savoir plus ». Mesuré avant : l'image
+carrée dépassait la colonne de texte de **47 px à 1440 et de 233 px à 2560**, la colonne de
+texte se raccourcissant quand la fenêtre s'élargit alors que l'image, elle, s'élargit.
+
+**LE MÉCANISME EST DE SORTIR L'IMAGE DU CALCUL DE LA RANGÉE.** En `position: absolute` elle
+ne compte plus dans la hauteur de la grille : la rangée est dictée par le TEXTE seul, et le
+cadre en prend la hauteur. Relevé après : **image et texte à la même hauteur au pixel près à
+901, 1024, 1280, 1440, 1920 et 2560 px** (516, 495, 480, 480, 423, 423).
+
+Quatre points à ne pas défaire :
+
+- **`align-self: stretch` est OBLIGATOIRE et explicite.** `.intro__grid` est en
+  `align-items: center` : sans cette ligne le cadre n'est pas étiré et, son contenu étant
+  hors flux, **il tombe à 0 px de haut** et l'image disparaît. Constaté ;
+- **deux plafonds, aucune taille imposée.** Écrit `height: 100%` avec un `max-width` qui
+  mord, la boîte devenait 387 × 516 et **l'image était écrasée** : mesuré à 901 et 1024 px,
+  où la colonne est plus étroite que la rangée n'est haute. Avec `max-width` et `max-height`
+  et des dimensions automatiques, le navigateur choisit la contrainte qui s'applique et
+  garde le carré ;
+- **le rayon et l'ombre passent sur l'IMAGE**, pas sur le cadre : celui-ci est plus large
+  qu'elle dès que le texte est court, et son ombre dessinerait une boîte autour du vide.
+  Même raison que sur `.specs__image` ;
+- **`--media-scale: 1` et sortie de la table du contre-parallaxe**, comme la variante
+  « produit » : à 1,08 une image dimensionnée au pixel près déborde de son cadre.
+
+L'image est collée à **droite**, donc sur la gouttière, jamais centrée dans sa colonne.
+Sous 901 px elle reprend le flux et la pleine largeur : il n'y a plus de rangée à suivre.
+
+### La carte de séquence se cale en haut de son pas
+
+L'écart « LA SOLUTION » → « LE PRODUIT » a été resserré **trois fois dans la journée** :
+484 px à l'origine, 420, 380, puis **197 px** (194 aux autres largeurs), le client ayant
+donné 200 comme cible.
+
+Les deux premiers pas jouaient sur des remplissages. Le troisième change le principe :
+`align-content` passe de `center` à `start`. **Centrée, la carte dépendait de la hauteur de
+la fenêtre et arrivait à environ 300 px du haut de son pas** — c'était l'essentiel de
+l'écart, et aucun réglage de remplissage ne pouvait l'atteindre. Calée en haut, l'écart est
+écrit noir sur blanc dans `padding-top` (164 px) et ne bouge plus avec la fenêtre.
+
+Effet de bord accepté : la carte se lit désormais en regard du HAUT de la scène, ce qui est
+cohérent (c'est là que le produit commence), et les pastilles numérotées passent sous elle
+au lieu d'être à côté. Vérifié que la carte reste sous la barre de navigation (164 > 72) et
+qu'elle tient dans l'écran aux cinq tailles du contrôle habituel, la plus serrée étant
+1366 × 640 avec 183 px de marge.
