@@ -5321,3 +5321,61 @@ survécu. Les quatre pages légales menées au navigateur en normal et en mouvem
 Contrôlé enfin qu'aucune des formules retirées ne subsiste : 0 « Google Analytics »,
 0 « bot.q-leap.eu », 0 « Q-LEAP NV », 0 « Mathias Hardt » et 0 « exclusivement situés » dans
 les deux politiques.
+
+
+## Contrôle n°7 : les outils étaient l'angle mort des six contrôles précédents (2026-09-01)
+
+Contrôle demandé par le client sur `https://q-leap.github.io/qbot-website/`, au commit
+`c844ff0`, dix commits après le n°6. Le livrable vit hors du dépôt, dans
+`audit-livrables/q-bot/Analyse_Controle_7_Post_Corrections.md`.
+
+**Le site est mesuré sans un seul défaut**, et les quatre points ouverts du n°6 qui
+dépendaient de nous sont refermés. Le fait de ce passage est ailleurs : **six contrôles
+successifs ont mesuré les PAGES et jamais les OUTILS qui les fabriquent.** Quatre des
+quatorze scripts étaient cassés ou dangereux, tous silencieusement.
+
+### `gen-guides.py` a recréé les seize pages de guides, et je l'ai déclenché moi-même
+
+Le plus sérieux, et ce n'est pas une hypothèse : une simple boucle « est-ce que les outils
+tournent encore ? » a lancé `gen-guides.py` **sans argument**, et il a écrit les huit guides
+français et les huit anglais avant d'échouer sur son garde-fou de fin. Le contrôle suivant a
+compté 39 pages au lieu de 23, et il a fallu retirer les seize fichiers un par un.
+
+**Un générateur sans mode simulation devient une arme chargée le jour où son contenu est
+retiré à dessein.** Le blog a été supprimé le 2026-08-28 et son retour refusé par le
+directeur le 2026-09-01 : `gen-guides.py` et `gen-index-guides.py` refusent donc désormais
+de s'exécuter sans `--republier-le-blog`, en disant pourquoi et en sortant en code 2. Le
+drapeau existe parce que la décision peut changer ; il est explicite parce qu'elle ne doit
+pas changer par accident.
+
+### `fetch-legal.py` : les deux bouts de la chaîne ne se parlaient pas
+
+Il écrivait `legal/plein.json`, dans un dossier qui n'existe pas, quand `gen-legal.py` lit
+`tools/legal-source.json`. La chaîne documentée en tête des deux fichiers échouait donc au
+premier pas, et aurait de toute façon écrit à côté. Il lançait en outre le navigateur en
+mode **fenêtré**, contre la règle du 2026-08-25, pour une lecture de DOM qui n'en a aucun
+besoin, et il écrasait le relevé sans sauvegarde.
+
+**Et il a une date de péremption** : il relève le WordPress, qui disparaît à la bascule.
+Après quoi `tools/legal-source.json` est le seul exemplaire du texte d'origine, ce qui
+compte d'autant plus que `gen-legal.py` en dérive maintenant un texte amendé. D'où la
+sauvegarde `.avant` et l'assertion sur la taille du relevé.
+
+### Ce que le contrôle a mesuré, et qui est propre
+
+21 pages lues en ligne, au rendu : **un seul `h1` partout, 0 saut de niveau, 73 images
+0 sans `alt`, 21 titres distincts de 26 à 58 caractères, 21 descriptions distinctes de 100 à
+156, 49 blocs JSON-LD sans erreur, 0 `offers`, 60 balises `hreflang` auto-référentes et
+réciproques, 0 requête vers un tiers, 0 erreur console, 0 requête en échec.** Les 224
+fichiers suivis testés un par un contre l'hébergement : **115 servis, 109 non servis, et
+aucun actif servi sans référence** — le ménage du matin tient. Balayage des révélations sur
+21 pages × 3 vues (1440, 390, mouvement réduit) **en ligne** : aucune anomalie.
+
+**La FAQ, seule surface citable substantielle depuis la suppression du blog, est en bon
+état** : 17 réponses par langue, **16 ouvertures sur 17 dans la fenêtre de 40 à 60 mots**,
+aucune sous 35 mots, la seule hors fenêtre étant trop LONGUE (66 et 70 mots).
+
+**Le poids ne se compare pas d'un contrôle à l'autre sur le premier écran** : la valeur
+dépend du moment où l'on arrête de compter, et l'accueil charge son modèle 3D en `eager`.
+Seule la page parcourue est stable : accueil 5,01 Mo, `caracteristiques` 5,36 Mo, tout le
+reste sous 0,25 Mo.

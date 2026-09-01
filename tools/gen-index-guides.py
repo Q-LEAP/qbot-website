@@ -22,6 +22,35 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import vignettes_guides as vg
 import re
 
+# ══════════════════════════════════════════════════════════════════════════════
+# CE SCRIPT REPUBLIE DU CONTENU QUE LE CLIENT A FAIT RETIRER, ET IL NE DOIT PLUS
+# S'EXÉCUTER SANS QU'ON LE LUI DEMANDE EXPRESSÉMENT.
+#
+# Le blog et ses huit guides ont été supprimés le 2026-08-28 sur décision du
+# client, et le retour d'un socle de contenu a été REFUSÉ par son directeur le
+# 2026-09-01. Ce fichier reste dans le dépôt parce que c'est un outil, pas du
+# contenu publié — mais il ÉCRIT sans rien demander.
+#
+# RELEVÉ LE 2026-09-01, ET CE N'EST PAS UNE HYPOTHÈSE : un simple
+# « python3 tools/gen-index-guides.py » passé en vérifiant que les outils tournent encore a
+# recréé les seize pages de guides, avant d'échouer sur son garde-fou de fin.
+# Le contrôle qui suivait a alors compté 39 pages au lieu de 23, et il a fallu
+# les retirer une par une. Un générateur sans mode simulation est une arme
+# chargée dès que son contenu a été retiré à dessein.
+# ══════════════════════════════════════════════════════════════════════════════
+if '--republier-le-blog' not in sys.argv:
+    print(__doc__.strip().split(chr(10))[0])
+    print()
+    print("  REFUS : le blog a été supprimé le 2026-08-28 et son retour a été refusé")
+    print("  par le directeur du client le 2026-09-01. Ce script recréerait les pages")
+    print("  sans rien demander.")
+    print()
+    print("  S'il faut vraiment republier, c'est une décision du client, et elle")
+    print("  s'écrit :  python3 tools/gen-index-guides.py --republier-le-blog")
+    print()
+    sys.exit(2)
+
+
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # L'ordre de la grille, et la vignette de chacun. Les vignettes sont des visuels
