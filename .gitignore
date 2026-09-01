@@ -46,6 +46,18 @@ padel_alerte.py
 # n°5 du 2026-08-27, encore en ligne le 2026-08-31.
 # Aucune page ne les lie : seul le GLB est employé. Sortis du suivi le 2026-08-31,
 # les fichiers restent sur le disque pour la chaîne de génération du GLB.
-# ATTENTION : l'historique git les contient toujours. Les en retirer vraiment
-# demanderait une réécriture d'historique, qui est une décision du client.
+#
+# L'HISTOIRE GIT LES CONTIENT TOUJOURS, ET ON N'Y TOUCHE PAS. Arbitré le
+# 2026-09-01, après mesure : « assets/models/qbot.glb », SERVI PUBLIQUEMENT et
+# téléchargeable en un clic depuis la séquence 3D de l'accueil, porte
+# 191 214 triangles contre 199 322 pour le FBX, soit 96 % de la géométrie, aux
+# soudures de sommets près. La forme du boîtier est donc déjà publiée, à
+# dessein. Une réécriture d'historique coûterait un « push --force », ne
+# supprimerait rien de github.com sans passer par leur support (les objets
+# déréférencés restent joignables par leur empreinte), et ne retirerait pas de
+# la vue ce qu'elle prétend protéger.
+# Ce que l'exclusion du 2026-08-31 a réglé, elle, est réel et le reste : 37 Mo
+# de CAO ÉDITABLE téléchargeables depuis le site du produit. La seule décision
+# qui changerait quelque chose de plus est le passage du dépôt en privé, qui
+# demande un plan GitHub payant : c'est l'arbitrage budgétaire déjà noté.
 assets/3d/
