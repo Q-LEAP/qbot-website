@@ -5100,3 +5100,89 @@ supprimés) · le texte des 4 pages légales qui décrit encore le WordPress, à
 par qui l'a écrit · l'historique git qui contient la CAO · un Bookings en anglais, la page
 Microsoft ne se traduisant pas · les incrustations anglaises du film sur les pages
 françaises · `a-propos.html` à −20,1 % de parité, seule paire hors bande.
+
+
+## Le ménage du contrôle n°6, et un outil qui ne pouvait plus servir (2026-09-01)
+
+Reprise des points mécaniques laissés ouverts par l'audit RosoAI n°6. Les trois points
+qui demandent une décision du client sont écartés ici, pas oubliés : le socle de contenu
+citable (le blog supprimé a emporté 70 des 74 capsules), le texte des quatre pages légales
+qui décrit encore le WordPress, et l'historique git qui contient toujours la CAO.
+
+### Les actifs que plus aucune page ne cite quittent l'hébergement
+
+33 fichiers, **4,89 Mo servis pour rien** : les 12 vignettes des guides et les 5 du blog
+supprimés le 2026-08-28, les 10 visuels des générations précédentes du produit (dont
+`device-comparison.png`, 2,45 Mo à lui seul) et 6 logos ou icônes sans emploi. Ils restent
+sur le disque et dans git, conformément à l'usage du dépôt ; c'est `_config.yml` qui cesse
+de les proposer.
+
+**LE CONTRÔLE SE FAIT DANS LES DEUX SENS, et le second est celui qu'on oublie.** Le
+premier énumère tout ce qui est servi et vérifie que chaque fichier y a sa place (c'est
+l'inversion qui avait trouvé la CAO). Le second part des pages : aucune source servie
+(HTML, CSS, JS, `llms.txt`, `sitemap.xml`) ne doit citer un actif exclu. **Exclure un actif
+employé casse la page exactement aussi silencieusement que l'oubli d'exclure.** Relevé
+après : 128 fichiers servis, 85 sources lues, **0 référence vers un actif exclu, 0 actif
+servi sans référence**.
+
+Faux positif écarté au passage : `git ls-files` **met entre guillemets et échappe en octal**
+tout chemin non ASCII, si bien qu'une sonde qui compare ses lignes à la liste d'exclusion
+signale `Screen modèle 3D/` comme servi alors qu'il répond 404. Vérifié en ligne. Le nom est
+en NFC des deux côtés (`c3 a8`), le piège documenté le 2026-08-26 ne s'est pas reproduit.
+
+### `maj-nav-booking.py` ne reconnaissait plus AUCUNE des 23 pages
+
+Le défaut le plus sérieux de la passe, et il était invisible parce que le script ne se
+plaignait pas. Son motif exigeait des attributs **à valeur** (`data-booking-src="…"`), or le
+bouton équipé porte d'abord `data-booking-open`, qui est un attribut **nu**. Une fois les
+23 pages équipées, il n'en reconnaissait donc plus une seule : **la « source unique » de
+`bookings_conf.py` n'en était plus une**, et le jour où l'agenda change d'URL la commande
+annoncée en tête du fichier n'aurait rien mis à jour, sans une ligne d'erreur.
+
+Deuxième défaut au même endroit : le motif n'était **pas borné à la barre de navigation**.
+Sur `faq.html` il attrapait un appel à l'action du CORPS de la page, qui porte le même
+libellé et la même classe. Le script annonçait « 1 bouton équipé » en visant le mauvais
+élément. La recherche est désormais bornée à `nav__actions` → `</nav>`.
+
+**L'épreuve de vivacité est ce qui prouve le correctif**, et elle vaut pour tout outil de ce
+genre : on change l'URL dans `bookings_conf.py`, on relance en simulation, on doit lire
+**23 boutons équipés** ; on restaure, on relance, on doit lire **0, et 23 « déjà à jour »**.
+Un outil idempotent qui n'a jamais été vu écrire n'est pas prouvé, il est muet.
+
+### Deux comptes écrits à la main, et deux jumeaux qui divergeaient
+
+- `go-live.py` annonçait « les quatre newsletters » dans le rappel du jour J. Il n'y en a
+  plus que **deux** depuis que les deux index de blog ont été supprimés. Les deux nombres se
+  dérivent maintenant des pages, comme `NB_REDIRECTIONS` et `NB_PAGES` avant eux. Troisième
+  fois que ce fichier se fait prendre par un chiffre écrit à la main dans le texte destiné à
+  l'humain, qui est le pire endroit pour un chiffre faux ;
+- `bump-assets.py` et `bump-assets.mjs` **ne comptaient pas les mêmes pages** (23 contre 24),
+  alors que leur en-tête dit qu'ils doivent rester d'accord. La cause est un
+  `en/._about.html`, fork de ressources macOS créé par toute écriture sur ce volume exFAT :
+  `glob` de Python ignore les noms cachés, `readdirSync` non. Le jumeau Node les saute
+  désormais. Ces fichiers sont déjà couverts par `.gitignore`, donc jamais commités.
+
+### La page À propos anglaise dit enfin le périmètre
+
+Seule paire hors bande de parité, **−20,1 %**. Deux ajouts, **aucune phrase écrite pour la
+première fois ici** :
+
+- la carte Q-Leap reprend la phrase que le français porte depuis toujours, et que le
+  sous-titre anglais de cette même carte (« Consultancy & Training ») annonçait déjà ;
+- la carte Q-Bot disait « drives the real 2FA app on **a real device** ». Le reste du site
+  anglais énonce le périmètre **comme une limite** (Android, USB), et c'est une règle du
+  dépôt : la formulation est reprise mot pour mot de `en/index.html` et `en/use-cases.html`.
+
+Résultat : **−12,9 %**, dans la bande naturelle de 10 à 15 %. **La carte Q-Guard reste
+volontairement divergente** : son texte anglais est celui du live, distinct du français par
+une décision documentée du 2026-07-09. Ne pas l'aligner par souci de symétrie.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et 390 px et `audit-visibilite.py` : **21 pages lues sur 21, 0
+constat**. 75 pages, 738 liens relatifs, **0 cassé**. 52 relais, 0 défaut.
+`sync-faq-jsonld.py` idempotent (34 comparées, 0 recalée). `maj-sitemap.py` sans écart.
+Les deux versionneurs d'actifs à 0 page à mettre à jour, donc les empreintes servies sont
+celles des fichiers. Les deux pages À propos menées au navigateur en normal et en mouvement
+réduit, à 1440 et 390 px : un seul `h1`, 0 révélation invisible, 0 débordement, 0 image
+cassée, 0 erreur console, et 0 `.nb` dans un conteneur flex.
