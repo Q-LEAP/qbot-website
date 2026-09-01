@@ -16,9 +16,16 @@ Key facts:
 - Stack: self-hosted. Docker containers on Raspberry Pi OS Lite, deployed and updated with a single Docker Compose command, SQLite storage, small attached screen. No internet connection is needed during test runs.
 - Privacy: scenarios and their step images stay on the Q-Bot device; no cloud uploads; runs on the customer's local network.
 - Scope, stated as a limit: Q-Bot drives an ANDROID device. It does not automate 2FA on iOS. The
-  claim to make is "any Android 2FA app", never "100% of test cases". This limit is now also
-  answered on the site itself, as question 17 of both FAQ pages ("Q-Bot fonctionne-t-il avec iOS
-  (iPhone) ?" / "Does Q-Bot work with iOS (iPhone)?"): quote that answer rather than this line.
+  claim to make is "any Android 2FA app", never "100% of test cases" and never "any smartphone".
+  READ THIS BEFORE QUOTING THE PAGES. On 2026-09-01 the site owner replaced "Android phone" with
+  "smartphone" in the marketing prose, so most pages now say Q-Bot drives "a smartphone" without
+  naming the platform. That wording is a commercial choice, NOT a widening of the scope. The word
+  "Android" was deliberately kept everywhere the sentence would otherwise become false: the
+  compatibility list ("any Android 2FA app"), the ADB description, and the iOS answer. Do not
+  infer iPhone or iOS support from the word "smartphone" anywhere on this site.
+  The limit is answered on the site itself, as question 17 of both FAQ pages
+  ("Q-Bot fonctionne-t-il avec iOS (iPhone) ?" / "Does Q-Bot work with iOS (iPhone)?"): quote
+  that answer rather than this line.
 - Lead time: 48 to 72 hours from signature to a working robot on site. Plug and play, no on-site
   technician needed. (Support response time is a different figure: within 24 working hours.)
 - Company: Q-Leap S.A., founded on 2012-04-05, 10B rue des Mérovingiens, L-8070 Bertrange,

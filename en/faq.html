@@ -21,7 +21,7 @@
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, a smartphone docked in its cradle, the web interface on screen">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="Q-Bot">
   <meta name="twitter:card" content="summary_large_image">
@@ -103,7 +103,7 @@
         "name": "What is Q-Bot?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot is a robot designed to automate two-factor authentication (2FA) by driving the real 2FA app on a real device. The enclosure sits on a desk, an Android phone is connected to it over USB, and your automated tests trigger the 2FA step with a single HTTP call. A second authentication factor is now the norm (dual authentication, or 2FA) and it increases the security of access to applications and computer systems in general. Luxtrust is a Luxembourg-based provider of secure access to bank accounts, monetary transactions or to strengthen confidence in cybersecurity. With a robot like Q-Bot, which drives the 2FA app itself, it becomes possible to automate testing processes that were previously impossible to automate. Discover Q-Bot and its features: q-bot.eu"
+          "text": "Q-Bot is a robot designed to automate two-factor authentication (2FA) by driving the real 2FA app on a real device. The enclosure sits on a desk, a smartphone is connected to it over USB, and your automated tests trigger the 2FA step with a single HTTP call. A second authentication factor is now the norm (dual authentication, or 2FA) and it increases the security of access to applications and computer systems in general. Luxtrust is a Luxembourg-based provider of secure access to bank accounts, monetary transactions or to strengthen confidence in cybersecurity. With a robot like Q-Bot, which drives the 2FA app itself, it becomes possible to automate testing processes that were previously impossible to automate. Discover Q-Bot and its features: q-bot.eu"
         }
       },
       {
@@ -159,7 +159,7 @@
         "name": "Which 2FA apps does Q-Bot work with?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot drives your real 2FA app on a real Android device, wired over USB and driven through ADB, so it works with any app that runs on Android, with no shared secret to obtain. Already validated with LuxTrust Mobile, Microsoft Authenticator, Google Authenticator and itsme. If you want to know whether your own app works with Q-Bot, do not hesitate to contact us by email at bot@q-leap.eu or by phone at +352 20 21 17."
+          "text": "Q-Bot drives your real 2FA app on a real smartphone, wired over USB and driven through ADB, so it works with any app that runs on Android, with no shared secret to obtain. Already validated with LuxTrust Mobile, Microsoft Authenticator, Google Authenticator and itsme. If you want to know whether your own app works with Q-Bot, do not hesitate to contact us by email at bot@q-leap.eu or by phone at +352 20 21 17."
         }
       },
       {
@@ -199,7 +199,7 @@
         "name": "How does Q-Bot work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot works with a mini-computer the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under Linux, coordinates the web interface, the API and scenario execution. It drives, over ADB, the Android phone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app. When Q-Bot starts, its web server starts automatically. The latter is listening. Handling a request always follows the same actions: • Your test scenario calls the Q-Bot API, or the companion app detects the 2FA notification on the device • Q-Bot replays the scenario saved for that step • Every tap is delivered to the device through ADB and lands on its physical screen • The wait times set in the scenario give the app time to respond • The 2FA step resolves in the genuine app, never in a simulator • The test continues from exactly where it left off"
+          "text": "Q-Bot works with a mini-computer the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under Linux, coordinates the web interface, the API and scenario execution. It drives, over ADB, the smartphone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app. When Q-Bot starts, its web server starts automatically. The latter is listening. Handling a request always follows the same actions: • Your test scenario calls the Q-Bot API, or the companion app detects the 2FA notification on the device • Q-Bot replays the scenario saved for that step • Every tap is delivered to the device through ADB and lands on its physical screen • The wait times set in the scenario give the app time to respond • The 2FA step resolves in the genuine app, never in a simulator • The test continues from exactly where it left off"
         }
       },
       {
@@ -231,7 +231,7 @@
         "name": "Does Q-Bot work with iOS (iPhone)?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No, and that is a deliberate choice. Q-Bot drives a real Android phone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which Q-Bot does not cover today."
+          "text": "No, and that is a deliberate choice. Q-Bot drives a real smartphone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which Q-Bot does not cover today."
         }
       }
     ]
@@ -340,7 +340,7 @@
       <div class="faq-item" id="faq-q1">
         <button class="faq-item__question" aria-expanded="false" id="faq-b1" aria-controls="faq-a1">What is <span class="nb">Q-Bot</span>?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a1" role="region" aria-labelledby="faq-b1">
-          <p><span class="nb">Q-Bot</span> is a robot designed to <strong>automate two-factor authentication (2FA) by driving the real 2FA app on a real device</strong>. The enclosure sits on a desk, an Android phone is connected to it over USB, and your automated tests trigger the 2FA step with a single HTTP call.</p>
+          <p><span class="nb">Q-Bot</span> is a robot designed to <strong>automate two-factor authentication (2FA) by driving the real 2FA app on a real device</strong>. The enclosure sits on a desk, a smartphone is connected to it over USB, and your automated tests trigger the 2FA step with a single HTTP call.</p>
           <p><strong>A second authentication factor</strong> is now the norm <strong>(dual authentication, or 2FA)</strong> and it increases the security of access to applications and computer systems in general. Luxtrust is a Luxembourg-based provider of secure access to bank accounts, monetary transactions or to strengthen confidence in cybersecurity.</p>
           <p>With a robot like <strong><span class="nb">Q-Bot</span></strong>, which drives the 2FA app itself, it becomes possible to <strong>automate testing processes</strong> that were previously impossible to automate.</p>
           <p>Discover <span class="nb">Q-Bot</span> and its features: <a href="./">q-bot.eu</a></p>
@@ -416,7 +416,7 @@
       <div class="faq-item" id="faq-q8">
         <button class="faq-item__question" aria-expanded="false" id="faq-b8" aria-controls="faq-a8">Which 2FA apps does <span class="nb">Q-Bot</span> work with?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a8" role="region" aria-labelledby="faq-b8">
-          <p><span class="nb">Q-Bot</span> drives your real 2FA app on a real Android device, wired over USB and driven through ADB, so it works with any app that runs on Android, with no shared secret to obtain. Already validated with LuxTrust Mobile, Microsoft Authenticator, Google Authenticator and itsme.</p>
+          <p><span class="nb">Q-Bot</span> drives your real 2FA app on a real smartphone, wired over USB and driven through ADB, so it works with any app that runs on Android, with no shared secret to obtain. Already validated with LuxTrust Mobile, Microsoft Authenticator, Google Authenticator and itsme.</p>
           <p>If you want to know whether your own app works with <span class="nb">Q-Bot</span>, do not hesitate to contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or by phone at <a href="tel:+352202117">+352 20 21 17</a>.</p>
           </div>
       </div>
@@ -453,7 +453,7 @@
       <div class="faq-item" id="faq-q13">
         <button class="faq-item__question" aria-expanded="false" id="faq-b13" aria-controls="faq-a13">How does <span class="nb">Q-Bot</span> work?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a13" role="region" aria-labelledby="faq-b13">
-          <p><span class="nb">Q-Bot</span> works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates the web interface, the API and scenario execution</strong>. It drives, over ADB, the Android phone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app.</p>
+          <p><span class="nb">Q-Bot</span> works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates the web interface, the API and scenario execution</strong>. It drives, over ADB, the smartphone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app.</p>
           <p>When <span class="nb">Q-Bot</span> starts, its web server starts automatically. The latter is listening.</p>
           <p><strong>Handling a request always follows the same actions</strong>:</p>
           <ol>
@@ -492,7 +492,7 @@
       <div class="faq-item" id="faq-q17">
         <button class="faq-item__question" aria-expanded="false" id="faq-b17" aria-controls="faq-a17">Does <span class="nb">Q-Bot</span> work with iOS (iPhone)?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a17" role="region" aria-labelledby="faq-b17">
-          <p>No, and that is a deliberate choice. <span class="nb">Q-Bot</span> drives a real Android phone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which <span class="nb">Q-Bot</span> does not cover today.</p>
+          <p>No, and that is a deliberate choice. <span class="nb">Q-Bot</span> drives a real smartphone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which <span class="nb">Q-Bot</span> does not cover today.</p>
         </div>
       </div>
 

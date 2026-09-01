@@ -21,7 +21,7 @@
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone Android inséré dans son socle, l'interface web à l'écran">
+  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone inséré dans son socle, l'interface web à l'écran">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Q-Bot">
   <meta name="twitter:card" content="summary_large_image">
@@ -104,7 +104,7 @@
         "name": "Qu'est-ce que Q-Bot ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot est un robot conçu pour automatiser la double authentification (2FA) en pilotant la véritable application 2FA sur un vrai appareil. Le boîtier tient sur un bureau, un téléphone Android y est relié en USB, et vos tests automatisés déclenchent l'étape 2FA par un simple appel HTTP. Les solutions d'authentification, telles que les applications mobiles sécurisées, sont largement utilisées comme second facteur pour renforcer la protection des accès aux systèmes informatiques. Par exemple Luxtrust, prestataire luxembourgeois de confiance, joue un rôle clé dans la sécurisation des accès bancaires, des transactions financières et, plus largement, dans la cybersécurité. Grâce à Q-Bot, qui authentifie automatiquement vos accès, il devient possible d'automatiser des processus de test jusque-là difficilement accessibles, notamment ceux nécessitant une validation 2FA."
+          "text": "Q-Bot est un robot conçu pour automatiser la double authentification (2FA) en pilotant la véritable application 2FA sur un vrai appareil. Le boîtier tient sur un bureau, un smartphone y est relié en USB, et vos tests automatisés déclenchent l'étape 2FA par un simple appel HTTP. Les solutions d'authentification, telles que les applications mobiles sécurisées, sont largement utilisées comme second facteur pour renforcer la protection des accès aux systèmes informatiques. Par exemple Luxtrust, prestataire luxembourgeois de confiance, joue un rôle clé dans la sécurisation des accès bancaires, des transactions financières et, plus largement, dans la cybersécurité. Grâce à Q-Bot, qui authentifie automatiquement vos accès, il devient possible d'automatiser des processus de test jusque-là difficilement accessibles, notamment ceux nécessitant une validation 2FA."
         }
       },
       {
@@ -160,7 +160,7 @@
         "name": "Avec quelles applications d'authentification Q-Bot est-il compatible ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot pilote votre véritable application 2FA sur un vrai téléphone Android, relié en USB et piloté par ADB : il fonctionne donc avec n'importe quelle application qui tourne sous Android, sans qu'aucune clé secrète ne soit à récupérer. Déjà validé avec LuxTrust Mobile, Microsoft Authenticator, Google Authenticator et itsme. Si vous voulez savoir si la vôtre fonctionne avec Q-Bot, n'hésitez pas à nous contacter par email à bot@q-leap.eu ou par téléphone au +352 20 21 17."
+          "text": "Q-Bot pilote votre véritable application 2FA sur un vrai smartphone, relié en USB et piloté par ADB : il fonctionne donc avec n'importe quelle application qui tourne sous Android, sans qu'aucune clé secrète ne soit à récupérer. Déjà validé avec LuxTrust Mobile, Microsoft Authenticator, Google Authenticator et itsme. Si vous voulez savoir si la vôtre fonctionne avec Q-Bot, n'hésitez pas à nous contacter par email à bot@q-leap.eu ou par téléphone au +352 20 21 17."
         }
       },
       {
@@ -200,7 +200,7 @@
         "name": "Comment Q-Bot fonctionne-t-il ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot repose sur un mini-ordinateur de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous Linux, coordonne l'interface web, l'API et l'exécution des scénarios. Il pilote par ADB le téléphone Android relié en USB : chaque appui du scénario arrive sur son écran physique, dans la véritable application. Au démarrage de Q-Bot, son serveur web démarre automatiquement et se met à l'écoute. Le traitement d'une demande suit toujours les mêmes actions : • Votre scénario de test appelle l'API de Q-Bot, ou l'app compagnon détecte la notification 2FA sur le téléphone • Q-Bot rejoue le scénario enregistré pour cette étape • Chaque appui part vers le téléphone par ADB et arrive sur son écran physique • Les temps d'attente du scénario laissent à l'application le temps de répondre • L'étape 2FA se résout dans la véritable application, jamais dans un simulateur • Le test reprend exactement là où il s'était arrêté"
+          "text": "Q-Bot repose sur un mini-ordinateur de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous Linux, coordonne l'interface web, l'API et l'exécution des scénarios. Il pilote par ADB le smartphone relié en USB : chaque appui du scénario arrive sur son écran physique, dans la véritable application. Au démarrage de Q-Bot, son serveur web démarre automatiquement et se met à l'écoute. Le traitement d'une demande suit toujours les mêmes actions : • Votre scénario de test appelle l'API de Q-Bot, ou l'app compagnon détecte la notification 2FA sur le téléphone • Q-Bot rejoue le scénario enregistré pour cette étape • Chaque appui part vers le téléphone par ADB et arrive sur son écran physique • Les temps d'attente du scénario laissent à l'application le temps de répondre • L'étape 2FA se résout dans la véritable application, jamais dans un simulateur • Le test reprend exactement là où il s'était arrêté"
         }
       },
       {
@@ -232,7 +232,7 @@
         "name": "Q-Bot fonctionne-t-il avec iOS (iPhone) ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Non, et c'est un choix assumé. Q-Bot pilote un vrai téléphone Android relié en USB, par ADB : il fonctionne donc avec n'importe quelle application 2FA installée sur Android, LuxTrust Mobile, itsme, Microsoft Authenticator ou Google Authenticator. Automatiser un appareil iOS repose sur d'autres mécanismes, que Q-Bot ne couvre pas aujourd'hui."
+          "text": "Non, et c'est un choix assumé. Q-Bot pilote un vrai smartphone relié en USB, par ADB : il fonctionne donc avec n'importe quelle application 2FA installée sur Android, LuxTrust Mobile, itsme, Microsoft Authenticator ou Google Authenticator. Automatiser un appareil iOS repose sur d'autres mécanismes, que Q-Bot ne couvre pas aujourd'hui."
         }
       }
     ]
@@ -353,7 +353,7 @@
           </span>
         </button>
         <div class="faq-item__answer" id="faq-a1" role="region" aria-labelledby="faq-b1">
-          <p><span class="nb">Q-Bot</span> est un robot conçu pour automatiser la double authentification (2FA) en pilotant la véritable application 2FA sur un vrai appareil. Le boîtier tient sur un bureau, un téléphone Android y est relié en USB, et vos tests automatisés déclenchent l'étape 2FA par un simple appel HTTP.</p>
+          <p><span class="nb">Q-Bot</span> est un robot conçu pour automatiser la double authentification (2FA) en pilotant la véritable application 2FA sur un vrai appareil. Le boîtier tient sur un bureau, un smartphone y est relié en USB, et vos tests automatisés déclenchent l'étape 2FA par un simple appel HTTP.</p>
           <p style="margin-top:12px;">Les solutions d'authentification, telles que les applications mobiles sécurisées, sont largement utilisées comme second facteur pour renforcer la protection des accès aux systèmes informatiques. Par exemple Luxtrust, prestataire luxembourgeois de confiance, joue un rôle clé dans la sécurisation des accès bancaires, des transactions financières et, plus largement, dans la cybersécurité.</p>
           <p style="margin-top:12px;">Grâce à <span class="nb">Q-Bot</span>, qui authentifie automatiquement vos accès, il devient possible d'automatiser des processus de test jusque-là difficilement accessibles, notamment ceux nécessitant une validation 2FA.</p>
         </div>
@@ -457,7 +457,7 @@
           </span>
         </button>
         <div class="faq-item__answer" id="faq-a8" role="region" aria-labelledby="faq-b8">
-          <p><span class="nb">Q-Bot</span> pilote votre véritable application 2FA sur un vrai téléphone Android, relié en USB et piloté par ADB&nbsp;: il fonctionne donc avec n'importe quelle application qui tourne sous Android, sans qu'aucune clé secrète ne soit à récupérer. Déjà validé avec LuxTrust Mobile, Microsoft Authenticator, Google Authenticator et itsme.</p>
+          <p><span class="nb">Q-Bot</span> pilote votre véritable application 2FA sur un vrai smartphone, relié en USB et piloté par ADB&nbsp;: il fonctionne donc avec n'importe quelle application qui tourne sous Android, sans qu'aucune clé secrète ne soit à récupérer. Déjà validé avec LuxTrust Mobile, Microsoft Authenticator, Google Authenticator et itsme.</p>
           <p style="margin-top:12px;">Si vous voulez savoir si la vôtre fonctionne avec <span class="nb">Q-Bot</span>, n'hésitez pas à nous contacter par email à <a href="mailto:bot@q-leap.eu" style="color:var(--teal-text);">bot@q-leap.eu</a> ou par téléphone au <a href="tel:+352202117" style="color:var(--teal-text);">+352 20 21 17</a>.</p>
         </div>
       </div>
@@ -518,7 +518,7 @@
           </span>
         </button>
         <div class="faq-item__answer" id="faq-a13" role="region" aria-labelledby="faq-b13">
-          <p><span class="nb">Q-Bot</span> repose sur <strong>un mini-ordinateur</strong> de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous <strong>Linux, coordonne l'interface web, l'API et l'exécution des scénarios</strong>. Il pilote par ADB le téléphone Android relié en USB&nbsp;: chaque appui du scénario arrive sur son écran physique, dans la véritable application.</p>
+          <p><span class="nb">Q-Bot</span> repose sur <strong>un mini-ordinateur</strong> de la taille d'une carte de crédit, de marque Raspberry Pi. Ce mini-ordinateur, qui tourne sous <strong>Linux, coordonne l'interface web, l'API et l'exécution des scénarios</strong>. Il pilote par ADB le smartphone relié en USB&nbsp;: chaque appui du scénario arrive sur son écran physique, dans la véritable application.</p>
           <p>Au démarrage de <span class="nb">Q-Bot</span>, son serveur web démarre automatiquement et se met à l'écoute.</p>
           <p><strong>Le traitement d'une demande suit toujours les mêmes actions</strong>&nbsp;:</p>
           <ol>
@@ -577,7 +577,7 @@
           </span>
         </button>
         <div class="faq-item__answer" id="faq-a17" role="region" aria-labelledby="faq-b17">
-          <p>Non, et c'est un choix assumé. <span class="nb">Q-Bot</span> pilote un vrai téléphone Android relié en USB, par ADB&nbsp;: il fonctionne donc avec n'importe quelle application 2FA installée sur Android, LuxTrust Mobile, itsme, Microsoft Authenticator ou Google Authenticator. Automatiser un appareil iOS repose sur d'autres mécanismes, que <span class="nb">Q-Bot</span> ne couvre pas aujourd'hui.</p>
+          <p>Non, et c'est un choix assumé. <span class="nb">Q-Bot</span> pilote un vrai smartphone relié en USB, par ADB&nbsp;: il fonctionne donc avec n'importe quelle application 2FA installée sur Android, LuxTrust Mobile, itsme, Microsoft Authenticator ou Google Authenticator. Automatiser un appareil iOS repose sur d'autres mécanismes, que <span class="nb">Q-Bot</span> ne couvre pas aujourd'hui.</p>
         </div>
       </div>
 

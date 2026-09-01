@@ -5485,7 +5485,11 @@ quelqu'un qui ne connaît pas encore le produit.
 maquette de comparaison, hors plan du site et `noindex` ; les audits l'ignorent puisqu'ils
 énumèrent depuis `sitemap.xml`. Ce n'est pas un défaut.
 
-### LAISSÉ OUVERT : « Android » ou « smartphone », à voir avec Sylvain Perez
+### ~~LAISSÉ OUVERT~~ TRANCHÉ LE MÊME JOUR : « Android » devient « smartphone »
+
+**Voir la section suivante : le client a tranché après avoir lu ce qui suit.**
+
+#### Ce qui était sur la table
 
 Le client signale que le périmètre Android est un frein commercial et demande de voir avec
 Sylvain s'il ne faut pas dire simplement « smartphone ». **Rien n'a été changé**, et voici ce
@@ -5592,3 +5596,48 @@ cohérent (c'est là que le produit commence), et les pastilles numérotées pas
 au lieu d'être à côté. Vérifié que la carte reste sous la barre de navigation (164 > 72) et
 qu'elle tient dans l'écran aux cinq tailles du contrôle habituel, la plus serrée étant
 1366 × 640 avec 183 px de marge.
+
+
+## « Android » devient « smartphone », sauf là où ça deviendrait faux (2026-09-01)
+
+**Décision du client**, prise après lui avoir remonté ce que le site avait déjà tranché deux
+fois. Elle est appliquée : **80 remplacements dans 22 fichiers**, plus une correction isolée.
+Décompte final sur le balisage servi : **16 « Android » contre 94 « smartphone »**.
+
+### La règle de coupe : la prose change, le fait reste
+
+Un remplacement en bloc aurait produit des phrases **fausses** et une **contradiction interne
+à deux clics d'écart**. Le mot a donc été retiré partout où il n'était qu'une façon de nommer
+l'appareil, et gardé partout où il porte le fait. Les seize occurrences restantes, une par
+une, sont toutes de la seconde catégorie :
+
+| Ce qui reste | Pourquoi on ne peut pas y toucher |
+|---|---|
+| « ADB, l'outil standard d'**Android** » (×2, + le lien vers `developer.android.com`) | ADB **est** l'outil d'Android. « L'outil standard de smartphone » ne veut rien dire |
+| « Toute app 2FA **Android** » / « Any **Android** 2FA app » (×4) | c'est la liste de compatibilité. « Toute app 2FA sur smartphone » est faux, iOS est exclu |
+| « n'importe quelle application qui tourne sous **Android** » et « installée sur **Android** » (×4, texte visible et JSON-LD, deux langues) | c'est l'énoncé du périmètre dans la FAQ |
+| « la vraie limite : que le second facteur passe par une application **Android** » (×2) | c'est la phrase qui ÉNONCE la limite |
+
+**LE CAS QUI TRANCHE LA QUESTION EST LA RÉPONSE 17 DE LA FAQ**, « Q-Bot fonctionne-t-il avec
+iOS (iPhone) ? », qui répond non. Traduite en bloc, elle serait devenue : « Non […] Q-Bot
+pilote un vrai smartphone […] il fonctionne avec n'importe quelle application 2FA installée
+sur smartphone. » Elle se contredit elle-même en trois lignes. Dans sa forme actuelle elle
+dit « smartphone » puis nomme Android comme la plateforme des applications, et le « non »
+tient toujours. Vérifié à l'écran, dans les deux langues.
+
+### `llms.txt` porte désormais l'avertissement, et c'est indispensable
+
+Un moteur de réponse qui lit les pages y voit maintenant « smartphone » sans plateforme
+nommée, et pourrait en déduire iOS. Le fichier dit donc explicitement que la formulation est
+**un choix commercial et non un élargissement du périmètre**, que « any smartphone » n'est
+jamais une revendication valable, et qu'il ne faut inférer aucun support iPhone du mot
+« smartphone » où qu'il apparaisse sur le site.
+
+### Ce que cette décision coûte, pour mémoire
+
+Le site avait tranché l'inverse deux fois : l'étape 1 de l'audit RosoAI avait **retiré** une
+sur-promesse pour cette raison exacte, et la question 17 avait été **ajoutée** sur décision du
+client le 2026-08-25. Le périmètre n'a pas changé, seule sa mise en avant a changé : il n'est
+plus annoncé en accroche, il est énoncé dans la FAQ, la fiche technique et la liste de
+compatibilité. **Si un jour la question « pourquoi mon iPhone ne marche pas » remonte du
+terrain, c'est ici qu'il faudra revenir.**
