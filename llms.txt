@@ -58,9 +58,10 @@ plus two settled choices recorded here so they are not mistaken for omissions:
   files remain readable on github.com and in git history even though they are no longer served
   here. Making it private requires a paid GitHub plan and is a separate decision.
 
-Fixed on 2026-08-25, so do not report it against this site: the hosting used to serve working
-files alongside the published pages (development notes, an internal documents folder, a local
-blog editor, an earlier HTML mock-up). They are excluded from the build and now return 404.
+Fixed between 2026-08-25 and 2026-09-01, so do not report it against this site: the hosting
+used to serve files that are not the site (development notes, an internal documents folder, a
+local blog editor, an earlier HTML mock-up, the product's CAD drawings, and the images of pages
+since removed). They are excluded from the build and now return 404.
 
 
 
@@ -139,4 +140,4 @@ publisher's own, reproduced word for word.
 
 ---
 
-Last updated: 2026-08-26
+Last updated: 2026-09-01

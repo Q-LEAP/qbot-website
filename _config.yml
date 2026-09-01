@@ -52,3 +52,36 @@ exclude:
   - Screen modèle 3D/       # rendus CAO et enregistrement d'écran
   - padel_alerte.py         # script personnel, sans rapport avec le site (aussi sorti du suivi git)
   - .gitignore
+
+  # ── Actifs que plus aucune page ne référence (relevé de l'audit RosoAI n°6,
+  #    2026-08-31 : 33 fichiers, 4,89 Mo servis pour rien). Ils restent sur le
+  #    disque et dans git, conformément à l'usage du dépôt, mais l'hébergement
+  #    cesse de les proposer. LE CONTRÔLE QUI LES TROUVE EST UNE ÉNUMÉRATION,
+  #    PAS UNE VÉRIFICATION : on liste tout ce que Pages répond en 200 et on
+  #    vérifie que chaque fichier y a sa place, plutôt que de vérifier que les
+  #    exclusions répondent 404. C'est cette inversion qui avait trouvé la CAO.
+  #    Avant d'ajouter une ligne ici : s'assurer qu'aucune page, feuille de
+  #    style ni script servi ne cite le nom du fichier. L'erreur inverse (exclure
+  #    un actif employé) casse la page en silence, exactement comme l'oubli.
+  - assets/img/guides/      # 12 vignettes des 8 guides supprimés le 2026-08-28
+  - assets/img/blog/        # 5 vignettes du blog supprimé le 2026-08-28
+  # Visuels des générations précédentes du produit, remplacés par les photos de
+  # la brochure (2026-08-24) et par les rendus du GLB.
+  - assets/img/device-comparison.png
+  - assets/img/device-3d.png
+  - assets/img/hero-device.png
+  - assets/img/interface-screenshot.png
+  - assets/img/qbot-proto-gen1.png
+  - assets/img/qbot-v3-exploded.png
+  - assets/img/qbot-v3-hero.png
+  - assets/img/qbot-v3-luxtrust.png
+  - assets/img/qbot-v3-render.png
+  - assets/img/qbot-v3-solution.png
+  # Logos et icônes sans emploi. Attention : « logo-baseline.png » N'EST PAS de
+  # ceux-là, le JSON-LD « Organization.logo » le cite encore.
+  - assets/img/logo.png
+  - assets/img/logo-footer.png
+  - assets/img/logo-baseline-neg.png
+  - assets/img/logo-qdigital.png
+  - assets/img/group-icon.png
+  - assets/img/favicon-16.png
