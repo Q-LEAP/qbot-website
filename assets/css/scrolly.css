@@ -62,6 +62,28 @@
   height: calc(var(--scrolly-screens, 4.5) * 100svh);
 }
 
+/* LA SECTION QUI PRÉCÈDE LA SÉQUENCE SE RAPPROCHE D'ELLE. Le rythme de 112 px
+   entre deux sections vaut entre deux blocs de TEXTE ; ici la suivante ouvre sur
+   une scène 3D sombre et vide, et les 112 px s'ajoutent à ce vide au lieu de le
+   séparer de quelque chose. Ramené à 72 px, mesuré le 2026-09-01 à la demande du
+   client. `:has()` : un moteur qui ne le connaît pas garde les 112 px, donc le
+   rythme d'origine — dégradation sans casse.
+
+   DEUX SÉLECTEURS, ET LE PREMIER EST CELUI QUI SERT : la séquence n'est PAS le
+   frère immédiat de la section, le lien d'évitement « sortir de la séquence »
+   est inséré entre les deux. Écrit avec le seul `+ .scrolly`, la règle ne
+   correspondait à rien — et sans erreur, comme toujours avec un sélecteur qui
+   ne matche pas. Vérifié à l'écran : `sol.matches(...)` doit répondre vrai. */
+@media (min-width: 901px) {
+  /* BORNÉ AU BUREAU, et ce n'est pas une précaution de principe : sur téléphone
+     `--section-py` vaut 64 px, donc une valeur fixe de 72 px AUGMENTERAIT l'écart
+     de 8 px au lieu de le réduire. Et sous 901 px la séquence change de mise en
+     page (la carte passe en `fixed` au bas de l'écran) : la gêne signalée n'y
+     existe pas. */
+  .section:has(+ .skip-nav + .scrolly),
+  .section:has(+ .scrolly) { padding-bottom: 72px; }
+}
+
 /* ── La scène : elle reste, le texte passe ─────────────────────────────── */
 .scrolly__stage {
   position: sticky;
@@ -254,8 +276,12 @@
   display: grid;
   align-content: center;
   /* Le padding haut dégage la barre de navigation : au centre de son pas, la
-     carte se lit intégralement, libellé compris. */
-  padding: 96px clamp(24px, 7vw, 96px) 0;
+     carte se lit intégralement, libellé compris. RAMENÉ DE 96 À 48 PX le
+     2026-09-01 : le contenu étant CENTRÉ dans le pas, ce retrait le repousse de
+     la MOITIÉ de sa valeur, donc la première carte descendait de 48 px sans
+     raison. La carte reste largement sous la barre (72 px), et le client
+     signalait que « LE PRODUIT » arrivait trop loin après « LA SOLUTION ». */
+  padding: 48px clamp(24px, 7vw, 96px) 0;
   max-width: 620px;
   pointer-events: none;
 }
