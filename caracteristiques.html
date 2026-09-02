@@ -209,41 +209,32 @@
   </div>
 </section>
 
-<section class="section section--gray" aria-labelledby="pi-title">
+<!-- ======= FICHE TECHNIQUE =======
+     Section demandée à la review (points 16 et 17) : la page était un enchaînement
+     de blocs de prose avec une petite fiche au milieu, alors qu'elle doit se
+     scanner en trente secondes par un CTO, un architecte, un automaticien ou un
+     responsable sécurité.
+     ELLE REMPLACE LA SECTION « UN NANO-ORDINATEUR… », dont la prose et les huit
+     lignes de fiche sont absorbées ici, catégorie par catégorie.
+     AUCUNE VALEUR N'EST INVENTÉE : tout vient de la page elle-même ou des
+     documents fournis par le client. Ce qui n'y figure pas (authentification de
+     l'API, ACL, isolation réseau) n'est pas écrit ; la ligne « contrôle d'accès »
+     dit ce qui est vrai et renvoie la question là où elle se décide.
+     Trois composants réutilisés, aucun créé : `.tools__grid`, `.compat__head` et
+     `.specs__list`. La photo du boîtier réel garde sa place, en tête de section. -->
+<section class="section section--gray" aria-labelledby="fiche-title">
   <div class="container">
-    <div class="specs__grid">
+    <div class="section-header">
+      <span class="section-label">Fiche technique</span>
+      <h2 class="section-title" id="fiche-title">Le boîtier, ligne par ligne</h2>
+      <p class="section-subtitle">Tout ce qu'il faut vérifier avant d'intégrer <span class="nb">Q-Bot</span> à une chaîne de tests, en six catégories.</p>
+    </div>
+    <div class="specs__grid" style="margin-bottom:56px; align-items:center;">
       <div>
-        <span class="section-label">Le tout dernier Raspberry Pi 5</span>
-        <h2 class="section-title" id="pi-title">Un nano-ordinateur de la taille d'une carte de crédit</h2>
-        <p>Le nano-ordinateur qui pilote le boîtier, dans le détail&nbsp;:</p>
-        <ul class="specs__dims specs__dims--2col" role="list">
-          <li>Le tout dernier Raspberry Pi 5</li>
-          <li>Processeur&nbsp;: Cortex A76</li>
-          <li>Taille mémoire&nbsp;: 4 GB</li>
-          <li>Connectivité&nbsp;: Wifi, Bluetooth, Gigabit Ethernet</li>
-        </ul>
-        <h3>Une interface de création visuelle</h3>
-        <p>Les scénarios se construisent dans une application web indépendante, directement sur les captures d'écran de l'application mobile. Aucune compétence en développement n'est nécessaire.</p>
+        <h3>Un nano-ordinateur de la taille d'une carte de crédit</h3>
+        <p>Le boîtier est un ordinateur complet, auto-hébergé, posé sur le réseau de votre choix. Il pilote le smartphone par USB et n'a besoin d'aucune connexion internet pendant les tests.</p>
       </div>
       <div class="specs__image">
-        <!-- IMAGE EXTRAITE DU FILM PRODUIT (QBV1.2.12, à 23,0 s), recadrée 1340 x 1050
-             et non retouchée. Elle remplace le rendu du GLB qui était ici : le
-             client avait signalé que le visuel ne collait pas au contenu, et j'avais
-             répondu qu'il faudrait une photo du boîtier ouvert, qui n'existe pas.
-             Sa réponse le 2026-09-02 : « pour l'image tu peux prendre un screenshot
-             d'une vidéo ou une image qui montre le Q-Bot ».
-             POURQUOI ELLE VAUT MIEUX QU'UN RENDU ICI : c'est le boîtier RÉEL, en
-             fonctionnement, sur le bureau dont la section donne les cotes, avec son
-             smartphone inséré et l'écran d'authentification derrière. Une fiche
-             technique décrit un objet qui existe ; autant le montrer.
-             ET LA VALIDATION LUXTRUST QU'ON Y VOIT EST RÉELLE, pas une maquette.
-             C'est la différence avec la réserve notée le 2026-09-01 sur le visuel
-             fourni de l'accueil, dont l'écran de téléphone était inventé : ici
-             l'écran est celui de l'app, filmé, et rien n'est présenté pour ce qu'il
-             n'est pas.
-             Aucune donnée personnelle lisible : l'identifiant de session est
-             éphémère, aucun nom, aucune adresse autre que celle publiée sur le mur.
-             Pas de `?v=` : le fichier est NEUF, donc aucun cache à contourner. -->
         <img
           src="assets/img/qbot-film-boitier.jpg"
           alt="Le boîtier Q-Bot en fonctionnement sur un bureau : le smartphone inséré affiche une demande de validation LuxTrust, l'écran voisin la page d'authentification"
@@ -252,47 +243,159 @@
         >
       </div>
     </div>
-
-    <!-- La fiche technique vit ici depuis le 2026-08-28 : elle avait sa propre
-         section, le client la voulait sous ce titre et sur deux colonnes. Deux
-         listes cote a cote plutot qu'une liste a quatre pistes : chacune garde
-         sa propre colonne de libelles, ce que subgrid assure a l'interieur
-         d'une liste et pas entre deux. -->
-    <div class="specs__cols">
-      <div class="specs__list" role="list">
+    <div class="tools__grid" style="gap:40px 48px;">
+      <div>
+        <h3 class="compat__head">Matériel</h3>
+        <div class="specs__list" role="list" aria-label="Matériel">
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Processeur</span>
-        <span class="spec-item__value">Raspberry Pi 5</span>
+          <span class="spec-item__label">Ordinateur</span>
+          <span class="spec-item__value">Raspberry Pi 5</span>
         </div>
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Wi-Fi</span>
-        <span class="spec-item__value">IEEE 802.11ac (Wi-Fi 5 dual-band)</span>
+          <span class="spec-item__label">Processeur</span>
+          <span class="spec-item__value">Cortex-A76</span>
         </div>
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Bluetooth</span>
-        <span class="spec-item__value">Intégré</span>
+          <span class="spec-item__label">Mémoire</span>
+          <span class="spec-item__value">4 Go</span>
         </div>
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Système</span>
-        <span class="spec-item__value">Raspberry Pi OS Lite</span>
+          <span class="spec-item__label">Réseau</span>
+          <span class="spec-item__value">Ethernet Gigabit, Wi-Fi 5 (IEEE 802.11ac), Bluetooth</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Connexion téléphone</span>
+          <span class="spec-item__value">USB</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Système</span>
+          <span class="spec-item__value">Raspberry Pi OS Lite</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Écran</span>
+          <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Dimensions</span>
+          <span class="spec-item__value">20 cm × 11 cm × 15 cm</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Fabrication</span>
+          <span class="spec-item__value">Made in Luxembourg, chez Q-Leap à Bertrange</span>
+        </div>
         </div>
       </div>
-      <div class="specs__list" role="list">
+      <div>
+        <h3 class="compat__head">Smartphone</h3>
+        <div class="specs__list" role="list" aria-label="Smartphone">
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Écran</span>
-        <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
+          <span class="spec-item__label">Système</span>
+          <span class="spec-item__value">Android</span>
         </div>
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Connexion internet</span>
-        <span class="spec-item__value">Aucune pendant les tests&nbsp;: aucun appel externe, aucune donnée qui sort de chez vous</span>
+          <span class="spec-item__label">Pilotage</span>
+          <span class="spec-item__value"><a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, par le câble USB</span>
         </div>
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Dimensions</span>
-        <span class="spec-item__value">20 cm × 11 cm × 15 cm</span>
+          <span class="spec-item__label">Appareil</span>
+          <span class="spec-item__value">Physique, ni émulateur ni simulateur</span>
         </div>
         <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Fabrication</span>
-        <span class="spec-item__value">Made in Luxembourg, chez Q-Leap à Bertrange</span>
+          <span class="spec-item__label">Applications</span>
+          <span class="spec-item__value">La véritable application 2FA, installée sur le téléphone</span>
+        </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="compat__head">Interface</h3>
+        <div class="specs__list" role="list" aria-label="Interface">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Accès</span>
+          <span class="spec-item__value">Interface web, sur le réseau local</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Scénarios</span>
+          <span class="spec-item__value">Éditeur visuel, construit sur les captures d'écran de l'application testée</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Stockage</span>
+          <span class="spec-item__value">Local, sur le boîtier (SQLite)</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Déclenchement</span>
+          <span class="spec-item__value">Appel de l'API REST, ou app compagnon installée sur le téléphone</span>
+        </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="compat__head">API</h3>
+        <div class="specs__list" role="list" aria-label="API">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Type</span>
+          <span class="spec-item__value">REST, sur HTTP</span>
+        </div>
+        <div class="spec-item spec-item--api" role="listitem">
+          <span class="spec-item__label">GET /scenarios/:id/execute</span>
+          <span class="spec-item__value">Exécute un scénario enregistré sur le téléphone relié.</span>
+        </div>
+        <div class="spec-item spec-item--api" role="listitem">
+          <span class="spec-item__label">GET /get-luxtrust-otp</span>
+          <span class="spec-item__value">Renvoie le code à usage unique affiché par l'app LuxTrust.</span>
+        </div>
+        <div class="spec-item spec-item--api" role="listitem">
+          <span class="spec-item__label">POST /display-image</span>
+          <span class="spec-item__value">Affiche un QR code sur l'écran du boîtier.</span>
+        </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="compat__head">Données et réseau</h3>
+        <div class="specs__list" role="list" aria-label="Données et réseau">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Fonctionnement</span>
+          <span class="spec-item__value">Local, sur le réseau où vous installez le boîtier</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Captures</span>
+          <span class="spec-item__value">Stockées sur le boîtier</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Cloud</span>
+          <span class="spec-item__value">Aucune dépendance pendant l'exécution</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Connexion internet</span>
+          <span class="spec-item__value">Aucune pendant les tests</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Données</span>
+          <span class="spec-item__value">De test uniquement</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Contrôle d'accès</span>
+          <span class="spec-item__value">L'API n'attend aucune clé : l'accès est celui de votre réseau</span>
+        </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="compat__head">Déploiement</h3>
+        <div class="specs__list" role="list" aria-label="Déploiement">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Installation</span>
+          <span class="spec-item__value">Conteneurs Docker, lancés par une seule commande Docker Compose</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Mise en service</span>
+          <span class="spec-item__value">48 à 72 heures après la commande</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Support</span>
+          <span class="spec-item__value">Inclus, réponse sous 24 h ouvrées</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Remplacement</span>
+          <span class="spec-item__value">Boîtier neuf en cas de panne</span>
+        </div>
         </div>
       </div>
     </div>
@@ -388,21 +491,6 @@
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>L'intégration prend moins d'une heure</span></li>
     </ul>
 
-    <h3 style="margin:52px 0 18px;">Trois points d'entrée</h3>
-    <div class="specs__list" role="list" aria-label="Trois points d'entrée">
-          <div class="spec-item spec-item--api" role="listitem">
-            <span class="spec-item__label">GET /scenarios/:id/execute</span>
-            <span class="spec-item__value">Exécute un scénario enregistré sur le téléphone relié.</span>
-          </div>
-          <div class="spec-item spec-item--api" role="listitem">
-            <span class="spec-item__label">GET /get-luxtrust-otp</span>
-            <span class="spec-item__value">Renvoie le code à usage unique affiché par l'app LuxTrust.</span>
-          </div>
-          <div class="spec-item spec-item--api" role="listitem">
-            <span class="spec-item__label">POST /display-image</span>
-            <span class="spec-item__value">Affiche un QR code sur l'écran du boîtier, pour que le téléphone le scanne.</span>
-          </div>
-    </div>
 
     <p style="margin-top:40px;">
       <a href="cas-usage.html" class="btn btn--outline">Tous les cas d'usage
@@ -457,8 +545,8 @@
 <section class="section section--gray" aria-labelledby="compat-title">
   <div class="container">
     <div class="section-header">
-      <span class="section-label">Intégration</span>
-      <h2 class="section-title" id="compat-title">Tous types de projets et d'applications</h2>
+      <span class="section-label">Compatibilité</span>
+      <h2 class="section-title" id="compat-title">Compatibilité</h2>
       <p class="section-subtitle"><span class="nb">Q-Bot</span> s'intègre dans votre chaîne de tests existante, quelle que soit la technologie utilisée.</p>
     </div>
     <div class="tools__grid" style="gap:48px;">
