@@ -6111,3 +6111,155 @@ des tiers :
 - **aucun annuaire professionnel, aucun avis sur un comparateur** ;
 - **le « Depuis 10 ans » de `q-leap.eu`**, qui contredit de quatre ans le `foundingDate` du
   5 avril 2012.
+
+## Le lot de review du 2026-09-02 : plus clair, moins répétitif, plus défendable
+
+Brief de review en 26 points, traité en six lots, un lot par commit. L'objectif
+annoncé n'était pas du wording : rendre le site plus clair, plus crédible
+techniquement, moins répétitif, et aligné sur un parcours (je découvre le problème,
+je comprends le produit, je comprends le fonctionnement, je vérifie, je réserve).
+Le message différenciant à faire ressortir : **automatiser la 2FA sans la
+contourner.**
+
+### Ce que la homepage est devenue
+
+Ordre demandé et appliqué : hero, solution, produit (la séquence 3D), **comment ça
+fonctionne**, trois avantages, cas d'usage, compatibilité, vidéo, Made in
+Luxembourg, CTA final.
+
+- **La section « Comment ça fonctionne » est neuve** : cinq étapes, le texte du
+  brief mot pour mot, avec le composant à ronds numérotés de la page Démo. La
+  variante à cinq colonnes redérive la formule du trait de liaison exactement
+  comme celle à quatre (`20 % − 0,8 g − rond/2`), et le trait s'arrête au pixel
+  sur le centre du cinquième rond.
+- **Le message « sans code » y est la seconde moitié**, en quatre lignes à coche.
+  Le brief le veut sur la homepage mais interdit d'y recopier la fiche technique.
+- **Trois avantages, plus quatre.** Partent « Mise en service immédiate » (fausse :
+  il faut construire ses scénarios) et « Deux accès ».
+- **Les deux blocs « pour qui » fusionnent** en « Conçu pour les équipes QA et
+  d'automatisation ». « À qui s'adresse Q-Bot ? » puis « Tous types de projets IT »
+  puis « Tous types d'applications » disaient trois fois la même chose, en plus
+  large à chaque fois. Ces deux derniers titres venaient du WordPress et étaient
+  conservés à ce titre depuis le 2026-08-31 ; **la review autorise explicitement
+  leur fusion**, c'est donc un arbitrage et non une entorse à la règle du live.
+- **La section LuxTrust devient la section Compatibilité**, avec la grille
+  `.compat` déjà employée sur la fiche technique. Un seul endroit fait foi.
+
+### Les trois formulations qui n'étaient pas défendables
+
+| Avant | Après | Pourquoi |
+|---|---|---|
+| « Zéro faux positif » | « Exécution déterministe » | un zéro absolu ne se démontre pas ; un appui prédéfini rejoué à l'identique se décrit |
+| « Rien n'est deviné à l'image » | « sans reconnaissance visuelle de l'interface **pendant l'exécution** » | les captures servent bien à CONSTRUIRE les scénarios : la nuance est demandée, et l'ancienne phrase laissait croire l'inverse |
+| « API simple et sécurisée » | l'API REST s'appelle depuis la chaîne de tests, sans SDK ni agent | **une API sans jeton n'est pas sécurisée par nature** |
+
+**LE POINT SÉCURITÉ EST LE PLUS DÉLICAT DU LOT, et il se joue sur ce qu'on
+n'écrit pas.** Les documents fournis par le client disent trois choses, et
+seulement trois : auto-hébergé sur le réseau local, aucun jeton ni clé d'API
+requis, aucun appel externe ni connexion internet pendant les tests. **Rien sur
+l'authentification de l'API, les ACL, l'isolation réseau ou le contrôle des
+appels.** La note de la page « comment ça marche » annonçait « aucun jeton
+d'authentification, aucune limite de débit » comme des AVANTAGES : elle dit
+maintenant « l'API n'attend aucune clé : le contrôle d'accès est celui de votre
+réseau », ce qui est vrai et renvoie la question là où elle se décide. Ne pas
+enrichir cette ligne sans information du client.
+
+### La page « Cas d'usage » devient « Comment ça marche »
+
+Elle ouvrait sur cinq cas détaillés sans avoir dit une fois ce que fait le
+produit. Structure demandée et appliquée : comment ça marche (cinq étapes), dans
+quels cas l'utiliser (les cinq cas, qui couvraient déjà la liste du brief), deux
+modes de déclenchement.
+
+**L'ADRESSE NE CHANGE PAS** (`cas-usage.html`, `en/use-cases.html`) : elle est citée
+par le plan du site, les paires hreflang, les canoniques et les 52 relais.
+Renommer le fichier coûterait tout cela pour rien. Seuls le libellé de
+navigation, le titre, le h1 et la structure changent.
+
+**Les deux modes de déclenchement ont DÉMÉNAGÉ depuis la fiche technique**, avec
+leur film, et la section est placée AVANT la bande d'exemples d'API : l'API est
+l'un des deux modes, elle ne peut pas être détaillée avant d'être annoncée.
+
+### La fiche technique en est enfin une
+
+Six catégories (Matériel, Smartphone, Interface, API, Données et réseau,
+Déploiement) plus la Compatibilité, qui garde sa section parce qu'elle a des
+sous-listes. La section « Un nano-ordinateur… » disparaît : sa prose et ses huit
+lignes sont absorbées, catégorie par catégorie.
+
+**Trois composants réutilisés, aucun créé** : `tools__grid`, `compat__head`,
+`specs__list` / `spec-item`. Le design global n'est pas touché, comme demandé.
+
+### Le pied de page et la navigation
+
+Partent : la ligne newsletter (posée le matin même, retirée par ce brief),
+« Conditions de vente » et « Réservation ». « Nous contacter » monte dans la
+colonne Q-Bot, « Cas d'usage » vise la section `#cas`, les mentions Q-Leap
+deviennent cliquables. La FAQ quitte la barre de navigation et reste au pied de
+page.
+
+**LES DEUX PAGES NE SONT PAS SUPPRIMÉES, et c'est une lecture à assumer.** Le
+brief liste ces entrées sous le titre « FOOTER / NAVIGATION ». `conditions-vente/`
+répond à l'adresse exacte du WordPress qu'elle remplace, ce qui préserve les liens
+entrants le jour de la bascule ; `reservation.html` porte l'agenda Microsoft
+Bookings que le bouton de la barre de navigation ouvre depuis les 23 pages. Les
+deux restent au plan du site.
+
+**Deux questions de FAQ ajoutées** (la clé secrète, la connexion internet) parce
+que la réponse est documentée. Deux autres de la liste du brief ne sont PAS
+écrites : « plusieurs équipes » et « deux tests en même temps » demandent une
+information produit que personne n'a fournie.
+
+### LE DÉFAUT LE PLUS INSTRUCTIF DU LOT : deux mots collés, et une règle CSS disparue
+
+« 1 appelpar verrou 2FA dans la chaîne » et « 0intervention humaine, à toute
+heure », signalés à la review comme des coquilles. **Ce n'en était pas.** Le
+balisage est correct depuis toujours (`<b>0</b><span>intervention…</span>`) ;
+c'est le bloc `.usecase__fig` qui avait été **supprimé par erreur le 2026-08-28**,
+avec le CSS de l'épinglage des cas d'usage, alors que les dix paragraphes qui
+l'emploient sont restés dans les deux pages. Sans mise en forme, les deux
+éléments restent en ligne et se collent, à l'écran comme au copier-coller.
+
+**Deux audits automatisés sont passés sur ces pages depuis, sans rien voir.** Ils
+mesurent le contraste, les titres, les cibles tactiles, les liens : jamais si le
+texte rendu **se lit**. C'est un lecteur humain qui l'a vu. Un retrait de mise en
+page ne se contrôle pas sur « la page s'affiche encore ».
+
+Et le correctif est dans la feuille de style, jamais dans le balisage : ajouter une
+espace entre les deux balises masquerait le symptôme (elle est mangée par le
+`display: flex` de la ligne) sans rendre au chiffre sa taille.
+
+### Quatre pièges de spécificité et de sonde, dans le même lot
+
+1. **`.features__grid--3` écrit seul pèse (0,1,0)**, exactement comme les deux
+   requêtes média qui rabattent `.features__grid` plus bas dans le fichier : à
+   poids égal l'ordre tranche, elles gagnaient, et la grille tombait à une colonne
+   dès 768 px. **Un nom de classe à tirets reste UNE classe.** Sélecteur doublé.
+2. **`.order-process--5` ne doit PAS être doublé**, et c'est l'inverse : à poids
+   égal, l'ordre du fichier donne exactement la cascade voulue (la variante gagne
+   sur la base, les requêtes gagnent sur la variante). Doubler aurait figé cinq
+   colonnes sur un téléphone.
+3. **Deux insertions ont atterri au mauvais endroit faute de bornes** : les
+   questions de FAQ dans le bloc `Organization`, dont le JSON finit par le même
+   motif que le `FAQPage` et qui vient AVANT dans la page (le document restait
+   valide, il disait n'importe quoi : **un contrôle de validité JSON ne voit pas
+   ce genre d'erreur**), puis les blocs visibles avant la liste, parce que le
+   marqueur de fin choisi apparaissait d'abord à la fin du page-hero.
+4. **`api-title` CONTIENT `pi-title`** : un contrôle de reste porte sur l'attribut
+   entier, jamais sur un fragment de nom.
+
+Et deux pièges de sonde typographique : `innerText` d'un noeud **cloné** n'est pas
+mis en page, donc il rend l'indentation du source (2 355 faux positifs) ; il faut
+masquer les blocs de code dans le document vivant. Et un filtre de noms propres
+doit porter sur le **voisinage**, pas sur la capture, sinon « with LuxTrust » se
+capture en « hLuxT » et ne ressemble à aucun nom connu.
+
+### Ce que ce lot n'a pas fait, faute de matière
+
+- **aucun nouveau modèle 3D ni nouvelle photo** n'existe dans le dépôt : la
+  séquence 3D et les visuels restent ceux d'avant, comme le brief le demande dans
+  ce cas ;
+- **aucune information de sécurité API** au-delà des trois faits documentés ;
+- **pas de logo « Made in Luxembourg »** : le brief demande de remplacer le
+  pictogramme de lieu du pied de page par ce logo, qui n'existe nulle part dans le
+  dépôt et qui est une marque déposée. Le pictogramme reste.
