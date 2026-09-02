@@ -107,6 +107,12 @@ exclude:
   # L'image extraite du film qui a tenu la section « La solution » une demi-journée,
   # le 2026-09-02 : la photo fournie par le client l'a remplacée le soir même.
   - assets/img/qbot-film-dock.jpg
+  # Deux actifs devenus orphelins avec la refonte de la page « À propos » du
+  # 2026-09-02 : la photo du prototype à portique, qui n'a plus de section, et le
+  # logo de la carte Q-Bot, que le document du client demande de retirer (« ne pas
+  # remettre une carte Q-Bot, le visiteur se trouve déjà sur le site Q-Bot »).
+  - assets/img/device-photo.jpg
+  - assets/img/logo-qbot-card.png
   # Le schéma du flux 2FA, construit le 2026-09-01 pour la section « La solution »
   # puis remplacé le même jour par le visuel fourni par le client. Gardé dans git
   # (il se remet en place en changeant un `src`), mais plus servi : la règle du

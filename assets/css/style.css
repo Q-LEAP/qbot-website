@@ -2184,7 +2184,17 @@ p { color: var(--gray); }
 .page-hero__media img {
   display: block;
   width: 100%;
+  /* CADRE 4/3 IMPOSÉ, ET C'EST SANS EFFET SUR LES DEUX PAGES FAQ : leur visuel est
+     déjà en 4/3 (1400 x 1050), donc `cover` ne recadre rien. La règle existe pour
+     la photo d'équipe de la page « À propos », en portrait 768 x 1024 : sans
+     recadrage l'en-tête passait de 485 à 749 px de haut, alors que le document du
+     client demande une page « courte et aérée ».
+     `object-position: center 42%` garde le plan de travail et les personnes, qui
+     sont au milieu du cadre, plutôt que le plafond ou le plancher. */
+  aspect-ratio: 4 / 3;
   height: auto;
+  object-fit: cover;
+  object-position: center 42%;
   border-radius: var(--radius-lg);
   border: 1px solid #212121;
 }
@@ -2548,6 +2558,32 @@ p { color: var(--gray); }
    `--product` : la sur-échelle de 8 % n'existe que pour masquer les bords d'une
    photo pendant le parallaxe, et sur un cadre qui ne bouge pas elle ne fait que
    rogner. */
+/* ---- .team-grid : la bande de photos d'équipe ----
+   Trois photos fournies par le client le 2026-09-02, en portrait 768 x 1024, sur
+   la page « À propos » dont le document demande des photos réelles.
+   `aspect-ratio` ET `cover`, sans quoi trois portraits côte à côte donnent une
+   bande de 493 px de haut à 1440 px : la page cesse d'être « courte et aérée »,
+   ce que le document demande explicitement. Le 4/5 garde une allure de portrait
+   sans occuper la moitié de l'écran.
+   `object-position: center 28%` : sur ces trois photos le sujet est dans le haut
+   du cadre, un recadrage centré coupait des têtes et gardait du plancher. */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.team-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center 28%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
 .intro__image--portrait {
   align-self: center;
   overflow: visible;
