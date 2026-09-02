@@ -2636,6 +2636,14 @@ p { color: var(--gray); }
 /* Un bouton en butée reste VISIBLE mais dit qu'il ne fait plus rien : le retirer
    ferait sauter la mise en page à chaque extrémité. */
 .carousel__btn:disabled { opacity: 0.32; cursor: default; }
+/* L'ATTRIBUT `hidden` NE CACHE PAS UN SVG, et c'est un piège de plateforme, pas
+   une erreur de code : la règle `[hidden] { display: none }` des navigateurs ne
+   vise que les éléments HTML, et un `<svg>` est dans l'espace de noms SVG. Le
+   bouton de lecture affichait donc SES DEUX icônes côte à côte, pause et
+   lecture, alors que le script en masquait bien une. Relevé au banc (les deux
+   `getBoundingClientRect().width > 0`), invisible à toute vérification de l'état
+   JavaScript. */
+.carousel__btn svg[hidden] { display: none; }
 .carousel__dots { display: flex; gap: 4px; }
 /* LA PASTILLE FAIT 24 x 24, ET SEUL SON POINT EST PETIT. Premier essai : un point
    de 8 px avec une aire cliquable posée en `::before` — l'audit d'accessibilité

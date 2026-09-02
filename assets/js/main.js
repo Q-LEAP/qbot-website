@@ -1960,12 +1960,25 @@ backToTop.addEventListener('click', () => {
    C'est la même mécanique que le repli de la bande d'exemples d'appel, déjà dans
    la feuille de style depuis le 2026-08-20.
 
-   IL N'AVANCE PAS TOUT SEUL, ET CE N'EST PAS UN OUBLI. Le client avait fait
-   retirer les bandes d'outils défilantes le 2026-08-20 (« les carrousels sont un
-   peu illisibles cognitivement ») : ce qui les rendait illisibles, c'était le
-   défilement automatique, pas le motif. Ici le visiteur décide. Ajouter un
-   défilement automatique demanderait en plus un bouton de pause, sans quoi c'est
-   un défaut d'accessibilité (WCAG 2.2.2).
+   IL TOURNE TOUT SEUL, LENTEMENT, DEPUIS LE 2026-09-02 : « fais un carrousel qui
+   tourne automatiquement, lentement ». Six secondes par photo, ce qui laisse le
+   temps de regarder chacune.
+   ET IL PORTE DONC UN BOUTON DE PAUSE, qui n'est pas décoratif : WCAG 2.2.2
+   demande un moyen d'arrêter tout mouvement automatique qui dure plus de cinq
+   secondes. Sans lui, l'accessibilité de la page se dégrade au lieu de progresser.
+   QUATRE CAS OÙ IL S'ARRÊTE DE LUI-MÊME, et chacun a sa raison :
+     - en mouvement réduit, il ne démarre pas du tout. Le bouton reste, en
+       position « lecture » : celui qui veut le mouvement peut le lancer ;
+     - hors du champ, il se met en pause (une animation que personne ne regarde
+       est de la batterie dépensée) et reprend en revenant ;
+     - au survol et à la prise de focus, il se met en pause : on ne déplace pas
+       une photo sous les yeux de quelqu'un qui la regarde, ni sous le doigt de
+       quelqu'un qui vise une flèche ;
+     - dès que le visiteur touche une flèche ou une pastille, il s'arrête POUR DE
+       BON. Reprendre la main puis se faire déplacer trois secondes plus tard est
+       le défaut le plus agaçant du motif. Le bouton permet de le relancer.
+   Le délai est déclaré dans le balisage (`data-carousel-auto`), pas ici : c'est
+   le réglage, et il se lit à côté du contenu qu'il fait tourner.
 
    L'ÉTAT SE LIT SUR LA POSITION RÉELLE, jamais sur un compteur interne : le
    défilement peut venir du doigt, de la molette, de la barre ou d'une flèche, et
@@ -2053,5 +2066,77 @@ backToTop.addEventListener('click', () => {
     });
     window.addEventListener('resize', etat);
     etat();
+
+    /* ── LE DÉFILEMENT AUTOMATIQUE ─────────────────────────────────────────── */
+    var delai = parseInt(car.getAttribute('data-carousel-auto'), 10);
+    var bouton = car.querySelector('[data-carousel-play]');
+    if (!delai || !bouton) return;
+
+    var doux = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var minuteur = null;
+    var visible = true;      /* le carrousel est-il dans le champ ? */
+    var survol = false;      /* la souris ou le focus est-il dessus ? */
+    var voulu = doux;        /* le visiteur veut-il que ça tourne ? */
+
+    function tour() {
+      /* Au bout, on revient au départ : c'est ce que « tourner » veut dire. Le
+         retour est un seul mouvement doux, pas une succession de pas. */
+      var i = index();
+      vers(i >= positions() - 1 ? 0 : i + 1);
+    }
+
+    function bascule(el, cache) {
+      if (cache) el.setAttribute('hidden', '');
+      else el.removeAttribute('hidden');
+    }
+
+    function rythme() {
+      clearInterval(minuteur);
+      minuteur = null;
+      if (voulu && visible && !survol) minuteur = setInterval(tour, delai);
+      /* Le bouton dit l'état ET l'action : deux icônes, deux libellés. */
+      var pause = bouton.getAttribute('data-label-pause');
+      var lecture = bouton.getAttribute('data-label-play');
+      bouton.setAttribute('aria-label', voulu ? pause : lecture);
+      /* `setAttribute` ET NON `.hidden`, et c'est la seconde moitié du même piège
+         de plateforme : la propriété `hidden` est définie sur HTMLElement, pas sur
+         SVGElement. `svg.hidden = true` posait donc une propriété JavaScript sans
+         effet, et l'icône ne changeait jamais. Mesuré au banc : le bouton restait
+         sur l'icône de pause même en pause. */
+      bascule(bouton.querySelector('[data-icone-pause]'), !voulu);
+      bascule(bouton.querySelector('[data-icone-play]'), voulu);
+    }
+
+    bouton.addEventListener('click', function () { voulu = !voulu; rythme(); });
+
+    /* Une commande explicite arrête le défilement pour de bon. */
+    function main() { if (voulu) { voulu = false; rythme(); } }
+    if (prec) prec.addEventListener('click', main);
+    if (suiv) suiv.addEventListener('click', main);
+    Array.prototype.forEach.call(pastilles, function (d) {
+      d.addEventListener('click', main);
+    });
+
+    car.addEventListener('mouseenter', function () { survol = true; rythme(); });
+    car.addEventListener('mouseleave', function () { survol = false; rythme(); });
+    /* LE FOCUS SUR LE BOUTON DE LECTURE NE COMPTE PAS, et c'est un défaut mesuré :
+       le clic sur « reprendre » laisse le focus sur le bouton, donc `focusin`
+       posait survol = true et le défilement ne redémarrait jamais. Relevé au
+       banc : « après reprise : 0 -> 0 » alors qu'un pas était attendu. Appuyer
+       sur lecture est une demande de mouvement, pas une raison de l'empêcher. */
+    car.addEventListener('focusin', function (e) {
+      survol = !bouton.contains(e.target);
+      rythme();
+    });
+    car.addEventListener('focusout', function () { survol = false; rythme(); });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { visible = e.isIntersecting; });
+        rythme();
+      }, { threshold: 0.25 }).observe(car);
+    }
+
+    rythme();
   });
 }());

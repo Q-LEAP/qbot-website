@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=b20be276">
+  <link rel="stylesheet" href="assets/css/style.css?v=aee525d3">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -209,7 +209,7 @@
          (WCAG 2.2.2). Ici le visiteur décide.
          La cinquième photo n'est pas ici : elle illustre la section juste
          au-dessus, et une photo ne sert qu'une fois. -->
-    <div class="carousel" data-carousel role="region" aria-roledescription="carrousel" aria-label="Photos de l'équipe Q-Leap et de ses bureaux">
+    <div class="carousel" data-carousel data-carousel-auto="6000" role="region" aria-roledescription="carrousel" aria-label="Photos de l'équipe Q-Leap et de ses bureaux">
       <ul class="carousel__track" role="list" tabindex="0" aria-label="Photos, défilement horizontal">
         <li class="carousel__slide"><img src="assets/img/qleap-equipe-dev.jpg" alt="Deux membres de l'équipe Q-Leap au travail dans les bureaux de Bertrange, le boîtier Q-Bot posé sur la table" width="768" height="1024" loading="lazy"></li>
         <li class="carousel__slide"><img src="assets/img/qleap-locaux.jpg" alt="Les bureaux de Q-Leap à Bertrange" width="768" height="1024" loading="lazy"></li>
@@ -221,6 +221,9 @@
         <div class="carousel__arrows">
           <button class="carousel__btn" type="button" data-carousel-prev aria-label="Photo précédente"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
           <button class="carousel__btn" type="button" data-carousel-next aria-label="Photo suivante"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+          <button class="carousel__btn" type="button" data-carousel-play
+                  data-label-pause="Mettre en pause le défilement" data-label-play="Reprendre le défilement"
+                  aria-label="Mettre en pause le défilement"><svg data-icone-pause width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg data-icone-play hidden width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button>
         </div>
         <div class="carousel__dots">
           <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 1"></button>
@@ -337,6 +340,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=7ebc9a4e" defer></script>
+<script src="assets/js/main.js?v=2127dd8d" defer></script>
 </body>
 </html>
