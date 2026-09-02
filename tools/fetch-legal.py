@@ -26,10 +26,13 @@ from playwright.async_api import async_playwright
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SORTIE = os.path.join(RACINE, 'tools', 'legal-source.json')
-JOBS = [("https://q-bot.eu/conditions-vente/", "fr-FR", "cv-fr"),
+# Les deux « conditions de vente » ne sont plus relevées : les pages ont été
+# supprimées du site le 2026-09-02 à la demande du client. Leur texte reste dans
+# tools/legal-source.json, au cas où la décision change.
+JOBS = [
         ("https://q-bot.eu/confidentialite/",  "fr-FR", "conf-fr"),
         ("https://q-bot.eu/en/privacy/",       "en-GB", "priv-en"),
-        ("https://q-bot.eu/en/terms-and-conditions-of-sale/", "en-GB", "cv-en")]
+        ]
 JS = """() => {
   const vis = el => el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden';
   const out = [];

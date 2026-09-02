@@ -56,6 +56,17 @@ REDIRECTIONS = {
     'en/june-2023/':          ('en/index.html', 'en'),
     'en/december-2023/':      ('en/index.html', 'en'),
 
+    # ---- les deux pages supprimées le 2026-09-02 (demande du client) ----
+    #      « Conditions de vente » répondait à l'adresse exacte du WordPress, donc
+    #      la supprimer sans relais rendrait cette adresse morte : elle renvoie à
+    #      l'accueil de sa langue, comme les archives, suivant la règle « plus
+    #      aucune 404 » appliquée au blog le 2026-08-28.
+    #      « Réservation » n'a jamais existé sur le WordPress et n'a jamais été
+    #      indexée (noindex depuis sa création le 2026-08-31) : elle n'a donc pas
+    #      besoin de relais, et n'en a pas.
+    'conditions-vente/':            ('index.html', 'fr'),
+    'en/terms-and-conditions-of-sale/': ('en/index.html', 'en'),
+
     # ---- archives WordPress (catégories, étiquettes, auteurs) ----
     'category/presse/':                 ('index.html', 'fr'),
     'category/timeline/':               ('index.html', 'fr'),

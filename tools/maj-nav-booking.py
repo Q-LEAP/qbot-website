@@ -30,7 +30,11 @@ ECRIRE = '--ecrire' in sys.argv
 # d'URL, la commande annoncée en tête de ce fichier n'aurait rien mis à jour, et
 # elle l'aurait annoncé sans erreur.
 BOUTON = re.compile(
-    r'<a href="((?:\.\./)?)(reservation\.html|booking\.html|commandez\.html|order\.html)"'
+    r'<a href="((?:\.\./)?)(contact\.html|commandez\.html|order\.html)"'
+    # « reservation.html » et « booking.html » ont disparu de cette liste avec
+    # les deux pages, supprimées le 2026-09-02 à la demande du client. Le repli
+    # sans JavaScript du bouton est désormais la page contact ; la fenêtre
+    # Bookings, elle, vit dans les attributs et n'a pas bougé.
     r'((?:\s+data-booking-open|\s+data-booking-[a-z]+="[^"]*")*)'
     r'\s+class="btn btn--primary">(Réserver une démo|Book a demo)</a>')
 

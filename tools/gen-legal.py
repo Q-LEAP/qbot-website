@@ -61,15 +61,6 @@ SRC = json.load(io.open(os.path.join(RACINE, 'tools/legal-source.json'), encodin
 # ── Les quatre pages. `bornes` délimite le contenu dans le relevé : du titre de
 #    la page (exclu, il devient le <h1>) au bloc d'appel à l'action du live.
 PAGES = [
-    dict(cle='cv-fr', sortie='conditions-vente/index.html', lang='fr', prof=1,
-         bornes=(6, 176), gabarit='a-propos.html',
-         url='https://q-bot.eu/conditions-vente/',
-         alt='https://q-bot.eu/en/terms-and-conditions-of-sale/',
-         alt_rel='../en/terms-and-conditions-of-sale/',
-         titre='Conditions générales de vente Q-Bot | Q-Leap',
-         desc="Conditions générales de vente de Q-Bot, robot d'automatisation de la 2FA, "
-              "édité par Q-Leap S.A. au Luxembourg.",
-         label='Mentions légales', fil='Conditions de vente'),
     dict(cle='conf-fr', sortie='confidentialite/index.html', lang='fr', prof=1,
          bornes=(6, 56), gabarit='a-propos.html',
          url='https://q-bot.eu/confidentialite/',
@@ -78,14 +69,6 @@ PAGES = [
          desc="Politique de confidentialité de Q-Bot et de l'application Q-Bot Mobile : "
               "données collectées, finalités, vos droits, conservation.",
          label='Mentions légales', fil='Confidentialité'),
-    dict(cle='cv-en', sortie='en/terms-and-conditions-of-sale/index.html', lang='en', prof=2,
-         bornes=(6, 176), gabarit='en/about.html',
-         url='https://q-bot.eu/en/terms-and-conditions-of-sale/',
-         alt='https://q-bot.eu/conditions-vente/', alt_rel='../../conditions-vente/',
-         titre='Q-Bot general terms and conditions | Q-Leap',
-         desc='General terms and conditions of sale for Q-Bot, the 2FA test automation robot '
-              'published by Q-Leap S.A. in Luxembourg.',
-         label='Legal', fil='Terms and conditions'),
     dict(cle='priv-en', sortie='en/privacy/index.html', lang='en', prof=2,
          bornes=(6, 56), gabarit='en/about.html',
          url='https://q-bot.eu/en/privacy/',
@@ -95,6 +78,15 @@ PAGES = [
               'your rights, retention.',
          label='Legal', fil='Privacy'),
 ]
+
+# LES DEUX PAGES « CONDITIONS DE VENTE » ONT ÉTÉ SUPPRIMÉES LE 2026-09-02, à la
+# demande du client, et leurs deux entrées sont sorties de la liste ci-dessus. Ce
+# n'est pas un oubli : un générateur dont la sortie a été supprimée est une
+# régression en attente, et il suffirait d'un `python3 tools/gen-legal.py` pour
+# les faire réapparaître. Leurs deux adresses relaient désormais vers l'accueil
+# de leur langue (cf. tools/redirections_map.py). Le relevé du live, lui, garde
+# leur texte dans tools/legal-source.json : si le client change d'avis, tout est
+# là, il suffit de remettre les deux entrées.
 
 # ── Les liens du contenu, repointés. La clef est l'URL telle qu'elle est écrite
 #    sur le live, la valeur est un gabarit où {p} est le préfixe de profondeur.

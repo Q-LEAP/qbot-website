@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 """SOURCE UNIQUE de l'agenda Microsoft Bookings.
 
-L'URL et les libellés de la fenêtre vivent ICI, et nulle part ailleurs. Deux
-scripts la lisent, « gen-reservation.py » pour les deux pages de réservation et
-« maj-nav-booking.py » pour le bouton de la barre de navigation des 23 pages.
+L'URL et les libellés de la fenêtre vivent ICI, et nulle part ailleurs.
+« maj-nav-booking.py » les lit pour le bouton de la barre de navigation.
+
+LES DEUX PAGES DE RÉSERVATION N'EXISTENT PLUS depuis le 2026-09-02 (demande du
+client), et « gen-reservation.py » a été supprimé avec elles : un générateur dont
+la sortie est supprimée est une régression en attente. La fenêtre Bookings, elle,
+est conservée : elle s'ouvre depuis le bouton de la barre, sur les 21 pages.
 
 POURQUOI UN MODULE ET PAS UNE CONSTANTE DANS CHAQUE SCRIPT : le bouton de la barre
 porte les mêmes attributs sur toutes les pages, donc l'URL y est répétée. Sans
@@ -11,7 +15,6 @@ source unique, un changement d'agenda en laisserait forcément une derrière.
 Même raison que « redirections_map.py » et « vignettes_guides.py ».
 
 POUR CHANGER D'AGENDA : modifier URL ci-dessous, puis
-    python3 tools/gen-reservation.py
     python3 tools/maj-nav-booking.py
     python3 tools/gen-accueil-bis.py
     node tools/bump-assets.mjs
