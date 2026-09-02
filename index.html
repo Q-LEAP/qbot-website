@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=6c336662">
+  <link rel="stylesheet" href="assets/css/style.css?v=6e6b3ebc">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -259,20 +259,29 @@
         </a>
       </div>
       <div class="intro__image intro__image--fit">
-        <!-- Visuel fourni par le client le 2026-09-01, recadré au carré (1086 x 1086,
-             de 300 à 1386 sur l'original) pour que le boîtier et le téléphone tiennent
-             entiers : le sujet est presque carré, un cadrage 4/3 coupait soit le haut
-             du téléphone soit le bas du boîtier.
-             IMAGE DE SYNTHÈSE, ET IL FAUT LE SAVOIR : elle vient d'un générateur, ce
-             que le dépôt avait écarté le 2026-08-24. Remise sur demande explicite du
-             client. Deux points signalés : la ligne sous « Q-BOT » gravé est illisible
-             (la signature habituelle de ces images), et l'écran du téléphone montre une
-             validation LuxTrust inventée citant MyGuichet, alors que le site déclare
-             par ailleurs n'avoir aucun lien avec LuxTrust. -->
+        <!-- IMAGE EXTRAITE DU FILM PRODUIT (QBV1.2.12, à 23,0 s), recadrée au carré
+             820 x 820 depuis le master 1920x1080, non retouchée.
+             CE QU'ELLE REMPLACE, ET POURQUOI. Le visuel fourni par le client le
+             2026-09-01 était une image de SYNTHÈSE dont l'écran de téléphone montrait
+             une validation LuxTrust INVENTÉE citant MyGuichet, un service réel de
+             l'État luxembourgeois, sur un site qui déclare par ailleurs n'avoir aucun
+             lien avec LuxTrust. Le contrôle n°8 de l'audit RosoAI en a fait son seul
+             point ouvert, en signalant qu'aucune sonde ne pouvait le voir : le mot
+             était dans les pixels, pas dans le texte.
+             Ici la scène est réelle et la validation LuxTrust l'est aussi : c'est
+             l'app, filmée, sur le vrai boîtier. Le problème disparaît par la source,
+             pas par une retouche.
+             CADRAGE CHOISI SUR CINQ ESSAIS RENDUS CÔTE À CÔTE. Le carré serré tient le
+             boîtier au premier plan, ce qui distingue cette image de celle de la fiche
+             technique, tirée du MÊME instant mais en plan large : deux cadrages, deux
+             récits, la même seconde de film.
+             Aucune donnée personnelle lisible : identifiant de session éphémère, aucun
+             nom, aucune adresse autre que celle publiée sur le mur du bureau.
+             Pas de `?v=` : le fichier est neuf, il n'y a aucun cache à contourner. -->
         <img
-          src="assets/img/qbot-2fa-dock.jpg"
-          alt="Le boîtier Q-Bot posé sur un bureau, un smartphone inséré dans son socle, une demande de validation 2FA affichée à l'écran"
-          width="1086" height="1086"
+          src="assets/img/qbot-film-dock.jpg"
+          alt="Le boîtier Q-Bot posé sur un bureau, un smartphone inséré dans son socle affichant une demande de validation LuxTrust, et la page d'authentification ouverte sur l'écran voisin"
+          width="820" height="820"
           loading="lazy"
         >
       </div>

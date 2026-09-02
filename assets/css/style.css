@@ -2548,7 +2548,16 @@ p { color: var(--gray); }
   /* En une colonne, l'image reprend le flux : il n'y a plus de rangée à suivre. */
   .intro__image--fit { border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
   .intro__image--fit img { position: static; height: auto; width: 100%;
-                           border-radius: 0; box-shadow: none; }
+                           border-radius: 0; box-shadow: none;
+    /* PLAFOND AJOUTÉ LE 2026-09-02, et le nombre est calculé : la source est une
+       image extraite du film, 820 px de côté, donc 410 px d'affichage est la
+       largeur au-delà de laquelle un écran de densité 2 agrandit. Sans lui, la
+       colonne de 720 px d'une tablette donnait un agrandissement de 1,76 : on ne
+       montre alors que du détail qui n'existe pas dans le fichier. Sur un
+       téléphone la colonne fait 342 px, donc le plafond ne mord pas et l'image
+       reste en pleine largeur, comme le client l'a demandé pour la photo
+       LuxTrust le 2026-08-26. Même arbitrage, même calcul. */
+                           max-width: 410px; }
 }
 
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
