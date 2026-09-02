@@ -2558,22 +2558,41 @@ p { color: var(--gray); }
    `--product` : la sur-échelle de 8 % n'existe que pour masquer les bords d'une
    photo pendant le parallaxe, et sur un cadre qui ne bouge pas elle ne fait que
    rogner. */
-/* ---- .team-grid : la bande de photos d'équipe ----
-   Trois photos fournies par le client le 2026-09-02, en portrait 768 x 1024, sur
-   la page « À propos » dont le document demande des photos réelles.
-   `aspect-ratio` ET `cover`, sans quoi trois portraits côte à côte donnent une
-   bande de 493 px de haut à 1440 px : la page cesse d'être « courte et aérée »,
-   ce que le document demande explicitement. Le 4/5 garde une allure de portrait
-   sans occuper la moitié de l'écran.
-   `object-position: center 28%` : sur ces trois photos le sujet est dans le haut
-   du cadre, un recadrage centré coupait des têtes et gardait du plancher. */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+/* ---- Carrousel de photos ----
+   Demandé par le client le 2026-09-02, à la place de la bande statique de trois
+   photos posée le matin même : « fais un carrousel juste en dessous, en vrai ».
+
+   LA PISTE EST UN DÉFILEMENT NATIF AVEC ACCROCHAGE, pas un empilement piloté en
+   JavaScript. Sans script, on fait défiler au doigt, à la molette ou à la barre,
+   et les quatre photos sont là : c'est l'état au repos complet que ce dépôt
+   demande à toute mise en scène. Le module 21 n'ajoute que les flèches, les
+   pastilles et leur état.
+   `scroll-snap-type: x mandatory` + `scroll-snap-align: start` : l'accrochage
+   fait qu'on ne s'arrête jamais entre deux photos.
+   `scrollbar-width: none` masque la barre, que les flèches remplacent ; le
+   défilement lui-même reste possible partout.
+   LES PHOTOS SONT RECADRÉES EN 4/5 EN `cover` : elles sont fournies en portrait
+   768 x 1024, et à leur rapport d'origine trois vues côte à côte donnent une
+   bande de 493 px de haut à 1440 px. `object-position: center 28%` garde les
+   personnes, qui sont dans le haut du cadre. */
+.carousel { position: relative; margin-top: 40px; }
+.carousel__track {
+  display: flex;
   gap: 24px;
-  margin-top: 40px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
 }
-.team-grid img {
+.carousel__track::-webkit-scrollbar { display: none; }
+.carousel__slide {
+  flex: 0 0 calc((100% - 48px) / 3);
+  scroll-snap-align: start;
+  margin: 0;
+}
+.carousel__slide img {
   display: block;
   width: 100%;
   height: auto;
@@ -2583,6 +2602,76 @@ p { color: var(--gray); }
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
+/* Les commandes sous la piste, alignées sur la gouttière comme tout le reste :
+   flèches à gauche, pastilles à droite. */
+.carousel__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 24px;
+}
+.carousel__arrows { display: flex; gap: 12px; }
+.carousel__btn {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--black);
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.carousel__btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+/* Un bouton en butée reste VISIBLE mais dit qu'il ne fait plus rien : le retirer
+   ferait sauter la mise en page à chaque extrémité. */
+.carousel__btn:disabled { opacity: 0.32; cursor: default; }
+.carousel__dots { display: flex; gap: 4px; }
+/* LA PASTILLE FAIT 24 x 24, ET SEUL SON POINT EST PETIT. Premier essai : un point
+   de 8 px avec une aire cliquable posée en `::before` — l'audit d'accessibilité
+   l'a refusé, et il avait raison : WCAG 2.5.8 mesure la BOÎTE de la cible, pas un
+   pseudo-élément qui dépasse, et il relevait « 8x8, marge -12 » sur les cinq
+   pastilles. La cible est donc le bouton lui-même, à 24 px, et le point visible
+   est un `::after` centré dedans. La règle des 24 px est alors satisfaite sans
+   avoir à invoquer l'exception d'espacement. */
+.carousel__dot {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.carousel__dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background var(--transition), transform var(--transition);
+}
+.carousel__dot:hover::after { background: var(--muted); }
+.carousel__dot[aria-current]::after { background: var(--teal); transform: scale(1.5); }
+
+@media (max-width: 900px) {
+  .carousel__slide { flex: 0 0 calc((100% - 24px) / 2); }
+}
+@media (max-width: 600px) {
+  .carousel__slide { flex: 0 0 100%; }
+}
+/* En mouvement réduit, le défilement ne glisse pas : il saute. Le `scroll-behavior`
+   des appels JavaScript est neutralisé par la règle globale du fichier, celle-ci
+   couvre le défilement natif. */
+@media (prefers-reduced-motion: reduce) {
+  .carousel__track { scroll-behavior: auto; }
+}
+
 
 .intro__image--portrait {
   align-self: center;

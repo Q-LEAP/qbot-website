@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=8bee902f">
+  <link rel="stylesheet" href="assets/css/style.css?v=2ce69139">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -156,47 +156,38 @@
      institutionnelle que commerciale », courte et aérée, qui répond à « qui est
      derrière Q-Bot et pourquoi puis-je leur faire confiance ? », et des PHOTOS
      RÉELLES plutôt que des illustrations.
-     L'en-tête de page prend donc la variante à visuel (`page-hero--media`), déjà
-     employée par les deux pages FAQ : rien de neuf, un composant existant. -->
+     L'EN-TÊTE N'A PAS DE VISUEL, sur demande du client le 2026-09-02 : « mets pas
+     de photo à Q-Bot, conçu par des experts du test logiciel ». Les photos sont
+     rassemblées plus bas, dans le carrousel de la section « Conçu et développé au
+     Luxembourg », où il les a demandées. -->
 <main id="main">
-<section class="page-hero page-hero--media" aria-labelledby="page-title">
+<section class="page-hero" aria-labelledby="page-title">
   <div class="container">
-    <div class="page-hero__grid">
-      <div>
-        <span class="section-label">À propos</span>
-        <h1 id="page-title"><span class="nb">Q-Bot</span>, conçu par des experts du test logiciel</h1>
-        <p><span class="nb">Q-Bot</span> est développé par Q-Leap, société luxembourgeoise spécialisée dans le test et l'assurance qualité logicielle depuis 2012.</p>
-      </div>
-      <div class="page-hero__media">
-        <img src="assets/img/qleap-equipe-dev.jpg" alt="Deux membres de l'équipe Q-Leap au travail dans les bureaux de Bertrange, le boîtier Q-Bot posé sur la table" width="768" height="1024" loading="eager">
-      </div>
-    </div>
+    <span class="section-label">À propos</span>
+    <h1 id="page-title"><span class="nb">Q-Bot</span>, conçu par des experts du test logiciel</h1>
+    <p><span class="nb">Q-Bot</span> est développé par Q-Leap, société luxembourgeoise spécialisée dans le test et l'assurance qualité logicielle depuis 2012.</p>
   </div>
 </section>
 
 <!-- ======= NÉ D'UN BESOIN CONCRET ======= -->
 <section class="section" aria-labelledby="besoin-title">
   <div class="container">
-    <div class="intro__grid">
-      <div>
-        <span class="section-label">Origine du produit</span>
-        <h2 class="section-title" id="besoin-title"><span class="nb">Q-Bot</span> est né d'un besoin concret</h2>
-        <p>Depuis plusieurs années, Q-Leap développe des solutions permettant d'automatiser davantage les tests logiciels et de réduire les interventions manuelles.</p>
-        <p style="margin-top:16px;"><span class="nb">Q-Bot</span> est né de cette démarche dans nos locaux de Bertrange&nbsp;: automatiser une étape qui restait difficile à intégrer aux tests de bout en bout, la double authentification sur smartphone.</p>
-        <p style="margin-top:16px;">Le produit a été développé sous la conduite de <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, fondateur et CEO de Q-Leap.</p>
-      </div>
-      <div class="intro__image intro__image--portrait">
-        <img src="assets/img/qleap-equipe-revue.jpg" alt="Deux membres de l'équipe Q-Leap devant un écran, le boîtier Q-Bot sur la table et la signalétique Q-Bot au mur" width="768" height="1024" loading="lazy">
-      </div>
+    <div class="section-header" style="margin-bottom:0;">
+    <span class="section-label">Origine du produit</span>
+    <h2 class="section-title" id="besoin-title"><span class="nb">Q-Bot</span> est né d'un besoin concret</h2>
+    <p class="section-subtitle">Depuis plusieurs années, Q-Leap développe des solutions permettant d'automatiser davantage les tests logiciels et de réduire les interventions manuelles.</p>
+    <p style="margin-top:16px;"><span class="nb">Q-Bot</span> est né de cette démarche dans nos locaux de Bertrange&nbsp;: automatiser une étape qui restait difficile à intégrer aux tests de bout en bout, la double authentification sur smartphone.</p>
+    <p style="margin-top:16px;">Le produit a été développé sous la conduite de <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, fondateur et CEO de Q-Leap.</p>
     </div>
   </div>
 </section>
 
 <!-- ======= CONÇU AU LUXEMBOURG ======= -->
-<!-- Bloc court, avec le repère visuel Bertrange demandé par le document, et les
-     trois photos restantes. `.team-grid` recadre des portraits en 4/5 : trois
-     portraits côte à côte donnent sinon une bande de 493 px de haut à 1440 px, et
-     la page cesse d'être « courte et aérée ». -->
+<!-- Bloc court, avec le repère visuel Bertrange demandé par le document, et le
+     carrousel des photos d'équipe : c'est ici que le client l'a demandé, « en
+     dessous de Conçu et développé au Luxembourg ». Les vues sont recadrées en 4/5,
+     sinon quatre portraits 768 x 1024 côte à côte donnent une bande de 493 px de
+     haut à 1440 px et la page cesse d'être « courte et aérée ». -->
 <section class="section section--gray" aria-labelledby="lux-title">
   <div class="container">
     <div class="section-header" style="margin-bottom:0;">
@@ -206,10 +197,39 @@
       <p class="section-subtitle" style="margin-top:12px;">Sa conception s'appuie directement sur notre expérience des environnements de test et des problématiques d'automatisation rencontrées par nos clients.</p>
       <p style="margin-top:24px;"><span class="badge-lux"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Bertrange, Luxembourg</span></p>
     </div>
-    <div class="team-grid">
-      <img src="assets/img/qleap-locaux.jpg" alt="Les bureaux de Q-Leap à Bertrange" width="768" height="1024" loading="lazy">
-      <img src="assets/img/qleap-equipe-poste.jpg" alt="Un membre de l'équipe Q-Leap à son poste de travail" width="768" height="1024" loading="lazy">
-      <img src="assets/img/qleap-equipe-duo.jpg" alt="Deux membres de l'équipe Q-Leap dans les bureaux de Bertrange" width="768" height="1024" loading="lazy">
+    <!-- IL FONCTIONNE SANS JAVASCRIPT : la piste est un défilement horizontal
+         natif avec accrochage, donc au doigt, à la molette ou à la barre les
+         quatre photos sont là. Le module 21 n'ajoute que les flèches, les
+         pastilles et leur état, et il lit la position RÉELLE de la piste plutôt
+         que de tenir un index, qui se désynchroniserait au premier geste tactile.
+         IL N'AVANCE PAS TOUT SEUL, à dessein : le client avait fait retirer les
+         bandes d'outils défilantes le 2026-08-20 (« illisibles cognitivement »),
+         et ce qui les rendait illisibles était le défilement automatique. Un
+         défilement automatique demanderait de surcroît un bouton de pause
+         (WCAG 2.2.2). Ici le visiteur décide.
+         La cinquième photo n'est pas ici : elle illustre la section juste
+         au-dessus, et une photo ne sert qu'une fois. -->
+    <div class="carousel" data-carousel role="region" aria-roledescription="carrousel" aria-label="Photos de l'équipe Q-Leap et de ses bureaux">
+      <ul class="carousel__track" role="list" tabindex="0" aria-label="Photos, défilement horizontal">
+        <li class="carousel__slide"><img src="assets/img/qleap-equipe-dev.jpg" alt="Deux membres de l'équipe Q-Leap au travail dans les bureaux de Bertrange, le boîtier Q-Bot posé sur la table" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="assets/img/qleap-locaux.jpg" alt="Les bureaux de Q-Leap à Bertrange" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="assets/img/qleap-equipe-poste.jpg" alt="Un membre de l'équipe Q-Leap à son poste de travail" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="assets/img/qleap-equipe-duo.jpg" alt="Deux membres de l'équipe Q-Leap dans les bureaux de Bertrange" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="assets/img/qleap-equipe-revue.jpg" alt="Deux membres de l'équipe Q-Leap devant un écran, le boîtier Q-Bot sur la table et la signalétique Q-Bot au mur" width="768" height="1024" loading="lazy"></li>
+      </ul>
+      <div class="carousel__nav">
+        <div class="carousel__arrows">
+          <button class="carousel__btn" type="button" data-carousel-prev aria-label="Photo précédente"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel__btn" type="button" data-carousel-next aria-label="Photo suivante"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel__dots">
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 1"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 2"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 3"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 4"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 5"></button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -317,6 +337,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=721a6708" defer></script>
+<script src="assets/js/main.js?v=714b0f6e" defer></script>
 </body>
 </html>

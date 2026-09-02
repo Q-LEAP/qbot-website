@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=8bee902f">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2ce69139">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -150,47 +150,38 @@
      institutionnelle que commerciale », courte et aérée, qui répond à « qui est
      derrière Q-Bot et pourquoi puis-je leur faire confiance ? », et des PHOTOS
      RÉELLES plutôt que des illustrations.
-     L'en-tête de page prend donc la variante à visuel (`page-hero--media`), déjà
-     employée par les deux pages FAQ : rien de neuf, un composant existant. -->
+     L'EN-TÊTE N'A PAS DE VISUEL, sur demande du client le 2026-09-02 : « mets pas
+     de photo à Q-Bot, conçu par des experts du test logiciel ». Les photos sont
+     rassemblées plus bas, dans le carrousel de la section « Conçu et développé au
+     Luxembourg », où il les a demandées. -->
 <main id="main">
-<section class="page-hero page-hero--media" aria-labelledby="page-title">
+<section class="page-hero" aria-labelledby="page-title">
   <div class="container">
-    <div class="page-hero__grid">
-      <div>
-        <span class="section-label">About</span>
-        <h1 id="page-title"><span class="nb">Q-Bot</span>, built by software testing experts</h1>
-        <p><span class="nb">Q-Bot</span> is developed by Q-Leap, a Luxembourg company specialised in software testing and quality assurance since 2012.</p>
-      </div>
-      <div class="page-hero__media">
-        <img src="../assets/img/qleap-equipe-dev.jpg" alt="Two members of the Q-Leap team at work in the Bertrange offices, with the Q-Bot device on the table" width="768" height="1024" loading="eager">
-      </div>
-    </div>
+    <span class="section-label">About</span>
+    <h1 id="page-title"><span class="nb">Q-Bot</span>, built by software testing experts</h1>
+    <p><span class="nb">Q-Bot</span> is developed by Q-Leap, a Luxembourg company specialised in software testing and quality assurance since 2012.</p>
   </div>
 </section>
 
 <!-- ======= NÉ D'UN BESOIN CONCRET ======= -->
 <section class="section" aria-labelledby="besoin-title">
   <div class="container">
-    <div class="intro__grid">
-      <div>
-        <span class="section-label">Where it comes from</span>
-        <h2 class="section-title" id="besoin-title"><span class="nb">Q-Bot</span> came out of a concrete need</h2>
-        <p>For several years, Q-Leap has been building ways to automate more of software testing and to cut down manual steps.</p>
-        <p style="margin-top:16px;"><span class="nb">Q-Bot</span> came out of that work, in our Bertrange offices: automating the one step that remained hard to fit into end-to-end tests, two-factor authentication on a smartphone.</p>
-        <p style="margin-top:16px;">The product was developed under the lead of <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, founder and CEO of Q-Leap.</p>
-      </div>
-      <div class="intro__image intro__image--portrait">
-        <img src="../assets/img/qleap-equipe-revue.jpg" alt="Two members of the Q-Leap team in front of a screen, with the Q-Bot device on the table and Q-Bot signage on the wall" width="768" height="1024" loading="lazy">
-      </div>
+    <div class="section-header" style="margin-bottom:0;">
+    <span class="section-label">Where it comes from</span>
+    <h2 class="section-title" id="besoin-title"><span class="nb">Q-Bot</span> came out of a concrete need</h2>
+    <p class="section-subtitle">For several years, Q-Leap has been building ways to automate more of software testing and to cut down manual steps.</p>
+    <p style="margin-top:16px;"><span class="nb">Q-Bot</span> came out of that work, in our Bertrange offices: automating the one step that remained hard to fit into end-to-end tests, two-factor authentication on a smartphone.</p>
+    <p style="margin-top:16px;">The product was developed under the lead of <a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a>, founder and CEO of Q-Leap.</p>
     </div>
   </div>
 </section>
 
 <!-- ======= CONÇU AU LUXEMBOURG ======= -->
-<!-- Bloc court, avec le repère visuel Bertrange demandé par le document, et les
-     trois photos restantes. `.team-grid` recadre des portraits en 4/5 : trois
-     portraits côte à côte donnent sinon une bande de 493 px de haut à 1440 px, et
-     la page cesse d'être « courte et aérée ». -->
+<!-- Bloc court, avec le repère visuel Bertrange demandé par le document, et le
+     carrousel des photos d'équipe : c'est ici que le client l'a demandé, « en
+     dessous de Conçu et développé au Luxembourg ». Les vues sont recadrées en 4/5,
+     sinon quatre portraits 768 x 1024 côte à côte donnent une bande de 493 px de
+     haut à 1440 px et la page cesse d'être « courte et aérée ». -->
 <section class="section section--gray" aria-labelledby="lux-title">
   <div class="container">
     <div class="section-header" style="margin-bottom:0;">
@@ -200,10 +191,39 @@
       <p class="section-subtitle" style="margin-top:12px;">Its design draws directly on our experience of test environments and of the automation problems our clients run into.</p>
       <p style="margin-top:24px;"><span class="badge-lux"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg> Bertrange, Luxembourg</span></p>
     </div>
-    <div class="team-grid">
-      <img src="../assets/img/qleap-locaux.jpg" alt="The Q-Leap offices in Bertrange" width="768" height="1024" loading="lazy">
-      <img src="../assets/img/qleap-equipe-poste.jpg" alt="A member of the Q-Leap team at their desk" width="768" height="1024" loading="lazy">
-      <img src="../assets/img/qleap-equipe-duo.jpg" alt="Two members of the Q-Leap team in the Bertrange offices" width="768" height="1024" loading="lazy">
+    <!-- IL FONCTIONNE SANS JAVASCRIPT : la piste est un défilement horizontal
+         natif avec accrochage, donc au doigt, à la molette ou à la barre les
+         quatre photos sont là. Le module 21 n'ajoute que les flèches, les
+         pastilles et leur état, et il lit la position RÉELLE de la piste plutôt
+         que de tenir un index, qui se désynchroniserait au premier geste tactile.
+         IL N'AVANCE PAS TOUT SEUL, à dessein : le client avait fait retirer les
+         bandes d'outils défilantes le 2026-08-20 (« illisibles cognitivement »),
+         et ce qui les rendait illisibles était le défilement automatique. Un
+         défilement automatique demanderait de surcroît un bouton de pause
+         (WCAG 2.2.2). Ici le visiteur décide.
+         La cinquième photo n'est pas ici : elle illustre la section juste
+         au-dessus, et une photo ne sert qu'une fois. -->
+    <div class="carousel" data-carousel role="region" aria-roledescription="carrousel" aria-label="Photos of the Q-Leap team and its offices">
+      <ul class="carousel__track" role="list" tabindex="0" aria-label="Photos, horizontal scrolling">
+        <li class="carousel__slide"><img src="../assets/img/qleap-equipe-dev.jpg" alt="Two members of the Q-Leap team at work in the Bertrange offices, with the Q-Bot device on the table" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="../assets/img/qleap-locaux.jpg" alt="The Q-Leap offices in Bertrange" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="../assets/img/qleap-equipe-poste.jpg" alt="A member of the Q-Leap team at their desk" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="../assets/img/qleap-equipe-duo.jpg" alt="Two members of the Q-Leap team in the Bertrange offices" width="768" height="1024" loading="lazy"></li>
+        <li class="carousel__slide"><img src="../assets/img/qleap-equipe-revue.jpg" alt="Two members of the Q-Leap team in front of a screen, with the Q-Bot device on the table and Q-Bot signage on the wall" width="768" height="1024" loading="lazy"></li>
+      </ul>
+      <div class="carousel__nav">
+        <div class="carousel__arrows">
+          <button class="carousel__btn" type="button" data-carousel-prev aria-label="Previous photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel__btn" type="button" data-carousel-next aria-label="Next photo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel__dots">
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Go to photo 1"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Go to photo 2"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Go to photo 3"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Go to photo 4"></button>
+          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Go to photo 5"></button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -310,6 +330,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=721a6708" defer></script>
+<script src="../assets/js/main.js?v=714b0f6e" defer></script>
 </body>
 </html>

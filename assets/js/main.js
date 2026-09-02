@@ -1931,3 +1931,113 @@ backToTop.addEventListener('click', () => {
     });
   });
 }());
+
+
+/* ════════════════════════════════════════
+   21. LE CARROUSEL DE PHOTOS D'ÉQUIPE
+   Demandé par le client le 2026-09-02 : « mets pas de photo à “Q-Bot, conçu par
+   des experts du test logiciel” et fais un carrousel juste en dessous, en vrai ».
+
+   IL FONCTIONNE SANS CE MODULE, ET C'EST LE POINT DE DÉPART. La piste est un
+   défilement horizontal natif avec accrochage (`scroll-snap`) : sans JavaScript
+   on fait défiler au doigt, à la molette ou à la barre de défilement, et les
+   quatre photos sont là. Ce module n'ajoute que le confort : deux flèches, des
+   pastilles, et l'état de tout cela.
+   C'est la même mécanique que le repli de la bande d'exemples d'appel, déjà dans
+   la feuille de style depuis le 2026-08-20.
+
+   IL N'AVANCE PAS TOUT SEUL, ET CE N'EST PAS UN OUBLI. Le client avait fait
+   retirer les bandes d'outils défilantes le 2026-08-20 (« les carrousels sont un
+   peu illisibles cognitivement ») : ce qui les rendait illisibles, c'était le
+   défilement automatique, pas le motif. Ici le visiteur décide. Ajouter un
+   défilement automatique demanderait en plus un bouton de pause, sans quoi c'est
+   un défaut d'accessibilité (WCAG 2.2.2).
+
+   L'ÉTAT SE LIT SUR LA POSITION RÉELLE, jamais sur un compteur interne : le
+   défilement peut venir du doigt, de la molette, de la barre ou d'une flèche, et
+   un index maison se désynchronise au premier de ces gestes. On mesure
+   `scrollLeft` et on en déduit la vue courante.
+════════════════════════════════════════ */
+(function () {
+  var cars = document.querySelectorAll('[data-carousel]');
+  if (!cars.length) return;
+
+  Array.prototype.forEach.call(cars, function (car) {
+    var piste = car.querySelector('.carousel__track');
+    var vues = car.querySelectorAll('.carousel__slide');
+    var prec = car.querySelector('[data-carousel-prev]');
+    var suiv = car.querySelector('[data-carousel-next]');
+    var pastilles = car.querySelectorAll('[data-carousel-dot]');
+    if (!piste || !vues.length) return;
+
+    /* Le pas est la largeur d'une vue plus la gouttière, relue sur place : elle
+       change avec la largeur de fenêtre, et une constante serait fausse partout
+       ailleurs qu'à la largeur où on l'a écrite. */
+    function pas() {
+      if (vues.length < 2) return piste.clientWidth;
+      return vues[1].offsetLeft - vues[0].offsetLeft;
+    }
+
+    /* COMBIEN DE POSITIONS LA PISTE A-T-ELLE VRAIMENT ? Avec cinq photos et trois
+       visibles, il n'y a que TROIS départs possibles : la course vaut deux pas.
+       Le compte se déduit donc de la course réelle, et il change avec la largeur
+       de fenêtre (trois positions au large, cinq sur téléphone).
+       C'est ce qui permet aux pastilles de dire la vérité : on en masque celles
+       qui ne correspondent à aucune position, au lieu de les laisser inertes.
+       Modèle retenu : une pastille = un DÉPART, donc la pastille allumée est
+       toujours celle sur laquelle on vient de cliquer. Le modèle « vue centrée »
+       a été essayé et écarté : il décalait l'allumage d'un cran par rapport au
+       clic, ce qui est pire qu'une pastille en moins. */
+    function positions() {
+      var p = pas();
+      if (!p) return 1;
+      return Math.floor((piste.scrollWidth - piste.clientWidth) / p + 0.01) + 1;
+    }
+
+    function index() {
+      var p = pas();
+      return p ? Math.min(positions() - 1, Math.round(piste.scrollLeft / p)) : 0;
+    }
+
+    function etat() {
+      var i = index();
+      var fin = piste.scrollWidth - piste.clientWidth;
+      if (prec) prec.disabled = piste.scrollLeft <= 2;
+      if (suiv) suiv.disabled = piste.scrollLeft >= fin - 2;
+      var n = positions();
+      Array.prototype.forEach.call(pastilles, function (d, k) {
+        /* `hidden` et non une classe : une pastille sans position n'existe pas
+           pour cette largeur de fenêtre, elle ne doit pas non plus être annoncée
+           ni recevoir le focus. */
+        d.hidden = k >= n;
+        if (k === i) d.setAttribute('aria-current', 'true');
+        else d.removeAttribute('aria-current');
+      });
+    }
+
+    /* On amène la vue demandée au bord gauche, en bornant à la course réelle : la
+       piste clampe de toute façon, mais borner ici évite que l'état se calcule sur
+       une cible impossible. */
+    function vers(i) {
+      var max = piste.scrollWidth - piste.clientWidth;
+      var cible = Math.min(max, Math.max(0, i * pas()));
+      piste.scrollTo({ left: cible, behavior: 'smooth' });
+    }
+
+    if (prec) prec.addEventListener('click', function () { vers(Math.max(0, index() - 1)); });
+    if (suiv) suiv.addEventListener('click', function () {
+      vers(Math.min(vues.length - 1, index() + 1));
+    });
+    Array.prototype.forEach.call(pastilles, function (d, k) {
+      d.addEventListener('click', function () { vers(k); });
+    });
+
+    var attente;
+    piste.addEventListener('scroll', function () {
+      clearTimeout(attente);
+      attente = setTimeout(etat, 90);
+    });
+    window.addEventListener('resize', etat);
+    etat();
+  });
+}());
