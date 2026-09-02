@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=6fa54bfe">
+  <link rel="stylesheet" href="assets/css/style.css?v=c3fce4b0">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -246,36 +246,27 @@
         <span class="section-label">La solution</span>
         <h2 class="section-title" id="intro-title">Automatiser la double authentification (2FA)</h2>
         <div class="problem-callout">
-          <span class="nb">Q-Bot</span> se connecte en un clic pour automatiser la double authentification dans tous vos cas de test, sur les applications 2FA Android.
+          <span class="nb">Q-Bot</span> se connecte en un clic pour automatiser la double authentification dans tous vos cas de test, sur les applications 2FA de votre smartphone.
         </div>
         <p style="margin-top:16px;">
           Cette solution s'intègre à toutes vos campagnes d'automatisation pour gérer les parcours utilisateurs nécessitant une authentification 2FA, sans intervention manuelle.
         </p>
       </div>
-      <div class="intro__image intro__image--fit">
-        <!-- IMAGE EXTRAITE DU FILM PRODUIT (QBV1.2.12, à 23,0 s), recadrée au carré
-             820 x 820 depuis le master 1920x1080, non retouchée.
-             CE QU'ELLE REMPLACE, ET POURQUOI. Le visuel fourni par le client le
-             2026-09-01 était une image de SYNTHÈSE dont l'écran de téléphone montrait
-             une validation LuxTrust INVENTÉE citant MyGuichet, un service réel de
-             l'État luxembourgeois, sur un site qui déclare par ailleurs n'avoir aucun
-             lien avec LuxTrust. Le contrôle n°8 de l'audit RosoAI en a fait son seul
-             point ouvert, en signalant qu'aucune sonde ne pouvait le voir : le mot
-             était dans les pixels, pas dans le texte.
-             Ici la scène est réelle et la validation LuxTrust l'est aussi : c'est
-             l'app, filmée, sur le vrai boîtier. Le problème disparaît par la source,
-             pas par une retouche.
-             CADRAGE CHOISI SUR CINQ ESSAIS RENDUS CÔTE À CÔTE. Le carré serré tient le
-             boîtier au premier plan, ce qui distingue cette image de celle de la fiche
-             technique, tirée du MÊME instant mais en plan large : deux cadrages, deux
-             récits, la même seconde de film.
-             Aucune donnée personnelle lisible : identifiant de session éphémère, aucun
-             nom, aucune adresse autre que celle publiée sur le mur du bureau.
-             Pas de `?v=` : le fichier est neuf, il n'y a aucun cache à contourner. -->
+      <div class="intro__image intro__image--portrait">
+        <!-- PHOTO FOURNIE PAR LE CLIENT LE 2026-09-02 : le boîtier réel, le moniteur et
+             le téléphone docké affichant tous deux le fond d'écran Q-Bot. Elle
+             remplace l'image extraite du film, posée le matin même, qui n'était
+             qu'une capture vidéo : celle-ci est une photo, plus nette, et son fond
+             sombre tombe juste sur le noir de la page.
+             Métadonnées du téléphone retirées au réencodage (aucune donnée de
+             localisation ne part avec l'image). Master archivé dans
+             Documentations/assets-sources/.
+             Portrait 768 x 1024, ce que le cadre `--fit` accepte sans forcer : il
+             prend la hauteur de la colonne de texte et l'image garde son rapport. -->
         <img
-          src="assets/img/qbot-film-dock.jpg"
-          alt="Le boîtier Q-Bot posé sur un bureau, un smartphone inséré dans son socle affichant une demande de validation LuxTrust, et la page d'authentification ouverte sur l'écran voisin"
-          width="820" height="820"
+          src="assets/img/qbot-photo-ecran.jpg"
+          alt="Le boîtier Q-Bot posé sur un bureau, le smartphone inséré dans son socle et le moniteur affichant tous deux le fond d'écran Q-Bot"
+          width="768" height="1024"
           loading="lazy"
         >
       </div>
@@ -654,7 +645,7 @@
     <div class="section-header">
       <span class="section-label">Compatibilité</span>
       <h2 class="section-title" id="compat-home-title">Compatible avec vos outils et applications 2FA</h2>
-      <p class="section-subtitle">Compatible avec les applications 2FA Android, dont LuxTrust Mobile, itsme, Microsoft Authenticator et Google Authenticator. Côté chaîne de tests, tout outil sachant faire un appel HTTP sait piloter <span class="nb">Q-Bot</span>.</p>
+      <p class="section-subtitle">Compatible avec les applications 2FA installées sur votre smartphone, dont LuxTrust Mobile, itsme, Microsoft Authenticator et Google Authenticator. Côté chaîne de tests, tout outil sachant faire un appel HTTP sait piloter <span class="nb">Q-Bot</span>.</p>
     </div>
     <div class="tools__grid" style="gap:48px;">
       <div>

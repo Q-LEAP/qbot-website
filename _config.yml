@@ -104,6 +104,9 @@ exclude:
   # téléphone montrait une validation LuxTrust INVENTÉE citant MyGuichet, seul point
   # ouvert du contrôle n°8 de l'audit. Gardé dans git, plus servi.
   - assets/img/qbot-2fa-dock.jpg
+  # L'image extraite du film qui a tenu la section « La solution » une demi-journée,
+  # le 2026-09-02 : la photo fournie par le client l'a remplacée le soir même.
+  - assets/img/qbot-film-dock.jpg
   # Le schéma du flux 2FA, construit le 2026-09-01 pour la section « La solution »
   # puis remplacé le même jour par le visuel fourni par le client. Gardé dans git
   # (il se remet en place en changeant un `src`), mais plus servi : la règle du

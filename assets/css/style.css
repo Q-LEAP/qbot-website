@@ -2534,6 +2534,42 @@ p { color: var(--gray); }
    Et la sur-échelle retombe à 1, comme sur la variante « produit » : à 1,08 une
    image dimensionnée au pixel près déborderait de son cadre. Le contre-parallaxe
    interne est retiré avec elle, dans main.js. */
+/* ---- .intro__image--portrait : une photo verticale dans une grille horizontale ----
+   Posé le 2026-09-02 pour la photo fournie par le client (le boîtier avec son fond
+   d'écran, 768 x 1024).
+   POURQUOI PAS `--fit` : ce modificateur cale la hauteur de l'image sur celle de
+   la COLONNE DE TEXTE, ce qui est juste pour une photo en paysage et absurde pour
+   une verticale devant un texte court. Mesuré avec `--fit` : 298 px de large côté
+   français, et 163 côté anglais, où le texte est plus court. Une photo de 163 px
+   ne montre rien.
+   Ici c'est l'IMAGE qui donne la mesure : 420 px au plus, posée sur la gouttière
+   droite, et le texte se centre en face (la grille est déjà en align-items: center).
+   `--media-scale: 1` et exclusion du contre-parallaxe dans main.js, comme pour
+   `--product` : la sur-échelle de 8 % n'existe que pour masquer les bords d'une
+   photo pendant le parallaxe, et sur un cadre qui ne bouge pas elle ne fait que
+   rogner. */
+.intro__image--portrait {
+  align-self: center;
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
+}
+.intro__image--portrait img {
+  --media-scale: 1;
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 420px);
+  margin-left: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+@media (max-width: 900px) {
+  /* En une colonne, la photo se cale à gauche comme les autres visuels du site :
+     jamais au centre. */
+  .intro__image--portrait img { margin-left: 0; }
+}
+
 .intro__image--fit {
   /* `align-self` EXPLICITE : la grille est en `align-items: center`, donc le cadre
      n'était pas étiré et, son contenu étant hors flux, il tombait à 0 px de haut.

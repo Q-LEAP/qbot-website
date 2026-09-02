@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=6fa54bfe">
+  <link rel="stylesheet" href="../assets/css/style.css?v=c3fce4b0">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -226,11 +226,16 @@
           Born from an innovation combining electronics, software and design, <span class="nb">Q-Bot</span> automates LuxTrust dual authentication without human intervention, directly from your existing testing tools.
         </p>
       </div>
-      <div class="intro__image intro__image--fit">
-        <!-- Image extraite du film produit (QBV1.2.12, à 23,0 s). Voir index.html pour
-             le cadrage et pour ce qu'elle remplace : le visuel de synthèse dont l'écran
-             de téléphone montrait une validation LuxTrust inventée. -->
-        <img src="../assets/img/qbot-film-dock.jpg" alt="The Q-Bot enclosure on a desk, a smartphone docked in its cradle showing a LuxTrust validation request, and the authentication page open on the adjacent screen" width="820" height="820" loading="lazy">
+      <div class="intro__image intro__image--portrait">
+        <!-- Photo fournie par le client le 2026-09-02, cf. la note française : le
+             boîtier réel avec le fond d'écran Q-Bot sur le moniteur et sur le
+             téléphone. -->
+        <img
+          src="../assets/img/qbot-photo-ecran.jpg"
+          alt="The Q-Bot enclosure on a desk, the docked smartphone and the monitor both showing the Q-Bot wallpaper"
+          width="768" height="1024"
+          loading="lazy"
+        >
       </div>
     </div>
   </div>
@@ -584,7 +589,7 @@
     <div class="section-header">
       <span class="section-label">Compatibility</span>
       <h2 class="section-title" id="compat-home-title">Works with your tools and your 2FA apps</h2>
-      <p class="section-subtitle">Compatible with Android 2FA apps, including LuxTrust Mobile, itsme, Microsoft Authenticator and Google Authenticator. On the pipeline side, any tool that can make an HTTP call can drive <span class="nb">Q-Bot</span>.</p>
+      <p class="section-subtitle">Compatible with the 2FA apps installed on your smartphone, including LuxTrust Mobile, itsme, Microsoft Authenticator and Google Authenticator. On the pipeline side, any tool that can make an HTTP call can drive <span class="nb">Q-Bot</span>.</p>
     </div>
     <div class="tools__grid" style="gap:48px;">
       <div>
