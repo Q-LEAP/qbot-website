@@ -6019,3 +6019,95 @@ vit hors du dépôt, dans `/Volumes/CCCOMA_X64F/Q-Bot/Version/`.
 **Ce qui reste vrai malgré tout** : aucune image ne montre l'INTÉRIEUR du boîtier, ni le
 Raspberry Pi. Le film ne l'ouvre jamais. Si la section doit un jour montrer sa carte, il
 faudra une photo prise chez Q-Leap.
+
+## Ce qui restait corrigeable de l'audit, et le point qui n'existait pas (2026-09-02)
+
+Question du client : « comment améliorer la note de 6 de l'audit ? », puis « corrige ce qui
+est corrigeable ». Le dispositif RosoAI vit hors du dépôt et en est au **contrôle n°8**
+(2026-09-01, commit `8beec51`) : **6,5/10 à périmètre comparable, 9,2/10 sur le périmètre
+auditable**. Les deux notes n'ont pas bougé depuis le n°7.
+
+**L'ARITHMÉTIQUE, PARCE QU'ELLE DÉCIDE DE TOUT.** La note comparable est la moyenne de dix
+dimensions. Sept sont entre 8 et 9,5. **Trois sont à 4, 4 et 3 : l'écart concurrentiel, le
+plan de visibilité IA et la visibilité IA mesurée (10/100).** Ce sont exactement celles qui
+mesurent ce que le monde extérieur voit, et **aucune ne peut bouger tant que le site répond
+`Disallow: /` avec `noindex` partout et qu'aucune propriété Search Console n'existe**.
+L'audit ne compte pas cette fermeture comme un défaut et chiffre lui-même la note atteignable
+le jour de la bascule : **7,4/10 sans écrire une ligne de contenu**. Le second levier, le
+socle de contenu, a été **refusé par le directeur du client le 2026-09-01** : sans lui le
+plafond du comparable est autour de 7,5. Ne pas rouvrir ces deux sujets de soi-même.
+
+### 1. LE POINT QUE J'AVAIS ANNONCÉ N'EXISTAIT PAS
+
+J'avais lu dans l'audit « 10 H2 en question, 4 capsules » et j'en avais conclu, devant le
+client, que **six titres en question manquaient de réponse autonome**. Mesuré avant de
+corriger : **12 titres en question sur les 20 pages, dont 6 appels à l'action et 6 déjà dans
+la fenêtre de 40 à 60 mots. Zéro hors fenêtre.** Les « 4 capsules » de l'audit sont les 4 H2
+informatifs, tous pourvus ; les 6 autres H2 sont des « Prêt à… » / « Ready to… », et la règle
+du 2026-08-24 dit de **ne PAS leur écrire de capsule** (une invitation n'a pas de réponse de
+cinquante mots).
+
+Il n'y avait donc rien à faire, et c'est la même leçon que le LinkedIn « laissé ouvert » ou
+que la note sur `logo-baseline.png` : **un chiffre d'audit se remesure avant d'être transformé
+en tâche.** Le contrôle est dans `sonde_capsules.py` (jetable) : pour chaque titre finissant
+par « ? », le paragraphe qui suit dans l'ordre du document, son compte de mots, et un drapeau
+« appel à l'action » posé sur la présence d'un `.btn` dans le même bloc.
+
+### 2. La formulation longue revient en français, une fois par page
+
+Relevé du n°8, remesuré ici sur le texte rendu, accordéons ouverts : « 2FA » sortait **71
+fois** côté français, « double authentification » **20**, et « authentification à deux
+facteurs » **UNE SEULE FOIS**, repliée dans une réponse de FAQ. C'est pourtant la formulation
+que tape quelqu'un qui ne connaît pas encore le produit, et c'est une conséquence non voulue
+du remplacement d'« authentification forte » demandé la veille.
+
+Cinq insertions françaises, une par page, plus une anglaise pour la parité : le chapeau du
+hero (le titre garde « double authentification », le chapeau porte l'autre forme), le chapeau
+de l'éditeur de scénarios, celui de la page cas d'usage, la réponse-capsule « Comment Q-Bot
+automatise votre 2FA ? » et la réponse Q1 de la FAQ.
+
+**Ce qui n'est pas touché est la moitié du travail** : aucun titre ni sous-titre repris du
+WordPress n'est reformulé, les cinq phrases éditées ont toutes été écrites par ce dépôt, et
+**les métadonnées ne bougent pas** (la description de l'accueil est à 152 caractères sur 158 ;
+la formule longue la ferait déborder, et « double authentification » y reste un synonyme
+juste).
+
+Relevé après : **1 → 6 occurrences** sur 5 des 8 pages, « 2FA » inchangé à 71, et la capsule
+de la page Démo passe de 45 à **48 mots**, donc reste dans la fenêtre. Le JSON-LD de la FAQ
+suit par `sync-faq-jsonld.py` (1 entrée recalée, 0 au second passage) : sans lui, la réponse
+visible et sa copie structurée auraient divergé.
+
+### 3. Le visuel de « La solution » n'est plus une image de synthèse
+
+Seul point ouvert du n°8, et **il ne pouvait pas être trouvé par une mesure** : le visuel
+fourni le 2026-09-01 montrait une validation LuxTrust **inventée** citant MyGuichet, un
+service réel de l'État, sur un site qui déclare n'avoir aucun lien avec LuxTrust.
+« MyGuichet » apparaît 0 fois dans la source des 21 pages, le mot était dans les pixels.
+
+Remplacé par une image du film (t = 23,0 s), recadrée au carré 820 x 820 : **la scène est
+réelle et la validation LuxTrust l'est aussi**. Le problème disparaît par la source, pas par
+une retouche. Cadrage choisi sur cinq essais rendus côte à côte ; le carré serré garde le
+boîtier au premier plan, ce qui le distingue de l'image de la fiche technique, tirée du **même
+instant** mais en plan large.
+
+**UN PLAFOND DE LARGEUR ÉTAIT NÉCESSAIRE EN UNE COLONNE**, et le nombre est calculé : source
+820 px, donc **410 px** est la largeur au-delà de laquelle un écran de densité 2 agrandit.
+Sans lui, la colonne de 720 px d'une tablette donnait **1,76**. Sur un téléphone la colonne
+fait 342 px, le plafond ne mord pas et l'image reste en pleine largeur, comme le client l'a
+demandé pour la photo LuxTrust le 2026-08-26. Même arbitrage, même calcul.
+
+### Ce qui reste, et qui n'est PAS dans ce dépôt
+
+Quatre leviers de la dimension « autorité », tous hors du code, à faire par le client ou chez
+des tiers :
+
+- **la fiche Ministry of Testing** annonce encore « Automate the use of tokens on 100% of your
+  tests », soit les deux revendications retirées du site, et pointe vers `bot.q-leap.eu`, qui
+  meurt avec le WordPress ;
+- **quatre pages tierces décrivent encore l'actionneur et la caméra** (portfolio du
+  sous-traitant, 3dprint.lu, l'article ITnation, une page webinaire sur l'Odoo de Q-Leap).
+  Ce sont elles qui alimentent les résumés des IA pendant que `q-bot.eu` est fermé, et la
+  dernière est corrigeable par le client ;
+- **aucun annuaire professionnel, aucun avis sur un comparateur** ;
+- **le « Depuis 10 ans » de `q-leap.eu`**, qui contredit de quatre ans le `foundingDate` du
+  5 avril 2012.
