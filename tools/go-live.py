@@ -21,12 +21,13 @@ CE QU'IL FAIT
      PRÉ-LANCEMENT qui l'accompagne, sur toutes les pages ;
   2. remplace robots.txt par son contenu d'ouverture ;
   3. si `--endpoint` est fourni, renseigne `data-endpoint` sur les formulaires
-     qui n'en ont pas encore. IL N'Y EN A PLUS AUCUN À BRANCHER : les bandes
-     newsletter pointent sur le Brevo du client depuis le 2026-08-26, et les
+     qui n'en ont pas encore. IL N'Y EN A PLUS AUCUN À BRANCHER : les deux
      formulaires de CONTACT partent volontairement par le logiciel de courrier du
      visiteur, sur décision du client du 2026-08-26 (pas de sous-traitant tiers
-     pour le contact). L'option reste en place au cas où cette décision change,
-     mais ce n'est plus une tâche du jour J.
+     pour le contact), et les bandes newsletter n'existent plus depuis le
+     2026-09-02 (la newsletter tient en une ligne du pied de page, qui ouvre un
+     courrier). L'option reste en place au cas où cette décision change, mais ce
+     n'est plus une tâche du jour J.
 
 CE QU'IL NE FAIT PAS, ET QUI RESTE MANUEL : le DNS, HTTPS, la Search Console, et
 la suppression du WordPress. Il les rappelle en fin d'exécution.
@@ -182,9 +183,10 @@ CE QUI RESTE À FAIRE À LA MAIN, DANS CET ORDRE
     mais tant que le WordPress répond encore, on peut comparer.
  6. Rien à faire pour les formulaires. Les {NB_CONTACT} formulaires de contact passent
     par le logiciel de courrier du visiteur, PAR DÉCISION DU CLIENT du 2026-08-26,
-    et ce n'est donc pas un point ouvert. Les {NB_NEWSLETTER} newsletters postent sur son
-    Brevo ; il lui reste à désactiver le reCAPTCHA de ce formulaire, sans quoi
-    elles retombent sur le même repli courrier.
+    et ce n'est donc pas un point ouvert. Newsletters restantes : {NB_NEWSLETTER}.
+    Elle tient depuis le 2026-09-02 en une ligne du pied de page, dont le bouton
+    ouvre un courrier d'inscription : plus aucun endpoint, plus de reCAPTCHA
+    Brevo à désactiver, plus rien à demander au client de ce côté.
 ────────────────────────────────────────────────────────────────────────────
 """
 
@@ -204,7 +206,8 @@ def main():
     ap.add_argument('--appliquer', action='store_true',
                     help="écrit réellement les fichiers (sans ce drapeau : simulation)")
     ap.add_argument('--endpoint', default=None,
-                    help="URL de réception des formulaires encore sans endpoint (les 2 contacts)")
+                    help="URL de réception des formulaires encore sans endpoint "
+                         "(les 2 contacts, volontairement sur le repli courrier)")
     a = ap.parse_args()
     ecrit = a.appliquer
     mode = 'APPLICATION' if ecrit else 'SIMULATION (rien n\'est écrit)'

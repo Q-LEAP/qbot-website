@@ -1176,8 +1176,8 @@ backToTop.addEventListener('click', () => {
 
 /* ════════════════════════════════════════
    15. FORMULAIRES — plus jamais d'envoi qui disparaît
-   Les six formulaires du site (contact FR/EN, newsletter des deux homepages et
-   des deux index de blog) étaient en `action="#"` : le visiteur remplissait,
+   Les formulaires du site (à l'origine six : contact FR/EN, newsletter des deux
+   homepages et des deux index de blog) étaient en `action="#"` : le visiteur remplissait,
    cliquait, la page se rechargeait, sa saisie était perdue — et rien n'indiquait
    l'échec. C'est le pire des trois cas possibles, parce qu'il est invisible.
 
@@ -1185,11 +1185,18 @@ backToTop.addEventListener('click', () => {
      data-endpoint=""                     → repli courrier
      data-endpoint="https://…/f/xxxx"     → envoi HTTP, sans toucher au reste
 
-   OÙ EN SONT LES SIX (2026-08-26). Les QUATRE newsletters pointent sur le vrai
-   endpoint Brevo du client, relevé sur le formulaire de son WordPress. Les DEUX
-   formulaires de contact sont encore vides, et il n'y a rien à récupérer pour
-   eux : le live les traitait avec Contact Form 7, un plugin DANS le WordPress,
-   qui disparaît avec lui. C'est le seul endpoint qui reste à fournir.
+   OÙ EN SONT LES FORMULAIRES (2026-09-02). IL N'EN RESTE QUE DEUX, les deux
+   contacts, et ils passent par le logiciel de courrier du visiteur PAR DÉCISION
+   DU CLIENT du 2026-08-26 (« ne me fais pas passer par des sites tiers pour
+   contact, tant pis ça ouvrira une boîte mail »). Ce n'est donc pas un point
+   ouvert, et `data-endpoint` reste vide à dessein.
+   LES QUATRE NEWSLETTERS ONT DISPARU : les deux des index de blog avec le blog
+   (2026-08-28), les deux des accueils le 2026-09-02, remplacées par une ligne
+   du pied de page (« l'emailing on n'est pas près d'en avoir un »). Le profil
+   Brevo et les libellés `okNews` / `sujetN` ci-dessous n'ont donc plus
+   d'appelant : ils sont GARDÉS parce qu'ils portent la correspondance de champs
+   relevée sur le formulaire du client, qui ne se redevine pas, et parce que le
+   mécanisme redevient utile le jour où un formulaire revient.
 
    Si le service impose ses propres noms de champs, ils se déclarent par
    `data-endpoint-kind` et la correspondance vit dans PROFILS ci-dessous, jamais

@@ -1153,7 +1153,15 @@ p { color: var(--gray); }
    Bande newsletter — volontairement compacte : une accroche d'une ligne, le
    champ, puis le consentement et la mention légale sur deux lignes fines.
    La version longue (trois paragraphes empilés) occupait presque un écran
-   entier pour un simple champ email. */
+   entier pour un simple champ email.
+
+   PLUS AUCUNE PAGE N'EMPLOIE CETTE BANDE DEPUIS LE 2026-09-02. Le client l'a
+   trouvée trop importante sur l'accueil (« comme si c'était l'info
+   principale ») et la newsletter tient maintenant en une ligne du pied de page,
+   cf. `.footer__news`. Le bloc est gardé : il porte le seul exemple de
+   formulaire complet du site (rangée, consentement, mention du processeur), et
+   c'est ce dont on repartirait le jour où un vrai programme d'emailing existe.
+   NE PAS LE RÉINTRODUIRE SUR UNE PAGE sans le redemander. */
 .newsletter {
   background: var(--teal);
   color: #001A18;
@@ -1863,6 +1871,56 @@ p { color: var(--gray); }
   line-height: 1.6;
   color: rgba(255,255,255,0.66);
 }
+
+/* ---- Newsletter, réduite à une ligne du pied de page ----
+   Elle occupait une bande pleine largeur en bas de l'accueil ; le client l'a
+   trouvée trop importante le 2026-09-02 (« comme si c'était l'info
+   principale ») et a demandé « une phrase et un bouton discret dans le
+   footer ». Donc : une rangée entre deux filets, du texte secondaire à la
+   nuance des autres mentions du pied de page, et un bouton fantôme.
+   LE BOUTON EST EN TEAL SUR LE NOIR, jamais l'inverse : le teal de charte est
+   une couleur CLAIRE, un fond teal plein avec du blanc dessus plafonne à
+   2,04:1 (piège relevé quatre fois sur ce site). Ici le teal est l'encre,
+   donc ~10:1 sur le fond du pied de page.
+   `flex-wrap` et non une requête média : la phrase et le bouton passent d'eux
+   mêmes sur deux lignes quand la place manque, et le `gap` vertical est déjà
+   prévu pour ce cas. */
+.footer__news {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.footer__news p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.66);
+  max-width: 58ch;
+}
+.footer__news-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 9px 18px;
+  border: 1px solid rgba(0,203,190,0.42);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--teal);
+  text-decoration: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+.footer__news-btn:hover {
+  border-color: var(--teal);
+  background: rgba(0,203,190,0.10);
+}
+.footer__news-btn svg { flex: 0 0 auto; }
 
 .footer__bottom {
   display: flex;

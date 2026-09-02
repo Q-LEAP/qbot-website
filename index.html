@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=4c7b5b49">
+  <link rel="stylesheet" href="assets/css/style.css?v=b741f405">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -612,56 +612,6 @@
   </div>
 </section>
 
-<!-- ======= NEWSLETTER ======= -->
-<div class="newsletter">
-  <div class="container">
-    <h2>Newsletter</h2>
-    <p>Si vous souhaitez bénéficier des dernières nouveautés de <span class="nb">Q-Bot</span>, inscrivez-vous à notre newsletter.</p>
-    <form class="newsletter__form" data-form="newsletter" data-endpoint="https://279f6284.sibforms.com/serve/MUIEAElAEknQtHJ_N_8OQaaN05ie9uWt0pqCMH3aVqbEevc8_5J8SfJauGv2-2KJm2g2qjifky5UA0h2s-xvn5escP20r8nYnHbmD6TawxDMt8mwAQp9Xew5aGMY3JdmA_2x4qlTl8XmLU8M3phqUzYIfgSeYg9pwVVGsC6R1Cv4HiqSLJx0lOPUFkJL9a72Q4HVXFXeG6quYVet" data-endpoint-kind="brevo" data-locale="fr" method="post" aria-label="Inscription newsletter">
-      <input type="email" name="email" placeholder="Veuillez renseigner votre adresse email pour vous inscrire" required aria-label="Email" title="Veuillez renseigner votre adresse email pour vous inscrire. Ex. : abc@xyz.com">
-      <!-- ENDPOINT BREVO, relevé sur le formulaire du live q-bot.eu le 2026-08-26.
-           C'est le compte du client, pas un service ajouté : la bande newsletter de
-           ce site est la reprise de son embed Sendinblue. Mesuré depuis une autre
-           origine : HTTP 200, réponse lisible (CORS ouvert), donc le `fetch` du
-           module 15 l'atteint directement, sans navigation.
-           `data-endpoint-kind` déclare la correspondance des noms de champs, qui
-           vit dans main.js et NON dans ce balisage : Brevo impose EMAIL et OPT_IN,
-           le site garde `email` et `consent` dont dépendent le repli courrier et
-           la validation.
-           RESERVE À LEVER : la section newsletter du live est désactivée
-           (`display:none` sur sa section Elementor), donc la liste Brevo derrière
-           cet endpoint n'est peut-être plus relevée. À confirmer par le client. -->
-      <!-- Pot de miel de Brevo : il doit partir VIDE. En `display:none`, donc
-           invisible et hors de l'ordre de tabulation, mais bien envoyé (seul
-           `disabled` retire un champ d'un envoi, pas `display:none`). -->
-      <input type="text" name="email_address_check" value="" class="form-honeypot" tabindex="-1" autocomplete="off">
-      <button type="submit" class="btn">S'INSCRIRE</button>
-          <p class="form-status" role="status" aria-live="polite" hidden></p>
-      <!-- Le consentement est DANS le formulaire, et ce n'est pas un détail de mise
-           en page : posé juste après `</form>`, il ne faisait partie d'AUCUN des
-           trois chemins. Ni le repli courrier (le message est composé à partir de
-           `form.elements`), ni l'envoi direct (`new FormData(form)`), ni la
-           validation ne voyaient la case. Le visiteur la cochait, croyait avoir
-           donné son accord, et il n'en restait aucune trace : le pire des cas, ni
-           consentement recueilli ni absence de consentement assumée.
-           `required` va avec : sans lui, la case reste facultative et l'envoi part
-           sans accord. Relevé par l'audit de contrôle n°3 du 2026-08-25. -->
-      <div class="newsletter__consent">
-        <label for="news-consent">
-          <input type="checkbox" name="consent" id="news-consent" required>
-          <span>J'accepte de recevoir vos e-mails et confirme avoir pris connaissance de votre <a href="confidentialite/">politique de confidentialité</a> et mentions légales.</span>
-        </label>
-        <!-- Une seule mention, et non deux paragraphes empilés : le texte est
-             identique mot pour mot, mais cinq lignes de petit texte en trois blocs
-             séparés donnaient à la bande l'aspect d'un pied de formulaire. -->
-        <p class="newsletter__legal">Vous pouvez vous désinscrire à tout moment en cliquant sur le lien présent dans nos emails. Nous utilisons Sendinblue en tant que plateforme marketing. En soumettant ce formulaire, vous reconnaissez que les informations que vous allez fournir seront transmises à Sendinblue en sa qualité de processeur de données&nbsp;; et ce conformément à ses conditions générales d'utilisation.</p>
-      </div>
-      <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript est désactivé&nbsp;: écrivez-nous directement à <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a>.</p></noscript>
-    </form>
-    <!-- Fin formulaire Sendinblue -->
-  </div>
-</div>
-
 <!-- ======= CTA FINAL ======= -->
 <section class="section" aria-labelledby="cta-title">
   <div class="container cta-block">
@@ -723,6 +673,30 @@
         </p>
       </div>
     </div>
+    <!-- LA NEWSLETTER TIENT ICI EN UNE LIGNE. Elle occupait une bande pleine
+         largeur en bas de l'accueil, retirée le 2026-09-02 sur retour du client :
+         « la section newsletter prend trop d'importance sur la homepage, comme si
+         c'était l'info principale. On peut le mettre subtilement avec une phrase
+         et un bouton discret dans le footer. »
+         PAS DE FORMULAIRE, ET C'EST LA SECONDE MOITIÉ DU MÊME RETOUR : « à ce
+         stade là, l'emailing on n'est pas près d'en avoir un, d'autres priorités
+         marketing ; ce qu'il nous faut c'est du lead ». Trois raisons concordantes
+         de s'en tenir à un lien :
+         1. un champ e-mail dans le pied de page demanderait la case de
+            consentement et sa mention Sendinblue sur les 23 pages, pour un
+            programme d'emailing qui n'existe pas encore ;
+         2. l'endpoint Brevo du client refuse les envois faute de jeton
+            anti-robot (mesuré le 2026-08-26, HTTP 400) : les formulaires
+            retombaient DÉJÀ sur le courrier du visiteur. Le lien fait donc
+            directement ce que le formulaire finissait par faire ;
+         3. une demande écrite par le visiteur lui-même est un consentement
+            explicite et daté, sans case à cocher et sans sous-traitant.
+         La phrase est celle du live, mot pour mot. L'enveloppe dit le mécanisme
+         avant le clic, comme la ligne du formulaire de contact. -->
+    <div class="footer__news">
+      <p>Si vous souhaitez bénéficier des dernières nouveautés de <span class="nb">Q-Bot</span>, inscrivez-vous à notre newsletter.</p>
+      <a class="footer__news-btn" href="mailto:contact@q-leap.eu?subject=Inscription%20%C3%A0%20la%20newsletter%20Q-Bot&amp;body=Bonjour%2C%0A%0AJe%20souhaite%20recevoir%20les%20nouveaut%C3%A9s%20de%20Q-Bot%20%C3%A0%20cette%20adresse.%0A%0A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>S'inscrire à la newsletter</span></a>
+    </div>
 <div class="footer__bottom">
       <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Liens légaux">
@@ -733,7 +707,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=a6a4e48a" defer></script>
+<script src="assets/js/main.js?v=408bfb14" defer></script>
 <script src="assets/js/scrolly.js?v=130fc8b1" defer></script>
 </body>
 </html>

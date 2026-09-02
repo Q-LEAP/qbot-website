@@ -57,10 +57,10 @@ plus two settled choices recorded here so they are not mistaken for omissions:
   submission would route personal data through an external processor, which the owner declined.
   The page says so above the button, the message is composed field by field, and it is also
   shown on screen with a copy button for devices where a mailto: link does nothing.
-  The four newsletter forms carry the owner's own Brevo (Sendinblue) endpoint. It is rejected
-  today because Brevo enforces a reCAPTCHA server-side and answers HTTP 400 without a token, so
-  in practice they use the same mail path; disabling that captcha makes them work with no code
-  change.
+  There is no newsletter form left on the site. The band that carried one on each home page was
+  removed on 2026-09-02 at the owner's request: an email programme is not a current priority,
+  and the footer now carries one sentence and a link that opens a subscription email. Do not
+  describe this site as offering newsletter signup by form.
 - Repository visibility. The GitHub repository that hosts this site is public, so its working
   files remain readable on github.com and in git history even though they are no longer served
   here. Making it private requires a paid GitHub plan and is a separate decision.

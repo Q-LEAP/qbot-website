@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=4c7b5b49">
+  <link rel="stylesheet" href="assets/css/style.css?v=b741f405">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -647,6 +647,30 @@
         </p>
       </div>
     </div>
+    <!-- LA NEWSLETTER TIENT ICI EN UNE LIGNE. Elle occupait une bande pleine
+         largeur en bas de l'accueil, retirée le 2026-09-02 sur retour du client :
+         « la section newsletter prend trop d'importance sur la homepage, comme si
+         c'était l'info principale. On peut le mettre subtilement avec une phrase
+         et un bouton discret dans le footer. »
+         PAS DE FORMULAIRE, ET C'EST LA SECONDE MOITIÉ DU MÊME RETOUR : « à ce
+         stade là, l'emailing on n'est pas près d'en avoir un, d'autres priorités
+         marketing ; ce qu'il nous faut c'est du lead ». Trois raisons concordantes
+         de s'en tenir à un lien :
+         1. un champ e-mail dans le pied de page demanderait la case de
+            consentement et sa mention Sendinblue sur les 23 pages, pour un
+            programme d'emailing qui n'existe pas encore ;
+         2. l'endpoint Brevo du client refuse les envois faute de jeton
+            anti-robot (mesuré le 2026-08-26, HTTP 400) : les formulaires
+            retombaient DÉJÀ sur le courrier du visiteur. Le lien fait donc
+            directement ce que le formulaire finissait par faire ;
+         3. une demande écrite par le visiteur lui-même est un consentement
+            explicite et daté, sans case à cocher et sans sous-traitant.
+         La phrase est celle du live, mot pour mot. L'enveloppe dit le mécanisme
+         avant le clic, comme la ligne du formulaire de contact. -->
+    <div class="footer__news">
+      <p>Si vous souhaitez bénéficier des dernières nouveautés de <span class="nb">Q-Bot</span>, inscrivez-vous à notre newsletter.</p>
+      <a class="footer__news-btn" href="mailto:contact@q-leap.eu?subject=Inscription%20%C3%A0%20la%20newsletter%20Q-Bot&amp;body=Bonjour%2C%0A%0AJe%20souhaite%20recevoir%20les%20nouveaut%C3%A9s%20de%20Q-Bot%20%C3%A0%20cette%20adresse.%0A%0A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>S'inscrire à la newsletter</span></a>
+    </div>
 <div class="footer__bottom">
       <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by Q-Leap</p>
       <nav class="footer__legal" aria-label="Liens légaux">
@@ -657,6 +681,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=a6a4e48a" defer></script>
+<script src="assets/js/main.js?v=408bfb14" defer></script>
 </body>
 </html>
