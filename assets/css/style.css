@@ -2935,6 +2935,30 @@ a:focus-visible { border-radius: var(--radius-sm); }
   background: var(--teal-light);
   z-index: 0;
 }
+/* ---- Variante à cinq étapes ----
+   Posée le 2026-09-02 pour la section « Comment ça fonctionne » de l'accueil,
+   qui compte cinq étapes là où la page Démo en a quatre. Le composant est
+   réutilisé tel quel ; seules la piste et la formule du trait changent.
+   LA FORMULE EST REDÉRIVÉE, PAS DEVINÉE, exactement comme celle à quatre
+   colonnes : cinq colonnes de largeur c et quatre gouttières g dans une largeur
+   W donnent c = (W − 4g)/5 ; la dernière colonne commence à 4c + 4g, soit
+   0,8 W + 0,8 g, et le centre de son rond est à la moitié du rond plus loin. La
+   distance au bord droit vaut donc 20 % − 0,8 g − rond/2.
+   LE SÉLECTEUR N'EST PAS DOUBLÉ ICI, ET C'EST L'INVERSE DE `.features__grid--3`
+   POSÉ LE MÊME JOUR. Une seule classe pèse (0,1,0), donc exactement comme la
+   règle de base juste au-dessus ET comme les requêtes média plus bas : l'ordre
+   du fichier tranche, ce qui donne précisément la cascade voulue. La variante
+   gagne sur la base (elle est écrite après), et les requêtes gagnent sur la
+   variante (elles sont écrites après elle), donc la grille retombe bien à deux
+   colonnes sur petit écran, trait masqué. Doubler le sélecteur ici bloquerait ce
+   repli à cinq colonnes sur un téléphone. */
+.order-process--5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.order-process--5::before {
+  right: calc(20% - 0.8 * var(--op-gap) - var(--op-rond) / 2);
+}
+
 .order-step { position: relative; z-index: 1; }
 .order-step__number {
   width: 56px;

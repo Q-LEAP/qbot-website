@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=08274377">
+  <link rel="stylesheet" href="../assets/css/style.css?v=460683b2">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -432,12 +432,84 @@
   <span class="scrolly__cta-label">Technical Specs</span>
 </a>
 
+<!-- ======= COMMENT ÇA FONCTIONNE =======
+     Section demandée à la review (point 6) : la homepage expliquait ce que
+     Q-Bot change et ce qu'il est, jamais ce qu'il FAIT, étape par étape. Elle se
+     pose juste après la séquence 3D, donc entre « le produit » et « les
+     avantages », ce qui suit le parcours voulu : je découvre le problème, je
+     comprends le produit, je comprends le fonctionnement, je vérifie, je réserve.
+     LES CINQ ÉTAPES SONT LE TEXTE DU BRIEF, mot pour mot.
+     LE COMPOSANT EST CELUI DE LA PAGE DÉMO (`.order-process`), pas un nouveau :
+     ronds numérotés, trait de liaison, même typographie. Seule la variante à
+     cinq colonnes est ajoutée, avec sa formule de trait redérivée.
+     L'ANCRE `after-sequence` DÉMÉNAGE ICI depuis la section des avantages : le lien
+     d'évitement « passer la séquence » doit tomber sur ce qui suit la séquence.
+     LE BLOC « SANS CODE » EST LA SECONDE MOITIÉ DE LA SECTION (point 4). Le
+     message est jugé assez important pour la homepage, mais le brief interdit de
+     recopier la fiche technique : quatre lignes suffisent à dire l'idée, et le
+     détail reste sur la page Caractéristiques. Volontairement SANS visuel : la
+     maquette de l'éditeur illustre déjà la fiche technique, et la review demande
+     moins de répétition. -->
+<section class="section" id="after-sequence" aria-labelledby="how-home-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">In five steps</span>
+      <h2 class="section-title" id="how-home-title">How it works</h2>
+      <p class="section-subtitle"><span class="nb">Q-Bot</span> takes over the moment your automated test reaches the two-factor authentication step.</p>
+    </div>
+    <div class="order-process order-process--5" role="list">
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">1</div>
+        <h3>Your test reaches the 2FA step</h3>
+        <p>The automated journey hits the step that needs an approval on a smartphone.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">2</div>
+        <h3><span class="nb">Q-Bot</span> is triggered</h3>
+        <p>Your test calls <span class="nb">Q-Bot</span>, or <span class="nb">Q-Bot</span> reacts on its own to an incoming notification.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">3</div>
+        <h3><span class="nb">Q-Bot</span> drives the smartphone</h3>
+        <p>It runs the saved scenario directly in the genuine 2FA app.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">4</div>
+        <h3>The approval goes through</h3>
+        <p>The request is approved, or the required code is retrieved.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">5</div>
+        <h3>Your test carries on</h3>
+        <p>The automated journey resumes with no human intervention.</p>
+      </div>
+    </div>
+    <div style="margin-top:44px;">
+      <a href="use-cases.html" class="btn btn--outline">
+        See how it works
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
+      <h3 style="margin-bottom:12px;">Build an automation visually, without writing code</h3>
+      <p class="section-subtitle" style="margin-bottom:24px;">Scenarios are built in the web interface, on top of screenshots of the app under test. No scripting, no selectors to maintain.</p>
+      <ul class="api-facts api-facts--deux">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You drop in a screenshot, which becomes the background of the step</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You place the tap points by clicking, and set each wait time</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You add, reorder or remove a step at any time</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The scenario is saved on the device, and reusable at will</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <!-- ======= FEATURES ======= -->
 <!-- Trois cartes et pas quatre, cf. la note française. « Zero false positives »
      devient « Deterministic execution », et « nothing is guessed from an image »
      devient « no image recognition during execution » : les captures servent à
      CONSTRUIRE les scénarios. -->
-<section class="section section--gray" id="after-sequence" aria-labelledby="features-title">
+<section class="section section--gray" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Benefits</span>

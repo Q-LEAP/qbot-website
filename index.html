@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=08274377">
+  <link rel="stylesheet" href="assets/css/style.css?v=460683b2">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -479,6 +479,78 @@
   <span class="scrolly__cta-label">Voir les caractéristiques</span>
 </a>
 
+<!-- ======= COMMENT ÇA FONCTIONNE =======
+     Section demandée à la review (point 6) : la homepage expliquait ce que
+     Q-Bot change et ce qu'il est, jamais ce qu'il FAIT, étape par étape. Elle se
+     pose juste après la séquence 3D, donc entre « le produit » et « les
+     avantages », ce qui suit le parcours voulu : je découvre le problème, je
+     comprends le produit, je comprends le fonctionnement, je vérifie, je réserve.
+     LES CINQ ÉTAPES SONT LE TEXTE DU BRIEF, mot pour mot.
+     LE COMPOSANT EST CELUI DE LA PAGE DÉMO (`.order-process`), pas un nouveau :
+     ronds numérotés, trait de liaison, même typographie. Seule la variante à
+     cinq colonnes est ajoutée, avec sa formule de trait redérivée.
+     L'ANCRE `apres-sequence` DÉMÉNAGE ICI depuis la section des avantages : le lien
+     d'évitement « passer la séquence » doit tomber sur ce qui suit la séquence.
+     LE BLOC « SANS CODE » EST LA SECONDE MOITIÉ DE LA SECTION (point 4). Le
+     message est jugé assez important pour la homepage, mais le brief interdit de
+     recopier la fiche technique : quatre lignes suffisent à dire l'idée, et le
+     détail reste sur la page Caractéristiques. Volontairement SANS visuel : la
+     maquette de l'éditeur illustre déjà la fiche technique, et la review demande
+     moins de répétition. -->
+<section class="section" id="apres-sequence" aria-labelledby="how-home-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">En cinq étapes</span>
+      <h2 class="section-title" id="how-home-title">Comment ça fonctionne</h2>
+      <p class="section-subtitle"><span class="nb">Q-Bot</span> prend le relais au moment où votre test automatisé atteint l'étape de double authentification.</p>
+    </div>
+    <div class="order-process order-process--5" role="list">
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">1</div>
+        <h3>Votre test arrive à la 2FA</h3>
+        <p>Le parcours automatisé atteint l'étape qui nécessite une validation sur smartphone.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">2</div>
+        <h3><span class="nb">Q-Bot</span> est déclenché</h3>
+        <p>Votre test appelle <span class="nb">Q-Bot</span>, ou <span class="nb">Q-Bot</span> réagit automatiquement à la réception d'une notification.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">3</div>
+        <h3><span class="nb">Q-Bot</span> pilote le smartphone</h3>
+        <p>Il exécute le scénario prévu directement sur la véritable application 2FA.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">4</div>
+        <h3>La validation est effectuée</h3>
+        <p>La demande est approuvée ou le code nécessaire est récupéré.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">5</div>
+        <h3>Votre test continue</h3>
+        <p>Le parcours automatisé reprend sans intervention humaine.</p>
+      </div>
+    </div>
+    <div style="margin-top:44px;">
+      <a href="cas-usage.html" class="btn btn--outline">
+        Voir le fonctionnement
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
+      <h3 style="margin-bottom:12px;">Créer une automatisation visuellement, sans écrire de code</h3>
+      <p class="section-subtitle" style="margin-bottom:24px;">Les scénarios se construisent dans l'interface web, sur les captures d'écran de l'application à tester. Aucun script, aucun sélecteur à maintenir.</p>
+      <ul class="api-facts api-facts--deux">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui en cliquant, et réglez chaque temps d'attente</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le scénario est enregistré dans le boîtier, et réutilisable à volonté</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <!-- ======= AVANTAGES ======= -->
 <!-- TROIS CARTES ET PAS QUATRE, demandé à la review : « limiter la section à
      3 avantages maximum ». Sont parties « Mise en service immédiate » (fausse :
@@ -493,7 +565,7 @@
      Le paragraphe « Q-Bot ne demande ni installation ni configuration » est
      retiré pour la même raison : la configuration des scénarios est justement
      le travail que fait le testeur. -->
-<section class="section section--gray" id="apres-sequence" aria-labelledby="features-title">
+<section class="section section--gray" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Avantages</span>
