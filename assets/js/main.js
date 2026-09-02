@@ -215,8 +215,16 @@ if ('IntersectionObserver' in window) {
       '.article-figure',
       /* Le bloc de code de la section API : c'est un objet encadré, donc un média
          au sens du site. Il apparaissait sans rien. Il n'a pas d'<img>, donc le
-         dézoom de la variante ne s'applique à rien et seul le masque joue. */
-      '.code-block',
+         dézoom de la variante ne s'applique à rien et seul le masque joue.
+         LE `:not()` EST OBLIGATOIRE DEPUIS LE 2026-09-02, et c'est un vrai défaut
+         qu'il corrige : les cinq exemples d'appel de la page « comment ça marche »
+         sont désormais dans des accordéons REPLIÉS. Un bloc replié n'est jamais
+         intersecté, donc l'observateur ne lui posait jamais `.is-visible` et
+         `.reveal { opacity: 0 }` tenait pour toujours : le visiteur ouvrait
+         l'accordéon sur du code INVISIBLE. Relevé par le balayage, cinq par page,
+         en mouvement normal seulement (en mouvement réduit tout est forcé
+         visible, ce qui masquait le défaut). */
+      '.code-block:not(.faq-item__answer .code-block)',
     ]],
     ['group', [
       '.section-header',
