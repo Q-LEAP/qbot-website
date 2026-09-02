@@ -6263,3 +6263,140 @@ capture en « hLuxT » et ne ressemble à aucun nom connu.
 - **pas de logo « Made in Luxembourg »** : le brief demande de remplacer le
   pictogramme de lieu du pied de page par ce logo, qui n'existe nulle part dans le
   dépôt et qui est une marque déposée. Le pictogramme reste.
+
+## Les retours du soir du 2026-09-02 : deux pages en moins, des photos, un carrousel
+
+Suite du lot de review, à mesure que le client répondait. Six commits, un par
+demande. Deux fils s'y croisent : ses instructions directes, et **quatre documents
+Word** trouvés dans le même envoi que les photos, qui donnent la structure et les
+textes de trois pages (`Q-Bot — À propos.docx`, `— Fonctionnement.docx`,
+`— Caractéristiques techniques.docx`, `Correction FAQ.docx`).
+
+### Les deux pages sont supprimées, et ce qui les tenait
+
+« Oui supprime les pages Conditions de vente et Réservation. » Quatre fichiers.
+Trois conséquences qu'il fallait suivre :
+
+- **la fenêtre Microsoft Bookings est conservée**, parce qu'elle ne vivait pas
+  dans la page supprimée : elle s'ouvre depuis le bouton de la barre de
+  navigation, porté par des attributs `data-booking-*`. Ce bouton gardait
+  `reservation.html` comme repli sans JavaScript ; il pointe désormais sur la page
+  contact. **Et le motif de `maj-nav-booking.py` a dû être élargi**, sinon la
+  « source unique » de l'agenda ne l'était plus : il ne reconnaissait que
+  `reservation.html` et `booking.html` comme cible, et aurait annoncé « 0 bouton
+  équipé » sans erreur le jour d'un changement d'agenda ;
+- **les deux adresses légales ne tombent pas en 404** : `conditions-vente/`
+  répondait à l'adresse exacte du WordPress, donc elles relaient vers l'accueil
+  de leur langue, comme les archives du blog. La page de réservation, jamais
+  publiée sur le live et jamais indexée, n'a pas de relais ;
+- **deux générateurs auraient ressuscité les pages** au prochain lancement.
+  `gen-reservation.py` est supprimé ; `gen-legal.py` et `fetch-legal.py` perdent
+  leurs entrées « conditions de vente », avec la note qui dit où retrouver le
+  texte (`tools/legal-source.json` le garde).
+
+### Les six photos, triées
+
+Masters dans `Documentations/assets-sources/`, copies web dans `assets/img/`,
+**réencodées, ce qui retire les métadonnées du téléphone** (une photo de téléphone
+peut porter des coordonnées de localisation).
+
+| Fichier | Ce qu'elle montre | Où |
+|---|---|---|
+| `qbot-photo-ecran.jpg` | le boîtier, le moniteur et le téléphone affichant tous deux le fond d'écran Q-Bot | « La solution », deux accueils |
+| `qleap-equipe-dev` / `-revue` / `-poste` / `-duo`, `qleap-locaux` | l'équipe et les bureaux de Bertrange | carrousel de « À propos » |
+
+**Un cadre a dû être créé pour une photo verticale.** `.intro__image--fit` cale la
+hauteur de l'image sur celle de la COLONNE DE TEXTE : juste pour une photo en
+paysage, absurde pour une verticale devant un texte court. Mesuré : 298 px de
+large côté français et **163 côté anglais**, où le texte est plus court. Une photo
+de 163 px ne montre rien. `.intro__image--portrait` fait l'inverse : c'est
+l'image qui donne la mesure, 420 px au plus, posée sur la gouttière.
+
+### « On parle bien de smartphone dans la homepage, le but est de eyecatch »
+
+**Cela prend le pas sur le point 12 du brief de review**, qui demandait mot pour
+mot « compatible avec les applications 2FA Android ». Les deux mentions d'Android
+de la homepage partent. Le périmètre reste énoncé **là où il porte un fait** : la
+fiche technique (ligne « Système : Android »), la page « comment ça marche »
+(ADB est l'outil d'Android) et la question 17 de la FAQ, qui répond sur iOS.
+C'est l'arbitrage du 2026-09-01, repris. `llms.txt` porte déjà la mise en garde
+qui va avec : ne rien inférer d'un support iOS du mot « smartphone ».
+
+### La page « À propos » suit son document
+
+Structure, titres et textes du docx : « Q-Bot, conçu par des experts du test
+logiciel », « né d'un besoin concret », « Conçu et développé au Luxembourg »,
+« Découvrez Q-Leap » (**deux** cartes, pas trois : « le visiteur se trouve déjà
+sur le site Q-Bot »), un seul CTA. Sont partis « Curiosité, créativité et
+analyse. », la section « Nous investissons dans les technologies
+d'automatisation » et les deux « leader sur le marché luxembourgeois » (« si
+l'affirmation est conservée, elle doit pouvoir être étayée »).
+
+### Le carrousel, et pourquoi il n'avance pas tout seul
+
+« Mets pas de photo à Q-Bot, conçu par des experts du test logiciel » puis « fais
+un carrousel en dessous de Conçu et développé au Luxembourg ».
+
+**Il fonctionne sans JavaScript** : la piste est un défilement horizontal natif
+avec accrochage. Le module 21 n'ajoute que les flèches, les pastilles et leur
+état. Trois décisions de mécanique, toutes prises après mesure :
+
+1. **l'état se lit sur la position réelle de la piste**, jamais sur un compteur
+   interne : le défilement peut venir du doigt, de la molette ou de la barre, et
+   un index maison se désynchronise au premier de ces gestes ;
+2. **une pastille = un DÉPART, et celles sans départ sont masquées.** Avec cinq
+   photos et trois visibles il n'y a que trois positions au large, quatre à 900 px
+   et cinq sur téléphone : le compte se déduit de la course réelle, à chaque
+   redimensionnement. Le modèle « vue centrée » a été essayé et écarté, il
+   décalait l'allumage d'un cran par rapport au clic ;
+3. **la cible d'une pastille fait 24 x 24 px et seul son point en fait 8.** Le
+   premier essai posait l'aire cliquable en `::before` : l'audit d'accessibilité
+   l'a refusé, et il avait raison, **WCAG 2.5.8 mesure la boîte de la cible** et
+   relevait « 8x8, marge -12 » sur les cinq.
+
+**Il n'avance pas tout seul, à dessein.** Le client avait fait retirer les bandes
+d'outils défilantes le 2026-08-20 (« les carrousels sont un peu illisibles
+cognitivement ») : ce qui les rendait illisibles était le défilement automatique,
+pas le motif. Un défilement automatique demanderait de surcroît un bouton de
+pause (WCAG 2.2.2).
+
+### La page unique devient une page de découverte
+
+« Cas d'usage → Fonctionnement → Intégration → API, sections beaucoup plus
+compactes, accordéons pour les exemples de code, et **surtout un CTA avant
+d'arriver à la documentation**. »
+
+L'ordre est celui-là, et le CTA est bien AVANT les exemples d'appel : le visiteur
+qui veut réserver n'a plus à traverser du code pour trouver le bouton. Les cinq
+blocs « le blocage / avec Q-Bot » (2 100 caractères) deviennent **quatre cartes
+courtes**, au texte du document « Fonctionnement ». Les cinq exemples d'appel
+deviennent des **accordéons**, avec le composant de la FAQ : aucun composant neuf,
+et le module 3 apporte `hidden`, les `aria-controls` et la mesure de hauteur.
+
+L'adresse ne change pas, l'ancre `#cas` du pied de page non plus. La bande qui
+glissait latéralement quitte la page ; son CSS et ses deux entrées de script sont
+gardés et annotés, comme `.timeline`.
+
+### CINQ FOIS LE MÊME PIÈGE DANS UN SEUL LOT, ET IL FAUT LE RETENIR
+
+Toutes mes suppressions bornées par un motif répété ont mordu trop large, et
+**deux fois elles ont emporté deux sections entières** (restaurées par
+`git checkout`) :
+
+- une carte bornée en remontant à « l'ouverture d'article la plus proche » :
+  `rindex` l'a trouvée deux sections plus haut ;
+- une puce cherchée avec `.*?` **et** `re.S` : en DOTALL un `.*?` traverse les
+  lignes ET les sections ;
+- `'      </ol>'` et `'    </div>'` sont des **sous-motifs** de leurs versions
+  plus indentées, donc `count()` mentait et `index()` tombait au mauvais endroit
+  (trois occurrences distinctes, dont l'insertion des questions de FAQ) ;
+- et deux contrôles de reste ont crié sur mes propres commentaires, qui citent à
+  dessein ce qui vient d'être retiré.
+
+**Ce qui les a tous attrapés est la même chose** : une assertion de STRUCTURE
+avant d'écrire, comparant le nombre de sections et de titres de niveau 2 avant et
+après. Sans elle, deux pages partaient au commit avec deux sections en moins.
+Règle : on borne sur une chaîne unique ou sur un motif tempéré (`(?!\s*</?tag)`),
+jamais sur un tag répété ; un motif de ligne s'écrit `[^\n]*` sans DOTALL ; une
+borne d'indentation porte son saut de ligne ; et un contrôle de reste vise
+l'attribut (`class="x"`), pas le mot.
