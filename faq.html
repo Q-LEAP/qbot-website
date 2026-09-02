@@ -234,6 +234,22 @@
           "@type": "Answer",
           "text": "Non, et c'est un choix assumé. Q-Bot pilote un vrai smartphone relié en USB, par ADB : il fonctionne donc avec n'importe quelle application 2FA installée sur Android, LuxTrust Mobile, itsme, Microsoft Authenticator ou Google Authenticator. Automatiser un appareil iOS repose sur d'autres mécanismes, que Q-Bot ne couvre pas aujourd'hui."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Faut-il une clé secrète pour automatiser la 2FA ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Non. Q-Bot n'a pas besoin du secret partagé qui sert à recalculer un code à usage unique, parce qu'il ne recalcule rien : il pilote la véritable application 2FA sur un smartphone relié en USB, comme le ferait un utilisateur. C'est ce qui lui permet de fonctionner avec LuxTrust Mobile ou itsme, dont le secret n'est pas exportable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Q-Bot nécessite-t-il une connexion internet ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Non, pas pendant les tests. Le boîtier est auto-hébergé : il tourne sur votre réseau, l'interface web et l'API y répondent, et les scénarios comme leurs captures restent stockés dessus. Aucun appel vers un service extérieur n'est nécessaire pour exécuter un scénario."
+        }
       }
     ]
   }
@@ -277,7 +293,6 @@
         <li><a href="./" class="nav__link">Accueil</a></li>
         <li><a href="caracteristiques.html" class="nav__link">Caractéristiques</a></li>
         <li><a href="cas-usage.html" class="nav__link">Comment ça marche</a></li>
-        <li><a href="faq.html" class="nav__link">FAQ</a></li>
       </ul>
       <div class="nav__actions">
         <a href="reservation.html" data-booking-open
@@ -341,6 +356,8 @@
         <li><a href="#faq-q15"><span class="faq-index__num" aria-hidden="true">15</span><span class="faq-index__txt">Que faire en cas de dysfonctionnement de <span class="nb">Q-Bot</span>&nbsp;?</span></a></li>
         <li><a href="#faq-q16"><span class="faq-index__num" aria-hidden="true">16</span><span class="faq-index__txt">Comment mes informations personnelles sont-elles traitées&nbsp;?</span></a></li>
         <li><a href="#faq-q17"><span class="faq-index__num" aria-hidden="true">17</span><span class="faq-index__txt"><span class="nb">Q-Bot</span> fonctionne-t-il avec iOS (iPhone)&nbsp;?</span></a></li>
+        <li><a href="#faq-q18"><span class="faq-index__num" aria-hidden="true">18</span><span class="faq-index__txt">Faut-il une clé secrète pour automatiser la 2FA&nbsp;?</span></a></li>
+        <li><a href="#faq-q19"><span class="faq-index__num" aria-hidden="true">19</span><span class="faq-index__txt"><span class="nb">Q-Bot</span> nécessite-t-il une connexion internet&nbsp;?</span></a></li>
       </ol>
     </nav>
     <div class="faq__list">
@@ -581,6 +598,30 @@
         </div>
       </div>
 
+      <div class="faq-item" id="faq-q18">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b18" aria-controls="faq-a18">
+          Faut-il une clé secrète pour automatiser la 2FA&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a18" role="region" aria-labelledby="faq-b18">
+          <p>Non. <span class="nb">Q-Bot</span> n'a pas besoin du secret partagé qui sert à recalculer un code à usage unique, parce qu'il ne recalcule rien&nbsp;: il pilote la véritable application 2FA sur un smartphone relié en USB, comme le ferait un utilisateur. C'est ce qui lui permet de fonctionner avec LuxTrust Mobile ou itsme, dont le secret n'est pas exportable.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q19">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b19" aria-controls="faq-a19">
+          <span class="nb">Q-Bot</span> nécessite-t-il une connexion internet&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a19" role="region" aria-labelledby="faq-b19">
+          <p>Non, pas pendant les tests. Le boîtier est auto-hébergé&nbsp;: il tourne sur votre réseau, l'interface web et l'API y répondent, et les scénarios comme leurs captures restent stockés dessus. Aucun appel vers un service extérieur n'est nécessaire pour exécuter un scénario.</p>
+        </div>
+      </div>
+
     </div>
     </div>
   </div>
@@ -605,7 +646,7 @@
           <img src="assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
         </div>
         <p class="footer__desc">
-          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par Q-Leap.
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a>.
         </p>
         <div class="footer__meta-row">
           <div class="footer__social" aria-label="Réseaux sociaux">
@@ -628,15 +669,14 @@
         <h3>Produit</h3>
         <ul role="list">
           <li><a href="caracteristiques.html">Caractéristiques</a></li>
-          <li><a href="cas-usage.html">Cas d'usage</a></li>
+          <li><a href="cas-usage.html">Comment ça marche</a></li>
+          <li><a href="cas-usage.html#cas">Cas d'usage</a></li>
           <li><a href="commandez.html">Démo</a></li>
-          <li><a href="reservation.html">Réservation</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h3>Contact</h3>
         <ul role="list">
-          <li><a href="contact.html">Nous contacter</a></li>
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
           <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
@@ -647,34 +687,9 @@
         </p>
       </div>
     </div>
-    <!-- LA NEWSLETTER TIENT ICI EN UNE LIGNE. Elle occupait une bande pleine
-         largeur en bas de l'accueil, retirée le 2026-09-02 sur retour du client :
-         « la section newsletter prend trop d'importance sur la homepage, comme si
-         c'était l'info principale. On peut le mettre subtilement avec une phrase
-         et un bouton discret dans le footer. »
-         PAS DE FORMULAIRE, ET C'EST LA SECONDE MOITIÉ DU MÊME RETOUR : « à ce
-         stade là, l'emailing on n'est pas près d'en avoir un, d'autres priorités
-         marketing ; ce qu'il nous faut c'est du lead ». Trois raisons concordantes
-         de s'en tenir à un lien :
-         1. un champ e-mail dans le pied de page demanderait la case de
-            consentement et sa mention Sendinblue sur les 23 pages, pour un
-            programme d'emailing qui n'existe pas encore ;
-         2. l'endpoint Brevo du client refuse les envois faute de jeton
-            anti-robot (mesuré le 2026-08-26, HTTP 400) : les formulaires
-            retombaient DÉJÀ sur le courrier du visiteur. Le lien fait donc
-            directement ce que le formulaire finissait par faire ;
-         3. une demande écrite par le visiteur lui-même est un consentement
-            explicite et daté, sans case à cocher et sans sous-traitant.
-         La phrase est celle du live, mot pour mot. L'enveloppe dit le mécanisme
-         avant le clic, comme la ligne du formulaire de contact. -->
-    <div class="footer__news">
-      <p>Si vous souhaitez bénéficier des dernières nouveautés de <span class="nb">Q-Bot</span>, inscrivez-vous à notre newsletter.</p>
-      <a class="footer__news-btn" href="mailto:contact@q-leap.eu?subject=Inscription%20%C3%A0%20la%20newsletter%20Q-Bot&amp;body=Bonjour%2C%0A%0AJe%20souhaite%20recevoir%20les%20nouveaut%C3%A9s%20de%20Q-Bot%20%C3%A0%20cette%20adresse.%0A%0A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg><span>S'inscrire à la newsletter</span></a>
-    </div>
 <div class="footer__bottom">
-      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by Q-Leap</p>
+      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a></p>
       <nav class="footer__legal" aria-label="Liens légaux">
-        <a href="conditions-vente/">Conditions de vente</a>
         <a href="confidentialite/">Confidentialité</a>
       </nav>
     </div>
