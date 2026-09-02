@@ -935,6 +935,13 @@ p { color: var(--gray); }
   transform: translateY(-50%) rotate(45deg);
 }
 
+/* UN BLOC DE CODE DANS UN ACCORDÉON. Depuis le 2026-09-02, les cinq exemples
+   d'appel de la page « comment ça marche » sont des accordéons : le composant est
+   celui de la FAQ, réutilisé tel quel. La marge basse de la réponse est portée
+   par `.faq-item__answer p`, qui ne s'applique pas à un bloc de code ; sans cette
+   règle, le code touche le filet de séparation. */
+.faq-item__answer .code-block { margin-bottom: 20px; }
+
 .faq-item__answer {
   max-height: 0;
   overflow: hidden;
@@ -5582,6 +5589,13 @@ label > input[type="checkbox"] {
    La première carte part sur la gouttière du site, et la dernière s'arrête sur la
    gouttière opposée : la bande commence et finit alignée sur le texte, comme le
    reste de la page. */
+/* PLUS AUCUNE PAGE N'EMPLOIE CE BLOC DEPUIS LE 2026-09-02. La bande d'exemples
+   d'appel qui glissait latéralement (procédé de linearity.io, posée le
+   2026-08-20) a quitté la page « comment ça marche » : le client l'a transformée
+   en page de découverte, où les exemples de code sont désormais des accordéons
+   placés APRÈS l'appel à l'action. Le bloc est gardé, comme `.timeline` : le
+   procédé n'est pas rejeté, c'est sa place qui a changé. Ne pas le réintroduire
+   sans demander. */
 .ucs-api {
   --api-card: 460px;
   --api-gap: 20px;

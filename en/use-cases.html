@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=2ce69139">
+  <link rel="stylesheet" href="../assets/css/style.css?v=b20be276">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -165,6 +165,53 @@
   </div>
 </section>
 
+<!-- ======= CAS D'USAGE =======
+     QUATRE CARTES COURTES, et c'est une demande en deux temps du client : le
+     document « Fonctionnement » dit « 4 cartes maximum, chacune expliquant une
+     situation concrète en quelques lignes, sans entrer dans le détail
+     technique », et le message du 2026-09-02 demande « des sections beaucoup
+     plus compactes ». Le texte est celui du document, mot pour mot.
+     CE QUI PART : les cinq blocs « le blocage / avec Q-Bot » et leurs
+     chiffres-clés, 2 100 caractères à eux seuls. Ils disaient bien les choses,
+     mais ils ouvraient la page sur un mur de texte, et le blocage est déjà posé
+     par l'accueil.
+     La section garde son ancre `#cas`, visée par le pied de page des 21 pages. -->
+<section class="section" id="cas" aria-labelledby="ucs-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Use cases</span>
+      <h2 class="section-title" id="ucs-title">When to use it</h2>
+      <p class="section-subtitle">Four situations where the test pipeline gets unblocked, with nobody approving by hand.</p>
+    </div>
+    <div class="features__grid">
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <span class="usecase__cat">Login</span>
+        <h3>Automate a login with 2FA</h3>
+        <p>Run a complete login journey that needs an approval in LuxTrust Mobile, itsme, Microsoft Authenticator or another Android 2FA app.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+        <span class="usecase__cat">Regression</span>
+        <h3>Run suites with no human intervention</h3>
+        <p>Launch your regression runs, at night or from your CI/CD, without a tester having to approve two-factor authentication by hand.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
+        <span class="usecase__cat">One-time code</span>
+        <h3>Retrieve a one-time code</h3>
+        <p><span class="nb">Q-Bot</span> can open the 2FA app and retrieve the code your test needs to carry on.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <span class="usecase__cat">QR code</span>
+        <h3>Automate QR-code journeys</h3>
+        <p><span class="nb">Q-Bot</span> can show a QR code on its built-in display so the smartphone can scan it as part of the automated scenario.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
 <!-- ======= HOW IT WORKS =======
      Section demandée à la review, cf. la note française : la page ouvrait sur
      cinq cas détaillés sans avoir dit ce que fait le produit. -->
@@ -205,99 +252,6 @@
   </div>
 </section>
 
-<!-- ======= LES CINQ CAS ═══════════════════════════════════════════════════
-     Une liste, et rien d'autre. La section a ete epinglee cinq ecrans jusqu'au
-     2026-08-28, un cas a l'ecran, la sequence pilotee par le moteur de
-     mouvement. Retire a la demande du client : « pas d'etape par etape en
-     scrollytelling, juste les uns au-dessus des autres ».
-     Ne pas la reepingler : c'est un arbitrage, pas une regression. -->
-<section class="section section--gray" id="cas" aria-labelledby="ucs-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Use cases</span>
-      <h2 class="section-title" id="ucs-title">When to use it</h2>
-      <p class="section-subtitle">Five situations where the pipeline gets unblocked: a login with LuxTrust, a notification to approve, a one-time code to retrieve, a QR-code journey, a nightly run.</p>
-    </div>
-    <div class="usecases">
-        <div class="usecase" id="case-login">
-        <span class="usecase__cat">Banking &amp; fintech</span>
-        <h3>End-to-end login with 2FA</h3>
-        <div class="usecase__grid">
-        <div class="usecase__part">
-        <span class="usecase__lab">The challenge</span>
-        <p>Every login test requires a 2FA step: a push notification approval, an OTP from Microsoft Authenticator or Google Authenticator, or a LuxTrust or itsme prompt. Running those tests unattended meant either skipping 2FA, which defeats the purpose, or keeping a tester on standby at all hours.</p>
-        </div>
-        <div class="usecase__part usecase__part--sol">
-        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-        <p>The companion app monitors the 2FA app. The moment a notification arrives, <span class="nb">Q-Bot</span> executes the approval scenario automatically. The entire login flow, 2FA included, runs unattended on a real device, any time of day.</p>
-        </div>
-        </div>
-        <p class="usecase__fig"><b>0</b><span>human intervention, at any hour</span></p>
-        </div>
-        <div class="usecase" id="case-night">
-        <span class="usecase__cat">CI/CD regression suite</span>
-        <h3>Fully automated nightly runs</h3>
-        <div class="usecase__grid">
-        <div class="usecase__part">
-        <span class="usecase__lab">The challenge</span>
-        <p>A regression suite runs on every pull request and nightly. Several flows gate on 2FA: at authentication, at sensitive operations, or at session escalation. One manual step breaks the entire pipeline.</p>
-        </div>
-        <div class="usecase__part usecase__part--sol">
-        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-        <p>Each 2FA gate in the pipeline is replaced with a single API call. When the test reaches the 2FA step, it sends <code>GET /scenarios/:id/execute</code>. <span class="nb">Q-Bot</span> handles it. The build passes or fails on actual application logic, not on a missing human.</p>
-        </div>
-        </div>
-        <p class="usecase__fig"><b>1 call</b><span>per 2FA gate in the pipeline</span></p>
-        </div>
-        <div class="usecase" id="case-luxtrust">
-        <span class="usecase__cat">LuxTrust OTP retrieval</span>
-        <h3>Live OTP in your test assertions</h3>
-        <div class="usecase__grid">
-        <div class="usecase__part">
-        <span class="usecase__lab">The challenge</span>
-        <p>Flows using LuxTrust, common in Luxembourg-based financial, government, and enterprise environments, require the current OTP to complete a form or verify an authentication response. Retrieving it manually interrupts the automated flow.</p>
-        </div>
-        <div class="usecase__part usecase__part--sol">
-        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-        <p>Call <code>GET /get-luxtrust-otp</code> at the point in the test where the code is needed. <span class="nb">Q-Bot</span> reads the live OTP from the LuxTrust app running on the connected smartphone and returns it in the response. Your test framework uses it directly.</p>
-        </div>
-        </div>
-        <p class="usecase__fig"><b>Seconds</b><span>to retrieve the live code</span></p>
-        </div>
-        <div class="usecase" id="case-multifactor">
-        <span class="usecase__cat">Enterprise SSO</span>
-        <h3>Multi-step authentication flows</h3>
-        <div class="usecase__grid">
-        <div class="usecase__part">
-        <span class="usecase__lab">The challenge</span>
-        <p>Enterprise applications often use multi-step authentication: password, then a push approval, then a TOTP code. Automating this end-to-end requires orchestrating multiple screens. Doing it with scripts is fragile; manually is slow.</p>
-        </div>
-        <div class="usecase__part usecase__part--sol">
-        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-        <p>Each step is a separate scenario, built visually. The test runner calls them in sequence via the REST API. <span class="nb">Q-Bot</span> handles each step in order with the correct wait times. The full authentication flow completes without human intervention.</p>
-        </div>
-        </div>
-        <p class="usecase__fig"><b>3 scenarios</b><span>chained in order, no script</span></p>
-        </div>
-        <div class="usecase" id="case-qrcode">
-        <span class="usecase__cat">QR code-based 2FA</span>
-        <h3>Display, scan, continue</h3>
-        <div class="usecase__grid">
-        <div class="usecase__part">
-        <span class="usecase__lab">The challenge</span>
-        <p>Some 2FA flows require the mobile device to scan a QR code: to confirm a transaction, pair an authenticator, or approve a session. Presenting a QR code to a device under automated test is a step that has no obvious automated solution.</p>
-        </div>
-        <div class="usecase__part usecase__part--sol">
-        <span class="usecase__lab">With <span class="nb">Q-Bot</span></span>
-        <p>The test pipeline sends the QR code image to <span class="nb">Q-Bot</span> via <code>POST /display-image</code>. <span class="nb">Q-Bot</span> renders it fullscreen on its small attached screen. A scenario then instructs the smartphone to open its camera and point it at that screen: the scan completes automatically, and the 2FA step resolves.</p>
-        </div>
-        </div>
-        <p class="usecase__fig"><b>1 screen</b><span>the device shows, the phone scans</span></p>
-        </div>
-    </div>
-  </div>
-</section>
-
 <!-- ======= DEUX MODES DE DÉCLENCHEMENT =======
      Section DÉPLACÉE DEPUIS LA FICHE TECHNIQUE le 2026-09-02, avec son film. Le
      brief de review le demande des deux côtés : cette page doit expliquer le
@@ -306,7 +260,7 @@
      Les deux liens « le cas détaillé » pointaient vers cette page depuis
      l'autre : ils deviennent des ancres internes. -->
 <!-- ======= DEUX FAÇONS DE DÉCLENCHER ======= -->
-<section class="section section--gray" aria-labelledby="triggers-title">
+<section class="section" aria-labelledby="triggers-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Triggering</span>
@@ -374,27 +328,43 @@
 
 
 
-<!-- ======= L'API : LA BANDE D'EXEMPLES QUI GLISSE ═══════════════════════════
-     Le chapeau et la piste sont épinglés ensemble le temps que la piste défile
-     latéralement : c'est le procédé de la section « Everyone creates » de
-     linearity.io. La course horizontale est exactement la longueur qui dépasse,
-     donc le rapport au défilement est de un pour un : on ne détourne pas le
-     défilement, on le réoriente. -->
-<section class="section section--gray" aria-labelledby="api-title">
-  <div class="ucs-api">
-   <div class="ucs-api__pin">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-label">REST API</span>
-        <h2 class="section-title" id="api-title">One HTTP call, any test pipeline</h2>
-        <p class="section-subtitle">If it makes HTTP requests, it works with <span class="nb">Q-Bot</span>. No SDK. No plugin. No agent to install.</p>
-      </div>
+<!-- ======= CTA ======= -->
+<section class="section" aria-labelledby="cta-uc-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-uc-title" style="margin-bottom:32px;">Ready to eliminate your last manual step?</h2>
+    <div class="cta-block__actions">
+      <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
+      <a href="technical-specs.html" class="btn btn--outline btn--lg">Technical specifications</a>
     </div>
-    <div class="ucs-api__viewport">
-      <div class="ucs-api__track">
-      <figure class="ucs__snippet">
-        <figcaption>Python / Selenium</figcaption>
-        <div class="code-block"><pre><code># Trigger the 2FA scenario
+  </div>
+</section>
+
+<!-- ======= API : LE DÉTAIL, APRÈS LE CTA =======
+     « Surtout un CTA avant d'arriver à la documentation » : cette section est
+     donc la dernière, après l'appel à l'action, et c'est tout son intérêt. Le
+     visiteur qui veut réserver n'a pas à traverser du code pour trouver le
+     bouton ; celui qui veut le code le trouve replié, et l'ouvre.
+     LES EXEMPLES SONT EN ACCORDÉON, avec le composant de la FAQ : aucun nouveau
+     composant, et le module 3 apporte l'attribut `hidden`, les `aria-controls`
+     et la mesure de hauteur. La bande qui glissait latéralement (`.ucs-api`)
+     quitte cette page ; son CSS reste, annoté, faute d'autre emploi. -->
+<section class="section section--gray" aria-labelledby="api-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Going further</span>
+      <h2 class="section-title" id="api-title">Call examples, tool by tool</h2>
+      <p class="section-subtitle">The detail for whoever wants it: five call examples, expandable, and the mechanism tool by tool.</p>
+    </div>
+    <div class="faq__list">
+      <div class="faq-item" id="api-ex1">
+        <button class="faq-item__question" aria-expanded="false" id="api-b1" aria-controls="api-a1">
+          Python / Selenium
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a1" role="region" aria-labelledby="api-b1">
+          <div class="code-block"><pre><code># Trigger the 2FA scenario
 import requests
 
 requests.get(
@@ -406,10 +376,17 @@ requests.get(
 driver.find_element(
   By.ID, &quot;dashboard&quot;
 ).is_displayed()</code></pre></div>
-      </figure>
-      <figure class="ucs__snippet">
-        <figcaption>Cypress</figcaption>
-        <div class="code-block"><pre><code>// Trigger the 2FA scenario
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex2">
+        <button class="faq-item__question" aria-expanded="false" id="api-b2" aria-controls="api-a2">
+          Cypress
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a2" role="region" aria-labelledby="api-b2">
+          <div class="code-block"><pre><code>// Trigger the 2FA scenario
 cy.request(
   'GET',
   'http://q-bot.local:8000'
@@ -420,10 +397,17 @@ cy.request(
 
 cy.get('#dashboard')
   .should('be.visible')</code></pre></div>
-      </figure>
-      <figure class="ucs__snippet">
-        <figcaption>Shell / CI pipeline</figcaption>
-        <div class="code-block"><pre><code># Trigger the 2FA scenario
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex3">
+        <button class="faq-item__question" aria-expanded="false" id="api-b3" aria-controls="api-a3">
+          Shell / CI pipeline
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a3" role="region" aria-labelledby="api-b3">
+          <div class="code-block"><pre><code># Trigger the 2FA scenario
 curl -s \
   http://q-bot.local:8000 \
   /scenarios/42/execute
@@ -433,10 +417,17 @@ OTP=$(curl -s \
   http://q-bot.local:8000 \
   /get-luxtrust-otp \
   | jq -r '.otp')</code></pre></div>
-      </figure>
-      <figure class="ucs__snippet">
-        <figcaption>Robot Framework</figcaption>
-        <div class="code-block"><pre><code>*** Settings ***
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex4">
+        <button class="faq-item__question" aria-expanded="false" id="api-b4" aria-controls="api-a4">
+          Robot Framework
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a4" role="region" aria-labelledby="api-b4">
+          <div class="code-block"><pre><code>*** Settings ***
 Library    RequestsLibrary
 
 *** Test Cases ***
@@ -445,10 +436,17 @@ Library    RequestsLibrary
     ${r}=    GET
     ...    ${QBOT}/scenarios/42/execute
     Status Should Be    200    ${r}</code></pre></div>
-      </figure>
-      <figure class="ucs__snippet">
-        <figcaption>JUnit / RestAssured</figcaption>
-        <div class="code-block"><pre><code>// trigger the 2FA scenario
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex5">
+        <button class="faq-item__question" aria-expanded="false" id="api-b5" aria-controls="api-a5">
+          JUnit / RestAssured
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a5" role="region" aria-labelledby="api-b5">
+          <div class="code-block"><pre><code>// trigger the 2FA scenario
 given()
   .baseUri(&quot;http://q-bot.local:8000&quot;)
 .when()
@@ -460,57 +458,16 @@ given()
 assertTrue(
   dashboard.isDisplayed()
 );</code></pre></div>
-      </figure>
+        </div>
       </div>
     </div>
-
-   </div>
-  </div>
-
-  <div class="container">
     <h3 style="margin:52px 0 18px;">Integration method, by framework</h3>
     <div class="specs__list" role="list" aria-label="Integration method by framework">
           <div class="spec-item" role="listitem">
             <span class="spec-item__label"><a href="https://www.selenium.dev/" target="_blank" rel="noopener">Selenium</a> (Python / Java)</span>
             <span class="spec-item__value"><code>requests</code> or <code>HttpClient</code> call before the assertion</span>
           </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label"><a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a></span>
-            <span class="spec-item__value"><code>cy.request()</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label"><a href="https://playwright.dev/" target="_blank" rel="noopener">Playwright</a></span>
-            <span class="spec-item__value"><code>request.get()</code> or <code>fetch()</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label"><a href="https://robotframework.org/" target="_blank" rel="noopener">Robot Framework</a></span>
-            <span class="spec-item__value"><code>RequestsLibrary</code> keyword</span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">JUnit / TestNG</span>
-            <span class="spec-item__value">RestAssured or the Java <code>HttpClient</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Shell / Bash</span>
-            <span class="spec-item__value"><code>curl</code></span>
-          </div>
-          <div class="spec-item" role="listitem">
-            <span class="spec-item__label">Any CI/CD pipeline</span>
-            <span class="spec-item__value">An HTTP step, a <code>curl</code> command, or a custom script</span>
-          </div>
-    </div>
     <p class="ucs__note"><span class="nb">Q-Bot</span> is self-hosted: the API answers on the network where you install the device, for as long as it is powered on, with no external dependency. It expects no API key: access control is your network's.</p>
-  </div>
-</section>
-
-<!-- ======= CTA ======= -->
-<section class="section" aria-labelledby="cta-uc-title">
-  <div class="container cta-block">
-    <h2 class="section-title" id="cta-uc-title" style="margin-bottom:32px;">Ready to eliminate your last manual step?</h2>
-    <div class="cta-block__actions">
-      <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
-      <a href="technical-specs.html" class="btn btn--outline btn--lg">Technical specifications</a>
-    </div>
   </div>
 </section>
 
@@ -575,6 +532,6 @@ assertTrue(
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=714b0f6e" defer></script>
+<script src="../assets/js/main.js?v=7250dba8" defer></script>
 </body>
 </html>

@@ -197,6 +197,10 @@ if ('IntersectionObserver' in window) {
        masque qui remonte et un passage de lumière verticaux n'ont aucun sens sur un
        objet qui glisse latéralement, et les cinq cartes se révélant au même instant,
        les cinq éclats se voyaient ensemble. Ils gardent la montée et le fondu. */
+    // `.ucs-api__track` n'existe plus dans aucune page depuis le 2026-09-02 (la
+    // bande d'exemples est devenue un accordéon). L'entrée reste : un sélecteur
+    // qui ne correspond à rien ne coûte rien, et le jour où la bande revient,
+    // elle retrouve sa variante « plain ». Cf. la note du CSS.
     ['plain', ['.ucs-api__track .code-block']],
     ['media', [
       '.intro__image',
@@ -650,6 +654,8 @@ backToTop.addEventListener('click', () => {
     /* La bande d'exemples d'appel : le troisième argument dit au moteur que c'est
        un rail ÉPINGLÉ (mesuré à sa course de collage et non à la ligne de lecture)
        et lui fait écrire `data-panel`, qui sert ici à marquer la carte en cours. */
+    // Idem : plus aucune page ne porte `.ucs-api`, le moteur n'a donc rien à
+    // scruber ici. Gardé pour la même raison.
     ['.ucs-api', '--api-p', 5],
   ];
 
