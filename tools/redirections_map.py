@@ -37,20 +37,24 @@ REDIRECTIONS = {
     'en/videos/':                   ('en/index.html', 'en'),
 
     # ---- les billets de la frise datée, retirée du site le 2026-08-12 ----
-    #      Ils atterrissent sur la section « évolution du produit », qui raconte
-    #      la même histoire sans les dates devenues fausses.
-    'fevrier-2022/':          ('index.html#evolution-title', 'fr'),
-    'prototype-fonctionnel/': ('index.html#evolution-title', 'fr'),   # « Mai 2022 »
-    'qbot-token-luxtrust/':   ('index.html#evolution-title', 'fr'),   # « Juin 2022 »
-    'decembre-2022/':         ('index.html#evolution-title', 'fr'),
-    'juin-2023/':             ('index.html#evolution-title', 'fr'),
-    'decembre-2023/':         ('index.html#evolution-title', 'fr'),
-    'en/february-2022/':      ('en/index.html#evolution-title', 'en'),
-    'en/may-2022/':           ('en/index.html#evolution-title', 'en'),
-    'en/june-2022/':          ('en/index.html#evolution-title', 'en'),
-    'en/december-2022/':      ('en/index.html#evolution-title', 'en'),
-    'en/june-2023/':          ('en/index.html#evolution-title', 'en'),
-    'en/december-2023/':      ('en/index.html#evolution-title', 'en'),
+    #      Ils atterrissaient sur la section « évolution du produit », qui
+    #      racontait la même histoire sans les dates devenues fausses. CETTE
+    #      SECTION A ÉTÉ RETIRÉE DE L'ACCUEIL LE 2026-09-02 (« pas utile sur la
+    #      homepage », retour du client) : l'ancre n'existe plus, et une ancre
+    #      morte fait atterrir le visiteur en haut de page sans le dire. Ils
+    #      visent donc l'accueil de leur langue, comme les autres archives.
+    'fevrier-2022/':          ('index.html', 'fr'),
+    'prototype-fonctionnel/': ('index.html', 'fr'),   # « Mai 2022 »
+    'qbot-token-luxtrust/':   ('index.html', 'fr'),   # « Juin 2022 »
+    'decembre-2022/':         ('index.html', 'fr'),
+    'juin-2023/':             ('index.html', 'fr'),
+    'decembre-2023/':         ('index.html', 'fr'),
+    'en/february-2022/':      ('en/index.html', 'en'),
+    'en/may-2022/':           ('en/index.html', 'en'),
+    'en/june-2022/':          ('en/index.html', 'en'),
+    'en/december-2022/':      ('en/index.html', 'en'),
+    'en/june-2023/':          ('en/index.html', 'en'),
+    'en/december-2023/':      ('en/index.html', 'en'),
 
     # ---- archives WordPress (catégories, étiquettes, auteurs) ----
     'category/presse/':                 ('index.html', 'fr'),

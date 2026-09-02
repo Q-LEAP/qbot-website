@@ -1947,7 +1947,17 @@ p { color: var(--gray); }
    `--evo-fill` et les deux animations d'entrée qui le dessinaient.
 
    Ne pas le réintroduire pour « marquer où en est le produit » : c'est le
-   libellé d'étape de chaque carte qui le dit, et il le dit en toutes lettres. */
+   libellé d'étape de chaque carte qui le dit, et il le dit en toutes lettres.
+
+   AUCUNE PAGE N'EMPLOIE PLUS CE BLOC DEPUIS LE 2026-09-02 : la section a été
+   retirée des deux accueils sur retour du client (« j'ai une réserve sur
+   l'évolution de Q-Bot, pas utile sur la homepage »). Le bloc est GARDÉ, comme
+   `.timeline`, parce que l'objection porte sur la PLACE et non sur le motif :
+   trois cartes d'états du produit ont leur sens sur « À propos », pas sur la
+   page où le visiteur découvre le produit.
+   ATTENTION, UNE SEULE CLASSE D'ICI EST ENCORE EMPLOYÉE : `.evo-card__link`,
+   qui sert de style de lien fléché sur les deux fiches techniques. La retirer
+   en croyant faire du ménage casserait ces liens. */
 .evolution__rail {
   --evo-gap: 24px;
   display: grid;
