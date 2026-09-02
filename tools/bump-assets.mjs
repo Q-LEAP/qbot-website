@@ -44,6 +44,10 @@ const SUIVIS = [
   // page ne le cite depuis que le film de démonstration a remplacé la boucle
   // décorative des accueils.
   'assets/img/qbot-og.jpg',
+  // Le film aussi depuis le 2026-09-02 : réencodé plus léger sous le même nom,
+  // donc un visiteur déjà venu se serait fait servir les 4,95 Mo de sa version
+  // en cache. Cf. la note du jumeau Python.
+  'assets/video/qbot-demo.mp4',
 ];
 
 const empreinte = c =>

@@ -49,7 +49,12 @@ SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
           # `qbot-film-poster.jpg` est sorti de la liste le 2026-09-02 : plus
           # aucune page ne le cite depuis que le film de démonstration a
           # remplacé la boucle décorative des accueils.
-          'assets/img/qbot-og.jpg']
+          'assets/img/qbot-og.jpg',
+          # LE FILM AUSSI, DEPUIS LE 2026-09-02 : il a été réencodé plus léger sous
+          # le même nom, donc un visiteur déjà venu se serait fait servir les
+          # 4,95 Mo de sa version en cache. Un média de 2 Mo est le pire candidat
+          # au cache périmé, et le mécanisme est le même que pour une image.
+          'assets/video/qbot-demo.mp4']
 
 
 def empreinte(chemin):

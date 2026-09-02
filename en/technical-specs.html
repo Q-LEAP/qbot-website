@@ -384,12 +384,20 @@
       <p style="margin:0; font-size:0.9375rem;">Both paths can coexist in the same environment: use whichever fits each scenario. Either way, taps reach the phone over <a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, Android's standard tool for driving a device connected by USB. The loop alongside shows the gesture: the notification arrives, the scenario plays, the phone screen changes.</p>
     <!-- LE BOÎTIER EN ACTION, en boucle muette et compacte.
          Film produit QBV1.2.12 fourni le 2026-08-31, EN ENTIER : 50,9 s en 1280x720
-         pour 4,95 Mo, réencodé avec ffmpeg (libx264, CRF 20, « -an »). L'audio est
+         pour 2,02 Mo, réencodé avec ffmpeg (libx264, CRF 26, « -an »). L'audio est
          RÉELLEMENT retiré du fichier, pas seulement coupé par « muted ».
-         L'encodage d'« avconvert » qu'il remplace pesait 24,7 Mo en 960x540 : cinq
+         RÉENCODÉ PLUS LÉGER LE 2026-09-02, à la demande du client, depuis le master
+         1920x1080 et non depuis le livré : 4,95 Mo (CRF 20) → 2,02 Mo, soit 59 % de
+         moins. Le choix ne s'est pas fait à l'œil nu : SSIM 0,9928 et PSNR 46,0 dB
+         contre le master ramené en 720p, et les zones à risque comparées au pixel à
+         la taille d'affichage réelle (les incrustations de texte, un dégradé lisse
+         du rendu CAO, le grain du bois des images réelles) sont indiscernables.
+         LA RÉSOLUTION N'A PAS BAISSÉ, et c'est le point : le film s'affiche sur
+         toute la largeur du conteneur de l'accueil, soit jusqu'à 1392 px. Descendre
+         en 960x540 se verrait ; monter le CRF, non.
+         L'encodage d'« avconvert » qu'il remplace pesait 24,7 Mo en 960x540 : douze
          fois plus lourd pour une résolution INFÉRIEURE, cet outil n'ayant aucun
-         réglage de débit. Vérifié à la taille réelle du cadre (542 px) : la source,
-         l'ancien encodage et celui-ci sont indiscernables.
+         réglage de débit.
          DEUX CHOSES QU'IL FAUT SAVOIR : les incrustations du film sont en ANGLAIS,
          y compris sur cette page française, et l'une porte une faute (« and execute
          2FA scenarios ») ; et une dizaine de ses cinquante secondes sont des écrans
@@ -406,7 +414,7 @@
          `aria-hidden` + `tabindex="-1"` : boucle muette, sans commande, et ce qu'elle
          montre est dit par le texte à côté. -->
       <div class="video__wrapper video__wrapper--film">
-        <video class="video__player" data-film="../assets/video/qbot-demo.mp4"
+        <video class="video__player" data-film="../assets/video/qbot-demo.mp4?v=301fa999"
                poster="../assets/img/qbot-demo-poster.jpg"
                muted loop playsinline
                aria-hidden="true" tabindex="-1"></video>
