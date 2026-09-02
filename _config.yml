@@ -85,8 +85,14 @@ exclude:
   - assets/img/qbot-v3-luxtrust.png
   - assets/img/qbot-v3-render.png
   - assets/img/qbot-v3-solution.png
-  # Logos et icônes sans emploi. Attention : « logo-baseline.png » N'EST PAS de
-  # ceux-là, le JSON-LD « Organization.logo » le cite encore.
+  # Logos et icônes sans emploi. « logo-baseline.png » EN FAIT PARTIE DEPUIS LE
+  # 2026-09-02 : la note d'à côté disait que le JSON-LD « Organization.logo » le
+  # citait encore, ce qui n'est plus vrai depuis le changement de logo du
+  # 2026-08-28 (il pointe sur logo-qbot.png sur les 21 pages). Trouvé par le
+  # contrôle « aucun actif servi sans référence », qui est le seul à voir ce
+  # genre de reste : une note qui dit « attention, celui-là sert » se revérifie
+  # avant d'être citée.
+  - assets/img/logo-baseline.png
   - assets/img/logo.png
   - assets/img/logo-footer.png
   - assets/img/logo-baseline-neg.png

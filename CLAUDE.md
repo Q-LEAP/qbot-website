@@ -5811,3 +5811,139 @@ Relevé après : **listes uniformes à 600, 768, 901, 1024, 1100, 1200, 1280, 14
 et 2560 px**, dans les deux langues. Reste 390 px, où une puce sur six tient sur une ligne
 quand les autres en prennent deux : dans une colonne de 342 px c'est inévitable, et rallonger
 une phrase pour égaliser des pixels serait pire que l'inégalité.
+
+## Les quatre retours du 2026-09-02 : l'accueil s'allège, le film arrive
+
+Lot de retours du client et de sa responsable communication, traité à la convention du
+2026-08-28 : **un retour, un commit, un push**. Rien de ce lot n'est un défaut mesuré,
+tout est un arbitrage éditorial, et deux points ferment des questions ouvertes depuis
+des semaines.
+
+### 1. La section « évolution » quitte l'accueil
+
+« J'ai une réserve sur l'évolution de Q-Bot (pas utile sur la homepage). » Les trois
+cartes (V1, génération actuelle, NFC) partent des deux accueils.
+
+**Le bloc CSS est GARDÉ, comme `.timeline`**, parce que l'objection porte sur la PLACE et
+non sur le motif : trois états du produit ont leur sens sur « À propos », pas sur la page
+où le visiteur découvre le produit. **Une seule de ses classes reste employée ailleurs :
+`.evo-card__link`**, qui sert de style de lien fléché sur les deux fiches techniques. La
+retirer en croyant faire du ménage casserait ces liens.
+
+**CE QUI PARTAIT AVEC LA SECTION, ET QU'IL FALLAIT SUIVRE.** Les douze relais des billets
+de la frise datée visaient `index.html#evolution-title`. L'ancre n'existe plus, et une
+ancre morte fait atterrir le visiteur en haut de page **sans le dire** : ils visent
+maintenant l'accueil de leur langue, comme les autres archives. Les 52 relais regénérés,
+vérifiés, 0 défaut. Et les deux visuels devenus orphelins sont exclus de la publication.
+
+### 2. La newsletter tient en une ligne du pied de page
+
+« La section newsletter prend trop d'importance sur la homepage, comme si c'était l'info
+principale. On peut le mettre subtilement avec une phrase et un bouton discret dans le
+footer. » Puis, et c'est la moitié qui décide de la forme : « à ce stade là, l'emailing on
+n'est pas près d'en avoir un, d'autres priorités marketing ; ce qu'il nous faut c'est du
+lead. »
+
+**PAS DE FORMULAIRE, ET TROIS RAISONS CONCORDANTES** plutôt qu'un champ e-mail :
+
+1. un champ dans le pied de page demanderait la case de consentement et sa mention
+   Sendinblue sur les **23 pages**, pour un programme d'emailing qui n'existe pas ;
+2. **l'endpoint Brevo du client REFUSE les envois** faute de jeton anti-robot (mesuré le
+   2026-08-26, HTTP 400) : les formulaires retombaient **déjà** sur le courrier du
+   visiteur. Le lien fait donc directement ce que le formulaire finissait par faire ;
+3. une demande écrite par le visiteur lui-même est un consentement explicite et daté,
+   sans case à cocher et sans sous-traitant.
+
+La phrase est celle du live, mot pour mot, dans les deux langues. Le bouton est en teal
+SUR le noir et jamais l'inverse (le teal de charte est une couleur claire : du blanc
+dessus plafonne à 2,04:1). L'enveloppe dit le mécanisme avant le clic.
+
+**LE POINT BREVO EST DONC FERMÉ**, après être resté ouvert chez les managers du client
+depuis le 2026-08-26. Le compte de newsletters de `go-live.py` tombe à 0 et son rappel du
+jour J ne demande plus de désactiver le reCAPTCHA ; `llms.txt` dit qu'aucun formulaire
+d'inscription n'existe, pour qu'une IA n'en annonce pas un. **Ne pas rouvrir le sujet.**
+Le CSS de la bande et le profil Brevo du module 15 sont gardés et annotés : ils portent
+une correspondance de champs relevée chez le client, qui ne se redevine pas.
+
+### 3. Le film de démonstration entre dans les deux accueils, avec ses commandes
+
+« La vidéo Q-Bot qu'on a fait, ne doit-on pas la trouver sur le site, homepage ? C'est un
+bon moyen de comprendre ce que fait Q-Bot et plus facilement que la lecture du contenu. »
+
+Le film produit (`qbot-demo.mp4`, QBV1.2.12, 50,9 s) ne vivait que sur la fiche technique.
+L'accueil portait `qbot-home.mp4`, une boucle muette de 8,7 s dans la moitié d'une
+colonne, décorative et sans titre : c'est pourquoi personne ne « trouvait » le film. Il a
+maintenant sa section, « Q-Bot en action », pleine largeur du conteneur.
+
+**TROIS ÉCARTS AVEC LA BOUCLE DE LA FICHE TECHNIQUE**, et ils tiennent tous à ce que ce
+film-ci est un CONTENU et non un décor :
+
+1. il porte **`controls`**. Cinquante secondes qu'on ne peut ni arrêter, ni reprendre, ni
+   rejouer se subissent ; celui-là sert à comprendre, donc il se pilote. D'où le
+   modificateur **`.video__wrapper--playable`**, qui rend au lecteur les `pointer-events`
+   que `--film` coupe. Règle posée APRÈS celle de `--film` : même spécificité (0,2,0),
+   c'est l'ordre qui tranche ;
+2. il n'est plus `aria-hidden` : il porte un nom accessible et sa section a un titre ;
+3. il tient toute la largeur, aligné sur le titre.
+
+Il reste `muted` et `loop` : la piste audio a été **retirée du fichier** (ffmpeg `-an`),
+il n'y a donc rien à couper, et `muted` est ce qui autorise le démarrage automatique.
+
+**ET LE MODULE 18 NE REDÉMARRE PLUS UN FILM QUE LE VISITEUR A ARRÊTÉ.** Sortir du champ
+puis revenir relançait la lecture par-dessus sa décision. Le discriminant ne demande aucun
+drapeau autour de notre propre appel : **le module ne met en pause que HORS champ, donc une
+pause survenue DANS le champ vient forcément du visiteur.**
+
+La section « 100 % conçu et développé au Luxembourg » passe en texte seul (ses deux
+paragraphes extraits du fichier, pas retapés), à la mesure de lecture de
+`.section-subtitle` et alignée sur la gouttière.
+
+Poids : le premier écran ne change pas (**0 requête vers le `.mp4`** avant que la section
+approche, sur les deux moteurs), et la page atteinte passe de 2,9 à 4,95 Mo de film.
+L'ancienne boucle et son affiche sont exclues, et `qbot-film-poster.jpg` sort des **deux**
+versionneurs d'actifs, qui doivent rester d'accord.
+
+**Rappel de méthode, il a servi ici** : le Chromium de Playwright ne décode pas le H.264,
+seul **WebKit** prouve la lecture. Relevé sur les deux : 0 requête au chargement, 1 à
+l'approche, lecture en cours en vue, pause respectée au retour dans le champ.
+
+### 4. La fiche technique s'ouvre sur une image
+
+« Adapter le visuel au contenu, ici aussi, pour les sections. Manque quelque chose de
+visuel au démarrage. Section : Un format pensé pour un poste de travail. »
+
+Le défaut était structurel : le `.specs__grid` de cette section est une grille à **deux
+colonnes et n'avait qu'un enfant**, donc la moitié droite était vide, juste sous un
+en-tête de page qui n'a pas de visuel non plus. Deux blocs de texte pour ouvrir une fiche
+produit. Elle porte désormais `qbot-photo-poste.jpg`, qui montre exactement ce que dit le
+titre (le boîtier sur un bureau, à côté d'un clavier) et donne l'échelle que les trois
+cotes chiffrent à côté. `.specs__image` et non `.intro__image` : c'est le cadre de la
+section voisine, et surtout il ne sur-dimensionne pas son contenu.
+
+**CE QUI RESTE UN ÉCART, ET IL DEMANDE UNE PHOTO QUE NOUS N'AVONS PAS.** La section « Un
+nano-ordinateur de la taille d'une carte de crédit » montre `qbot-specs.jpg`, le boîtier
+FERMÉ, alors qu'elle parle de ce qu'il y a dedans. Aucun visuel du dépôt ne peut corriger
+cela : le GLB ne contient **aucune électronique** (coque, plateau, petite pièce, embase,
+vitre), donc même une vue éclatée montrerait une coque vide, ce qui serait pire qu'un
+écart. Il faut une photo du boîtier ouvert ou de la carte, à demander au client.
+
+**Le schéma `qbot-2fa-flux.jpg` a été envisagé pour la section API et écarté, mesures en
+main** : son contenu correspond au mot près (« un appel HTTP, et n'importe quelle chaîne
+de tests »), mais il a été dessiné pour un cadre de 656 px. Dans une demi-colonne de
+566 px ses sous-libellés tombent à **environ 10 px**. Le remettre en service demande de le
+redessiner à la taille où il s'affichera, pas de le poser plus petit. C'est la règle des
+vignettes du 2026-08-26 : on mesure la boîte qu'on remplit.
+
+### Un reste trouvé par le contrôle des actifs, et la note qui mentait
+
+Le contrôle « aucun actif servi sans référence » a remonté **`logo-baseline.png`**, et la
+note d'à côté dans `_config.yml` disait précisément « attention, celui-là n'en est pas, le
+JSON-LD `Organization.logo` le cite encore ». Ce n'est plus vrai depuis le changement de
+logo du 2026-08-28 : les 21 pages pointent sur `logo-qbot.png`. **Une note qui dit
+« attention, celui-là sert » se revérifie avant d'être citée**, comme celles qui disent
+« laissé ouvert ».
+
+Les six actifs qui restent hors du relevé sont cités par une URL **absolue** (JSON-LD,
+`og:image`) ou chargés depuis une chaîne JavaScript (model-viewer, Draco, le sidecar
+base64) : une sonde qui ne lit que `href`, `src` et `poster` ne peut pas les voir. Ne pas
+les exclure sur la foi de ce relevé.
