@@ -5187,6 +5187,42 @@ label > input[type="checkbox"] {
 
 .usecase__part--sol .usecase__lab { color: var(--teal-text); }
 .usecase p { font-size: 0.9375rem; margin: 0; }
+/* ---- Le chiffre-clé d'un cas d'usage ----
+   RÉTABLI LE 2026-09-02, ET C'ÉTAIT LE DÉFAUT SIGNALÉ À LA REVIEW : « 1 appelpar
+   verrou 2FA dans la chaîne » et « 0intervention humaine, à toute heure ». Ce
+   n'était pas une faute de frappe dans le texte mais une règle CSS disparue. Le
+   balisage est `<b>0</b><span>intervention…</span>` ; sans mise en forme, les
+   deux éléments restent en ligne et se collent, à l'écran comme au copier-coller.
+   Le bloc avait été supprimé par erreur le 2026-08-28, avec le CSS de
+   l'épinglage des cas d'usage, alors que les dix paragraphes qui l'emploient
+   sont restés dans les deux pages. Un retrait de mise en page ne se contrôle pas
+   sur « la page s'affiche encore » : il se contrôle sur ce que le texte rendu
+   dit, et c'est un lecteur humain qui l'a vu, deux passes d'audit plus tard.
+   LE CORRECTIF EST ICI ET NON DANS LE BALISAGE : ajouter une espace entre `</b>`
+   et `<span>` masquerait le symptôme (elle serait mangée par le `display: flex`
+   de la ligne) sans rendre au chiffre sa taille ni au libellé sa nuance. */
+.usecase .usecase__fig {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 24px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.usecase__fig b {
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--teal);
+  white-space: nowrap;
+}
+.usecase__fig span {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--gray);
+}
+
 .usecase code { font-family: 'Courier New', monospace; font-size: 0.875em; color: var(--teal-text); }
 
 [data-theme="dark"] .usecase { background: #141414; border-color: #2B2B2B; }

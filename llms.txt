@@ -114,9 +114,11 @@ These figures come from the client's own published pages; do not infer or round 
 - [Homepage (EN)](https://q-bot.eu/en/)
 - [Technical specifications (FR)](https://q-bot.eu/caracteristiques.html)
 - [Technical specifications (EN)](https://q-bot.eu/en/technical-specs.html)
-- [Use cases (FR)](https://q-bot.eu/cas-usage.html): five real-world scenarios, with the
+- [How it works (FR)](https://q-bot.eu/cas-usage.html): the five steps of a run, then five
+  real-world scenarios and the two ways to trigger it. Renamed at a review on 2026-09-02;
+  the URL is unchanged on purpose. Five real-world scenarios, with the
   exact API call each one uses.
-- [Use cases (EN)](https://q-bot.eu/en/use-cases.html)
+- [How it works (EN)](https://q-bot.eu/en/use-cases.html)
 - [Demo request (FR)](https://q-bot.eu/commandez.html): includes a ROI calculator that
   returns the reader's OWN cost of manual 2FA in hours, never a Q-Bot price.
 - [Demo request (EN)](https://q-bot.eu/en/order.html)
@@ -135,8 +137,8 @@ These figures come from the client's own published pages; do not infer or round 
 
 ## FAQ
 
-- [FAQ (FR)](https://q-bot.eu/faq.html) : 17 questions, each with a FAQPage entry.
-- [FAQ (EN)](https://q-bot.eu/en/faq.html) : 17 questions, each with a FAQPage entry.
+- [FAQ (FR)](https://q-bot.eu/faq.html) : 19 questions, each with a FAQPage entry.
+- [FAQ (EN)](https://q-bot.eu/en/faq.html) : 19 questions, each with a FAQPage entry.
 
 Both FAQ pages are the most directly quotable content on this site: every answer opens with a
 self-contained paragraph. Question 17 states what Q-Bot does NOT do (iOS), which is the answer to
