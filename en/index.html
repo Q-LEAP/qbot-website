@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=6e6b3ebc">
+  <link rel="stylesheet" href="../assets/css/style.css?v=08274377">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -191,7 +191,6 @@
         </p>
         <div class="hero__actions">
           <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
-          <a href="technical-specs.html" class="btn btn--outline-white btn--lg">Learn more</a>
         </div>
       </div>
       <!-- Photo du produit (brochure officielle, page 3, 300 dpi), pas un rendu.
@@ -401,7 +400,7 @@
         <div class="scrolly__step-inner">
           <span class="scrolly__label">The gesture</span>
           <h2 class="scrolly__title">A real phone, not a simulator</h2>
-          <p class="scrolly__text"><span class="nb">Q-Bot</span> is connected over USB to a genuine smartphone. It taps the screen of the real 2FA app, exactly where a finger would. Not a simulator, not a stub.</p>
+          <p class="scrolly__text"><span class="nb">Q-Bot</span> is connected over USB to a genuine smartphone. It drives the real 2FA app directly and reproduces the interactions a user performs. Not a simulator, not a stub.</p>
           <p class="scrolly__fig"><b>Seconds</b> <span>to retrieve the code</span></p>
         </div>
       </div>
@@ -434,93 +433,114 @@
 </a>
 
 <!-- ======= FEATURES ======= -->
+<!-- Trois cartes et pas quatre, cf. la note française. « Zero false positives »
+     devient « Deterministic execution », et « nothing is guessed from an image »
+     devient « no image recognition during execution » : les captures servent à
+     CONSTRUIRE les scénarios. -->
 <section class="section section--gray" id="after-sequence" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Benefits</span>
       <h2 class="section-title" id="features-title">What <span class="nb">Q-Bot</span> changes for a test team</h2>
-      <p class="section-subtitle">It removes the one step test tools cannot get past. <span class="nb">Q-Bot</span> drives the genuine 2FA app on a physical smartphone connected over USB, whether LuxTrust, itsme, Microsoft or Google Authenticator. The run picks up exactly where it stopped, with nobody watching the screen and no shared secret key.</p>
+      <p class="section-subtitle">It removes the one step test tools cannot get past, without bypassing it: the approval happens in the genuine 2FA app, on a genuine smartphone.</p>
     </div>
-    <div class="features__grid">
+    <div class="features__grid features__grid--3">
       <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        </div>
-        <h3>Immediate setup</h3>
-        <p>No software to install, no agent to deploy.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg>
-        </div>
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg></div>
         <h3>No human intervention</h3>
-        <p>No tester needed to approve the 2FA step.</p>
+        <p>No tester needed to approve the 2FA step. The run goes through, at any hour.</p>
       </article>
       <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
-        </div>
-        <h3>Zero false positives</h3>
-        <p>The tap lands on the real application. Nothing is guessed from an image, so nothing can be misread.</p>
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
+        <h3>On the genuine 2FA app</h3>
+        <p>Deterministic execution: <span class="nb">Q-Bot</span> replays predefined taps in the genuine app, with no visual recognition of the interface during execution.</p>
       </article>
       <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <h3>Two ways in</h3>
-        <p>Web interface or REST API, your choice.</p>
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>Simple to integrate</h3>
+        <p>One HTTP call from your test pipeline, or the companion app reacting to the notification. No SDK, no agent to install.</p>
       </article>
+    </div>
+    <div style="margin-top:36px;">
+      <a href="technical-specs.html" class="btn btn--outline">
+        Technical specifications
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 </section>
 
 <!-- ======= WHO IS Q-Bot FOR ======= -->
+<!-- Fusion des deux blocs, cf. la note française. La phrase sur la « vraie
+     limite » Android est partie : le périmètre est dit dans la section
+     Compatibilité, dans la fiche technique et dans la FAQ. -->
 <section class="section" aria-labelledby="audience-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Who is it for?</span>
-      <h2 class="section-title" id="audience-title">Who is <span class="nb">Q-Bot</span> for?</h2>
-      <p class="section-subtitle">Any team whose automated tests stall on a 2FA step: testers, automation engineers, developers, project managers. <span class="nb">Q-Bot</span> also serves business process automation (RPA) projects that require 2FA. One condition only, and it is the real limit: the second factor has to run in an Android app.</p>
+      <h2 class="section-title" id="audience-title">Built for QA and test automation teams</h2>
+      <p class="section-subtitle">Three situations where <span class="nb">Q-Bot</span> takes over, whether your tests target a web, mobile or business application.</p>
     </div>
-    <div class="grid-2">
+    <div class="features__grid features__grid--3">
       <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
-        </div>
-        <h3>All types of IT projects</h3>
-        <p><span class="nb">Q-Bot</span> supports your testing, integration and business process automation (RPA – Robotic Process Automation) projects that require secure validation through mobile two-factor authentication.</p>
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>E2E tests with 2FA</h3>
+        <p>The whole journey runs, login and approval included, without skipping the 2FA step.</p>
       </article>
       <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <h3>All types of applications</h3>
-        <p><span class="nb">Q-Bot</span> supports your Web, Mobile or Desktop applications. Use cases are numerous: authenticating a user, creating a user account, confirming an e-commerce transaction, resetting a user's password, validating a money transfer, signing a document, requesting an official document...</p>
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+        <h3>Regression runs and CI/CD</h3>
+        <p>Nightly suites and merge-request runs go all the way through.</p>
       </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <h3>Business flows needing mobile approval</h3>
+        <p>Confirming a transaction, signing a document, elevating a session: <span class="nb">Q-Bot</span> approves it on the phone.</p>
+      </article>
+    </div>
+    <div style="margin-top:36px;">
+      <a href="use-cases.html#cas" class="btn btn--outline">
+        Use cases in detail
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ======= INTRO 2 — LuxTrust ======= -->
-<section class="section section--gray" aria-labelledby="luxtrust-title">
+<!-- ======= COMPATIBILITY ======= -->
+<!-- La section LuxTrust devient la section Compatibilité, cf. la note
+     française. « Any type of 2FA solution » est banni : la formulation dit le
+     périmètre réel. Grille reprise du composant `.compat` de la fiche
+     technique. -->
+<section class="section section--gray" aria-labelledby="compat-home-title">
   <div class="container">
-    <div class="intro__grid">
-      <div class="intro__image intro__image--dock">
-        <!-- Photo (brochure officielle, page 1, 300 dpi) : une vraie demande de
-             transaction LuxTrust sur le téléphone docké. -->
-        <img
-          src="../assets/img/qbot-photo-dock.jpg"
-          alt="A smartphone docked in the Q-Bot cradle, showing a transaction approval request in the LuxTrust application"
-          width="699" height="860"
-          loading="lazy"
-        >
+    <div class="section-header">
+      <span class="section-label">Compatibility</span>
+      <h2 class="section-title" id="compat-home-title">Works with your tools and your 2FA apps</h2>
+      <p class="section-subtitle">Compatible with Android 2FA apps, including LuxTrust Mobile, itsme, Microsoft Authenticator and Google Authenticator. On the pipeline side, any tool that can make an HTTP call can drive <span class="nb">Q-Bot</span>.</p>
+    </div>
+    <div class="tools__grid" style="gap:48px;">
+      <div>
+        <h3 class="compat__head">2FA apps</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">LuxTrust Mobile</li>
+          <li class="compat__item" role="listitem">itsme</li>
+          <li class="compat__item" role="listitem">Microsoft Authenticator</li>
+          <li class="compat__item" role="listitem">Google Authenticator</li>
+        </ul>
       </div>
       <div>
-        <span class="section-label">LuxTrust</span>
-        <h2 class="section-title" id="luxtrust-title">Automate authentication for all apps including the LuxTrust mobile app</h2>
-        <p>
-          <span class="nb">Q-Bot</span>, a 100&nbsp;% Made in Luxembourg solution, automates two-factor authentication (2FA), whether via mobile applications like LuxTrust (the leading solution in Luxembourg) or via other authentication apps deployed in other countries.
-        </p>
+        <h3 class="compat__head">Automation tools</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">Selenium</li>
+          <li class="compat__item" role="listitem">Cypress</li>
+          <li class="compat__item" role="listitem">Playwright</li>
+          <li class="compat__item" role="listitem">Robot Framework</li>
+          <li class="compat__item" role="listitem">Katalon</li>
+          <li class="compat__item" role="listitem">Appium</li>
+          <li class="compat__item" role="listitem">Jenkins CI</li>
+          <li class="compat__item" role="listitem">GitLab CI</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -568,18 +588,15 @@
   </div>
 </section>
 
-<!-- ======= 100 % LUXEMBOURG ======= -->
-<!-- Bloc de texte seul depuis le 2026-09-02 : il partageait sa rangée avec la
-     boucle décorative, qui a laissé la place au film de démonstration ci-dessus.
-     Sa mesure de lecture est celle de `.section-subtitle` (600 px), et il tombe
-     sur la gouttière du conteneur : un bloc de texte de ce site est aligné à
-     gauche, jamais centré. -->
+<!-- ======= MADE IN LUXEMBOURG ======= -->
+<!-- Compacté à la review, et « simple, secure API » est parti : cf. la note
+     française, point 19 du brief. -->
 <section class="section section--gray" aria-labelledby="made-title">
   <div class="container">
     <div class="section-header" style="margin-bottom:0;">
-      <h2 class="section-label" id="made-title">A product 100&nbsp;% designed and developed in Luxembourg</h2>
-      <p class="section-subtitle" style="margin-top:16px;"><span class="nb">Q-Bot</span> is the result of the Q-Leap team's expertise. Imagined and developed in-house by software testing experts, this solution was born from a real need encountered in the field: our own, but also our clients'.</p>
-      <p class="section-subtitle" style="margin-top:16px;">Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.</p>
+      <span class="section-label">Made in Luxembourg</span>
+      <h2 class="section-title" id="made-title">Designed and developed in Luxembourg by <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a></h2>
+      <p class="section-subtitle" style="margin-top:16px;"><span class="nb">Q-Bot</span> is built by testers, for testers. The team behind it works in Bertrange, and it is the team that provides support.</p>
     </div>
   </div>
 </section>

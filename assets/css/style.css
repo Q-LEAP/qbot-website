@@ -697,6 +697,22 @@ p { color: var(--gray); }
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
 }
+/* ---- Variante à trois cartes ----
+   Posée le 2026-09-02 : la review demande « 3 avantages maximum », et la même
+   grille sert la section « Pour qui ». Trois cartes dans une grille à quatre
+   pistes laissaient une colonne vide.
+   `auto-fit` PLUTÔT QU'UNE REQUÊTE MÉDIA : avec un plancher de 260 px la grille
+   se rabat d'elle-même, trois cartes au large, deux puis une en dessous.
+   LE SÉLECTEUR EST DOUBLÉ, ET CE N'EST PAS DÉCORATIF. Écrit `.features__grid--3`
+   seul il pèse (0,1,0), c'est-à-dire EXACTEMENT le poids des deux requêtes média
+   qui rabattent `.features__grid` à 2 puis 1 colonne plus bas dans ce fichier :
+   à poids égal c'est l'ordre qui tranche, elles gagnaient, et la grille tombait
+   à une colonne dès 768 px et à deux dès 1024 (mesuré avant correction). Doublé,
+   il pèse (0,2,0) et gouverne sa propre grille. Un nom de classe à tirets reste
+   UNE classe : c'est le piège de ce lot.
+   `minmax(260px, 1fr)` et non `1fr` : un élément de grille a `min-width: auto`,
+   donc sans plancher explicite un contenu large étire sa colonne. */
+.features__grid.features__grid--3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 
 .feature-card {
   position: relative;
