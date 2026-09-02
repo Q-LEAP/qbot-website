@@ -5947,3 +5947,75 @@ Les six actifs qui restent hors du relevé sont cités par une URL **absolue** (
 `og:image`) ou chargés depuis une chaîne JavaScript (model-viewer, Draco, le sidecar
 base64) : une sonde qui ne lit que `href`, `src` et `poster` ne peut pas les voir. Ne pas
 les exclure sur la foi de ce relevé.
+
+### 5. Le film réencodé : 4,95 → 2,02 Mo, et la résolution ne bouge pas
+
+« Réencode la vidéo plus légère. » 59 % de moins, **depuis le master 1920x1080 et
+jamais depuis le livré** (réencoder un encodage empile deux fois les pertes) : ffmpeg,
+libx264, preset slow, **CRF 26**, `-an`, faststart.
+
+**LA RÉSOLUTION NE BAISSE PAS, ET C'EST LE POINT.** Depuis que le film occupe toute la
+largeur du conteneur de l'accueil, il s'affiche à 1132 px à 1440 et jusqu'à 1392 px sur
+un large écran : descendre en 960x540 se verrait. C'est le CRF qui monte, pas la taille.
+
+**LE CHOIX N'A PAS ÉTÉ FAIT À L'ŒIL**, et le tableau vaut d'être gardé pour la
+prochaine fois :
+
+| encodage | poids | SSIM | PSNR |
+|---|---|---|---|
+| CRF 20 (le livré d'avant) | 4,95 Mo | 0,9958 | 49,5 dB |
+| CRF 24 | 2,64 Mo | 0,9940 | 47,2 dB |
+| **CRF 26 (retenu)** | **2,02 Mo** | 0,9928 | 46,0 dB |
+| CRF 28 | 1,59 Mo | 0,9914 | 44,8 dB |
+
+Mesurés contre le master ramené en 720p. Puis les **trois zones à risque comparées au
+pixel à la taille d'affichage réelle** : les incrustations de texte, un dégradé lisse du
+rendu CAO (le pire cas pour une bande de compression) et le grain du bois des plans
+réels. Indiscernables, **y compris à CRF 28** ; CRF 26 est retenu pour garder de la
+marge sur cinquante secondes.
+
+Effet de bord heureux : le film est désormais **plus léger que la boucle décorative de
+2,9 Mo** qu'il a remplacée, donc l'accueil parcouru pèse moins qu'avant son arrivée.
+
+**ET LE FILM REJOINT LES DEUX VERSIONNEURS D'ACTIFS.** Réécrit en place sous le même
+nom, il serait resté servi depuis le cache du visiteur : c'est exactement le défaut du
+2026-08-25, et **un média de 2 Mo en est le pire candidat**. Les deux jumeaux (`.py` et
+`.mjs`) doivent rester d'accord, ils le sont.
+
+### 6. La fiche technique montre le boîtier réel, pris dans le film
+
+Réponse du client à la question laissée ouverte au point 4 : « pour l'image tu peux
+prendre un screenshot d'une vidéo ou une image qui montre le Q-Bot. »
+
+**LE FILM CONTIENT DES PLANS RÉELS, et personne ne les avait regardés.** Ses cinquante
+secondes se décomposent en : logo, rendu CAO (t≈2-10), **prises de vue réelles du
+boîtier en fonctionnement sur un bureau (t≈16-28)**, une capture d'écran de navigateur,
+puis l'écran « supports major 2FA apps ». À t=23,0 s on voit le boîtier entier, le
+smartphone inséré affichant une demande de validation LuxTrust, et le moniteur derrière
+avec la page d'authentification eAccess et son QR code.
+
+C'est cette image, recadrée 1340 x 1050 depuis le master et non retouchée
+(`qbot-film-boitier.jpg`), qui remplace le rendu du GLB dans la section « Un
+nano-ordinateur de la taille d'une carte de crédit ». Le rendu **reste servi** : les deux
+pages FAQ l'emploient dans leur en-tête, il n'est donc pas devenu orphelin.
+
+Trois choses à savoir :
+
+- **la validation LuxTrust qu'on y voit est RÉELLE**, pas une maquette. C'est la
+  différence avec la réserve notée le 2026-09-01 sur le visuel fourni de l'accueil, dont
+  l'écran de téléphone était inventé : ici l'écran est celui de l'app, filmé ;
+- **aucune donnée personnelle n'est lisible** : identifiant de session éphémère, aucun
+  nom, aucune adresse autre que celle publiée sur le mur du bureau. À revérifier sur
+  toute nouvelle image tirée de ce film, qui montre de vraies sessions ;
+- **le cadrage et la compression ont été choisis sur des essais rendus côte à côte** :
+  deux cadrages (le large, qui rapetissait tout, contre le serré retenu) et quatre
+  qualités JPEG. q=4 (111 Ko) est indistinguable de q=2 (170 Ko) au zoom 2x sur le texte
+  le plus fin du moniteur, PSNR 44,5 dB entre les deux.
+
+**Le film est donc une banque d'images**, et c'est utile à savoir : la prochaine fois
+qu'un visuel manque, extraire une image de `QBV1.2.12.mp4` coûte une commande. Le master
+vit hors du dépôt, dans `/Volumes/CCCOMA_X64F/Q-Bot/Version/`.
+
+**Ce qui reste vrai malgré tout** : aucune image ne montre l'INTÉRIEUR du boîtier, ni le
+Raspberry Pi. Le film ne l'ouvre jamais. Si la section doit un jour montrer sa carte, il
+faudra une photo prise chez Q-Leap.
