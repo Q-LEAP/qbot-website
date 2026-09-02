@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=b741f405">
+  <link rel="stylesheet" href="../assets/css/style.css?v=6c336662">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -525,29 +525,60 @@
   </div>
 </section>
 
-<!-- ======= VIDEO ======= -->
-<section class="section" aria-labelledby="video-title">
+<!-- ======= LE FILM PRODUIT ======= -->
+    <!-- LE FILM DE DÉMONSTRATION EST ICI DEPUIS LE 2026-09-02, sur retour du client :
+     « la vidéo Q-Bot qu'on a fait, ne doit-on pas la trouver sur le site,
+     homepage ? c'est un bon moyen de comprendre ce que fait Q-Bot et plus
+     facilement que la lecture du contenu ».
+     CE QUI ÉTAIT LÀ AVANT : `qbot-home.mp4`, une boucle muette de 8,7 s posée dans
+     la moitié d'une colonne, décorative et sans titre. Le film produit (QBV1.2.12,
+     50,9 s) ne se trouvait que sur la fiche technique, où il est une boucle.
+     TROIS ÉCARTS AVEC CETTE BOUCLE, et ils tiennent tous à ce que ce film-ci n'est
+     pas un décor mais un contenu :
+     1. il porte `controls`. Un film de cinquante secondes qu'on ne peut ni
+        arrêter, ni reprendre, ni rejouer se subit ; celui-là sert à comprendre,
+        donc il se pilote. D'où `--playable`, qui rend au lecteur les
+        `pointer-events` que `--film` coupe ;
+     2. il n'est plus `aria-hidden` : c'est du contenu, donc il porte un nom
+        accessible et la section qui l'entoure a un titre ;
+     3. il tient toute la largeur du conteneur, aligné sur le titre.
+     Il reste `muted` et `loop` : la piste audio a été RETIRÉE du fichier
+     (ffmpeg -an), il n'y a donc rien à couper, et `muted` est ce qui autorise le
+     démarrage automatique. Les incrustations du film sont en ANGLAIS, y compris
+     sur la page française, et le chapeau de la section le dit : c'est une
+     propriété du fichier fourni, pas de la page.
+     `data-film` ET NON `src` : le module 18 ne demande les 4,95 Mo que quand la
+     section approche, avec 200 px d'avance. Sans JavaScript, en mouvement réduit,
+     en économiseur de données ou sur connexion lente, il reste l'affiche, qui est
+     une vraie image du film. -->
+<section class="section" aria-labelledby="film-title">
   <div class="container">
-    <div class="intro__grid">
-      <div>
-        <h2 class="section-label" id="video-title">A product 100&nbsp;% designed and developed in Luxembourg</h2>
-        <p style="margin:16px 0 0;">
-          <span class="nb">Q-Bot</span> is the result of the Q-Leap team's expertise. Imagined and developed in-house by software testing experts, this solution was born from a real need encountered in the field: our own, but also our clients'.
-        </p>
-        <p style="margin:16px 0 0;">
-          Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.
-        </p>
-      </div>
-      <!-- Film produit en lecture automatique et en boucle, sans interface.
-           Cf. la note détaillée côté français : chargé et lancé par le module 18
-           à l'entrée de la section, pour que le premier écran ne paie pas les
-           2,9 Mo du fichier. -->
-      <div class="video__wrapper video__wrapper--film">
-        <video class="video__player" data-film="../assets/video/qbot-home.mp4"
-               poster="../assets/img/qbot-film-poster.jpg?v=e41c2fe9"
-               muted loop playsinline
-               aria-hidden="true" tabindex="-1"></video>
-      </div>
+    <div class="section-header">
+      <span class="section-label">In video</span>
+      <h2 class="section-title" id="film-title"><span class="nb">Q-Bot</span> in action</h2>
+      <p class="section-subtitle">Fifty seconds to see what these pages describe&nbsp;: the enclosure on a desk, the smartphone docked at the front, a scenario running and the authentication going through. The film is silent.</p>
+    </div>
+    <div class="video__wrapper video__wrapper--film video__wrapper--playable">
+      <video class="video__player" data-film="../assets/video/qbot-demo.mp4"
+             poster="../assets/img/qbot-demo-poster.jpg"
+             controls muted loop playsinline
+             aria-label="Q-Bot demonstration film, fifty seconds, no sound"></video>
+    </div>
+  </div>
+</section>
+
+<!-- ======= 100 % LUXEMBOURG ======= -->
+<!-- Bloc de texte seul depuis le 2026-09-02 : il partageait sa rangée avec la
+     boucle décorative, qui a laissé la place au film de démonstration ci-dessus.
+     Sa mesure de lecture est celle de `.section-subtitle` (600 px), et il tombe
+     sur la gouttière du conteneur : un bloc de texte de ce site est aligné à
+     gauche, jamais centré. -->
+<section class="section section--gray" aria-labelledby="made-title">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:0;">
+      <h2 class="section-label" id="made-title">A product 100&nbsp;% designed and developed in Luxembourg</h2>
+      <p class="section-subtitle" style="margin-top:16px;"><span class="nb">Q-Bot</span> is the result of the Q-Leap team's expertise. Imagined and developed in-house by software testing experts, this solution was born from a real need encountered in the field: our own, but also our clients'.</p>
+      <p class="section-subtitle" style="margin-top:16px;">Compatible with Selenium, Katalon, Robot Framework, and all other automation solutions thanks to its simple, secure API.</p>
     </div>
   </div>
 </section>
@@ -649,7 +680,7 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=408bfb14" defer></script>
+<script src="../assets/js/main.js?v=721a6708" defer></script>
 <script src="../assets/js/scrolly.js?v=130fc8b1" defer></script>
 </body>
 </html>

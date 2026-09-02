@@ -785,6 +785,18 @@ p { color: var(--gray); }
    « boucle » : ce serait une interface. Le client a demandé « vraiment juste une
    vidéo loop » le 2026-08-25. */
 .video__wrapper--film .video__player { pointer-events: none; }
+/* ---- .video__wrapper--playable : le film qu'on peut piloter ----
+   `--film` coupe les `pointer-events` du lecteur, parce que la boucle de la
+   fiche technique n'a aucune commande à offrir et qu'un clic droit y proposerait
+   « télécharger » et « boucle ». Le film de l'accueil, lui, est un CONTENU de
+   cinquante secondes, posé là le 2026-09-02 pour qu'on comprenne le produit sans
+   tout lire : il porte `controls`, donc il faut lui RENDRE les clics.
+   Règle posée après celle de `--film` : les deux ont la même spécificité
+   (0,2,0), c'est donc l'ordre dans le fichier qui tranche.
+   La vignette du cadre reste peinte au-dessus de la barre de commandes et
+   l'assombrit d'un cran, sans jamais l'attraper (`pointer-events: none`). */
+.video__wrapper--playable .video__player { pointer-events: auto; }
+
 .video__wrapper--film::after {
   content: '';
   position: absolute;

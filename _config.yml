@@ -76,6 +76,10 @@ exclude:
   # 2026-09-02 : plus aucune page ne les cite.
   - assets/img/qbot-proto-1-boitier.webp
   - assets/img/qbot-nfc.webp
+  # La boucle décorative de 8,7 s et son affiche : le film de démonstration a
+  # pris sa place dans les deux accueils le 2026-09-02.
+  - assets/video/qbot-home.mp4
+  - assets/img/qbot-film-poster.jpg
   - assets/img/qbot-v3-exploded.png
   - assets/img/qbot-v3-hero.png
   - assets/img/qbot-v3-luxtrust.png

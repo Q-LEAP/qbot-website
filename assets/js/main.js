@@ -1622,10 +1622,16 @@ backToTop.addEventListener('click', () => {
 
 
 /* ════════════════════════════════════════
-   18. LE FILM DE L'ACCUEIL : boucle automatique, aucune interface
-   Demandé par le client le 2026-08-25 : « vraiment juste une vidéo loop ». Le
-   balisage ne porte donc ni `controls` ni `src`, et le CSS coupe
-   `pointer-events` pour qu'il n'y ait rien non plus au clic droit.
+   18. LES FILMS : chargés à l'approche, en pause hors champ
+   Demandé par le client le 2026-08-25 pour la boucle : « vraiment juste une vidéo
+   loop ». Ces boucles ne portent donc ni `controls` ni `src`, et le CSS coupe
+   leurs `pointer-events` pour qu'il n'y ait rien non plus au clic droit.
+
+   DEPUIS LE 2026-09-02, UN DES FILMS SE PILOTE. Le film de démonstration est
+   entré dans l'accueil (« c'est un bon moyen de comprendre ce que fait Q-Bot »)
+   et il dure cinquante secondes : il porte `controls`. Le module ne fait aucune
+   différence entre les deux, sauf sur un point, plus bas : il ne redémarre pas un
+   film que le VISITEUR a mis en pause.
 
    POURQUOI LE `src` EST DANS `data-film` ET NON DANS L'ATTRIBUT. Le fichier pèse
    2,9 Mo et la section est à environ 5 000 px du haut de la page. Avec un `src`
@@ -1690,9 +1696,20 @@ backToTop.addEventListener('click', () => {
 
     if (!('IntersectionObserver' in window)) { jouer(); return; }
 
+    /* ON NE REDÉMARRE PAS UN FILM QUE LE VISITEUR A ARRÊTÉ. Sur un film à
+       commandes, sortir du champ puis revenir relançait la lecture par-dessus sa
+       décision. Le discriminant est simple et n'a pas besoin d'un drapeau autour
+       de notre propre appel : le module ne met en pause que HORS champ, donc une
+       pause survenue DANS le champ vient forcément de lui. Repartir en lecture
+       lui rend la main. */
+    var visible = false, manuel = false;
+    film.addEventListener('pause', function () { if (visible) manuel = true; });
+    film.addEventListener('play', function () { manuel = false; });
+
     new IntersectionObserver(function (entrees) {
       entrees.forEach(function (e) {
-        if (e.isIntersecting) jouer();
+        visible = e.isIntersecting;
+        if (e.isIntersecting) { if (!manuel) jouer(); }
         else if (film.getAttribute('src')) film.pause();
       });
     }, { rootMargin: '200px 0px' }).observe(film);

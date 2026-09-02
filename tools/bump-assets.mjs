@@ -40,7 +40,10 @@ const SUIVIS = [
   'assets/css/style.css', 'assets/css/scrolly.css',
   'assets/js/main.js', 'assets/js/scrolly.js',
   'assets/img/qbot-interface.jpg', 'assets/img/qbot-interface-en.jpg',
-  'assets/img/qbot-og.jpg', 'assets/img/qbot-film-poster.jpg',
+  // `qbot-film-poster.jpg` est sorti de la liste le 2026-09-02 : plus aucune
+  // page ne le cite depuis que le film de démonstration a remplacé la boucle
+  // décorative des accueils.
+  'assets/img/qbot-og.jpg',
 ];
 
 const empreinte = c =>

@@ -41,7 +41,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=b741f405">
+  <link rel="stylesheet" href="assets/css/style.css?v=6c336662">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=b12356a0">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -572,42 +572,60 @@
   </div>
 </section>
 
-<!-- ======= VIDÉO ======= -->
-<section class="section" aria-labelledby="video-title">
+<!-- ======= LE FILM PRODUIT ======= -->
+    <!-- LE FILM DE DÉMONSTRATION EST ICI DEPUIS LE 2026-09-02, sur retour du client :
+     « la vidéo Q-Bot qu'on a fait, ne doit-on pas la trouver sur le site,
+     homepage ? c'est un bon moyen de comprendre ce que fait Q-Bot et plus
+     facilement que la lecture du contenu ».
+     CE QUI ÉTAIT LÀ AVANT : `qbot-home.mp4`, une boucle muette de 8,7 s posée dans
+     la moitié d'une colonne, décorative et sans titre. Le film produit (QBV1.2.12,
+     50,9 s) ne se trouvait que sur la fiche technique, où il est une boucle.
+     TROIS ÉCARTS AVEC CETTE BOUCLE, et ils tiennent tous à ce que ce film-ci n'est
+     pas un décor mais un contenu :
+     1. il porte `controls`. Un film de cinquante secondes qu'on ne peut ni
+        arrêter, ni reprendre, ni rejouer se subit ; celui-là sert à comprendre,
+        donc il se pilote. D'où `--playable`, qui rend au lecteur les
+        `pointer-events` que `--film` coupe ;
+     2. il n'est plus `aria-hidden` : c'est du contenu, donc il porte un nom
+        accessible et la section qui l'entoure a un titre ;
+     3. il tient toute la largeur du conteneur, aligné sur le titre.
+     Il reste `muted` et `loop` : la piste audio a été RETIRÉE du fichier
+     (ffmpeg -an), il n'y a donc rien à couper, et `muted` est ce qui autorise le
+     démarrage automatique. Les incrustations du film sont en ANGLAIS, y compris
+     sur la page française, et le chapeau de la section le dit : c'est une
+     propriété du fichier fourni, pas de la page.
+     `data-film` ET NON `src` : le module 18 ne demande les 4,95 Mo que quand la
+     section approche, avec 200 px d'avance. Sans JavaScript, en mouvement réduit,
+     en économiseur de données ou sur connexion lente, il reste l'affiche, qui est
+     une vraie image du film. -->
+<section class="section" aria-labelledby="film-title">
   <div class="container">
-    <div class="intro__grid">
-      <div>
-        <h2 class="section-label" id="video-title">Un produit 100&nbsp;% conçu et développé au Luxembourg</h2>
-        <p style="margin:16px 0 0;">
-          <span class="nb">Q-Bot</span> est le fruit du savoir-faire de l'équipe Q-Leap. Imaginée et développée dans nos locaux par des experts passionnés du test logiciel, cette solution est née de besoins concrets rencontrés sur le terrain.
-        </p>
-        <p style="margin:16px 0 0;">
-          Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.
-        </p>
-      </div>
-      <!-- Le film produit, en LECTURE AUTOMATIQUE ET EN BOUCLE, sans aucune
-           interface : ni contrôles, ni rien au survol. Demandé par le client le
-           2026-08-25, après la version à la demande de la veille.
-           `pointer-events: none` en CSS ferme aussi le menu contextuel : sans lui,
-           un clic droit proposerait « télécharger » et « boucle », donc une
-           interface quand même.
-           `aria-hidden` + `tabindex="-1"` : c'est une boucle muette, décorative et
-           sans commande. L'exposer annoncerait à un lecteur d'écran un média que
-           son utilisateur ne peut ni lancer, ni arrêter, ni comprendre. Ce que le
-           film montre est dit par le texte de la section.
-           LE FICHIER N'EST PAS DANS `src` MAIS DANS `data-film`, ET C'EST LE POINT :
-           il pèse 2,9 Mo, et la section est à ~5 000 px du haut de la page. Avec un
-           `src` et `autoplay`, le navigateur le télécharge dès l'arrivée sur
-           l'accueil, qu'on descende ou non. Le module 18 le charge et le lance
-           quand la section entre à l'écran : le visiteur voit donc bien une vidéo
-           déjà en train de tourner, sans que le premier écran paie 2,9 Mo.
-           SANS JAVASCRIPT il reste l'affiche, qui est une vraie image du film. -->
-      <div class="video__wrapper video__wrapper--film">
-        <video class="video__player" data-film="assets/video/qbot-home.mp4"
-               poster="assets/img/qbot-film-poster.jpg?v=e41c2fe9"
-               muted loop playsinline
-               aria-hidden="true" tabindex="-1"></video>
-      </div>
+    <div class="section-header">
+      <span class="section-label">En vidéo</span>
+      <h2 class="section-title" id="film-title"><span class="nb">Q-Bot</span> en action</h2>
+      <p class="section-subtitle">Cinquante secondes pour voir ce que ces pages décrivent&nbsp;: le boîtier posé sur un bureau, le smartphone à l'avant, un scénario qui se joue et l'authentification qui passe. Film muet, incrustations en anglais.</p>
+    </div>
+    <div class="video__wrapper video__wrapper--film video__wrapper--playable">
+      <video class="video__player" data-film="assets/video/qbot-demo.mp4"
+             poster="assets/img/qbot-demo-poster.jpg"
+             controls muted loop playsinline
+             aria-label="Film de démonstration de Q-Bot, cinquante secondes, sans son"></video>
+    </div>
+  </div>
+</section>
+
+<!-- ======= 100 % LUXEMBOURG ======= -->
+<!-- Bloc de texte seul depuis le 2026-09-02 : il partageait sa rangée avec la
+     boucle décorative, qui a laissé la place au film de démonstration ci-dessus.
+     Sa mesure de lecture est celle de `.section-subtitle` (600 px), et il tombe
+     sur la gouttière du conteneur : un bloc de texte de ce site est aligné à
+     gauche, jamais centré. -->
+<section class="section section--gray" aria-labelledby="made-title">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:0;">
+      <h2 class="section-label" id="made-title">Un produit 100&nbsp;% conçu et développé au Luxembourg</h2>
+      <p class="section-subtitle" style="margin-top:16px;"><span class="nb">Q-Bot</span> est le fruit du savoir-faire de l'équipe Q-Leap. Imaginée et développée dans nos locaux par des experts passionnés du test logiciel, cette solution est née de besoins concrets rencontrés sur le terrain.</p>
+      <p class="section-subtitle" style="margin-top:16px;">Compatible avec Selenium, Katalon, Robot Framework, et toutes les autres solutions d'automatisation grâce à son API simple et sécurisée.</p>
     </div>
   </div>
 </section>
@@ -707,7 +725,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=408bfb14" defer></script>
+<script src="assets/js/main.js?v=721a6708" defer></script>
 <script src="assets/js/scrolly.js?v=130fc8b1" defer></script>
 </body>
 </html>
