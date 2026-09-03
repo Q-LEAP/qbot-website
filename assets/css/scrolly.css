@@ -72,8 +72,16 @@
      durée et par l'amplitude du cadrage, pas par la hauteur du pas : un pas
      plus court ne rend donc PAS la rotation plus rapide, il coûte seulement
      moins de doigt. Ce que la hauteur gouverne encore est la finesse du scrub
-     pendant le geste, et 0,62 écran laisse ~360 px de course d'éclatement, de
+     pendant le geste, et 0,80 écran laisse ~470 px de course d'éclatement, de
      quoi le lire en continu.
+
+     0,62 A ÉTÉ ESSAYÉ D'ABORD, ET RENDU. Il donnait 38 % de défilement en moins,
+     et le client a répondu « l'animation est plus rapide du coup, j'aime pas » :
+     à pas plus court, le modèle avance plus par pixel de doigt, donc un
+     défilement continu (trackpad, barre) traverse la séquence plus vite. 0,80
+     garde 24 % de gain et ne rend le mouvement que 25 % plus rapide par pixel
+     qu'à l'origine, au lieu de 61 %. C'est le seul nombre à toucher pour
+     réajuster.
 
      LE PLANCHER DE 480 px EST LA CONTRAINTE DURE, ET ELLE EST MESURÉE. La carte
      est calée en haut de son pas sous 164 px de remplissage, et la plus haute
@@ -97,7 +105,7 @@
      ce pas, et un calcul théorique se mettrait à mentir. Le repli sans JavaScript
      est ce calcul théorique, quatre fois le pas ; son 4 est en dur, comme les
      trois cartes de l'acte épinglé. */
-  --sc-step: max(0.62 * 100svh, min(480px, 100svh));
+  --sc-step: max(0.80 * 100svh, min(480px, 100svh));
   /* La queue, en écrans : le défilement qui reste après que la dernière carte
      est centrée, et qui sert à décoller la scène. Elle valait 0,5 écran sur
      grand écran, ramenée à 0,3 : après le dernier texte il reste encore un demi

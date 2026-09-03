@@ -7360,3 +7360,128 @@ Contrôles : un cran vaut toujours un pas, `t = 0,92` et boîtier à 0,26 au pas
 écrits, 43 tracés dans le calque d'annotations. Les deux audits à 1440 et 390 px, 17 pages sur 17,
 0 constat. Balayage des deux accueils en normal et en mouvement réduit, 0 révélation invisible,
 0 débordement, 0 erreur console.
+
+## Le « saccadé » n'était pas la cadence, c'était un saut de position (2026-09-03)
+
+Signalé : « on sent que c'est pas fluide, ça manque de frame, c'est saccadé ». Le client a
+autorisé une mesure en mode fenêtré, donc sur le vrai GPU, ce que la note du 2026-08-25 réserve
+justement à ce cas.
+
+### LA CADENCE EST PARFAITE, ET C'EST LA MESURE QUI LE DIT
+
+Relevé sur `ANGLE (Apple, ANGLE Metal Renderer: Apple M4)`, trois configurations, trois scénarios :
+
+| | im/s | médiane | p95 |
+|---|---|---|---|
+| repos dans la séquence | 59,9 | 16,70 ms | 17,0 ms |
+| un cran + accrochage | 59,9 | 16,70 ms | 17,6 ms |
+| défilement hors séquence | 59,9 | 16,70 ms | 17,5 ms |
+
+Identique avec ou sans le module 22, avec ou sans l'ombre portée. **Aucune image perdue.** Les pics
+à 417 ms de mon premier relevé étaient un artefact de la sonde : elle concaténait trois fenêtres de
+mesure et les triait, si bien que les intervalles ENTRE fenêtres apparaissaient comme des images
+longues. Une sonde d'intervalles d'images ne doit jamais coller deux campagnes bout à bout.
+
+### La vraie cause : un saut de 120 px à chaque geste
+
+Le module 22 se retirait de la séquence, au motif qu'un seul propriétaire par zone évite les
+conflits. Conséquence non vue : **dans la séquence, un cran de molette faisait sauter la page de
+120 px en UNE image, en défilement natif**, avant que l'accrochage ne prenne la main 110 ms plus
+tard. Chaque geste commençait par une secousse. À 60 images par seconde et sans aucune image
+perdue, cela se ressent exactement comme un manque d'images.
+
+Le moteur du module 22 gouverne donc maintenant le défilement PARTOUT, et l'accrochage ne fait
+plus sa propre animation : il déplace la cible de ce moteur (`QBotDefil.vers`).
+
+### DEUX COURBES, ET C'EST LE COEUR DU RÉGLAGE
+
+Second signalement, dans la même passe : « l'animation est plus rapide du coup, j'aime pas ». La
+mesure explique pourquoi. Le **pic** de vitesse d'une approche exponentielle vaut environ quatre
+fois sa moyenne, celui d'une cubique en S seulement une fois et demie. Sur les 720 px et les 86° de
+la transition 3 vers 4, l'exponentielle donnait **9,7 degrés par image**, soit près de 600 par
+seconde.
+
+Le moteur a donc deux courbes, et le partage n'est pas cosmétique :
+
+- **défilement libre** (la molette) : approche exponentielle. Elle répond sans retard, absorbe des
+  gestes qui se chevauchent, et n'a pas besoin de connaître une durée puisque la course n'est pas
+  bornée ;
+- **mouvement engagé** (accrochage d'un pas, clic sur une pastille) : cubique en S sur 450 ms, la
+  courbe de la référence. C'est elle qui tient le pic.
+
+**LE PASSAGE D'UNE COURBE À L'AUTRE EST PROPRE GRÂCE À LA RAMPE**, et c'est ce qui rend ce partage
+possible : l'accrochage prend la main 110 ms après le cran, et à cet instant l'entrée en douceur
+n'a laissé passer qu'une fraction de la vitesse de pointe. La discontinuité de vitesse que
+j'invoquais pour refuser ce partage est devenue négligeable.
+
+### L'ENTRÉE EN DOUCEUR : J'AVAIS EU TORT DE LA REFUSER
+
+Je l'avais écartée au motif qu'elle est du retard pur sur un geste déjà décidé. La mesure dit
+l'inverse : une exponentielle n'a AUCUNE entrée en douceur, donc **son premier pas est son plus
+grand**. Relevé sur le vrai GPU, un cran déplaçait la page de **45 px en une seule image**, soit une
+attaque à 2 700 px par seconde. Répétée à chaque cran, c'est du staccato, et c'est pour cela que la
+courbe de la référence consacre ses 60 premières millisecondes à ne bouger que de 2 %.
+
+La rampe ne repart QUE d'un mouvement à l'arrêt : un cran qui arrive pendant une course ne la
+relance pas, sinon un geste soutenu hésiterait à chaque cran, ce qui était mon objection d'origine
+et qui reste juste.
+
+Les deux valeurs sortent d'un balayage sur GPU, quatre couples mesurés :
+
+| rampe | facteur | 1 cran : fin, pas max, part à 59 ms | 4 crans |
+|---|---|---|---|
+| 130 | 0,19 | 400 ms, 27,0 px, 33,8 % | 568 ms |
+| 200 | 0,24 | 400 ms, 28,5 px, 22,9 % | 500 ms |
+| **260** | **0,30** | **367 ms, 24,5 px, 18,1 %** | **450 ms** |
+| 320 | 0,36 | 350 ms, 24,0 px, 23,1 % | 417 ms |
+
+260 / 0,30 donne à la fois l'attaque la plus douce et la course la plus courte : un facteur plus
+fort compense la rampe au lieu de s'y ajouter.
+
+### L'ACCROCHAGE LIT LA CIBLE, PLUS LA POSITION
+
+Défaut introduit par la rampe, mesuré et corrigé : avec une entrée en douceur de 260 ms, au bout
+des 110 ms de repos la page n'a parcouru qu'une trentaine des 240 px demandés. L'écart lu valait
+donc 0,06, sous le seuil d'engagement de 0,12, et l'accrochage ramenait au pas d'où l'on venait :
+**la séquence restait bloquée sur le pas 1, un cran sur deux annulé.** Il lit maintenant la CIBLE
+du moteur, qui contient l'intention entière dès l'instant du cran.
+
+Et un défaut de la même famille dans le moteur : mon raccourci « si le pas d'une image est
+sous-pixellaire, on pose la valeur » se déclenchait dès la PREMIÈRE image, puisque la rampe rend ce
+pas minuscule par construction. Le moteur téléportait donc à la cible, 240 px en une image, soit
+exactement la secousse qu'on voulait supprimer. Le raccourci ne vaut que rampe finie.
+
+### Le pas revient à 0,80 écran
+
+0,62 avait été posé le matin pour réduire le défilement de 38 %. À pas plus court, le modèle avance
+plus par pixel de doigt, donc un défilement continu traverse la séquence plus vite : c'est la
+seconde moitié du « l'animation est plus rapide ». 0,80 garde **24 % de gain** (3 150 px au lieu de
+4 050 à 1440 x 900) et ne rend le mouvement que 25 % plus rapide par pixel qu'à l'origine, au lieu
+de 61 %.
+
+### Relevé final, un cran à la fois, sur GPU
+
+| | pas atteint | course | durée | pas max par image | rotation max | images > 25 ms |
+|---|---|---|---|---|---|---|
+| cran 1 | 1 (capture) | +110 px | 550 ms | 19,0 px | 0°/s | 0 |
+| cran 2 | 2 | +720 px | 583 ms | 68,5 px | 320°/s | 0 |
+| cran 3 | 3, clip 0,92, coque 0,26 | +720 px | 583 ms | 72,0 px | 261°/s | 0 |
+| cran 4 | 4 | +720 px | 583 ms | 71,0 px | 553°/s | 0 |
+| crans 5 et 6 | sortie libre | +240 px | 433 ms | 26,0 px | 0°/s | 0 |
+
+Cadence médiane 16,70 ms partout. La transition 3 vers 4 reste la plus rapide de la séquence à
+553 degrés par seconde, mais c'est sa valeur d'ORIGINE : elle porte 86° et un changement
+d'élévation, et la note du 2026-08-20 avait déjà constaté qu'il n'y a pas la place de l'étirer.
+
+### Les trois nombres à tourner, et ce que chacun fait
+
+- `--sc-step` dans `scrolly.css` (0,80) : la distance de défilement par pas. Plus grand, le modèle
+  avance moins par pixel de doigt ;
+- `POSE_MS` dans `main.js` (450 ms) : la durée d'un mouvement engagé, donc la vitesse de la
+  transition de caméra. Plus grand, l'animation est plus lente ;
+- `RAMPE` et `LERP` (260 ms, 0,30) : la douceur et la durée du défilement libre.
+
+Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des deux
+accueils en normal et en mouvement réduit. L'index de la FAQ garde sa molette (index +120 px, page
++0), une fenêtre modale la rend au navigateur, et le moteur ne s'installe pas du tout en mouvement
+réduit.

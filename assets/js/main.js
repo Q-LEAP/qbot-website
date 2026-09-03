@@ -2206,14 +2206,20 @@ backToTop.addEventListener('click', () => {
    rien savoir de ce module. Sans elle, le premier cran après un de ces
    déplacements ramènerait brutalement la page là où la cible était restée.
 
-   IL SE MET EN RETRAIT DANS LA SÉQUENCE 3D, et c'est le point le plus important.
-   Là, le défilement a déjà un propriétaire : le scrub colle la position dans le
-   clip au doigt (règle du dépôt : une tête de lecture qui traîne se perçoit comme
-   du retard) et l'accrochage commet le geste sur une cubique de 450 ms. Deux
-   moteurs sur la même valeur donneraient soit un double délai (le glissement
-   PUIS l'accrochage, presque une seconde), soit une reprise en main à vitesse non
-   nulle, qui se voit comme un à-coup. Un seul propriétaire par zone : le drapeau
-   `body.is-scrolly`, que `scrolly.js` pose déjà, suffit à le dire.
+   IL OWN LE DÉFILEMENT PARTOUT, Y COMPRIS DANS LA SÉQUENCE 3D, ET C'EST UNE
+   CORRECTION DU 2026-09-03. Il s'en retirait d'abord, au motif qu'un seul
+   propriétaire par zone évite les conflits. La conséquence n'avait pas été vue et
+   le client l'a signalée comme du « saccadé » : dans la séquence, un cran de
+   molette faisait donc SAUTER la page de 120 px en une image, en défilement
+   natif, avant que l'accrochage ne prenne la main 110 ms plus tard. Chaque geste
+   commençait par une secousse. Mesuré sur le vrai GPU au même moment : 59,9
+   images par seconde, médiane 16,70 ms, aucune image perdue. Ce n'était donc pas
+   une chute de cadence mais un saut de position.
+   Depuis, l'accrochage ne fait plus sa propre animation : il DÉPLACE LA CIBLE de
+   ce moteur (`QBotDefil.vers`). Un seul propriétaire, donc, mais pour tout le
+   monde, et la reprise en main est continue par construction — une approche
+   exponentielle vers une nouvelle cible ne présente aucune discontinuité de
+   position, et sa vitesse ne fait que s'infléchir.
 
    CE QU'IL NE PREND JAMAIS :
    - le zoom du navigateur (`ctrlKey`, `metaKey`) ;
@@ -2256,8 +2262,59 @@ backToTop.addEventListener('click', () => {
      la boucle continuait de tourner. Le mouvement se lisait comme s'il ne
      finissait jamais. À 1,2 px, la dernière image pose la valeur et la boucle
      dort. */
-  var LERP = 0.15;
+  var LERP = 0.30;
   var ARRET = 1.2;          // en dessous, on pose la valeur et on dort
+  /* ── L'ENTRÉE EN DOUCEUR, ET J'AVAIS EU TORT DE LA REFUSER ────────────────
+     J'ai d'abord écarté l'entrée en douceur de la référence, au motif qu'elle
+     est du retard pur sur un défilement libre où le geste est déjà décidé. La
+     mesure dit l'inverse, et le client l'a senti avant moi (« c'est saccadé ») :
+     une approche exponentielle n'a AUCUNE entrée en douceur, donc son premier
+     pas est son plus grand. Relevé sur le vrai GPU, un cran de molette
+     déplaçait la page de **45 px en une seule image**, soit une attaque à
+     2 700 px par seconde. Répétée à chaque cran, c'est exactement ce qui se lit
+     comme du staccato, et c'est POUR ÇA que leur courbe consacre ses 60
+     premières millisecondes à ne bouger que de 2 %.
+     La rampe ne repart QUE d'un mouvement à l'arrêt. Un cran qui arrive pendant
+     une course en cours ne la relance pas : sinon un geste soutenu hésiterait à
+     chaque cran, ce qui était mon objection d'origine et qui reste juste.
+     LES DEUX VALEURS SORTENT D'UN BALAYAGE SUR LE VRAI GPU, quatre couples
+     (rampe, facteur) mesurés sur un cran et sur quatre :
+
+       rampe  facteur | 1 cran : fin, pas max, part à 59 ms | 4 crans
+        130     0,19  |  400 ms   27,0 px   33,8 %          | 568 ms
+        200     0,24  |  400 ms   28,5 px   22,9 %          | 500 ms
+        260     0,30  |  367 ms   24,5 px   18,1 %          | 450 ms   <- retenu
+        320     0,36  |  350 ms   24,0 px   23,1 %          | 417 ms
+
+     260 / 0,30 donne à la fois l'attaque la plus douce et la course la plus
+     courte : un facteur plus fort compense la rampe au lieu de s'y ajouter. Le
+     plus grand pas d'une image passe de 45 px (sans rampe) à 24,5 px. */
+  var RAMPE = 260;          // ms d'entrée en douceur, depuis l'arrêt seulement
+  var debut = 0;
+
+  /* ── DEUX COURBES, ET C'EST LE COEUR DU RÉGLAGE ───────────────────────────
+     Le défilement LIBRE (la molette) suit une approche exponentielle : elle
+     répond sans retard, elle absorbe des gestes qui se chevauchent, et elle n'a
+     pas de durée à connaître d'avance puisque la course n'est pas bornée.
+     Un mouvement ENGAGÉ (l'accrochage d'un pas de la séquence, une pastille)
+     suit la cubique en S de la référence, sur une durée fixe. La raison est une
+     mesure : le PIC de vitesse d'une exponentielle vaut environ quatre fois sa
+     moyenne, celui d'une cubique en S seulement une fois et demie. Sur les 720 px
+     et les 86° de la transition 3 -> 4, l'exponentielle donnait **9,7 degrés par
+     image**, soit près de 600 degrés par seconde, et le client l'a signalé :
+     « l'animation est plus rapide du coup, j'aime pas ». La cubique ramène le pic
+     à 1,5 x 720 / 0,45 = 2 400 px/s, donc environ 290 degrés par seconde, ce qui
+     est la vitesse de la version qu'il avait validée.
+     LE PASSAGE D'UNE COURBE À L'AUTRE EST PROPRE GRÂCE À LA RAMPE : l'accrochage
+     prend la main 110 ms après le cran, et à cet instant l'entrée en douceur n'a
+     laissé passer qu'une fraction de la vitesse de pointe. La discontinuité de
+     vitesse que je redoutais en refusant ce partage est donc devenue négligeable,
+     et c'est la rampe qui l'a rendue possible. */
+  var POSE_MS = 450;        // durée d'un mouvement engagé, relevée sur scfo.de
+  var pose = 0, poseT0 = 0, poseY0 = 0;
+  function easeInOutCubique(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  }
 
   var cible = 0, actif = false, derniere = 0;
 
@@ -2283,10 +2340,22 @@ backToTop.addEventListener('click', () => {
     var maintenant = performance.now();
     var dt = derniere ? maintenant - derniere : 16.67;
     derniere = maintenant;
+    if (pose) {
+      var x = Math.min(1, (maintenant - poseT0) / pose);
+      var yp = poseY0 + (cible - poseY0) * easeInOutCubique(x);
+      if (x >= 1) { yp = cible; actif = false; derniere = 0; pose = 0; }
+      window.scrollTo({ top: yp, behavior: 'instant' });
+      if (actif) requestAnimationFrame(boucle);
+      return;
+    }
     /* Même normalisation que `parImage()` dans scrolly.js, et pour la même
        raison : sans elle le glissement est deux fois plus rapide sur un écran à
        120 Hz que sur un 60 Hz. */
     var k = dt > 0 ? 1 - Math.pow(1 - LERP, dt / 16.67) : LERP;
+    /* Rampe en S sur les premières millisecondes du mouvement. Elle multiplie le
+       facteur, donc elle ne change ni la cible ni la monotonie de la course. */
+    var u = Math.min(1, (maintenant - debut) / RAMPE);
+    k *= u * u * (3 - 2 * u);
     /* LE CRITÈRE D'ARRÊT PORTE SUR LE PAS, PAS SEULEMENT SUR LE RESTE, et c'est
        ce qui supprime la traîne. `scrollTo` arrondit au pixel du périphérique :
        dès que le pas d'une image passe sous un demi-pixel, la position ne bouge
@@ -2297,7 +2366,15 @@ backToTop.addEventListener('click', () => {
     var reste = cible - window.scrollY;
     var pas = reste * k;
     var y;
-    if (Math.abs(reste) < ARRET || Math.abs(pas) < 0.5) { y = cible; actif = false; derniere = 0; }
+    /* LE RACCOURCI SOUS-PIXELLAIRE NE VAUT QUE RAMPE FINIE, et l'oubli de cette
+       condition a fait pire que le défaut d'origine : pendant l'entrée en douceur
+       le pas d'une image est volontairement minuscule, donc le raccourci se
+       déclenchait dès la PREMIÈRE image et le moteur téléportait à la cible.
+       Mesuré : 240 px en une image, soit exactement la secousse qu'on voulait
+       supprimer. */
+    if (Math.abs(reste) < ARRET || (u >= 1 && Math.abs(pas) < 0.5)) {
+      y = cible; actif = false; derniere = 0;
+    }
     else y = window.scrollY + pas;
     /* `behavior: 'instant'` obligatoire : `<html>` porte `scroll-behavior: smooth`,
        donc un `scrollTo` par défaut confierait chaque image au lissage du
@@ -2308,7 +2385,6 @@ backToTop.addEventListener('click', () => {
 
   window.addEventListener('wheel', function (e) {
     if (e.defaultPrevented || e.ctrlKey || e.metaKey || !e.deltaY) return;
-    if (document.body.classList.contains('is-scrolly')) return;
     if (document.querySelector('dialog[open]')) return;
     if (absorbe(e.target, e.deltaY)) return;
     var m = maxi();
@@ -2316,14 +2392,39 @@ backToTop.addEventListener('click', () => {
     /* `deltaMode` : 0 pixels, 1 lignes, 2 pages. Firefox envoie des LIGNES. */
     var d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1);
     e.preventDefault();
-    if (!actif) cible = window.scrollY;                 // resynchro
+    /* Un cran pendant un mouvement engagé rend la main au défilement libre : le
+       visiteur reprend toujours le dessus, et la reprise part de là où l'on est. */
+    if (!actif || pose) { cible = window.scrollY; pose = 0; }
     cible = Math.max(0, Math.min(m, cible + d));
-    if (!actif) { actif = true; derniere = 0; requestAnimationFrame(boucle); }
+    if (!actif) { actif = true; derniere = 0; debut = performance.now(); requestAnimationFrame(boucle); }
   }, { passive: false });
+
+  /* ── LA CIBLE EST PARTAGÉE ────────────────────────────────────────────────
+     `scrolly.js` s'en sert pour son accrochage : au lieu d'animer le défilement
+     lui-même, il déplace la cible de ce moteur. C'est ce qui garantit qu'il n'y a
+     jamais deux animations concurrentes sur `window.scrollY`, et que le
+     changement de destination en cours de course est continu. */
+  window.QBotDefil = {
+    /* `ms` absent : mouvement libre, exponentielle. `ms` donné : mouvement
+       engagé, cubique en S sur cette durée, depuis la position courante. */
+    vers: function (y, ms) {
+      var m = maxi();
+      if (m <= 0) return false;
+      cible = Math.max(0, Math.min(m, y));
+      if (ms) { pose = ms; poseT0 = performance.now(); poseY0 = window.scrollY; }
+      else pose = 0;
+      if (!actif) { actif = true; derniere = 0; debut = performance.now(); requestAnimationFrame(boucle); }
+      return true;
+    },
+    /* La cible, pas la position : `scrolly.js` en a besoin pour lire l'INTENTION
+       d'un geste sans attendre que la course s'exécute. */
+    cible: function () { return actif ? cible : window.scrollY; },
+    actif: function () { return actif; }
+  };
 
   /* Un geste au doigt, une touche ou un glissé de barre reprend la main : on
      laisse le navigateur faire et on se resynchronisera au prochain cran. */
   ['touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
-    window.addEventListener(ev, function () { actif = false; derniere = 0; }, { passive: true });
+    window.addEventListener(ev, function () { actif = false; derniere = 0; pose = 0; }, { passive: true });
   });
 }());

@@ -1384,18 +1384,34 @@
     if (snapT !== null) { clearTimeout(snapT); snapT = null; }
   }
 
-  /* `behavior: 'instant'` est OBLIGATOIRE : `<html>` porte `scroll-behavior:
-     smooth`, donc un `scrollTo` par défaut confierait chaque image au lissage du
-     navigateur, qui interromprait la précédente. La courbe serait la sienne et non
-     la nôtre, et la position ne tiendrait aucune des valeurs posées. C'est le piège
-     déjà documenté pour les balayages de contrôle. */
+  /* ── ON DÉPLACE LA CIBLE DU MOTEUR DE DÉFILEMENT, ON N'ANIME PLUS ─────────
+     Corrigé le 2026-09-03 sur signalement du client (« c'est saccadé »). Avant,
+     cette fonction animait `window.scrollY` sur sa propre cubique de 450 ms, et le
+     moteur du module 22 se retirait de la séquence pour ne pas la concurrencer.
+     Conséquence non vue : dans la séquence, un cran de molette faisait SAUTER la
+     page de 120 px en une image, en défilement natif, avant que l'accrochage ne
+     prenne la main 110 ms plus tard. Chaque geste commençait par une secousse.
+     Le GPU a été mesuré au même moment, en mode fenêtré : 59,9 images par seconde,
+     médiane 16,70 ms, aucune image perdue, avec ou sans le module 22, avec ou sans
+     l'ombre portée. Ce n'était donc pas une chute de cadence mais un saut de
+     position.
+     Un seul mécanisme gouverne donc la position : celui du module 22. L'accrochage
+     ne fait plus que lui dire où aller. Le changement de destination en cours de
+     course est continu par construction, une approche exponentielle ne présentant
+     aucune discontinuité de position.
+     LE REPLI RESTE une glissade maison, pour le cas où le module 22 serait absent
+     (fichier non chargé, moteur sans `requestAnimationFrame`). `behavior: 'instant'`
+     y est obligatoire : `<html>` porte `scroll-behavior: smooth`, donc un
+     `scrollTo` par défaut confierait chaque image au lissage du navigateur, qui
+     interromprait la précédente. */
   function glisser(y, ms) {
     stopGlissade();
+    if (Math.abs(y - window.scrollY) < 1) return;
+    if (window.QBotDefil && window.QBotDefil.vers(y, ms || SNAP_MS)) { kick(); return; }
     var y0 = window.scrollY, d = y - y0;
-    if (Math.abs(d) < 1) return;
     var t0 = performance.now();
     (function image() {
-      var x = Math.min(1, (performance.now() - t0) / ms);
+      var x = Math.min(1, (performance.now() - t0) / (ms || SNAP_MS));
       window.scrollTo({ top: y0 + d * easeInOut(x), behavior: 'instant' });
       kick();
       snapAF = x < 1 ? requestAnimationFrame(image) : null;
@@ -1429,13 +1445,37 @@
      `ancre` est remis à null dès que la séquence quitte l'écran, si bien qu'on est
      recapturé proprement à la prochaine arrivée, une seule fois, comme le fait
      n'importe quelle section à accrochage. */
+  /* Pas le plus proche et tête de lecture continue, mesurés À LA POSITION VISÉE
+     et non à la position courante. `decal` est l'écart entre la cible du moteur de
+     défilement et l'endroit où l'on est : décaler le centre du viewport de cette
+     valeur revient exactement à s'y trouver déjà. */
+  function teteAu(decal) {
+    var vc = window.innerHeight / 2 + decal, best = 0, bd = Infinity, i, r;
+    for (i = 0; i < steps.length; i++) {
+      r = steps[i].getBoundingClientRect();
+      var d = Math.abs(r.top + r.height / 2 - vc);
+      if (d < bd) { bd = d; best = i; }
+    }
+    r = steps[best].getBoundingClientRect();
+    return { i: best, pos: best + (vc - r.top) / (r.height || 1) };
+  }
+
   function planifierAccrochage() {
     if (snapT !== null) clearTimeout(snapT);
     snapT = setTimeout(function () {
       snapT = null;
       if (snapAF !== null || pointeur) return;
       if (!onScreen) { ancre = null; return; }
-      var i = nearest();
+      /* ON LIT LA CIBLE DU MOTEUR, PAS LA POSITION COURANTE, et c'est ce qui rend
+         l'accrochage compatible avec l'entrée en douceur. Mesuré avant correction :
+         la rampe de 260 ms fait qu'au bout des 110 ms de repos la page n'a parcouru
+         qu'une trentaine des 240 px demandés. L'écart lu valait donc 0,06, sous le
+         seuil d'engagement, et l'accrochage ramenait au pas d'où l'on venait : la
+         séquence restait bloquée sur le pas 1, un cran sur deux annulé. La cible,
+         elle, contient l'intention entière dès l'instant du cran. */
+      var yc = (window.QBotDefil && window.QBotDefil.cible) ? window.QBotDefil.cible() : window.scrollY;
+      var t = teteAu(yc - window.scrollY);
+      var i = t.i;
       if (ancre === null) {
         /* CAPTURE À L'ARRIVÉE, ET SEULEMENT DANS L'INTERVALLE DES PAS. Sans cette
            borne, les deux bouts de la séquence piègent : au pas 4, un cran vers le
@@ -1447,10 +1487,10 @@
            retient ; et si l'on revient à l'intérieur, on est recapturé, sans avoir
            eu besoin de quitter la section pour réarmer quoi que ce soit. */
         var yA = cibleY(0), yZ = cibleY(steps.length - 1);
-        if (window.scrollY >= yA - 1 && window.scrollY <= yZ + 1) versPas(i);
+        if (yc >= yA - 1 && yc <= yZ + 1) versPas(i);
         return;
       }
-      var ecart = head(i) - (ancre + 0.5);
+      var ecart = t.pos - (ancre + 0.5);
       if (Math.abs(ecart) < SNAP_SEUIL) { glisser(cibleY(ancre), SNAP_MS); return; }
       var pas = Math.max(1, Math.round(Math.abs(ecart)));
       var but = ancre + (ecart > 0 ? pas : -pas);
@@ -1461,7 +1501,6 @@
 
   function kick() {
     lastScrollAt = performance.now();
-    if (snapAF === null) planifierAccrochage();
     if (!running) { running = true; requestAnimationFrame(function () { apply(false); }); }
   }
 
@@ -1483,8 +1522,16 @@
   /* L'accrochage s'annule au premier signe d'intention. `pointerdown` couvre la
      barre de défilement : sans lui, une pause au milieu d'un glissé de barre
      déclenchait l'accrochage et tirait la page sous le curseur. */
+  /* LE REPOS SE COMPTE SUR L'ENTRÉE, PAS SUR LE DÉFILEMENT, et c'est ce qui évite
+     un double délai. Compté sur le défilement, l'accrochage attendait la fin du
+     glissement du module 22 (jusqu'à 530 ms) PUIS ses 110 ms de repos PUIS sa
+     propre course : près d'une seconde entre le cran et l'arrivée. Compté sur
+     l'entrée, il déplace la cible 110 ms après le dernier cran, donc pendant que
+     le glissement est encore en cours : le mouvement reste un seul et même
+     mouvement, qui change simplement de destination. */
   ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
-    window.addEventListener(ev, stopGlissade, { passive: true });
+    window.addEventListener(ev, function () { stopGlissade(); planifierAccrochage(); },
+                            { passive: true });
   });
   window.addEventListener('pointerdown', function () { pointeur = true; stopGlissade(); }, { passive: true });
   ['pointerup', 'pointercancel'].forEach(function (ev) {
