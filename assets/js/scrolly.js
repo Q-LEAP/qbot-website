@@ -157,7 +157,15 @@
   var HOLD = [
     [0.00, 0.82],
     [0.18, 0.68],
-    [SCRUB_IN - 0.08, SCRUB_OUT + 0.08],
+    /* SORTIE À 0,72 ET NON PLUS À SCRUB_OUT + 0,08 : c'est ce qui met la rotation
+       vers le pas 4 EN RECOUVREMENT avec la refermeture, comme le demande l'action
+       chevauchante. À q = 0,72, soit f ~ 0,90, la géométrie est encore ouverte à
+       35 % et se referme pendant que la caméra part ; l'opacité, elle, est déjà
+       revenue (cf. OPA_FIN), donc la contrainte « pas de verre qui tourne » tient.
+       Effet de bord bienvenu : la transition 3 -> 4 passe de 0,52 à 0,68 pas, donc
+       ses 86° sont parcourus sur 31 % de course en plus. C'était la transition la
+       plus rapide de la séquence, elle ralentit d'autant. */
+    [SCRUB_IN - 0.08, 0.72],
     [0.40, 1.00]
   ];
 
@@ -241,15 +249,62 @@
      La refermeture se termine à 0.80 du pas alors que la bascule vers le pas suivant
      n'a lieu qu'à 1.00 : le boîtier est refermé ET opaque, immobile, 180 px avant que
      la caméra ne bouge. C'est l'acquis de la passe précédente, il est conservé. */
-  var BURST_FULL = 0.34;   // fin de l'ouverture, début de la tenue
-  var BURST_HOLD = 0.66;   // fin de la tenue, début de la refermeture
-  /* Fin de l'isolement de la carte : 0,605 est la fraction où le texte du pas est
-     CENTRÉ dans l'écran, valeur déjà relevée pour cette séquence (cf. le pavé
-     ci-dessus). L'isolement se termine donc pile à l'instant où le visiteur lit
-     « Ce qu'il y a à l'intérieur », ce qui est la demande du client : ni pendant
-     l'ouverture, ni à la fin du pas. Il commence à BURST_FULL, c'est-à-dire quand
-     le boîtier est grand ouvert : les deux temps ne se chevauchent pas. */
-  var ISO_END = 0.605;
+  /* ══ LE MINUTAGE DU PAS 3, ET LE PRINCIPE QUI LE GOUVERNE ════════════════
+     Réécrit le 2026-09-03 à la demande du client : « le fade d'invisibilité doit
+     se faire dès que la rotate de l'objet est finie, et le déséclatement pendant
+     la rotate, pour plus de fluidité ». Il invitait à s'appuyer sur les leçons
+     d'animation 3D, et il a raison de le faire : ce qu'il décrit porte un nom.
+
+     C'EST L'ACTION CHEVAUCHANTE (« follow through and overlapping action »), le
+     sixième des douze principes formulés par Frank Thomas et Ollie Johnston dans
+     *The Illusion of Life* et repris dans tous les cours d'animation depuis. Son
+     énoncé : une action ne doit pas s'arrêter net avant que la suivante ne
+     commence, les parties d'un ensemble ne bougent pas au même instant. Une suite
+     d'actions strictement séquentielles se lit comme une LISTE (il s'ouvre, PUIS
+     il devient transparent, PUIS il se referme, PUIS la caméra tourne) ; les mêmes
+     actions qui se recouvrent se lisent comme UN SEUL mouvement. C'est exactement
+     la différence de sensation dont il parle.
+
+     Le minutage d'avant était séquentiel de bout en bout, et c'était mon erreur :
+       ouverture 0 -> 0,34 | isolement 0,34 -> 0,605 | palier | refermeture
+       0,66 -> 1,00 | PUIS la caméra tourne, 180 px plus tard.
+     Quatre temps qui se touchent sans jamais se recouvrir.
+
+     Le minutage retenu, en fraction de la fenêtre de scrub :
+
+       ouverture de la géométrie     0,00 -> 0,38
+       isolement (le fondu)          0,06 -> 0,46   <- démarre PENDANT l'ouverture
+       palier : ouvert, isolé, lu    0,46 -> 0,70
+       retour de l'opacité           0,70 -> 0,78
+       refermeture de la géométrie   0,70 -> 1,00   <- finit PENDANT la rotation
+       la caméra part                à q = 0,72, soit f ~ 0,90
+
+     DEUX PRINCIPES S'OPPOSENT ICI, ET LE SECOND BORNE LE PREMIER. La mise en scène
+     (« staging », quatrième principe) demande une idée claire à la fois : c'est ce
+     qui justifie le palier, où le boîtier est ouvert, la carte isolée et le texte
+     centré, et il est même plus long qu'avant (0,24 de fenêtre au lieu de 0,055).
+     On chevauche les transitions, pas les temps de lecture.
+
+     ET UNE CONTRAINTE DURE SURVIT : la coque ne doit pas être en verre pendant que
+     la caméra tourne (cf. le pavé sur `still`, et le défaut « une coque en verre
+     qui tourne » qui a coûté trois corrections). D'où la seule subtilité du
+     minutage : l'OPACITÉ revient avant la rotation (0,78 contre 0,90), la
+     GÉOMÉTRIE non. Ce qui se chevauche avec la rotation est le déplacement des
+     pièces, pas leur transparence. C'est cela qui rend la demande réalisable sans
+     rouvrir un défaut déjà payé. */
+  var BURST_FULL = 0.38;   // fin de l'ouverture de la géométrie
+  var BURST_HOLD = 0.70;   // fin du palier, début du retour
+  var ISO_START  = 0.06;   // début du fondu : dès que la caméra est arrivée
+  var ISO_END    = 0.46;   // fin du fondu
+  /* 0,78 ET NON 0,86, ET C'EST UNE MESURE. À 0,86 le retour d'opacité finissait
+     0,035 de fenêtre avant le départ de la caméra, soit une vingtaine de
+     millisecondes de glissade : le lissage (une constante de temps de 67 ms) n'y
+     tenait pas, et le relevé sur GPU montrait TROIS IMAGES de coque translucide
+     pendant que la caméra tournait. C'est le défaut « une coque en verre qui
+     tourne », déjà payé trois fois. À 0,78 il reste 0,115 de fenêtre de marge, et
+     le recouvrement demandé n'est pas perdu pour autant : à 0,78 la géométrie est
+     encore ouverte à 73 %, et à 35 % quand la caméra part. */
+  var OPA_FIN    = 0.78;   // l'opacité est revenue à 1 ici, AVANT la rotation
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
 
@@ -360,7 +415,7 @@
   var derniereOrbite = null, dernierTemps = -1;   // cf. « on n'écrit que ce qui change »
   var lastShown = null;   // angle RÉEL de la caméra à l'image précédente, en degrés
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
-              zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1, iso: 0, isoA: 1 };
+              zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1, iso: 0, isoA: 1, opa: 0 };
   var loaded = false, running = false, lastP = -1, wasScrub = false, onScreen = false;
 
   if (viewer) {
@@ -965,10 +1020,30 @@
        Pendant la refermeture, l'isolement suit `burstK` : les pièces redeviennent
        solides à mesure que le boîtier se referme, et la valeur est continue au
        passage de BURST_HOLD, où `burstK` vaut encore 1. */
-    var isoK = !scrub               ? 0
-             : f <= BURST_FULL      ? 0
-             : f <= BURST_HOLD      ? Math.min(1, (f - BURST_FULL) / (ISO_END - BURST_FULL))
-             : burstK;
+    /* L'OPACITÉ N'EST PLUS UNE LECTURE DE LA POSITION DANS LE CLIP, ET C'EST
+       DÉLIBÉRÉ. Le pavé d'origine l'exigeait (« L'OPACITÉ N'EST PAS UNE PHASE :
+       C'EST UNE FONCTION DE L'ÉCLATEMENT ») pour une raison qui reste valable :
+       une opacité dotée de ses propres bornes et de sa propre inertie s'était
+       désynchronisée trois fois. Ce que cette règle protégeait, c'est
+       l'IMPOSSIBILITÉ d'une désynchronisation, et elle est ici préservée
+       autrement : `burstK`, `opaK` et `isoK` sont TOUTES TROIS des fonctions pures
+       de la même variable `f`, et toutes trois passent par le même lissage, avec
+       le même saut à l'entrée et à la sortie du pas. Aucune n'a d'horloge propre.
+       Ce que le découplage autorise, et qui était impossible avant : l'opacité
+       revient à 1 sur [BURST_HOLD, OPA_FIN] pendant que la géométrie, elle, met
+       tout l'intervalle [BURST_HOLD, 1] à se refermer. C'est ce décalage qui met
+       la refermeture en recouvrement avec la rotation sans mettre du verre en
+       rotation. */
+    var opaK = !scrub          ? 0
+             : f <= BURST_FULL ? f / BURST_FULL
+             : f <= BURST_HOLD ? 1
+             : Math.max(0, 1 - (f - BURST_HOLD) / (OPA_FIN - BURST_HOLD));
+    /* Le fondu démarre à ISO_START, donc PENDANT l'ouverture, et non plus après
+       elle. Au retour il suit l'opacité de la coque : les deux redeviennent
+       solides ensemble, avant la rotation. */
+    var isoK = !scrub          ? 0
+             : f <= BURST_HOLD ? Math.max(0, Math.min(1, (f - ISO_START) / (ISO_END - ISO_START)))
+             : opaK;
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
     var seg = tTarget < PHONE_HANDOFF;
     /* À l'instant où l'on entre ou sort du pas, on SAUTE : un lissage produisait un
@@ -990,9 +1065,9 @@
     else cur.t = lerp(cur.t, tTarget, k);
     /* Le même mot à mot que ci-dessus, sur la même valeur de lissage : c'est ce qui
        garantit que l'isolement ne prend jamais un pixel de retard sur l'ouverture. */
-    if (scrub !== wasScrub || jump) cur.iso = isoK;
-    else if (scrub) cur.iso = lerp(cur.iso, isoK, kt);
-    else cur.iso = lerp(cur.iso, isoK, k);
+    if (scrub !== wasScrub || jump) { cur.iso = isoK; cur.opa = opaK; }
+    else if (scrub) { cur.iso = lerp(cur.iso, isoK, kt); cur.opa = lerp(cur.opa, opaK, kt); }
+    else { cur.iso = lerp(cur.iso, isoK, k); cur.opa = lerp(cur.opa, opaK, k); }
     wasScrub = scrub;
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
     if (cur.t > 0.98 && cur.t < PHONE_HANDOFF) cur.t = 0.98;
@@ -1002,7 +1077,7 @@
        ne peut ni prendre du retard sur l'ouverture, ni la devancer. La courbe en S
        reste utile, l'œil étant plus sensible aux premiers pourcents de transparence
        qu'aux derniers. */
-    cur.alpha = 1 - (1 - XRAY_ALPHA) * smooth(Math.min(1, cur.t / EXPLODE_END));
+    cur.alpha = 1 - (1 - XRAY_ALPHA) * smooth(Math.max(0, Math.min(1, cur.opa)));
     /* Le reste du boîtier — plateau, petites pièces, embase, vitre — descend à la
        MÊME opacité que la coque, et pas plus bas : la carte devient ainsi la seule
        pièce solide de l'image, tout en laissant le boîtier « légèrement visible »,
@@ -1191,7 +1266,7 @@
                     un isolement à moitié fait, et rien pour le reprendre puisque plus
                     aucune image n'était demandée. Toute valeur lissée ajoutée à
                     `apply()` doit entrer dans ce test. */
-                 Math.abs(isoK - cur.iso) > 0.002 ||
+                 Math.abs(isoK - cur.iso) > 0.002 || Math.abs(opaK - cur.opa) > 0.002 ||
                  still < 0.999 ||
                  /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
                     c'est-à-dire précisément quand elle doit jouer. */

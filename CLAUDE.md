@@ -7485,3 +7485,101 @@ Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Bala
 accueils en normal et en mouvement réduit. L'index de la FAQ garde sa molette (index +120 px, page
 +0), une fenêtre modale la rend au navigateur, et le moteur ne s'installe pas du tout en mouvement
 réduit.
+
+## Le pas 3 passe à l'action chevauchante (2026-09-03)
+
+Demande du client : « il faudrait que le fade d'invisibilité se fasse dès que la rotate de l'objet
+est fini pour l'étape 3, et l'étape déséclatement devrait se faire pendant la rotate pour plus de
+fluidité », avec l'invitation à s'appuyer sur les leçons d'animation 3D.
+
+### CE QU'IL DÉCRIT PORTE UN NOM, ET IL A RAISON DE RENVOYER AUX SOURCES
+
+C'est **l'action chevauchante** (« follow through and overlapping action »), sixième des douze
+principes formulés par Frank Thomas et Ollie Johnston dans *The Illusion of Life* et repris depuis
+dans tous les cours d'animation. Son énoncé : une action ne doit pas s'arrêter net avant que la
+suivante commence, et les parties d'un ensemble ne bougent pas au même instant. Une suite d'actions
+strictement séquentielles se lit comme une LISTE ; les mêmes actions qui se recouvrent se lisent
+comme UN SEUL mouvement. C'est précisément la différence de sensation dont il parle, et le minutage
+d'avant était séquentiel de bout en bout :
+
+    ouverture 0 -> 0,34 | isolement 0,34 -> 0,605 | palier | refermeture 0,66 -> 1,00
+    PUIS la caméra tourne, 180 px plus tard
+
+Quatre temps qui se touchent sans jamais se recouvrir. C'était mon erreur, et elle était même
+DOCUMENTÉE comme un acquis (« le boîtier est refermé ET opaque, immobile, 180 px avant que la
+caméra ne bouge »), ce qui est le meilleur moyen de ne plus la voir.
+
+### Le minutage retenu
+
+| f (fenêtre de scrub) | ce qui s'y joue |
+|---|---|
+| 0,00 -> 0,38 | la géométrie s'ouvre |
+| **0,06 -> 0,46** | le fondu, qui DÉMARRE pendant l'ouverture |
+| 0,46 -> 0,70 | palier : ouvert, isolé, texte centré (0,605) |
+| 0,70 -> 0,78 | l'opacité revient |
+| **0,70 -> 1,00** | la géométrie se referme, et finit PENDANT la rotation |
+| q = 0,72, soit f ~ 0,90 | la caméra part vers le pas 4 |
+
+La caméra arrive à sa pose du pas 3 à q = -0,04, donc AVANT que le pas ne commence : « dès que la
+rotate est finie » vaut donc f = 0, et le fondu part à 0,06, soit une quarantaine de pixels plus
+loin. Relevé sur GPU : à f = 0,09 la coque est déjà à 0,90 d'opacité alors que le clip n'est qu'à
+0,21 de sa course. Le recouvrement est bien là.
+
+### DEUX PRINCIPES S'OPPOSENT, ET LE SECOND BORNE LE PREMIER
+
+La **mise en scène** (« staging », quatrième principe) demande une idée claire à la fois. C'est ce
+qui justifie le palier, et il est même plus LONG qu'avant : 0,24 de fenêtre au lieu de 0,055. On
+chevauche les transitions, pas les temps de lecture. Sans cela l'action chevauchante dégénère en
+bouillie, ce qui est le reproche courant fait aux séquences trop animées.
+
+### ET LA CONTRAINTE DURE SURVIT : PAS DE VERRE EN ROTATION
+
+La coque ne doit pas être translucide pendant que la caméra tourne : une surface en `BLEND` qui
+pivote montre des coutures, et le défaut « une coque en verre qui tourne » a déjà coûté trois
+corrections. D'où la seule subtilité du minutage : **l'OPACITÉ revient avant la rotation, la
+GÉOMÉTRIE non.** Ce qui se chevauche avec la rotation est le déplacement des pièces, pas leur
+transparence. C'est cela qui rend la demande réalisable sans rouvrir un défaut déjà payé.
+
+`OPA_FIN = 0,78 et non 0,86, et c'est une mesure.` À 0,86 le retour d'opacité finissait 0,035 de
+fenêtre avant le départ de la caméra, soit une vingtaine de millisecondes de glissade : le lissage,
+dont la constante de temps vaut 67 ms, n'y tenait pas, et le relevé sur GPU montrait **trois images
+de coque translucide en rotation**. À 0,78 il reste 0,115 de marge, et le recouvrement n'est pas
+perdu : à 0,78 la géométrie est encore ouverte à 73 %, et à 35 % quand la caméra part.
+
+### L'opacité n'est plus une lecture de la position dans le clip, et c'est délibéré
+
+Le pavé d'origine l'exigeait (« L'OPACITÉ N'EST PAS UNE PHASE : C'EST UNE FONCTION DE
+L'ÉCLATEMENT ») pour une raison qui reste valable : une opacité dotée de ses propres bornes et de
+sa propre inertie s'était désynchronisée trois fois. **Ce que cette règle protégeait est
+l'IMPOSSIBILITÉ d'une désynchronisation, et elle est préservée autrement** : `burstK`, `opaK` et
+`isoK` sont toutes trois des fonctions PURES de la même variable `f`, et toutes trois passent par le
+même lissage, avec le même saut à l'entrée et à la sortie du pas. Aucune n'a d'horloge propre. Ce
+que le découplage autorise, et qui était impossible avant, est le décalage de leurs bornes.
+
+### Effet de bord bienvenu sur la vitesse
+
+La sortie du palier de caméra passe de `SCRUB_OUT + 0,08` (0,88) à 0,72, donc la transition 3 vers 4
+s'étale sur 0,68 pas au lieu de 0,52 : ses 86° sont parcourus sur **31 % de course en plus**.
+C'était la transition la plus rapide de la séquence, et c'est un second point que le client avait
+signalé (« l'animation est plus rapide »). Relevé sur GPU : 506°/s au lieu de 553.
+
+### Relevé final, deux passages complets sur GPU
+
+| | pas atteint | clip | coque | rotation max | images > 25 ms | verre en rotation |
+|---|---|---|---|---|---|---|
+| cran 1 | 1 | 0,00 | 1,00 | 0°/s | 0 ou 1 | **0** |
+| cran 2 | 2 | 0,00 | 1,00 | 320 à 329°/s | 0 | **0** |
+| cran 3 | 3 | **0,92** | **0,26** | 262 à 269°/s | 0 | **0** |
+| cran 4 | 4 | 0,00 | 1,00 | 506°/s | 0 | **0** |
+| cran 5 | sortie | 0,00 | 1,00 | 1°/s | 0 | **0** |
+
+Cadence médiane 16,70 ms partout, sur les dix crans des deux passages.
+
+Un pic isolé à 1 122°/s a été relevé une fois sur une image : c'est le lissage normalisé au temps
+qui rattrape une image longue, donc le comportement voulu et non un défaut. Sans la
+normalisation, la même image longue aurait produit un RETARD au lieu d'un rattrapage.
+
+Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des deux
+accueils en normal et en mouvement réduit, 0 révélation invisible, 0 erreur console. Balayage fin du
+pas 3 en 21 positions : le fondu démarre bien pendant l'ouverture, l'opacité revient bien avant la
+rotation, et la géométrie est encore ouverte quand la caméra part.
