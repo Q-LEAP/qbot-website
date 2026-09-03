@@ -54,6 +54,14 @@ SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
           # le même nom, donc un visiteur déjà venu se serait fait servir les
           # 4,95 Mo de sa version en cache. Un média de 2 Mo est le pire candidat
           # au cache périmé, et le mécanisme est le même que pour une image.
+          # LE MODÈLE 3D EST DANS LA MÊME CATÉGORIE, DEPUIS LE 2026-09-03 : il est
+          # régénéré sous le même nom à chaque changement de géométrie (ajout du
+          # nano-ordinateur ce jour-là), et il est chargé par l'ATTRIBUT `src` du
+          # <model-viewer> des deux accueils, jamais par un script — donc rien
+          # d'autre que ce versionnement ne peut vider le cache du visiteur. Le
+          # `MODEL_VERSION` de `main.js` ne le couvre pas : il vit dans le module
+          # 12, celui de la page « Modèle 3D » supprimée le 2026-08-28.
+          'assets/models/qbot.glb',
           'assets/video/qbot-demo.mp4']
 
 

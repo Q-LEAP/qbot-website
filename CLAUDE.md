@@ -1164,6 +1164,10 @@ Conséquences à ne pas oublier :
 - **La source non texturée est archivée** dans `Documentations/assets-sources/qbot-untextured.glb`
   et c'est *elle* que lit le script. Ne jamais le relancer sur le GLB livré : il le patcherait une
   seconde fois (UV par-dessus UV, matériaux déjà sombres re-assombris).
+  **DEPUIS LE 2026-09-03 CE N'EST PLUS LA SOURCE DIRECTE** : `patchglb-site.py` lit
+  `qbot-untextured-pi.glb`, que `addpi.py` produit à partir de ce fichier-ci et du modèle de
+  Raspberry Pi. `qbot-untextured.glb` reste le boîtier SEUL, et reste intact. Voir la section
+  « Le nano-ordinateur entre dans le modèle 3D ».
 - Contrôlé après coup : éclatement, insertion du téléphone, jour/nuit, FR et EN, plus le repli
   `file://`. Aucune erreur console.
 
@@ -6592,6 +6596,7 @@ rangées de grille signale `.tools__grid` comme irrégulière alors que son `ali
 est voulu (deux colonnes de longueurs différentes, arbitrage du 2026-08-20), et une sonde de
 gouttière signale chaque cellule de grille si elle ne se limite pas aux vrais en-têtes de
 section.
+
 ## La 20e question de la FAQ : plusieurs demandes à la fois (2026-09-03)
 
 Information donnée par le client, et elle referme un point laissé ouvert le 2026-09-02 : le brief
@@ -6622,3 +6627,172 @@ scénarios en parallèle, ne pas inférer un nombre de sessions simultanées.
 la page en portait 19 : le décompte a valu 16, puis 17, puis 19, puis 20, et il a déjà fallu le
 corriger une fois (chantier 06 de l'audit de contrôle n°2). Il est reformulé sans nombre, donc il
 ne peut plus périmer.
+
+## Le nano-ordinateur entre dans le modèle 3D (2026-09-03)
+
+Demande du client : intégrer `RaspberryPi5_4GB.glb` (fourni) dans le boîtier, posé sur le socle
+en bas, et cohérent avec le reste du modèle. Le pas 3 de la séquence de l'accueil s'intitule
+justement « Ce qu'il y a à l'intérieur » et annonce « un Raspberry Pi 5 (Cortex A76, 4 Go) » :
+il décrivait donc depuis toujours une pièce qu'on ne voyait pas.
+
+### La chaîne a un pas de plus, et c'est le premier
+
+    python3 tools/render/addpi.py            # boîtier + carte -> qbot-untextured-pi.glb
+    python3 tools/render/patchglb-site.py     # matière : grain, verre, écran 2FA
+    npx @gltf-transform/cli@4 draco assets/models/qbot.glb assets/models/qbot.glb
+    python3 tools/render/mkdata.py            # sidecar base64
+    node tools/bump-assets.mjs                # empreintes d'actifs
+
+Les deux entrées ne sont jamais réécrites : `qbot-untextured.glb` est le boîtier SEUL,
+`raspberrypi5-source.glb` le modèle fourni tel quel. `patchglb-site.py` lit désormais
+`qbot-untextured-pi.glb` (surchargeable par la variable `SRC`) et **s'arrête si le fichier
+manque** au lieu de recopier le GLB livré dans l'archive, ce que faisait son ancien repli.
+
+`tools/render/mkdata.py` est nouveau : le sidecar base64 était régénéré par un extrait de code
+recopié depuis ce fichier-ci, ce qui est exactement la façon de l'oublier.
+
+### Poids : +118 Ko compressés, et la mesure qui compte
+
+104 232 faces fournies, 24 552 conservées (24 %). Le modèle livré passe de 585 à **714 Ko** en
+Draco, l'accueil de 5,01 à 5,13 Mo. La décimation est nécessaire et **elle ne contredit pas la
+consigne du 2026-07-09** : celle-ci porte sur la COQUE, dont le facettage se voyait et que le
+client a demandé de garder à pleine résolution. Ici l'objet est une carte de 88 mm dans un
+boîtier de 213 mm, vue à travers une coque en verre le temps d'un pas.
+
+**LE MODÈLE FOURNI N'A AUCUN PARTAGE DE SOMMET** : 312 696 sommets pour 104 232 faces, soit trois
+par face. C'est la soudure qui rend la décimation possible : sans elle le simplificateur ne peut
+effondrer aucune arête et une consigne « garder 15 % » ne retire que 0,3 % des faces (mesuré).
+Ordre imposé : souder (312 696 -> 52 378 sommets, sans bouger un sommet ni perdre une face), puis
+décimer, puis **reconstruire les normales par arêtes vives**. Des normales lissées feraient fondre
+un circuit imprimé ; des normales plates seraient justes mais tripleraient à nouveau les sommets.
+
+### Trois outils écartés, et pourquoi
+
+- **open3d est INUTILISABLE sur cette machine.** `open3d 0.18` adossé à `numpy 2.0.2` part en
+  faute de segmentation dès `o3d.utility.Vector3dVector(...)`, y compris sur dix points et y
+  compris en passant une liste Python : la bibliothèque est compilée contre numpy 1.x. Le
+  symptôme trompe, parce qu'il ressemble à des données invalides. Vérifié avant d'accuser
+  l'outil : accesseurs dans les bornes, matrices de nœuds finies et de déterminant positif.
+  La décimation passe donc par `gltf-transform simplify` (meshoptimizer) en sous-processus npx,
+  dépendance qui n'est pas nouvelle puisque la compression Draco l'emploie déjà.
+- **`numpy.matmul` lui aussi tombe en faute de segmentation** sur une cascade de petits produits
+  `(3,3)@(3,N)`, précédée d'avertissements « divide by zero encountered in matmul » sur des
+  données pourtant toutes finies. D'où `xform3()`, qui écrit le produit d'une `(N,3)` par une
+  matrice 3x3 en trois multiplications élémentwise, sans passer par aucune BLAS. À réutiliser si
+  un autre script du dépôt se met à tomber au même endroit (`patchglb-site.py` émet les mêmes
+  avertissements sans tomber, il n'a pas été touché).
+- **`gltf-transform flatten` NE BAKE PAS les transformations** de ce fichier : il laisse les
+  nœuds porter une échelle 0,000998 et une rotation de 180° autour de X. Lire les accesseurs
+  après un `flatten` donne donc des positions en millimètres et à l'envers, et un contrôle de
+  cotes fait là-dessus est faux. `addpi.py` parcourt le graphe et bake lui-même ; les 752 nœuds
+  portent leur transformation sous forme de `matrix` (le boîtier, lui, emploie TRS : les deux
+  formes sont traitées). Contrôle qui valide le bake : la carte tient dans
+  **87,7 x 20,0 x 57,7 mm**, la cote exacte d'une Pi 5.
+
+### La pose : mesurée, pas estimée
+
+Le plateau n'est pas un bac uniforme. Relevé bande par bande : l'arrière (z de -100 à -20 mm) est
+un massif haut de 42 à 74 mm, l'avant (z de -15 à +100 mm) est une plaque plane dont le dessus
+culmine à **4,25 mm** sous l'empreinte visée. C'est ce plancher-là, « le socle en bas », et la
+carte y est posée à cette cote, donc sans traverser aucune nervure.
+
+**Rotation de -90° autour de Y**, pour deux raisons qui vont dans le même sens : le grand côté de
+la carte (87,7 mm) suit alors la profondeur du boîtier (206 mm de plancher libre) et non sa
+largeur (100 mm) ; et le bloc Ethernet/USB, qui déborde du côté +X de la carte, se retrouve tourné
+vers la FACE AVANT, celle qui porte l'embase USB-C du téléphone (`bracket`, z de 88,7 à 103,7 mm).
+Le câblage du produit se lit tout seul. La matrice est une vraie rotation (déterminant +1) et non
+un échange d'axes, qui serait une réflexion et retournerait les normales : même précaution que
+pour le téléphone.
+
+### L'écartement : la coque est EN VERRE, et c'est ce qui change tout
+
+`EXPLODE = (-54, +48, -22) mm`, atteint à t=0,98, avec le keyframe de réassemblage à t=1,0 comme
+les quatre autres pièces. Quinze candidats ont été rendus au cadrage RÉEL du pas (theta -42°,
+phi 66°, r 0,82 m, champ 30°) avant d'arriver là. Trois enseignements, dans l'ordre où ils ont
+coûté du temps :
+
+1. **toute direction vers le BAS sort du cadre.** La carte est posée au fond du bac (y = 4 mm)
+   quand la caméra visait y = 73 mm : elle est déjà au bord bas de l'image AU REPOS. Six
+   candidats « vers le bas » ont été rendus avant de le comprendre ;
+2. **la coque est transparente pendant l'éclatement** (`XRAY_ALPHA = 0,26`), donc la carte n'a
+   aucun besoin de sortir du volume du boîtier. Une recherche qui exige la sortie de la boîte
+   englobante de la coque (ce que j'avais écrit d'abord) élimine mécaniquement toutes les
+   directions vers le haut, c'est-à-dire les bonnes. **UN CANDIDAT NE SE JUGE QU'AU RENDU RÉEL,
+   COQUE EN VERRE COMPRISE** : mes six premiers rendus montraient une coque opaque, donc pas ce
+   que le visiteur voit ;
+3. **la carte est vissée sur le plancher**, son axe de montage est la verticale : « elle sort par
+   le haut » est aussi la convention du dessin d'ensemble. Le décalage vers l'arrière-gauche la
+   dégage du plateau, qui part, lui, vers l'avant-bas-gauche.
+
+Elle se lit ainsi flottant au-dessus du plateau ouvert, entière dans le cadre, et visible pendant
+tout l'éclatement (contrôlé à 55, 70 et 100 % d'ouverture).
+
+**Le rail d'annotations du HUD reçoit une cinquième bague.** `PARTS` dans `scrolly.js` passe de 4
+à 5 entrées ; `burst` est construit par `PARTS.map`, donc rien d'autre à toucher. Attention à la
+conversion : `PARTS[i].v` n'est PAS la valeur du GLB mais **la valeur du GLB multipliée par
+`BURST_END / 0,98`** (le HUD divise par `BURST_END = 0,96667` alors que le keyframe est à 0,98).
+Vérifié sur le plateau : `-0,029886 x 0,986398 = -0,02948`, exactement la valeur déjà écrite.
+D'où, pour la carte, `v = (-0,05327, +0,04735, -0,02170)` et `seat = (0, 0,0143, 0,0425)`.
+
+### La couleur : reconnaissable, mais graduée
+
+Les 12 matériaux fournis n'ont aucune texture, ce sont des couleurs de base. Ils sont recopiés
+assombris vers le vocabulaire du boîtier (le gris des petites pièces du boîtier est repris tel
+quel pour les plastiques clairs), tout en gardant la carte lisible pour ce qu'elle est : circuit
+imprimé vert, blindages métalliques. **Le vert est la seule teinte saturée du modèle en dehors du
+teal**, et c'est assumé : c'est ce qui fait reconnaître une carte électronique. Une seule constante
+à toucher si le client le trouve trop présent, `LOOK['board']` dans `addpi.py`.
+
+Les matériaux sont nommés `pi-*`, et **c'est ce préfixe que `patchglb-site.py` teste** pour ne pas
+leur projeter d'UV ni leur poser le grain de la coque. Le test porte sur le NOM et non sur
+l'indice, pour survivre à l'ajout d'un matériau au boîtier. Les indices en dur de ce script
+(`GLASS_MAT, PHONE_MAT = 3, 4`, `g.meshes[4]`, `g.meshes[5]`) restent valides : la carte est
+ajoutée en queue.
+
+### LE MODÈLE ÉTAIT SERVI SANS EMPREINTE, ET C'EST LE PIÈGE DE CACHE DU 2026-08-25
+
+`assets/models/qbot.glb` est réécrit sous le même nom à chaque changement de géométrie, et il est
+chargé par l'ATTRIBUT `src` du `<model-viewer>` des deux accueils, jamais par un script. Il
+n'était PAS dans la liste de `bump-assets` : un visiteur déjà venu se serait fait servir l'ancien
+modèle, sans carte, depuis son cache. Ajouté aux deux jumeaux (`.py` et `.mjs`, qui doivent rester
+d'accord), empreinte `172314f0`.
+
+Le `MODEL_VERSION` de `main.js` ne couvrait pas ce cas : il vit dans le module 12, celui de la page
+« Modèle 3D » supprimée le 2026-08-28.
+
+### Contrôles
+
+- **La preuve que le boîtier fermé ne montre rien** est un différentiel pixel, pas un coup d'œil :
+  le modèle rendu à t=0 avec et sans le nœud `pi`, aux quatre cadrages de la séquence, donne
+  **0 pixel d'écart** aux pas 1, 3 et 4 et **1 pixel à 8/255** au pas 2. La carte est donc
+  intégralement cachée à l'assemblage.
+- **Le boîtier seul est reproduit à l'identique** : `SRC=qbot-untextured.glb python3
+  patchglb-site.py` redonne 199 898 faces, exactement le compte de l'archive texturée d'avant, et
+  4,72 Mo comme documenté. L'ouverture de la vitre est remesurée à 43,1 x 58,0 mm (44 x 59
+  documentés) et la plaque ramenée à 47,1 x 62,0 (47 x 62 documentés).
+- Les deux moteurs chargent le nouveau modèle : 18 matériaux dont 12 `pi-`, clip de 2 s intact,
+  aucun repli déclenché, 0 erreur console, 0 requête en échec, sur Chromium comme sur WebKit.
+- Séquence parcourue en vrai sur l'accueil : les quatre pas s'enchaînent, l'alpha de la coque
+  passe bien de 1 à 0,26 puis revient, 5 bagues d'assemblage.
+- `audit-a11y.py` à 1440 et 390 px et `audit-visibilite.py` : **17 pages lues sur 17, 0 constat.**
+  Balayage des révélations sur 5 pages x (normal, mouvement réduit) : 0 invisible, 0 débordement,
+  un seul `h1`, aucun `.nb` dans un conteneur flex.
+
+### Une dette trouvée en chemin, PAS corrigée
+
+**`assets/models/qbot.glb.data.js` (952 Ko) n'est plus atteignable par aucune page**, et il est
+pourtant servi. Le seul code qui le charge est le module 12 de `main.js`, celui de la page
+« Modèle 3D » supprimée le 2026-08-28 : plus aucun balisage ne porte `.model-viewer-frame`. Le
+sidecar a quand même été régénéré, parce qu'un second exemplaire du modèle qui traîne PÉRIMÉ est
+pire qu'un second exemplaire à jour. Reste à arbitrer : supprimer le module 12, le sidecar et son
+CSS, ou l'exclure de la publication. **L'audit RosoAI n°6 ne l'avait pas vu parce que la
+référence EXISTE dans `main.js`**, et un relevé qui cherche le nom du fichier dans les sources
+servies le trouve. Le contrôle qui l'attrape est de vérifier que le code qui cite l'actif est
+encore atteignable.
+
+### Deux points pour le client
+
+- **La licence du modèle de Raspberry Pi n'a pas été vue.** Il a été fourni tel quel ; sa
+  géométrie décimée est désormais publiée dans le GLB du site, qui est un site commercial. À
+  confirmer par le client, comme la question s'était posée pour les visuels.
+- **Le vert du circuit imprimé** est la seule couleur saturée du modèle hors teal.

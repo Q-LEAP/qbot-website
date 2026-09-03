@@ -48,6 +48,11 @@ const SUIVIS = [
   // donc un visiteur déjà venu se serait fait servir les 4,95 Mo de sa version
   // en cache. Cf. la note du jumeau Python.
   'assets/video/qbot-demo.mp4',
+  // LE MODÈLE 3D EST DANS LA MÊME CATÉGORIE, DEPUIS LE 2026-09-03 : régénéré
+  // sous le même nom à chaque changement de géométrie, et chargé par l'ATTRIBUT
+  // `src` du <model-viewer> des deux accueils, jamais par un script. Cf. le
+  // jumeau Python.
+  'assets/models/qbot.glb',
 ];
 
 const empreinte = c =>

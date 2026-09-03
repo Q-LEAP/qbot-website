@@ -24,7 +24,8 @@ Deux contraintes qui n'existent pas pour le rendu hors-ligne :
 Comme `patchglb.py`, on PATCHE le GLB (pygltflib) sans le ré-exporter : le clip
 « Explode » doit survivre, c'est lui qui pose le téléphone sur son socle.
 
-    python3 patchglb-site.py            # écrit assets/models/qbot.glb (sauvegarde .bak)
+    python3 addpi.py                    # d'abord : ajoute le nano-ordinateur
+    python3 patchglb-site.py            # écrit assets/models/qbot.glb
 
 Après exécution, régénérer le sidecar base64 (cf. CLAUDE.md) :
     qbot.glb.data.js, sinon l'ouverture en file:// affiche l'ancien modèle.
@@ -44,9 +45,13 @@ GLASS_ALPHA = float(os.environ.get('GLASS_ALPHA', 0.42))
 
 # Source = le modèle NON texturé archivé, jamais le fichier livré : relancer le
 # script sur un GLB déjà patché le patcherait une seconde fois.
-BAK = os.path.join(HERE, '..', '..', 'Documentations', 'assets-sources', 'qbot-untextured.glb')
+# C'est la sortie de `addpi.py` (boîtier + nano-ordinateur), et non
+# `qbot-untextured.glb`, qui est le boîtier SEUL et reste la source d'origine.
+BAK = os.path.join(HERE, '..', '..', 'Documentations', 'assets-sources',
+                   os.environ.get('SRC', 'qbot-untextured-pi.glb'))
 if not os.path.exists(BAK):
-    shutil.copy(GLB, BAK)
+    raise SystemExit(f"source absente : {BAK}\n"
+                     "la produire d'abord : python3 tools/render/addpi.py")
 # load_binary explicite : pygltflib choisit son parseur d'après l'extension,
 # et « .bak » le ferait partir sur du glTF JSON.
 g = GLTF2().load_binary(BAK)
@@ -92,9 +97,18 @@ TEX_N = add_png(TEX_NORMAL)
 
 # ── 1. UV par sommet, axe dominant de la normale ──────────────────────────
 GLASS_MAT, PHONE_MAT = 3, 4
+# Les matériaux `pi-*` sont ceux du nano-ordinateur, posés par `addpi.py`. Ils
+# sont écartés ici : le grain de la coque n'a rien à faire sur un circuit
+# imprimé, et les UV qu'on leur projetterait ne seraient lues par aucune texture
+# — 8 octets par sommet pour rien dans un fichier téléchargé par le visiteur.
+# Le test porte sur le NOM et non sur l'indice : ainsi il survit à l'ajout d'un
+# matériau au boîtier, qui décalerait les indices.
+def est_pi(mat):
+    return (g.materials[mat].name or '').startswith('pi-')
+
 for mi, me in enumerate(g.meshes):
     for pr in me.primitives:
-        if pr.material in (GLASS_MAT, PHONE_MAT): continue
+        if pr.material in (GLASS_MAT, PHONE_MAT) or est_pi(pr.material): continue
         if pr.attributes.TEXCOORD_0 is not None: continue
         pos = read_acc(pr.attributes.POSITION).astype(np.float32)
         if pr.attributes.NORMAL is not None:
