@@ -243,20 +243,47 @@
      la caméra ne bouge. C'est l'acquis de la passe précédente, il est conservé. */
   var BURST_FULL = 0.34;   // fin de l'ouverture, début de la tenue
   var BURST_HOLD = 0.66;   // fin de la tenue, début de la refermeture
+  /* Fin de l'isolement de la carte : 0,605 est la fraction où le texte du pas est
+     CENTRÉ dans l'écran, valeur déjà relevée pour cette séquence (cf. le pavé
+     ci-dessus). L'isolement se termine donc pile à l'instant où le visiteur lit
+     « Ce qu'il y a à l'intérieur », ce qui est la demande du client : ni pendant
+     l'ouverture, ni à la fin du pas. Il commence à BURST_FULL, c'est-à-dire quand
+     le boîtier est grand ouvert : les deux temps ne se chevauchent pas. */
+  var ISO_END = 0.605;
   var SHELL_MAT  = 1;                       // 0 plateau, 1 coque, 2 petites pièces…
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
-  var shellMat = null, shellRGB = null, shellBlend = false;
 
-  function resolveShell() {
+  /* ── ISOLEMENT DE LA CARTE ────────────────────────────────────────────────
+     Le pas s'appelle « Ce qu'il y a à l'intérieur » et son texte nomme le nano-
+     ordinateur : à l'instant où on le lit, c'est LUI qui doit être la seule chose
+     solide de l'image. Le boîtier ne disparaît pas pour autant, il reste
+     légèrement visible, sinon la carte flotte dans le vide et on perd l'échelle.
+
+     LE TRI SE FAIT PAR LE NOM DU MATÉRIAU, ET C'EST LA SEULE FAÇON SÛRE. Les cinq
+     matériaux du boîtier n'ont pas de nom dans le fichier (ils sont désignés par
+     leur index), tandis que les douze de la carte sont nommés `pi-*` par
+     `addpi.py`. Un test par index se casserait au premier matériau ajouté au
+     boîtier ; un test sur le préfixe survit, et il vaut aussi pour une pièce qui
+     serait ajoutée plus tard à la carte. */
+  var fadeMats = null;    // tout ce qui n'est PAS la carte, avec sa couleur de base
+
+  function resolveMats() {
     try {
       var mats = viewer.model && viewer.model.materials;
-      if (!mats || mats.length <= SHELL_MAT) return null;
-      var m = mats[SHELL_MAT];
-      var c = m.pbrMetallicRoughness.baseColorFactor;
-      for (var i = 0; i < 3; i++) if (Math.abs(c[i] - SHELL_BASE[i]) > 0.02) return null;
-      shellRGB = [c[0], c[1], c[2]];
-      return m;
-    } catch (e) { return null; }
+      if (!mats || mats.length <= SHELL_MAT) return false;
+      /* La coque reste identifiée par sa couleur de base : en cas d'écart, le
+         modèle n'est pas celui qu'on croit et l'effet se désactive en bloc plutôt
+         que de rendre translucide une pièce au hasard. */
+      var c = mats[SHELL_MAT].pbrMetallicRoughness.baseColorFactor;
+      for (var i = 0; i < 3; i++) if (Math.abs(c[i] - SHELL_BASE[i]) > 0.02) return false;
+      fadeMats = [];
+      for (var k = 0; k < mats.length; k++) {
+        if (/^pi-/.test(mats[k].name || '')) continue;
+        var b = mats[k].pbrMetallicRoughness.baseColorFactor;
+        fadeMats.push({ m: mats[k], rgb: [b[0], b[1], b[2]], shell: k === SHELL_MAT, blend: false });
+      }
+      return fadeMats.length > 0;
+    } catch (e) { fadeMats = null; return false; }
   }
 
   /* Le mode alpha ne change qu'au franchissement du seuil : le basculer à chaque
@@ -275,16 +302,18 @@
      étant transparente, il n'y a plus de cavité à noircir. Simple face le temps de
      la transparence, double face dès le retour à l'opacité — un seul appel au
      franchissement du seuil, comme pour le mode alpha. */
-  function setShellAlpha(a) {
-    if (!shellMat) return;
-    var blend = a < 0.99;
-    if (blend !== shellBlend) {
-      shellMat.setAlphaMode(blend ? 'BLEND' : 'OPAQUE');
-      if (shellMat.setDoubleSided) shellMat.setDoubleSided(!blend);
-      shellBlend = blend;
+  function setXray(aShell, aReste) {
+    if (!fadeMats) return;
+    for (var k = 0; k < fadeMats.length; k++) {
+      var e = fadeMats[k], a = e.shell ? aShell : aReste, blend = a < 0.99;
+      if (blend !== e.blend) {
+        e.m.setAlphaMode(blend ? 'BLEND' : 'OPAQUE');
+        if (e.m.setDoubleSided) e.m.setDoubleSided(!blend);
+        e.blend = blend;
+      }
+      e.m.pbrMetallicRoughness.setBaseColorFactor(
+        [e.rgb[0], e.rgb[1], e.rgb[2], blend ? a : 1]);
     }
-    shellMat.pbrMetallicRoughness.setBaseColorFactor(
-      [shellRGB[0], shellRGB[1], shellRGB[2], blend ? a : 1]);
   }
 
   /* ── Dérive au repos ──────────────────────────────────────────────────────
@@ -316,14 +345,14 @@
   var camPosee = false;   // cf. « le plan coté n'apparaît que caméra arrivée »
   var lastShown = null;   // angle RÉEL de la caméra à l'image précédente, en degrés
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
-              zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1 };
+              zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1, iso: 0, isoA: 1 };
   var loaded = false, running = false, lastP = -1, wasScrub = false, onScreen = false;
 
   if (viewer) {
     viewer.addEventListener('load', function () {
       loaded = true;
       viewer.pause();          // sinon l'horloge interne écrase nos écritures
-      shellMat = resolveShell();
+      resolveMats();
       apply(true);
     });
   }
@@ -860,6 +889,22 @@
                : f <= BURST_FULL       ? f / BURST_FULL
                : f <= BURST_HOLD       ? 1
                : 1 - (f - BURST_HOLD) / (1 - BURST_HOLD);
+    /* L'ISOLEMENT NE PEUT PAS ÊTRE UNE FONCTION DE LA POSITION DANS LE CLIP,
+       contrairement à l'opacité de la coque, et ce n'est pas un oubli : pendant la
+       TENUE le clip est à sa borne et ne bouge plus, par construction — c'est ce
+       palier qui rend le boîtier ouvert lisible. Un second temps pendant la tenue
+       ne peut donc se lire que sur le défilement. Il est en revanche soumis
+       exactement à la même discipline que `cur.t` (saut à l'entrée et à la sortie
+       du pas, lissage à 0,22 pendant), donc les deux ne peuvent pas se
+       désynchroniser : c'est la mise en garde du pavé « L'OPACITÉ N'EST PAS UNE
+       PHASE », et elle est respectée.
+       Pendant la refermeture, l'isolement suit `burstK` : les pièces redeviennent
+       solides à mesure que le boîtier se referme, et la valeur est continue au
+       passage de BURST_HOLD, où `burstK` vaut encore 1. */
+    var isoK = !scrub               ? 0
+             : f <= BURST_FULL      ? 0
+             : f <= BURST_HOLD      ? Math.min(1, (f - BURST_FULL) / (ISO_END - BURST_FULL))
+             : burstK;
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
     var seg = tTarget < PHONE_HANDOFF;
     /* À l'instant où l'on entre ou sort du pas, on SAUTE : un lissage produisait un
@@ -878,6 +923,11 @@
     else if (scrub !== wasScrub || jump) cur.t = tTarget;   // entrée/sortie du pas, ou saut
     else if (scrub) cur.t = lerp(cur.t, tTarget, 0.22);     // pendant le pas
     else cur.t = lerp(cur.t, tTarget, k);
+    /* Le même mot à mot que ci-dessus, sur la même valeur de lissage : c'est ce qui
+       garantit que l'isolement ne prend jamais un pixel de retard sur l'ouverture. */
+    if (scrub !== wasScrub || jump) cur.iso = isoK;
+    else if (scrub) cur.iso = lerp(cur.iso, isoK, 0.22);
+    else cur.iso = lerp(cur.iso, isoK, k);
     wasScrub = scrub;
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
     if (cur.t > 0.98 && cur.t < PHONE_HANDOFF) cur.t = 0.98;
@@ -888,6 +938,11 @@
        reste utile, l'œil étant plus sensible aux premiers pourcents de transparence
        qu'aux derniers. */
     cur.alpha = 1 - (1 - XRAY_ALPHA) * smooth(Math.min(1, cur.t / EXPLODE_END));
+    /* Le reste du boîtier — plateau, petites pièces, embase, vitre — descend à la
+       MÊME opacité que la coque, et pas plus bas : la carte devient ainsi la seule
+       pièce solide de l'image, tout en laissant le boîtier « légèrement visible »,
+       ce qui est ce qui donne l'échelle. La carte, elle, n'est jamais touchée. */
+    cur.isoA = 1 - (1 - XRAY_ALPHA) * smooth(Math.max(0, Math.min(1, cur.iso)));
 
     /* La dérive s'ajoute à l'orbite calculée, elle ne la remplace pas : le
        scrub garde donc la main, et `idleK` fait le fondu dans les deux sens pour
@@ -958,7 +1013,7 @@
       var spin = lastShown === null ? 0 : Math.abs(shown - lastShown);
       lastShown = shown;
       var still = Math.min(1, Math.max(0, (0.35 - spin) / 0.25));
-      setShellAlpha(1 - (1 - cur.alpha) * still);
+      setXray(1 - (1 - cur.alpha) * still, 1 - (1 - cur.isoA) * still);
     }
     stage.style.setProperty('--sc-zoom', cur.zoom.toFixed(4));
     stage.style.setProperty('--sc-glow', (p * 60 - 30).toFixed(1) + 'px');
@@ -1039,6 +1094,14 @@
 
     var moving = Math.abs(g.theta - cur.theta) > 0.01 || Math.abs(tTarget - cur.t) > 0.001 ||
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
+                 /* L'ISOLEMENT DOIT FIGURER ICI, et son absence a été mesurée avant
+                    d'être corrigée : la boucle s'arrêtait dès que la caméra et le clip
+                    étaient posés, donc au milieu du fondu. Relevé à l'instant où le
+                    texte est centré : opacité du boîtier à 0,49 au lieu de 0,26, soit
+                    un isolement à moitié fait, et rien pour le reprendre puisque plus
+                    aucune image n'était demandée. Toute valeur lissée ajoutée à
+                    `apply()` doit entrer dans ce test. */
+                 Math.abs(isoK - cur.iso) > 0.002 ||
                  /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
                     c'est-à-dire précisément quand elle doit jouer. */
                  idle || idleK > 0.002 || camLag;

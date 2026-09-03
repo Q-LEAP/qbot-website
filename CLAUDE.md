@@ -6796,3 +6796,65 @@ encore atteignable.
   géométrie décimée est désormais publiée dans le GLB du site, qui est un site commercial. À
   confirmer par le client, comme la question s'était posée pour les visuels.
 - **Le vert du circuit imprimé** est la seule couleur saturée du modèle hors teal.
+
+## Tout s'efface sauf la carte, à l'instant où on lit le texte (2026-09-03)
+
+Demande du client, en réponse à une question sur l'emplacement : « c'est mieux de rendre
+transparent dès l'instant où l'on lit "ce qu'il y a l'intérieur" au milieu de l'écran ». Le pas
+nomme le nano-ordinateur, il devait donc être la seule chose solide de l'image à cet instant.
+
+Ce n'est PAS à la fin du pas ni à la fin de la séquence, les deux autres emplacements envisagés.
+Le pas a maintenant deux temps dans un seul geste :
+
+    f = 0     -> 0.34   le boîtier s'ouvre, la coque devient du verre  (inchangé)
+    f = 0.34  -> 0.605  le RESTE du boîtier s'efface à son tour, la carte reste solide
+    f = 0.605 -> 0.66   palier : le texte est centré, on lit          (inchangé)
+    f = 0.66  -> 1.00   tout redevient solide en même temps que le boîtier se referme
+
+**`ISO_END = 0.605` n'est pas un réglage, c'est une mesure.** C'est la fraction de la fenêtre de
+scrub où la carte de texte est centrée dans l'écran, et le pavé de commentaires de `scrolly.js`
+l'annonçait déjà pour une autre raison. Vérifié en relevant l'écart entre le centre de la carte
+et le centre de la fenêtre, à quatre tailles d'écran : **carte centrée à f = 0,602 à 0,604 à
+1440x900, 1440x700, 1920x1080 et 1280x720**, donc la valeur ne dépend pas de la hauteur de la
+fenêtre. Relevé après coup à l'instant exact où la carte est centrée (écart +5 px) : boîtier à
+**0,27**, carte à **1,00**.
+
+### Le tri se fait par le NOM du matériau
+
+Les cinq matériaux du boîtier n'ont pas de nom dans le GLB, les douze de la carte sont nommés
+`pi-*` par `addpi.py`. Tout ce qui n'est pas `pi-*` s'efface, la carte n'est jamais touchée. Un
+test par index se casserait au premier matériau ajouté au boîtier ; le préfixe survit, et il vaut
+aussi pour une pièce qu'on ajouterait plus tard à la carte. Le garde-fou d'avant est conservé : la
+couleur de base de la coque est vérifiée, et en cas d'écart l'effet se désactive **en bloc** plutôt
+que de rendre translucide une pièce au hasard.
+
+`setShellAlpha` devient `setXray(aCoque, aReste)` et suit le mode alpha **par matériau** au lieu
+d'un seul drapeau : le plateau et les petites pièces sont `doubleSided` comme la coque, donc ils
+demandent le même passage en simple face pendant la transparence (sinon les faces arrière
+s'additionnent aux faces avant sans tri de profondeur, le défaut déjà documenté).
+
+### LE PIÈGE : LA BOUCLE S'ARRÊTAIT AU MILIEU DU FONDU
+
+Défaut introduit puis mesuré puis corrigé dans la même passe, et il vaut pour toute valeur lissée
+qu'on ajoutera à `apply()`. La boucle rAF ne tourne que tant que `moving` est vrai, et `moving`
+énumère les valeurs qui n'ont pas rejoint leur cible : caméra, position dans le clip, zoom, rayon.
+L'isolement n'y figurait pas. Résultat relevé à l'instant où le texte est centré : **opacité du
+boîtier à 0,49 au lieu de 0,26**, un isolement à moitié fait, et rien pour le reprendre puisque
+plus aucune image n'était demandée. Le symptôme est trompeur, il ressemble à une constante mal
+réglée : j'ai d'abord cherché à corriger `ISO_END`, alors que la mesure de la position de la carte
+disait que la constante était juste.
+
+### Pourquoi l'isolement ne peut PAS être une fonction de la position dans le clip
+
+Le fichier porte un pavé qui l'exige pour l'opacité de la coque (« L'OPACITÉ N'EST PAS UNE PHASE :
+C'EST UNE FONCTION DE L'ÉCLATEMENT »), et cette règle-ci ne peut pas s'y plier : pendant la TENUE
+le clip est à sa borne et ne bouge plus, par construction, puisque c'est ce palier qui rend le
+boîtier ouvert lisible. Un second temps pendant la tenue ne peut donc se lire que sur le
+défilement. Il est en revanche soumis **exactement** à la même discipline que `cur.t` : saut à
+l'entrée et à la sortie du pas, saut sur un saut de défilement, lissage à 0,22 pendant. Les deux
+ne peuvent donc pas se désynchroniser, ce qui est ce que le pavé protège.
+
+Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des révélations
+sur les deux accueils en normal et en mouvement réduit, 0 anomalie, 0 erreur console. Relevé du
+fondu sur 20 positions de défilement : monotone à l'aller comme au retour, boîtier revenu à 1,00
+avant que la caméra ne pivote vers le pas suivant.
