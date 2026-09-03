@@ -4705,6 +4705,14 @@ hors robots, non liées, et inscrites dans la liste « JAMAIS » de « go-live.p
 quoi le jour J aurait publié un accueil en double. À soumettre au client pour qu'il
 compare.
 
+**SUPPRIMÉE LE 2026-09-03 SUR DÉCISION DU CLIENT**, après comparaison : « la homepage
+bis tu peux supprimer ». Les deux pages et leur générateur sont partis, la ligne
+« JAMAIS » de « go-live.py » retombe à la seule 404 et « bookings_conf.py » n'annonce
+plus le générateur dans sa chaîne. La leçon qui reste, elle, vaut pour la prochaine
+maquette de comparaison : une page hors plan du site est quand même attrapée par le
+balayage de « go-live.py », donc elle doit figurer dans « JAMAIS » ou le jour J
+publiera un accueil en double.
+
 **La retouche de la photo du poste de travail. FERMÉE PAR LE CLIENT le 2026-08-31 :
 « on oublie pour la photo du poste de travail ».** Ce n'est donc plus un point à
 reprendre, et il ne faut ni la retenter, ni proposer une nouvelle photo ou un rendu.

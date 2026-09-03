@@ -16,7 +16,6 @@ Même raison que « redirections_map.py » et « vignettes_guides.py ».
 
 POUR CHANGER D'AGENDA : modifier URL ci-dessous, puis
     python3 tools/maj-nav-booking.py
-    python3 tools/gen-accueil-bis.py
     node tools/bump-assets.mjs
 """
 
