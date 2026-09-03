@@ -6592,3 +6592,33 @@ rangées de grille signale `.tools__grid` comme irrégulière alors que son `ali
 est voulu (deux colonnes de longueurs différentes, arbitrage du 2026-08-20), et une sonde de
 gouttière signale chaque cellule de grille si elle ne se limite pas aux vrais en-têtes de
 section.
+## La 20e question de la FAQ : plusieurs demandes à la fois (2026-09-03)
+
+Information donnée par le client, et elle referme un point laissé ouvert le 2026-09-02 : le brief
+de review demandait cette question, elle n'avait pas été écrite faute de savoir ce que fait le
+produit. Réponse du client : « Q-Bot les traite un à un en fonction de l'arrivée des demandes. »
+
+La question est ajoutée aux DEUX FAQ, en **position 20**, comme les questions 18 et 19 du
+2026-09-02 : on ajoute en queue plutôt qu'en milieu de liste, ce qui évite toute renumérotation
+et donc toute ancre cassée. Elle ne va PAS sur `commandez` / `en/order`, qui portent quatre
+questions de conversion et non la liste complète, exactement comme les deux précédentes.
+
+Trois emplacements par langue, et en oublier un sort la question du sommaire ou des données
+structurées : le bloc visible, l'index en tête de page, le `FAQPage`. **L'entrée JSON-LD est
+CLONÉE de la dernière question et seules ses deux chaînes sont remplacées**, parce que les deux
+langues n'indentent pas ce bloc pareil (12 espaces côté anglais, 10 côté français) : un gabarit
+retapé à la main s'applique à l'une et échoue en silence sur l'autre. Contrôle :
+`tools/sync-faq-jsonld.py` compare **40 entrées et n'en recale aucune**, donc le texte visible et
+sa copie structurée sont identiques dans les deux langues.
+
+Le fait ajouté est le SEUL que le client ait donné, et rien n'est extrapolé au-delà de ce que le
+site publie déjà : « un appareil filaire par boîtier » vient du guide LuxTrust, donc « deux
+scénarios ne s'exécutent jamais en parallèle » est une conséquence et non une invention. Réponses
+de 51 mots en français et 52 en anglais, dans la fenêtre de 40 à 60 mots qui se fait citer.
+`llms.txt` porte le même fait avec sa mise en garde : ne pas décrire Q-Bot comme exécutant des
+scénarios en parallèle, ne pas inférer un nombre de sessions simultanées.
+
+**Et le commentaire de l'index ne compte plus les questions.** Il annonçait « dix-sept » alors que
+la page en portait 19 : le décompte a valu 16, puis 17, puis 19, puis 20, et il a déjà fallu le
+corriger une fois (chantier 06 de l'audit de contrôle n°2). Il est reformulé sans nombre, donc il
+ne peut plus périmer.

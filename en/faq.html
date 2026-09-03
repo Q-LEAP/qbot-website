@@ -249,6 +249,14 @@
             "@type": "Answer",
             "text": "No, not during test runs. The device is self-hosted: it runs on your network, the web interface and the API answer there, and scenarios and their screenshots stay on it. No call to an outside service is needed to run a scenario."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if several requests arrive at the same time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved."
+          }
         }
     ]
   }
@@ -326,8 +334,10 @@
     <div class="faq-layout">
     <!-- Index des questions : les libellés sont EXACTEMENT ceux des questions,
          rien n'est reformulé et aucun thème n'est inventé — la page n'en a pas.
-         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, dix-sept entrées de
-         plus au-dessus de dix-sept questions repliées n'aident personne. -->
+         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, autant d'entrées
+         d'index au-dessus d'autant de questions repliées n'aident personne.
+         AUCUN NOMBRE ICI, À DESSEIN : la FAQ en a compté 16, puis 17, puis 19,
+         puis 20, et ce commentaire annonçait encore « dix-sept » le 2026-09-03. -->
     <nav class="faq-index" aria-label="Question index">
       <span class="faq-index__rail" aria-hidden="true"></span>
       <ol class="faq-index__list">
@@ -350,6 +360,7 @@
         <li><a href="#faq-q17"><span class="faq-index__num" aria-hidden="true">17</span><span class="faq-index__txt">Does <span class="nb">Q-Bot</span> work with iOS (iPhone)?</span></a></li>
         <li><a href="#faq-q18"><span class="faq-index__num" aria-hidden="true">18</span><span class="faq-index__txt">Do you need a shared secret to automate 2FA?</span></a></li>
         <li><a href="#faq-q19"><span class="faq-index__num" aria-hidden="true">19</span><span class="faq-index__txt">Does <span class="nb">Q-Bot</span> need an internet connection?</span></a></li>
+        <li><a href="#faq-q20"><span class="faq-index__num" aria-hidden="true">20</span><span class="faq-index__txt">What happens if several requests arrive at the same time?</span></a></li>
       </ol>
     </nav>
     <div class="faq__list">
@@ -534,6 +545,18 @@
         </button>
         <div class="faq-item__answer" id="faq-a19" role="region" aria-labelledby="faq-b19">
           <p>No, not during test runs. The device is self-hosted: it runs on your network, the web interface and the API answer there, and scenarios and their screenshots stay on it. No call to an outside service is needed to run a scenario.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q20">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b20" aria-controls="faq-a20">
+          What happens if several requests arrive at the same time?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a20" role="region" aria-labelledby="faq-b20">
+          <p>They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved.</p>
         </div>
       </div>
 

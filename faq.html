@@ -250,6 +250,14 @@
           "@type": "Answer",
           "text": "Non, pas pendant les tests. Le boîtier est auto-hébergé : il tourne sur votre réseau, l'interface web et l'API y répondent, et les scénarios comme leurs captures restent stockés dessus. Aucun appel vers un service extérieur n'est nécessaire pour exécuter un scénario."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Que se passe-t-il si plusieurs demandes arrivent en même temps ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Elles sont traitées l'une après l'autre, dans leur ordre d'arrivée. Le boîtier pilote un seul smartphone, donc deux scénarios ne s'exécutent jamais en parallèle : une demande reçue pendant qu'un scénario tourne attend la fin de celui-ci, puis démarre à son tour. Rien n'est perdu et l'ordre des appels est respecté."
+        }
       }
     ]
   }
@@ -334,8 +342,10 @@
     <div class="faq-layout">
     <!-- Index des questions : les libellés sont EXACTEMENT ceux des questions,
          rien n'est reformulé et aucun thème n'est inventé — la page n'en a pas.
-         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, dix-sept entrées de
-         plus au-dessus de dix-sept questions repliées n'aident personne. -->
+         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, autant d'entrées
+         d'index au-dessus d'autant de questions repliées n'aident personne.
+         AUCUN NOMBRE ICI, À DESSEIN : la FAQ en a compté 16, puis 17, puis 19,
+         puis 20, et ce commentaire annonçait encore « dix-sept » le 2026-09-03. -->
     <nav class="faq-index" aria-label="Index des questions">
       <span class="faq-index__rail" aria-hidden="true"></span>
       <ol class="faq-index__list">
@@ -358,6 +368,7 @@
         <li><a href="#faq-q17"><span class="faq-index__num" aria-hidden="true">17</span><span class="faq-index__txt"><span class="nb">Q-Bot</span> fonctionne-t-il avec iOS (iPhone)&nbsp;?</span></a></li>
         <li><a href="#faq-q18"><span class="faq-index__num" aria-hidden="true">18</span><span class="faq-index__txt">Faut-il une clé secrète pour automatiser la 2FA&nbsp;?</span></a></li>
         <li><a href="#faq-q19"><span class="faq-index__num" aria-hidden="true">19</span><span class="faq-index__txt"><span class="nb">Q-Bot</span> nécessite-t-il une connexion internet&nbsp;?</span></a></li>
+        <li><a href="#faq-q20"><span class="faq-index__num" aria-hidden="true">20</span><span class="faq-index__txt">Que se passe-t-il si plusieurs demandes arrivent en même temps&nbsp;?</span></a></li>
       </ol>
     </nav>
     <div class="faq__list">
@@ -619,6 +630,18 @@
         </button>
         <div class="faq-item__answer" id="faq-a19" role="region" aria-labelledby="faq-b19">
           <p>Non, pas pendant les tests. Le boîtier est auto-hébergé&nbsp;: il tourne sur votre réseau, l'interface web et l'API y répondent, et les scénarios comme leurs captures restent stockés dessus. Aucun appel vers un service extérieur n'est nécessaire pour exécuter un scénario.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q20">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b20" aria-controls="faq-a20">
+          Que se passe-t-il si plusieurs demandes arrivent en même temps&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a20" role="region" aria-labelledby="faq-b20">
+          <p>Elles sont traitées l'une après l'autre, dans leur ordre d'arrivée. Le boîtier pilote un seul smartphone, donc deux scénarios ne s'exécutent jamais en parallèle&nbsp;: une demande reçue pendant qu'un scénario tourne attend la fin de celui-ci, puis démarre à son tour. Rien n'est perdu et l'ordre des appels est respecté.</p>
         </div>
       </div>
 
