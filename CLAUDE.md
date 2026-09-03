@@ -6400,3 +6400,137 @@ Règle : on borne sur une chaîne unique ou sur un motif tempéré (`(?!\s*</?ta
 jamais sur un tag répété ; un motif de ligne s'écrit `[^\n]*` sans DOTALL ; une
 borne d'indentation porte son saut de ligne ; et un contrôle de reste vise
 l'attribut (`class="x"`), pas le mot.
+## Passe ergonomie du 2026-09-03 : quatre défauts, tous mesurés
+
+Passe demandée en clôture du lot de retours du 2026-09-02. Les deux audits du dépôt
+(`audit-a11y.py`, `audit-visibilite.py`) donnaient **0 constat sur 17 pages, à 1440 comme à
+390 px**, avant comme après. Les quatre défauts trouvés sont hors de leur champ : ils
+mesurent le DOM et les métadonnées, pas la géométrie de lecture ni le résultat d'un clic.
+
+### 1. AUCUNE ANCRE NE RÉSERVAIT LA PLACE DE LA BARRE
+
+`scroll-padding-top` n'existait nulle part, et `scroll-margin-top` non plus. La barre est
+collante et haute de **72 px à toutes les largeurs** (relevé de 375 à 2560 px), donc elle
+occulte en permanence le haut de la zone de défilement.
+
+Mesuré au clic, pas déduit : un clic dans l'index de la FAQ sur « Combien coûte Q-Bot ? »
+amenait la question à **0 px du haut de la fenêtre**, donc entièrement derrière la barre.
+Le visiteur cliquait un intitulé et atterrissait au milieu de la réponse. Même effet à
+l'arrivée directe sur `cas-usage.html#cas`, que 17 pieds de page visent.
+
+Le correctif est **une déclaration sur la zone de défilement**, dérivée d'un jeton `--nav-h`
+neuf qui remplace les trois `72px` écrits en dur (hauteur de `.nav__inner`, `top` du menu
+déroulant, décalage d'ancre). Pas de `scroll-margin` sur les cibles : il y a 19 questions
+par langue, cinq exemples d'appel, les pas de la séquence et les sections à ancre, et une
+ancre écrite plus tard n'aurait pas la règle.
+
+**ET UNE COURSE AVEC LA RÉVÉLATION RESTAIT, VISIBLE DANS L'INDEX DE LA FAQ SEULEMENT.** Le
+calage d'ancre se calcule sur la boîte VISUELLE, transformations comprises. La variante
+« carte » du module 4 part de `translateY(30px)` : le navigateur croyait la question 30 px
+plus bas, calait d'autant trop bas, puis la révélation la faisait remonter sous la barre.
+**La signature du défaut est qu'il n'existait pas en mouvement réduit** ; c'est ce qui l'a
+identifié. Le module 16 pose donc la révélation de sa cible, sans animer, avant de laisser
+le navigateur caler.
+
+Relevé après : **56 ancres cliquées sur 14 pages**, à 1440 et 390 px, toutes à 16 px sous la
+barre, et le même calage en mouvement normal comme réduit.
+
+### 2. LES PLAFONDS DE LECTURE ÉTAIENT EN PIXELS POUR UNE CIBLE EN CARACTÈRES
+
+Le bloc « PLAFONDS DE LECTURE » de la feuille de style se donne pour cible 80 caractères par
+ligne. Il ne la tenait pas, et personne ne l'avait vérifié : la valeur était écrite en
+pixels, ce qui n'est juste que pour UNE taille de police.
+
+| bloc | avant | après |
+|---|---|---|
+| réponse de FAQ (15 px) | 758 px, **93 car.** | 658 px, 79 car. |
+| réponse de FAQ, EN | 758 px, 89 car. | 658 px, 80 car. |
+| politique de confidentialité (16 px) | 780 px, **99 car.** | 629 px, 81 car. |
+| politique, EN | 780 px, 98 car. | 629 px, 79 car. |
+
+D'où le `ch`, et ce n'est pas une coquetterie d'unité : `.container > p` porte de la prose à
+15 px (86 car. à 760 px) et à 17 px (77 car. à la même largeur), donc **aucune valeur en
+pixels ne convient aux deux**. En `ch` le plafond suit la police.
+
+**LES DEUX VALEURS DIFFÈRENT PARCE QUE LA PROSE DIFFÈRE** : le registre juridique a des mots
+plus longs, donc moins d'espaces, donc plus de caractères pour la même largeur. À 78ch les
+politiques remonteraient à 90 car. On mesure chaque contexte, on ne déduit pas l'un de
+l'autre.
+
+Sur les pages légales le plafond va au CONTENEUR et non à ses paragraphes, contrairement aux
+réponses de FAQ : leurs `h2` portent un filet bas, et le poser sur les seuls paragraphes
+laisserait ce filet dépasser le texte de 150 px.
+
+`.section-subtitle` est vérifiée saine et n'a pas bougé : 600 px à 17 px donne 64 à 68 car.
+
+**Piège de sonde à connaître** : mesurer une largeur de ligne en posant un `max-width` EN
+LIGNE ne marche pas ici, le style calculé ne bouge pas (constaté même avec `!important`).
+Il faut **injecter une règle** (`add_style_tag`), ce qui est de toute façon ce qu'on va
+écrire dans la feuille.
+
+### 3. LE TABLEAU D'INTÉGRATION AVAIT LAISSÉ UNE LIGNE ET UN DÉBORDEMENT
+
+Les cinq exemples d'appel sont devenus des accordéons le 2026-09-02 et les six lignes du
+tableau « L'appel, selon votre outil » ont été retirées à cette occasion. La suppression a
+laissé son titre, l'ouverture de sa grille et **une** ligne, Selenium, qui redit l'accordéon
+juste au-dessus.
+
+La note finale se retrouvait donc **élément de grille** dans `.specs__list`. Large de 760 px
+par son propre plafond de lecture, elle imposait sa largeur à la colonne des libellés :
+**débordement horizontal de 289 px à 601 px de large, 122 px à 768 px, 30 px à 860 px**, dans
+les deux langues. La page défilait latéralement sur une tablette. Et un `<div>` restait
+ouvert dans `<main>` (50 ouverts pour 49 fermés).
+
+C'est le sixième cas de la famille des cinq pièges du 2026-09-02, et **le contrôle qui
+l'attrape est une assertion de STRUCTURE** (le compte des `<div>` de `<main>`), pas une
+relecture.
+
+### 4. LES FLÈCHES DU CARROUSEL NE BOUCLAIENT PAS, SON CONTENU SI
+
+Elles se grisaient aux extrémités, convention d'un bandeau qui a un début et une fin. Celui-ci
+tourne depuis le 2026-09-02 : la flèche « suivante » restait grisée six secondes devant un
+carrousel qui allait avancer de lui-même. **Un contrôle ne doit pas dire indisponible ce que
+le contenu fait tout seul.**
+
+Second effet, celui qui se mesure : un bouton désactivé sort de l'ordre de tabulation, donc le
+carrousel offrait **5 arrêts au clavier au départ, 6 au milieu, 5 au bout**. Sa forme changeait
+sous le doigt de qui le parcourt. Après : 6 aux trois positions.
+
+`tour()` faisait déjà exactement ce que la flèche « suivante » fait maintenant : les deux
+partagent la même fonction. Au passage, « suivante » bornait sur le nombre de PHOTOS quand le
+nombre de POSITIONS est plus petit (cinq photos, trois départs au large) ; ça marchait par le
+clampage de la piste, donc par accident.
+
+### Ce qui a été mesuré et laissé tel quel
+
+Pour ne pas le rouvrir à chaque passe :
+
+- **les formulaires n'ont rien à corriger** : `autocomplete` juste sur les sept champs,
+  `type="email"` et `type="tel"` en place ;
+- **le menu déroulant est sain au clavier** : Échap le ferme, un clic dehors le ferme, le
+  focus reste sur le bouton, la tabulation va du menu à la barre puis à la page. Pas de piège
+  de focus, ce qui est correct pour un menu déroulant (ce n'est pas une fenêtre modale) ;
+- **le rythme vertical est uniforme** : 68 écarts titre vers bloc relevés, deux valeurs
+  seulement, 16 px (titre plus son chapeau, une unité de lecture) et 32 px (titre puis bloc) ;
+- **aucune collision de texte** sur 11 largeurs x 9 pages, mesurée sur les rectangles réels
+  des nœuds de texte et non sur les boîtes ;
+- **aucun texte sous 12 px, aucun interligne sous 1,30** : la passe du 2026-08-26 tient ;
+- **les agrandissements d'images restants sont la limite des fichiers**. Les cinq photos du
+  carrousel montent à 1,17 en densité 2 à 2560 px, et **leurs masters font 768 x 1024, comme
+  ce qui est publié** : il n'y a pas plus de pixels à aller chercher. Même situation pour
+  `qbot-photo-ecran.jpg`. Précédent du 2026-08-26 : on cape quand l'agrandissement dépasse
+  1,5, on accepte à 1,17. **Vérifier le master avant de proposer un recadrage.**
+
+### Sondes de cette passe
+
+Jetables, dans le bac à sable, mais leur méthode vaut : `ergo.py` (ancres non réservées,
+caractères par ligne, typo, rangées de grille, gouttière, rythme), `larg.py` (débordement et
+collisions de texte sur 11 largeurs), `ancres.py` (chaque lien d'ancre cliqué pour de vrai),
+`img.py` (agrandissement aux densités 2 et 3), `menu.py` (menu au clavier), `car2/car3.py`
+(boucle et défilement automatique du carrousel).
+
+**Deux d'entre elles ont d'abord menti**, et les deux raisons sont générales : une sonde de
+rangées de grille signale `.tools__grid` comme irrégulière alors que son `align-items: start`
+est voulu (deux colonnes de longueurs différentes, arbitrage du 2026-08-20), et une sonde de
+gouttière signale chaque cellule de grille si elle ne se limite pas aux vrais en-têtes de
+section.

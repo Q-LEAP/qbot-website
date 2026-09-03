@@ -989,6 +989,36 @@ p { color: var(--gray); }
   font-size: 0.9375rem;
 }
 
+/* LES LISTES D'UNE RÉPONSE ÉTAIENT D'UN POINT PLUS GRANDES QUE SES PARAGRAPHES.
+   Seuls les `p` recevaient les 15 px, les `li` restaient aux 16 px du corps de
+   page : dans une même réponse, relevé 15 px / interligne 25,5 pour le
+   paragraphe et 16 px / 27,2 pour la liste juste en dessous. Deux tailles pour
+   une seule prose.
+   Effet de bord sur la mesure de lecture : le plafond en `ch` suit la police,
+   donc un `li` à 16 px valait 701 px et 96 caractères par ligne quand son
+   paragraphe voisin en faisait 658 et 79.
+   Le retrait est calculé, pas choisi : 44 px, soit les 24 px de retrait du
+   paragraphe plus 20 px de gouttière de puce, ce qui aligne les puces sur le
+   bord gauche du TEXTE du paragraphe. Le retrait droit et le retrait bas
+   reprennent ceux du paragraphe, sans quoi la liste s'étend plus loin que lui
+   et la réponse ne se referme pas à la même hauteur. */
+.faq-item__answer ul,
+.faq-item__answer ol {
+  padding: 0 24px 20px;
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+}
+/* Les `ul` du site ne portent pas de puce (`list-style: none` global), donc leur
+   texte s'aligne sur celui du paragraphe, sans retrait. Une liste numérotée, si :
+   ses numéros ont besoin d'une gouttière, d'où les 20 px de plus. */
+.faq-item__answer ol { padding-left: 44px; }
+/* L'espacement des items vivait dans un style EN LIGNE, sur une seule des deux
+   langues : 6 px entre les items côté français, 0 côté anglais, pour la même
+   réponse. Cinquième fois que ce dépôt se fait prendre par un style en ligne
+   invisible à la feuille (après les centrages de `commandez`, les vignettes de
+   blog, la largeur de `.faq__list` et les fonds clairs de `.spec-item`). */
+.faq-item__answer li + li { margin-top: 6px; }
+
 /* ---- Message d'état des formulaires ---- */
 /* Les six formulaires ne signalaient RIEN : la page se rechargeait et la saisie
    disparaissait. Cette ligne est la réponse visible à l'envoi — succès, échec, ou
@@ -1325,13 +1355,23 @@ p { color: var(--gray); }
    la couleur de la première — la première ne servait à rien. */
 .page-hero p {
   color: rgba(255,255,255,0.7);
-  /* La mesure de lecture est conservée (elle vaut celle du chapô du hero
-     d'accueil, les deux se répondent), mais à fleur de gouttière : c'est
-     `margin: 0 auto` qui recentrait le paragraphe dans le conteneur. */
-  max-width: 560px;
   margin: 0;
   font-size: 1.0625rem;
 }
+/* LA MESURE DE LECTURE ÉTAIT DÉCLARÉE ICI ET ANNULÉE PLUS BAS. `.page-hero p`
+   pèse (0,1,1), exactement comme `.container > p`, et ce dernier est écrit plus
+   loin dans le fichier : à poids égal l'ordre tranche, donc le chapeau prenait
+   la mesure du conteneur et non la sienne. Relevé avant : 745 px au lieu de 560
+   sur 10 pages sur 14, jusqu'à 98 caractères par ligne sur la politique de
+   confidentialité anglaise, dont la prose est dense. Les quatre pages qui
+   tombaient juste le devaient à un style en ligne ou à une autre règle.
+   Quatrième occurrence de cette famille après `.usecase__fig`,
+   `.newsletter__legal` et `.evo-card__link` : une propriété déclarée puis
+   annulée pour TOUS les éléments qu'elle vise.
+   Deux classes plutôt qu'une pour que le sélecteur gagne, et la mesure reste
+   celle du chapô du hero d'accueil, les deux se répondant. Elle est à fleur de
+   gouttière : c'est `margin: 0 auto` qui recentrait le paragraphe. */
+.page-hero .container > p { max-width: 560px; }
 
 /* ---- À propos ---- */
 .about-section__grid {
