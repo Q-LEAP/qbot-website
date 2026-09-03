@@ -5362,7 +5362,20 @@ label > input[type="checkbox"] {
 
    Le volet « blocage » est en retrait de couleur et le volet « avec Q-Bot »
    porte le liseré teal : c'est le seul indice visuel de lecture, et il suffit,
-   là où deux fonds différents auraient fait un damier sur cinq blocs. */
+   là où deux fonds différents auraient fait un damier sur cinq blocs.
+
+   PLUS AUCUNE PAGE N'EMPLOIE CE MOTIF. Relevé le 2026-09-03 : de toute la
+   famille, seule `.usecase__cat` subsiste dans le balisage, huit fois, sur les
+   deux pages « Comment ça marche ». Les cinq volets sont devenus quatre cartes
+   courtes le 2026-09-02, à la demande du client.
+   LE BLOC EST GARDÉ ET NON SUPPRIMÉ, comme `.timeline` et `.video__wrapper` :
+   c'est un motif que le client peut redemander, et il porte deux choses qu'on
+   ne réécrirait pas de mémoire, le liseré qui se dessine (procédé n°4 de
+   linearity.io, proposition M du 2026-08-19) et la ligne de chiffre-clé.
+   Conséquence à connaître : le correctif du 2026-09-02 sur
+   `.usecase .usecase__fig` (les deux mots collés) porte sur du balisage qui a
+   disparu le même jour, au commit suivant. Il reste juste, il ne s'applique
+   plus à rien. */
 .usecase {
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -5562,6 +5575,10 @@ label > input[type="checkbox"] {
 .faq-item__answer p,
 .faq-item__answer li { max-width: 78ch; }
 
+/* Plus employé depuis le 2026-09-02 (cf. le bandeau des volets plus haut).
+   Laissé en pixels : sans page pour le porter, il n'y a rien à mesurer, et une
+   valeur en `ch` posée à l'aveugle vaudrait moins que celle-ci, qui a été
+   mesurée quand le motif existait. */
 .usecase__part p { max-width: 620px; }
 
 /* Un paragraphe posé DIRECTEMENT dans le conteneur occupe toute sa largeur, donc il

@@ -6553,6 +6553,14 @@ Pour ne pas le rouvrir à chaque passe :
 - **aucune collision de texte** sur 11 largeurs x 9 pages, mesurée sur les rectangles réels
   des nœuds de texte et non sur les boîtes ;
 - **aucun texte sous 12 px, aucun interligne sous 1,30** : la passe du 2026-08-26 tient ;
+- **le motif des volets « le blocage / avec Q-Bot » est devenu du CSS mort**, et il est
+  **gardé, annoté sur place**, comme `.timeline` et `.video__wrapper` : de toute la famille
+  `.usecase*`, seule `.usecase__cat` subsiste dans le balisage (huit fois, sur les deux pages
+  « Comment ça marche »), les cinq volets ayant laissé la place à quatre cartes courtes le
+  2026-09-02. Conséquence à connaître : **le correctif du 2026-09-02 sur `.usecase__fig`
+  (les deux mots collés) porte sur du balisage qui a disparu le même jour, au commit
+  suivant.** Il reste juste, il ne s'applique plus à rien. Le supprimer est une décision du
+  client, pas d'une passe d'ergonomie ;
 - **les agrandissements d'images restants sont la limite des fichiers**. Les cinq photos du
   carrousel montent à 1,17 en densité 2 à 2560 px, et **leurs masters font 768 x 1024, comme
   ce qui est publié** : il n'y a pas plus de pixels à aller chercher. Même situation pour
