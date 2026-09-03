@@ -4744,6 +4744,10 @@ Le client a demandé que tout ce qui touche à Marie soit fait, et soumis à dis
 elle quand il la verra. Relèvent de ce lot : la reprise du ton sur l'ensemble du site, le
 contenu de la page Démo à reprendre pour la homepage bis, et la mise en avant de l'équipe.
 
+**CLOS LE 2026-09-03 : « vu avec Marie, tâche supprimée ».** Le ton a été repris le
+2026-08-31, la homepage bis a été comparée puis supprimée le 2026-09-03, et la mise en avant
+de l'équipe n'est plus demandée. Ne plus remonter ce point.
+
 ### Contrôles disponibles sans Python
 
 Un balayage de liens internes, de longueurs de titre et de comptage de `h1` a été écrit en
@@ -5289,6 +5293,12 @@ passage du dépôt en privé, qui demande un plan GitHub payant. Le raisonnement
 « Plus tard la version anglaise. » Le marqueur `BOOKINGS-EN-A-VENIR` de `en/booking.html`
 reste, il n'y aura qu'une URL à remplacer. Les incrustations anglaises du film sur les pages
 françaises restent aussi : c'est une propriété du fichier fourni.
+
+**TRANCHÉ LE 2026-09-03, ET CE N'EST PLUS UN POINT OUVERT : « le booking en anglais pour
+l'instant c'est pas dans le scope donc il restera FR ».** Un visiteur anglais ouvre donc la
+fenêtre de réservation en français, à dessein. Le marqueur `BOOKINGS-EN-A-VENIR` a disparu
+avec `en/booking.html`, supprimée le 2026-09-02 ; la décision, elle, vit dans
+`tools/bookings_conf.py`, à côté de l'unique URL. Ne plus le rappeler au client.
 
 ### `gen-legal.py` était MORT depuis trois jours, et il aurait fait cinq régressions
 
@@ -6798,12 +6808,14 @@ référence EXISTE dans `main.js`**, et un relevé qui cherche le nom du fichier
 servies le trouve. Le contrôle qui l'attrape est de vérifier que le code qui cite l'actif est
 encore atteignable.
 
-### Deux points pour le client
+### Un point pour le client
 
-- **La licence du modèle de Raspberry Pi n'a pas été vue.** Il a été fourni tel quel ; sa
-  géométrie décimée est désormais publiée dans le GLB du site, qui est un site commercial. À
-  confirmer par le client, comme la question s'était posée pour les visuels.
-- **Le vert du circuit imprimé** est la seule couleur saturée du modèle hors teal.
+- **Le vert du circuit imprimé** est la seule couleur saturée du modèle hors teal. Une seule
+  constante à toucher si le client le trouve trop présent, `LOOK['board']` dans `addpi.py`.
+
+**LA LICENCE EST RÉGLÉE, RÉPONSE DU CLIENT LE 2026-09-03** : « pour le modèle Pi c'était un
+free dl free licence de sketchfab ». Le modèle vient de Sketchfab en téléchargement libre, sa
+géométrie décimée peut donc rester publiée dans le GLB du site. Ne plus soulever ce point.
 
 ## Tout s'efface sauf la carte, à l'instant où on lit le texte (2026-09-03)
 

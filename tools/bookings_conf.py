@@ -14,6 +14,12 @@ porte les mêmes attributs sur toutes les pages, donc l'URL y est répétée. Sa
 source unique, un changement d'agenda en laisserait forcément une derrière.
 Même raison que « redirections_map.py » et « vignettes_guides.py ».
 
+UN SEUL AGENDA POUR LES DEUX LANGUES, ET C'EST UNE DÉCISION. Le client, le
+2026-09-03 : « le booking en anglais pour l'instant c'est pas dans le scope donc
+il restera FR ». Un visiteur anglais ouvre donc la fenêtre en français. Le jour où
+un agenda anglais existera, il faudra une seconde URL et un choix par la langue de
+la page ; en attendant, ce n'est ni un oubli ni un point à rappeler au client.
+
 POUR CHANGER D'AGENDA : modifier URL ci-dessous, puis
     python3 tools/maj-nav-booking.py
     node tools/bump-assets.mjs
