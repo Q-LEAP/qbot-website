@@ -6400,12 +6400,12 @@ Règle : on borne sur une chaîne unique ou sur un motif tempéré (`(?!\s*</?ta
 jamais sur un tag répété ; un motif de ligne s'écrit `[^\n]*` sans DOTALL ; une
 borne d'indentation porte son saut de ligne ; et un contrôle de reste vise
 l'attribut (`class="x"`), pas le mot.
-## Passe ergonomie du 2026-09-03 : quatre défauts, tous mesurés
+## Passe ergonomie du 2026-09-03 : six défauts, tous mesurés
 
 Passe demandée en clôture du lot de retours du 2026-09-02. Les deux audits du dépôt
 (`audit-a11y.py`, `audit-visibilite.py`) donnaient **0 constat sur 17 pages, à 1440 comme à
-390 px**, avant comme après. Les quatre défauts trouvés sont hors de leur champ : ils
-mesurent le DOM et les métadonnées, pas la géométrie de lecture ni le résultat d'un clic.
+390 px**, avant comme après. Les six défauts trouvés sont hors de leur champ : ils mesurent
+le DOM et les métadonnées, pas la géométrie de lecture ni le résultat d'un clic.
 
 ### 1. AUCUNE ANCRE NE RÉSERVAIT LA PLACE DE LA BARRE
 
@@ -6501,6 +6501,44 @@ partagent la même fonction. Au passage, « suivante » bornait sur le nombre de
 nombre de POSITIONS est plus petit (cinq photos, trois départs au large) ; ça marchait par le
 clampage de la piste, donc par accident.
 
+### 5. LA MESURE DU CHAPEAU DE PAGE ÉTAIT DÉCLARÉE PUIS ANNULÉE
+
+`.page-hero p { max-width: 560px }` porte même un commentaire disant que la mesure de lecture
+est conservée. Elle ne l'était pas : ce sélecteur pèse (0,1,1), **exactement comme
+`.container > p`**, qui est écrit plus loin dans le fichier ; à poids égal l'ordre tranche.
+Relevé : **745 px au lieu de 560 sur 10 pages sur 14**, jusqu'à 98 caractères par ligne sur la
+politique de confidentialité anglaise. Les quatre pages qui tombaient juste le devaient à un
+style en ligne ou à une autre règle.
+
+**Quatrième occurrence de cette famille** après `.usecase__fig`, `.newsletter__legal` et
+`.evo-card__link` : une propriété déclarée, puis annulée pour TOUS les éléments qu'elle vise.
+La sonde qui les trouve est celle du 2026-08-26, ici étendue aux plafonds de largeur et à la
+taille de police. Après : 560 px, 75 caractères au pire sur un chapeau de plus d'une ligne.
+
+### 6. LES LISTES D'UNE RÉPONSE DE FAQ ÉTAIENT D'UN POINT PLUS GRANDES QUE SES PARAGRAPHES
+
+Seuls les `p` recevaient les 15 px de la réponse. Dans une même réponse : **15 px et
+interligne 25,5 pour le paragraphe, 16 px et 27,2 pour la liste juste en dessous.** Deux
+tailles pour une seule prose, et 96 caractères par ligne au lieu de 79, puisque le plafond en
+`ch` suit la police.
+
+Le retrait est calculé et non choisi : les `ul` du site ne portent pas de puce
+(`list-style: none` global), donc leur texte s'aligne sur celui du paragraphe (relevé 179 px
+de part et d'autre) ; un `ol` prend 20 px de plus pour la gouttière de ses numéros.
+
+**DEUX STYLES EN LIGNE SONT PARTIS AVEC, tous deux invisibles à la feuille de style :**
+
+- `.faq__list` était forcée à `800px` sur les deux pages Démo quand la feuille dit 760, donc le
+  même composant avait deux largeurs selon la page ;
+- l'espacement entre items de liste vivait dans un style en ligne posé sur **une seule des
+  deux langues** : 6 px côté français, 0 côté anglais, pour la même réponse. Il est passé dans
+  la feuille, les deux langues sont identiques.
+
+**Cinquième fois que ce dépôt se fait prendre par un style en ligne**, après les centrages de
+`commandez` (2026-08-20), les vignettes de blog (2026-08-26) et les fonds clairs de
+`.spec-item` (2026-07-09). Une sonde de mise en page doit lire les styles EN LIGNE, pas
+seulement les règles.
+
 ### Ce qui a été mesuré et laissé tel quel
 
 Pour ne pas le rouvrir à chaque passe :
@@ -6526,8 +6564,20 @@ Pour ne pas le rouvrir à chaque passe :
 Jetables, dans le bac à sable, mais leur méthode vaut : `ergo.py` (ancres non réservées,
 caractères par ligne, typo, rangées de grille, gouttière, rythme), `larg.py` (débordement et
 collisions de texte sur 11 largeurs), `ancres.py` (chaque lien d'ancre cliqué pour de vrai),
+`sondeA.py` (déclaré puis annulé, celle du 2026-08-26 étendue aux largeurs et aux polices),
 `img.py` (agrandissement aux densités 2 et 3), `menu.py` (menu au clavier), `car2/car3.py`
 (boucle et défilement automatique du carrousel).
+
+**`sondeA.py` sort 60 lignes dont 2 vraies**, et il faut le savoir avant de la relancer : un
+interligne sans unité se calcule en pixels, un `ch` ou un `clamp()` aussi, un `inline-flex`
+posé sur un élément flex devient `flex` par blocification, et un `display: none` levé par une
+requête média est une intention. Le tri se fait à la main. Les deux vraies étaient les
+défauts 5 et 6 ci-dessus.
+
+**ET UNE SONDE QUI OUVRE LES ACCORDÉONS EN CLIQUANT TOUS LES BOUTONS EN FERME LA MOITIÉ** : un
+clic sur une question déjà ouverte la referme. Le dernier constat de mesure de lecture qui
+subsistait était un `li` de boîte nulle, mesuré dans une réponse repliée. Pour ouvrir sans
+refermer, il faut cliquer les seuls boutons dont `aria-expanded` vaut `false`.
 
 **Deux d'entre elles ont d'abord menti**, et les deux raisons sont générales : une sonde de
 rangées de grille signale `.tools__grid` comme irrégulière alors que son `align-items: start`
