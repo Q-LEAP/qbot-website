@@ -2667,10 +2667,9 @@ p { color: var(--gray); }
   cursor: pointer;
   transition: border-color var(--transition), color var(--transition), background var(--transition);
 }
-.carousel__btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+.carousel__btn:hover { border-color: var(--teal); color: var(--teal); }
 /* Un bouton en butée reste VISIBLE mais dit qu'il ne fait plus rien : le retirer
    ferait sauter la mise en page à chaque extrémité. */
-.carousel__btn:disabled { opacity: 0.32; cursor: default; }
 /* L'ATTRIBUT `hidden` NE CACHE PAS UN SVG, et c'est un piège de plateforme, pas
    une erreur de code : la règle `[hidden] { display: none }` des navigateurs ne
    vise que les éléments HTML, et un `<svg>` est dans l'espace de noms SVG. Le

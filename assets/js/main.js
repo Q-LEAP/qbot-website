@@ -2049,9 +2049,6 @@ backToTop.addEventListener('click', () => {
 
     function etat() {
       var i = index();
-      var fin = piste.scrollWidth - piste.clientWidth;
-      if (prec) prec.disabled = piste.scrollLeft <= 2;
-      if (suiv) suiv.disabled = piste.scrollLeft >= fin - 2;
       var n = positions();
       Array.prototype.forEach.call(pastilles, function (d, k) {
         /* `hidden` et non une classe : une pastille sans position n'existe pas
@@ -2072,10 +2069,23 @@ backToTop.addEventListener('click', () => {
       piste.scrollTo({ left: cible, behavior: 'smooth' });
     }
 
-    if (prec) prec.addEventListener('click', function () { vers(Math.max(0, index() - 1)); });
-    if (suiv) suiv.addEventListener('click', function () {
-      vers(Math.min(vues.length - 1, index() + 1));
-    });
+    /* LES DEUX FLÈCHES BOUCLENT, ET ELLES NE SE DÉSACTIVENT PLUS.
+       Elles se grisaient aux extrémités, ce qui est la convention d'un bandeau
+       qui a un début et une fin. Celui-ci TOURNE : au bout, le défilement
+       automatique repart de la première photo de lui-même, si bien que la
+       flèche « suivante » restait grisée six secondes devant un carrousel qui
+       allait avancer quand même. Un contrôle ne doit pas dire indisponible ce
+       que le contenu fait tout seul.
+       Second effet, mesuré : un bouton désactivé sort de l'ordre de tabulation,
+       donc le carrousel offrait 5 arrêts au départ, 6 au milieu, 5 au bout. Sa
+       forme changeait sous le doigt de qui le parcourt au clavier.
+       La boucle est écrite ici une seule fois : `tour()` s'en sert aussi, et
+       deux implémentations du même parcours finiraient par diverger. */
+    function suivant() { var i = index(); vers(i >= positions() - 1 ? 0 : i + 1); }
+    function precedent() { var i = index(); vers(i <= 0 ? positions() - 1 : i - 1); }
+
+    if (prec) prec.addEventListener('click', precedent);
+    if (suiv) suiv.addEventListener('click', suivant);
     Array.prototype.forEach.call(pastilles, function (d, k) {
       d.addEventListener('click', function () { vers(k); });
     });
@@ -2101,9 +2111,10 @@ backToTop.addEventListener('click', () => {
 
     function tour() {
       /* Au bout, on revient au départ : c'est ce que « tourner » veut dire. Le
-         retour est un seul mouvement doux, pas une succession de pas. */
-      var i = index();
-      vers(i >= positions() - 1 ? 0 : i + 1);
+         retour est un seul mouvement doux, pas une succession de pas. C'est
+         exactement ce que fait la flèche « suivante », d'où la fonction
+         partagée. */
+      suivant();
     }
 
     function bascule(el, cache) {
