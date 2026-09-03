@@ -358,6 +358,27 @@
   }
 
   function lerp(a, b, k) { return a + (b - a) * k; }
+  var derniereImage = 0;
+  /* ── LISSAGE NORMALISÉ AU TEMPS ───────────────────────────────────────────
+     Un `lerp(a, b, 0.16)` appliqué UNE FOIS PAR IMAGE n'a pas la même vitesse
+     selon la cadence : sur un écran à 120 Hz il converge deux fois plus lentement
+     en secondes que sur un 60 Hz, et sur un écran à 144 Hz encore moins. Le
+     défaut ne se voit pas en comparant deux machines l'une après l'autre, mais il
+     est mesurable : en mode invisible, où le rendu logiciel du modèle tombe à
+     ~7 images par seconde, la même constante converge en une image au lieu de
+     vingt.
+     `parImage(base, dt)` rend le facteur équivalent à `base` par image de 16,67 ms,
+     quelle que soit la cadence réelle. La sensation devient donc la même partout,
+     et c'est la condition pour que « aussi fluide que sur leur site » veuille dire
+     quelque chose. Le facteur reste borné à 1, donc aucun dépassement possible
+     après une longue interruption (changement d'onglet). */
+  function parImage(base, dt) {
+    /* La formule vaut dans LES DEUX SENS, et le court-circuit « si dt <= 16.67,
+       renvoyer base » que j'avais écrit d'abord était faux : sur un écran à
+       120 Hz (dt = 8,3 ms) il faut un facteur PLUS PETIT, pas le même, sans quoi
+       le lissage y reste deux fois plus rapide qu'à 60 Hz. */
+    return dt > 0 ? 1 - Math.pow(1 - base, dt / 16.67) : base;
+  }
   /* Courbe en S de Hermite : plate aux deux bouts, la plus économique qui soit. */
   function smooth(x) { return x * x * (3 - 2 * x); }
 
@@ -854,6 +875,12 @@
   }
 
   function apply(snap) {
+    /* Écart réel depuis l'image précédente. Il sert à normaliser les lissages :
+       cf. `parImage()`. `snap` remet la référence à zéro, sinon la première image
+       après un saut ou un redimensionnement porterait l'écart de l'attente. */
+    var maintenant = performance.now();
+    var dt = (snap || !derniereImage) ? 16.67 : maintenant - derniereImage;
+    derniereImage = maintenant;
     var p = progress();
     var i = nearest();
     var u = head(i);
@@ -869,8 +896,9 @@
     g.t     = A.t     + (B.t     - A.t)     * e;
     /* Lissage, et non plus inertie : la cible étant désormais donnée par le
        défilement, ce facteur ne sert qu'à transformer un cran de molette en
-       glissement — même rôle que le 0.22 de la position dans le clip. */
-    var k = (snap || jump) ? 1 : 0.16;
+       glissement, même rôle que le 0.22 de la position dans le clip.
+       LES DEUX SONT NORMALISÉS AU TEMPS DEPUIS LE 2026-09-03, cf. `parImage()`. */
+    var k = (snap || jump) ? 1 : parImage(0.16, dt);
     cur.theta = lerp(cur.theta, g.theta, k);
     cur.phi   = lerp(cur.phi,   g.phi,   k);
     cur.r     = lerp(cur.r,     g.r,     k);
@@ -919,14 +947,15 @@
        cran fait sauter le fondu de 0,18 — et là ça se voit. Un lissage à 0,22
        (~250 ms) transforme les crans en glissement pour les deux à la fois, sans
        jamais rompre leur corrélation : c'est le même nombre qui les gouverne. */
+    var kt = parImage(0.22, dt);
     if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = tTarget;   // on ne franchit jamais t=1.0
     else if (scrub !== wasScrub || jump) cur.t = tTarget;   // entrée/sortie du pas, ou saut
-    else if (scrub) cur.t = lerp(cur.t, tTarget, 0.22);     // pendant le pas
+    else if (scrub) cur.t = lerp(cur.t, tTarget, kt);       // pendant le pas
     else cur.t = lerp(cur.t, tTarget, k);
     /* Le même mot à mot que ci-dessus, sur la même valeur de lissage : c'est ce qui
        garantit que l'isolement ne prend jamais un pixel de retard sur l'ouverture. */
     if (scrub !== wasScrub || jump) cur.iso = isoK;
-    else if (scrub) cur.iso = lerp(cur.iso, isoK, 0.22);
+    else if (scrub) cur.iso = lerp(cur.iso, isoK, kt);
     else cur.iso = lerp(cur.iso, isoK, k);
     wasScrub = scrub;
     if (cur.t > 1.98) cur.t = 1.98;   // jamais la durée exacte : le mixer y verrait une boucle
@@ -1211,7 +1240,144 @@
     root.style.setProperty('--sc-card-zone', Math.ceil(max + pad) + 'px');
   }
 
-  function kick() { lastScrollAt = performance.now(); if (!running) { running = true; requestAnimationFrame(function () { apply(false); }); } }
+  /* ══ ACCROCHAGE : LE PAS SE POSE TOUT SEUL ═══════════════════════════════
+     Demandé le 2026-09-03, sur la référence de scfo.de : « que l'animation se
+     fasse seule au scroll sans s'arrêter parce qu'on s'arrête de scroller ».
+
+     LE DÉFAUT QUE ÇA CORRIGE. La séquence est SCRUBBÉE : cadrage, éclatement et
+     fondu d'isolement sont des fonctions de la position de défilement. Un cran de
+     molette de trop laissait donc le boîtier à moitié ouvert, la coque à moitié en
+     verre, la caméra entre deux cadrages — trois états qui ne sont voulus nulle
+     part et qu'aucun texte n'accompagne. Le scrub reste (c'est lui qui rend la
+     séquence réversible au doigt), mais dès que le geste s'arrête, la séquence
+     rejoint le pas le plus proche et l'animation se termine.
+
+     LE POINT D'ACCROCHE EST LE CENTRE DU PAS, et il n'y a rien à régler : c'est
+     déjà le critère de `nearest()`, et c'est la position où `fraction()` vaut
+     0,605, donc celle où le texte est centré, où le boîtier est grand ouvert et où
+     l'isolement de la carte est complet. Mesuré à 1440x900, 1440x700, 1920x1080 et
+     390x844 : la cible vaut 0,5 du pas à toutes ces tailles, donc aucune constante
+     dépendant du viewport.
+
+     LA COURBE ET LA DURÉE SONT CELLES DE scfo.de, relevées et non estimées. Leur
+     transition dure 444 ms et sa forme, ajustée sur dix points (2 % à 59 ms, 22 %
+     à 159, 44 % à 210, 71 % à 260, 95 % à 353, 100 % à 459), est une CUBIQUE EN S :
+     écart moyen 0,021, contre 0,034 pour une quadratique et 0,036 pour une
+     quartique. Une exponentielle sortante, elle, s'en écarte de 0,296.
+
+     TROIS GARDE-FOUS, parce qu'un accrochage qui se bat avec le visiteur est pire
+     que pas d'accrochage :
+     - il ne part qu'après SNAP_REST sans défilement, donc jamais pendant un geste ;
+     - il s'annule au premier signe d'intention (molette, doigt, clavier) et ne
+       part pas tant qu'un bouton de souris est enfoncé, sinon il tirerait la page
+       sous une barre de défilement qu'on est en train de traîner ;
+     - au-delà de SNAP_ZONE de pas, il LÂCHE. C'est ce qui permet de sortir de la
+       séquence par le haut comme par le bas : passé cette distance du centre du
+       dernier pas, plus rien ne retient. */
+  var SNAP_MS    = 450;    // durée de la glissade, relevée sur scfo.de
+  var SNAP_REST  = 110;    // repos sans défilement avant de partir
+  var SNAP_SEUIL = 0.12;   // part de pas au-delà de laquelle le geste ENGAGE
+  var snapT = null, snapAF = null, pointeur = false;
+  var ancre = null;        // le pas où l'on est posé, null si hors séquence
+
+  /* Cubique en S. `smooth()` existe déjà plus haut mais c'est une hermite
+     (quadratique en S) : elle démarre deux fois plus vite et n'a pas la même
+     signature. Celle-ci est celle de la référence. */
+  function easeInOut(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  }
+
+  /* Position de défilement qui met le centre du pas `i` au centre de la fenêtre. */
+  function cibleY(i) {
+    var r = steps[i].getBoundingClientRect();
+    return window.scrollY + r.top + r.height / 2 - window.innerHeight / 2;
+  }
+
+  function stopGlissade() {
+    if (snapAF !== null) { cancelAnimationFrame(snapAF); snapAF = null; }
+    if (snapT !== null) { clearTimeout(snapT); snapT = null; }
+  }
+
+  /* `behavior: 'instant'` est OBLIGATOIRE : `<html>` porte `scroll-behavior:
+     smooth`, donc un `scrollTo` par défaut confierait chaque image au lissage du
+     navigateur, qui interromprait la précédente. La courbe serait la sienne et non
+     la nôtre, et la position ne tiendrait aucune des valeurs posées. C'est le piège
+     déjà documenté pour les balayages de contrôle. */
+  function glisser(y, ms) {
+    stopGlissade();
+    var y0 = window.scrollY, d = y - y0;
+    if (Math.abs(d) < 1) return;
+    var t0 = performance.now();
+    (function image() {
+      var x = Math.min(1, (performance.now() - t0) / ms);
+      window.scrollTo({ top: y0 + d * easeInOut(x), behavior: 'instant' });
+      kick();
+      snapAF = x < 1 ? requestAnimationFrame(image) : null;
+    }());
+  }
+
+  function versPas(i) {
+    ancre = i;
+    glisser(cibleY(i), SNAP_MS);
+  }
+
+  /* ── LA RÈGLE EST DIRECTIONNELLE, PAS « LE PAS LE PLUS PROCHE » ──────────
+     Ma première version accrochait au pas le plus proche. Elle a deux défauts
+     rédhibitoires, tous deux vérifiés avant d'être corrigés :
+     - **elle annule les petits gestes.** Posé au centre du pas 2, un cran de
+       molette avance de 120 px sur un pas de 900 : le plus proche reste le pas 2,
+       donc l'accrochage ramenait exactement d'où l'on venait. Le visiteur pousse
+       et rien ne se passe. Or c'est précisément l'inverse de la référence, où un
+       cran vaut un panneau entier ;
+     - **elle piège.** Pour sortir du pas 1 par le haut il aurait fallu franchir
+       plus d'un demi-pas en un seul geste, soit 450 px, quand un cran en fait 120.
+     La règle retenue lit donc l'INTENTION : de combien s'est-on éloigné du pas où
+     l'on était posé, et dans quel sens.
+       |écart| < SNAP_SEUIL  -> on revient se poser où l'on était (geste hésitant) ;
+       sinon                 -> on va au pas suivant DANS CE SENS, et l'écart arrondi
+                                dit de combien de pas, donc un geste franc peut en
+                                franchir deux sans qu'on lui résiste ;
+       hors des bornes       -> on ne retient RIEN. C'est ce qui permet de sortir de
+                                la séquence par le haut comme par le bas, et c'est le
+                                seul garde-fou qui compte contre le piège.
+     `ancre` est remis à null dès que la séquence quitte l'écran, si bien qu'on est
+     recapturé proprement à la prochaine arrivée, une seule fois, comme le fait
+     n'importe quelle section à accrochage. */
+  function planifierAccrochage() {
+    if (snapT !== null) clearTimeout(snapT);
+    snapT = setTimeout(function () {
+      snapT = null;
+      if (snapAF !== null || pointeur) return;
+      if (!onScreen) { ancre = null; return; }
+      var i = nearest();
+      if (ancre === null) {
+        /* CAPTURE À L'ARRIVÉE, ET SEULEMENT DANS L'INTERVALLE DES PAS. Sans cette
+           borne, les deux bouts de la séquence piègent : au pas 4, un cran vers le
+           bas libère (le pas 5 n'existe pas), mais le repos suivant recapture et
+           ramène au centre du pas 4. Mesuré, ça oscillait indéfiniment entre 4326
+           et 4446 px, un cran sur deux annulé. Même symptôme en haut. La borne est
+           positionnelle et non un drapeau d'état : dès qu'on est passé au-delà du
+           centre du premier ou du dernier pas, on est dehors et plus rien ne
+           retient ; et si l'on revient à l'intérieur, on est recapturé, sans avoir
+           eu besoin de quitter la section pour réarmer quoi que ce soit. */
+        var yA = cibleY(0), yZ = cibleY(steps.length - 1);
+        if (window.scrollY >= yA - 1 && window.scrollY <= yZ + 1) versPas(i);
+        return;
+      }
+      var ecart = head(i) - (ancre + 0.5);
+      if (Math.abs(ecart) < SNAP_SEUIL) { glisser(cibleY(ancre), SNAP_MS); return; }
+      var pas = Math.max(1, Math.round(Math.abs(ecart)));
+      var but = ancre + (ecart > 0 ? pas : -pas);
+      if (but < 0 || but > steps.length - 1) { ancre = null; return; }   // on s'en va
+      versPas(but);
+    }, SNAP_REST);
+  }
+
+  function kick() {
+    lastScrollAt = performance.now();
+    if (snapAF === null) planifierAccrochage();
+    if (!running) { running = true; requestAnimationFrame(function () { apply(false); }); }
+  }
 
   if (reduced) {
     /* Mise en scène neutralisée : on pose une seule fois un cadrage lisible et
@@ -1228,7 +1394,36 @@
   }
 
   window.addEventListener('scroll', kick, { passive: true });
-  window.addEventListener('resize', function () { measureCards(); apply(true); });
+  /* L'accrochage s'annule au premier signe d'intention. `pointerdown` couvre la
+     barre de défilement : sans lui, une pause au milieu d'un glissé de barre
+     déclenchait l'accrochage et tirait la page sous le curseur. */
+  ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, stopGlissade, { passive: true });
+  });
+  window.addEventListener('pointerdown', function () { pointeur = true; stopGlissade(); }, { passive: true });
+  ['pointerup', 'pointercancel'].forEach(function (ev) {
+    window.addEventListener(ev, function () { pointeur = false; planifierAccrochage(); }, { passive: true });
+  });
+  /* LES PASTILLES PASSENT PAR LA MÊME GLISSADE, et ce n'est pas cosmétique : le
+     client les donne comme référence de la sensation voulue. Laissées en ancres
+     nues, elles atterrissaient sur `scroll-padding-top`, soit le HAUT du pas à
+     88 px du bord, donc à 0,40 du pas et non à 0,50 : l'isolement de la carte n'y
+     était pas complet, et l'accrochage repartait aussitôt corriger de 88 px, ce
+     qui se lisait comme deux mouvements. Elles visent maintenant le même point que
+     l'accrochage, avec la même courbe.
+     Elles restent de VRAIES ancres dans le balisage : sans JavaScript, et en
+     mouvement réduit (où ce bloc n'est jamais atteint), le clic fonctionne comme
+     avant. Un clic avec une touche de modification ou au bouton du milieu est
+     laissé au navigateur, pour ne pas casser l'ouverture dans un nouvel onglet. */
+  dots.forEach(function (a, i) {
+    a.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      versPas(i);
+      if (window.history && history.pushState) history.pushState(null, '', a.getAttribute('href'));
+    });
+  });
+  window.addEventListener('resize', function () { stopGlissade(); measureCards(); apply(true); });
   window.addEventListener('load', function () { measureCards(); apply(true); });
   /* Les polices changent la hauteur du texte : on remesure quand elles arrivent. */
   if (document.fonts && document.fonts.ready) {

@@ -6984,3 +6984,128 @@ du script, donc c'est le piège de cache du 2026-08-25.
 Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des trois pages
 touchées x (normal, mouvement réduit) x (1440, 390 px) : 0 révélation invisible, 0 débordement,
 0 erreur console, 0 requête en échec. Aucune requête vers le `.mp4` avant que la section approche.
+
+## La séquence se pose toute seule : l'accrochage (2026-09-03)
+
+Demande du client, après analyse de `https://scfo.de/#start` : « que l'animation se fasse seule au
+scroll sans s'arrêter parce qu'on s'arrête de scroller », et « aussi smooth que sur leur site ».
+
+### Ce que fait scfo.de, mesuré et non décrit à l'œil
+
+**Il n'y a AUCUN modèle 3D sur ce site.** Ni canvas, ni WebGL, ni vidéo, ni three.js, du haut
+jusqu'en bas de ses 10 931 px : du DOM, du CSS, trois images webp et une seule bibliothèque,
+Lenis. Ce qu'on y admire n'est pas une façon d'animer un objet, c'est une façon de gouverner le
+défilement. Relevé :
+
+| Geste | Résultat |
+|---|---|
+| 1 cran de molette (120 px) | la page avance de **900 px**, un écran entier |
+| 4 crans envoyés d'un coup | **900 px**, un seul panneau |
+| 25 micro-crans de trackpad (9 px) | **900 px**, un seul panneau |
+| 1 cran vers le haut | retour exact, symétrique |
+| `scrollTo(1350)` imposé | **ramené à 900** |
+| Durée | **444 ms**, arrivée à 459 |
+| Découpage | bornes de SECTION, pas pas fixe : 900, 900, … puis 966 et 965 |
+
+La courbe, ajustée sur dix points de leur transition, est une **cubique en S** : écart moyen
+0,021, contre 0,034 pour une quadratique, 0,036 pour une quartique et 0,296 pour une
+exponentielle sortante. Aucun `scroll-snap` CSS, c'est du JavaScript.
+
+Autrement dit : **un geste vaut un pas, la transition est pilotée par le TEMPS et se termine
+toujours.** Notre séquence, elle, était scrubbée : un cran de trop laissait le boîtier à moitié
+ouvert, la coque à moitié en verre et la caméra entre deux cadrages, trois états voulus nulle part.
+
+### Ce qui est en place
+
+Le scrub RESTE, c'est lui qui rend la séquence réversible au doigt. Mais au repos, la séquence
+rejoint un pas et l'animation se termine. Trois constantes, toutes reprises de la mesure :
+`SNAP_MS = 450`, `SNAP_REST = 110`, `SNAP_SEUIL = 0,12`.
+
+**Le point d'accroche est le centre du pas, et il n'y a rien à régler** : c'est déjà le critère de
+`nearest()`, et c'est la position où `fraction()` vaut 0,605, donc celle où le texte est centré, où
+le boîtier est grand ouvert et où l'isolement de la carte est complet. Vérifié à 1440x900,
+1440x700, 1920x1080 et 390x844 : la cible vaut 0,5 du pas partout, donc aucune constante
+dépendant de la fenêtre.
+
+**Les pastilles passent par la même glissade**, et ce n'est pas cosmétique : le client les donne
+comme référence de la sensation. Laissées en ancres nues elles atterrissaient sur
+`scroll-padding-top`, soit le HAUT du pas à 88 px du bord, donc à 0,40 du pas et non à 0,50 :
+l'isolement n'y était pas complet et l'accrochage repartait corriger de 88 px, ce qui se lisait
+comme deux mouvements. Elles restent de vraies ancres dans le balisage, donc sans JavaScript et en
+mouvement réduit le clic fonctionne comme avant.
+
+### LA RÈGLE EST DIRECTIONNELLE, ET « LE PAS LE PLUS PROCHE » NE MARCHE PAS
+
+Ma première version accrochait au pas le plus proche. Deux défauts rédhibitoires, tous deux
+mesurés avant correction :
+
+- **elle annulait les petits gestes.** Posé au centre du pas 2, un cran de molette avance de
+  120 px sur un pas de 900 : le plus proche reste le pas 2, donc l'accrochage ramenait exactement
+  d'où l'on venait. Le visiteur pousse et rien ne se passe, l'inverse exact de la référence ;
+- **elle piégeait.** Sortir du pas 1 par le haut aurait demandé de franchir plus d'un demi-pas en
+  un seul geste, soit 450 px, quand un cran en fait 120.
+
+La règle retenue lit l'INTENTION : de combien s'est-on éloigné du pas où l'on était posé, et dans
+quel sens. Sous `SNAP_SEUIL` on revient se poser (geste hésitant) ; au-delà on va au pas suivant
+dans ce sens, l'écart arrondi disant de combien de pas, si bien qu'un geste franc peut en franchir
+deux sans qu'on lui résiste. Relevé : **un cran de molette = un pas**, 1 → 2 → 3 → 4, et un cran
+vers le haut ramène d'un pas.
+
+### ET LES DEUX BOUTS PIÈGENT AUSSI, PAR UN AUTRE MÉCANISME
+
+Deuxième défaut mesuré : au pas 4, un cran vers le bas libérait bien (le pas 5 n'existe pas), mais
+le repos SUIVANT recapturait et ramenait au centre du pas 4. Relevé, ça oscillait indéfiniment
+entre 4326 et 4446 px, un cran sur deux annulé. Même symptôme en haut.
+
+La capture à l'arrivée est donc bornée à l'INTERVALLE des centres de pas, et la borne est
+positionnelle et non un drapeau d'état : dès qu'on est passé au-delà du centre du premier ou du
+dernier pas on est dehors et plus rien ne retient ; et si l'on revient à l'intérieur on est
+recapturé, sans avoir eu besoin de quitter la section pour réarmer quoi que ce soit. Relevé après :
+six crans vers le bas depuis le pas 4 sortent librement (4283, 4403, 4523, 4643, 4763, 4883), et
+quatre crans vers le haut depuis le pas 1 aussi.
+
+### LES LISSAGES SONT NORMALISÉS AU TEMPS, ET C'EST LE VRAI CORRECTIF DE FLUIDITÉ
+
+Un `lerp(a, b, 0.16)` appliqué UNE FOIS PAR IMAGE n'a pas la même vitesse selon la cadence : sur un
+écran à 120 Hz il converge deux fois plus lentement en secondes que sur un 60 Hz. Le défaut ne se
+voit pas en comparant deux machines l'une après l'autre, mais il est mesurable : en mode invisible,
+où le rendu logiciel du modèle tombe à **7 images par seconde**, la même constante converge en une
+image au lieu de vingt.
+
+`parImage(base, dt)` rend le facteur équivalent à `base` par image de 16,67 ms quelle que soit la
+cadence. Vérifié : la constante de temps vaut **95,6 ms à 8,3, 16,67, 33,3 et 140 ms d'écart entre
+images**. C'est la condition pour que « aussi fluide que sur leur site » veuille dire quelque chose.
+
+Piège dans le piège : ma première écriture court-circuitait avec « si dt <= 16,67, renvoyer base ».
+C'est faux, et dans le sens qui compte : sur un écran à 120 Hz il faut un facteur PLUS PETIT, pas
+le même, sans quoi le lissage y reste deux fois plus rapide qu'à 60 Hz.
+
+### La courbe obtenue, comparée à la leur
+
+| | scfo.de | nous |
+|---|---|---|
+| 59 ms | 2,0 % | 2,6 % (à 53 ms) |
+| 159 ms | 21,9 % | 26,7 % |
+| 210 ms | 44,2 % | 42,2 % |
+| 260 ms | 71,0 % | 73,1 % |
+| 353 ms | 95,1 % | 98,4 % |
+| arrivée | 459 ms | 453 ms |
+
+### LA FLUIDITÉ NE SE MESURE PAS EN MODE INVISIBLE, ET IL FAUT LE SAVOIR
+
+Le rendu logiciel du modèle 3D étrangle la boucle : relevé **13 images en 1,8 seconde** sur
+l'accueil en headless, soit environ 7 par seconde. Toute mesure de fluidité y est donc sans valeur,
+alors que la note du 2026-08-20 mesurait 16,7 ms par image en mode fenêtré. Deux conséquences de
+méthode :
+
+- **la géométrie et les états finaux se mesurent en headless** (où atterrit-on, l'animation
+  se termine-t-elle, les bouts piègent-ils) ;
+- **la courbe d'une glissade se mesure en BLOQUANT le modèle** (`route('**/qbot.glb*', abort)`).
+  La glissade est pilotée par l'horloge murale, donc sa courbe ne dépend pas du modèle : la bloquer
+  rend la boucle à 78 images pour 900 px au lieu de 13, et la mesure redevient bonne. C'est une
+  isolation légitime, pas un contournement.
+
+Contrôles : un cran vaut un pas à 1440x900 comme à 390x844, avec `t = 0,92` et boîtier à 0,26 à
+l'arrivée sur le pas 3, donc l'animation se termine bien seule. En mouvement réduit, aucun
+accrochage et aucune pastille interceptée. Les deux audits à 1440 et 390 px, 17 pages sur 17,
+0 constat. Balayage des révélations sur les deux accueils en normal et en mouvement réduit.
