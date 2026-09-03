@@ -7275,3 +7275,88 @@ Contrôles : un cran de molette vaut un pas de l'entrée à la sortie, à 1440 x
 avec `t = 0,92` et boîtier à 0,26 au pas 3. 0 débordement des pas à onze tailles. Les deux audits à
 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des révélations en normal et en mouvement
 réduit, 0 anomalie, 0 erreur console.
+
+## Deux fois moins de travail par image dans la séquence (2026-09-03)
+
+Signalé par le client : « on sent que c'est pas fluide, ça manque de frame, c'est saccadé
+tellement ça manque d'images par seconde ».
+
+### Ce que la mesure a écarté, et ce qu'elle a trouvé
+
+Trois hypothèses tombent :
+
+- **le coût JavaScript des écritures** : 1,17 µs pour écrire l'opacité des six matériaux, 1,67 µs
+  pour `currentTime`, 0,00 pour `cameraOrbit`. Rien à y gagner ;
+- **la compilation de shaders** : 22 programmes en tout, 3 liens au franchissement du verre, et
+  `linkProgram` rend la main immédiatement. Une secousse ponctuelle au plus, pas un manque d'images
+  continu ;
+- **le passage en transparence** : à l'entrée du fantôme, le nombre d'appels de dessin et de
+  triangles est IDENTIQUE à l'état opaque. La transparence ne soumet rien de plus au GPU.
+
+Ce que la mesure a trouvé, en comptant les appels de dessin par image : **448 900 triangles et
+42 appels par image, dans TOUS les états, y compris à l'arrêt sur un pas où rien ne bouge.** Soit
+deux fois le modèle : la seconde passe est l'ombre portée, rejouée à chaque image.
+
+### La cause : on réécrivait ce qui ne changeait pas
+
+Toute écriture sur un matériau, sur `currentTime`, sur `cameraOrbit` ou sur une variable CSS de la
+scène SALIT la scène et force model-viewer à la redessiner. **Ce n'est pas le temps de la fonction
+qui compte, c'est le rendu qu'elle déclenche** : c'est pour cela que la mesure du coût JavaScript
+était rassurante et trompeuse. Aux pas 1, 2 et 4 le clip est immobile à 0, et le réécrire à chaque
+image faisait rejouer l'animation ET la passe d'ombre pour rien.
+
+Quatre gardes, toutes de la même forme, on n'écrit que ce qui change :
+
+| Écriture | Garde |
+|---|---|
+| opacité des matériaux | seuil de 0,004, un peu moins d'un 256e, sous lequel l'écart ne peut pas se voir |
+| `viewer.currentTime` | seuil de 0,0005 |
+| `viewer.cameraOrbit` | comparaison de la chaîne produite |
+| `--sc-zoom`, `--sc-glow`, `--sc-p`, `--sc-burst` | comparaison de la valeur en place, et quantification (3 décimales pour le zoom, le pixel entier pour le halo) |
+| attributs SVG du calque d'annotations | `att()` et `put()` comparent avant d'écrire |
+
+Les deux dernières ne sont pas de la broderie : `--sc-zoom` porte un `scale()` sur la scène qui
+CONTIENT le canevas, donc chaque écriture demande au compositeur de rematricer la couche ;
+`--sc-glow` déplace le centre d'un dégradé de 4 Mpx, le piège déjà documenté dans la feuille de
+style ; et un attribut SVG réécrit invalide le style de son élément, sur un calque de trente
+éléments redessinés à chaque image.
+
+### Relevé après
+
+| | avant | après |
+|---|---|---|
+| appels de dessin par image | 42 | **21** |
+| triangles par image | 448 900 | **224 400** |
+
+**Le travail envoyé au GPU est divisé par deux**, dans tous les états de la séquence. La passe
+d'ombre n'est plus rejouée que quand le clip bouge réellement, c'est-à-dire pendant l'éclatement.
+
+### CE QUI RESTE, ET CE QUE JE NE PEUX PAS MESURER ICI
+
+Il reste 224 400 triangles par image tant que la séquence est à l'écran, parce que la dérive au
+repos déplace la caméra en permanence et qu'un déplacement de caméra impose un redessin. C'est le
+prix d'une fonction validée, et il est maintenant au minimum : un seul rendu du modèle par image au
+lieu de deux.
+
+**La fluidité elle-même n'est pas mesurable en mode invisible** : 95,2 % du profil du fil principal
+y est dans `(program)`, c'est-à-dire dans le rastériseur logiciel, et la page tourne à 7 images par
+seconde quoi qu'on fasse. Notre propre JavaScript n'y pèse que 0,5 %. Deux pistes restent donc
+ouvertes et demandent une mesure sur GPU :
+
+1. **le module 22 déplace le défilement du compositeur vers le fil principal.** C'est la
+   contrepartie connue de tout défilement glissé : un défilement natif est composité et reste fluide
+   même quand le fil principal est occupé, alors qu'un défilement écrit en JavaScript avance au
+   rythme du fil principal. Sur une page qui redessine une scène WebGL en continu, c'est
+   exactement le symptôme décrit. Le module se met déjà en retrait DANS la séquence, mais son
+   écouteur `wheel` est non passif sur toute la page, donc chaque cran attend le JavaScript ;
+2. **la passe d'ombre pendant l'éclatement** (`shadow-intensity="1.3"`, `shadow-softness="0.75"`),
+   qui reste le moment le plus lourd de la séquence et celui que le visiteur regarde.
+
+Les deux se testent en une ligne chacune. À trancher avec une mesure en mode fenêtré, ce qui
+suppose d'ouvrir une fenêtre sur la machine du client, contrairement à sa consigne du 2026-08-25 :
+à lui d'autoriser, ou de juger la sensation après cette passe.
+
+Contrôles : un cran vaut toujours un pas, `t = 0,92` et boîtier à 0,26 au pas 3, zoom et calque
+écrits, 43 tracés dans le calque d'annotations. Les deux audits à 1440 et 390 px, 17 pages sur 17,
+0 constat. Balayage des deux accueils en normal et en mouvement réduit, 0 révélation invisible,
+0 débordement, 0 erreur console.

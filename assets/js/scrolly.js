@@ -280,7 +280,8 @@
       for (var k = 0; k < mats.length; k++) {
         if (/^pi-/.test(mats[k].name || '')) continue;
         var b = mats[k].pbrMetallicRoughness.baseColorFactor;
-        fadeMats.push({ m: mats[k], rgb: [b[0], b[1], b[2]], shell: k === SHELL_MAT, blend: false });
+        fadeMats.push({ m: mats[k], rgb: [b[0], b[1], b[2]], shell: k === SHELL_MAT,
+                        blend: false, a: 1 });
       }
       return fadeMats.length > 0;
     } catch (e) { fadeMats = null; return false; }
@@ -302,15 +303,27 @@
      étant transparente, il n'y a plus de cavité à noircir. Simple face le temps de
      la transparence, double face dès le retour à l'opacité — un seul appel au
      franchissement du seuil, comme pour le mode alpha. */
+  /* ON N'ÉCRIT QUE CE QUI CHANGE, ET C'EST UNE QUESTION D'IMAGES PAR SECONDE.
+     Toute écriture sur un matériau ou sur la visionneuse SALIT la scène, donc
+     force model-viewer à la redessiner. Mesuré : **448 900 triangles par image**,
+     soit deux fois le modèle (la seconde passe est l'ombre portée), et cela dans
+     TOUS les états, y compris à l'arrêt sur un pas où rien ne bouge. Le coût par
+     écriture est pourtant minuscule côté JavaScript (1,17 µs pour les six
+     matériaux) : ce n'est pas le temps de la fonction qui compte, c'est le rendu
+     qu'elle déclenche.
+     Le seuil de 0,004 est un peu moins d'un 256e : en dessous, l'écart ne peut
+     pas se voir sur un canal 8 bits. */
   function setXray(aShell, aReste) {
     if (!fadeMats) return;
     for (var k = 0; k < fadeMats.length; k++) {
       var e = fadeMats[k], a = e.shell ? aShell : aReste, blend = a < 0.99;
+      if (blend === e.blend && Math.abs(a - e.a) < 0.004) continue;
       if (blend !== e.blend) {
         e.m.setAlphaMode(blend ? 'BLEND' : 'OPAQUE');
         if (e.m.setDoubleSided) e.m.setDoubleSided(!blend);
         e.blend = blend;
       }
+      e.a = a;
       e.m.pbrMetallicRoughness.setBaseColorFactor(
         [e.rgb[0], e.rgb[1], e.rgb[2], blend ? a : 1]);
     }
@@ -344,6 +357,7 @@
   var lastU = null;
   var camPosee = false;   // cf. « le plan coté n'apparaît que caméra arrivée »
   var still = 1;          // 1 = caméra posée, 0 = elle tourne (cf. le verre)
+  var derniereOrbite = null, dernierTemps = -1;   // cf. « on n'écrit que ce qui change »
   var lastShown = null;   // angle RÉEL de la caméra à l'image précédente, en degrés
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1, iso: 0, isoA: 1 };
@@ -359,6 +373,12 @@
   }
 
   function lerp(a, b, k) { return a + (b - a) * k; }
+  /* Écrit une propriété personnalisée seulement si sa valeur change. Le style
+     d'un élément est lu en retour, ce qui est bon marché sur une propriété
+     personnalisée (aucun calcul de mise en page n'en dépend directement). */
+  function poser(style, prop, val) {
+    if (style.getPropertyValue(prop) !== val) style.setProperty(prop, val);
+  }
   var derniereImage = 0;
   /* ── LISSAGE NORMALISÉ AU TEMPS ───────────────────────────────────────────
      Un `lerp(a, b, 0.16)` appliqué UNE FOIS PAR IMAGE n'a pas la même vitesse
@@ -557,7 +577,22 @@
       }
       return d + (close ? 'Z' : '');
     }
-    function put(el, attrs) { for (var k in attrs) el.setAttribute(k, attrs[k]); }
+    /* MÊME RÈGLE QUE POUR LES MATÉRIAUX : on n'écrit que ce qui change. Une
+       écriture d'attribut SVG invalide le style de l'élément et fait recalculer
+       la mise en page du calque ; sur un calque de trente éléments réécrits à
+       chaque image, l'essentiel des écritures reposait la valeur déjà en place.
+       `getAttribute` est une lecture d'attribut, pas de style calculé : elle ne
+       force aucun recalcul. */
+    /* Un seul attribut, même garde. Les appels directs à `setAttribute` du calque
+       sont tous passés par ici : ils sont sur le chemin de chaque image. */
+    function att(el, k, v) { v = String(v); if (el.getAttribute(k) !== v) el.setAttribute(k, v); }
+
+    function put(el, attrs) {
+      for (var k in attrs) {
+        var v = String(attrs[k]);
+        if (el.getAttribute(k) !== v) el.setAttribute(k, v);
+      }
+    }
 
     /* Sous 900 px la scène déborde volontairement de l'écran — l'objet est coupé
        par le bord droit. Une étiquette calculée au bon endroit dans le repère de
@@ -589,7 +624,7 @@
        le dégradé subissent la MÊME approximation, donc ils coïncident. */
     function groundDisc(el, R) {
       var o = proj([0, 0, 0]), ax = proj([R, 0, 0]), az = proj([0, 0, R]);
-      el.setAttribute('transform', 'matrix(' +
+      att(el, 'transform', 'matrix(' +
         (ax[0] - o[0]).toFixed(2) + ',' + (ax[1] - o[1]).toFixed(2) + ',' +
         (az[0] - o[0]).toFixed(2) + ',' + (az[1] - o[1]).toFixed(2) + ',' +
         o[0].toFixed(1) + ',' + o[1].toFixed(1) + ')');
@@ -633,8 +668,8 @@
       var tick = nrm(off);
       var path = seg(a, b) + seg(add(a, tick, -0.008), add(a, tick, 0.008)) +
                              seg(add(b, tick, -0.008), add(b, tick, 0.008));
-      d.line.setAttribute('d', path);
-      d.ext.setAttribute('d', seg(a0, add(a, tick, 0.006)) + seg(b0, add(b, tick, 0.006)));
+      att(d.line, 'd', path);
+      att(d.ext, 'd', seg(a0, add(a, tick, 0.006)) + seg(b0, add(b, tick, 0.006)));
       var pa = proj(a), pb = proj(b), cx = (pa[0] + pb[0]) / 2, cy = (pa[1] + pb[1]) / 2;
       var vx = cx - midHi[0], vy = cy - midHi[1], vl = Math.hypot(vx, vy) || 1;
       label(d.val, cx + vx / vl * 15, cy + vy / vl * 15, 'middle', 34);
@@ -714,7 +749,7 @@
       for (i = 0; i < 2; i++) for (j = 0; j < 2; j++) for (var k = 0; k < 2; k++)
         corners.push(proj([BOX.x[i], BOX.y[j], BOX.z[k]]));
       var hp = hull(corners).map(function (c) { return c[0].toFixed(1) + ',' + c[1].toFixed(1); }).join(' ');
-      for (i = 0; i < occl.length; i++) occl[i].setAttribute('points', hp);
+      for (i = 0; i < occl.length; i++) att(occl[i], 'points', hp);
 
       midHi = proj([0, BOX.y[1] / 2, 0]);
       midHiN = projN([0, BOX.y[1] / 2, 0]);            // centre du volume, pour orienter les cotes
@@ -724,18 +759,18 @@
 
       for (i = 0; i < grid.length; i++) {
         var g = grid[i];
-        grid[i].el.setAttribute('d', g.ax
+        att(grid[i].el, 'd', g.ax
           ? seg([-GL, 0, g.k], [GL, 0, g.k])
           : seg([g.k, 0, -GL], [g.k, 0, GL]));
       }
 
       /* ── Pas 2 : le contour du smartphone à quai ─────────────────────── */
-      ghost.setAttribute('d', roundQuad(PH, 0.009));
-      gScreen.setAttribute('d', roundQuad({ r: PH.r - 0.005, u0: PH.u0 + 0.008, u1: PH.u1 - 0.008 }, 0.005));
+      att(ghost, 'd', roundQuad(PH, 0.009));
+      att(gScreen, 'd', roundQuad({ r: PH.r - 0.005, u0: PH.u0 + 0.008, u1: PH.u1 - 0.008 }, 0.005));
       /* Une encoche de 2 cm en haut de la dalle. C'est un détail minuscule, et
          c'est lui qui fait basculer la lecture : sans elle, deux rectangles
          concentriques posés sur la face avant passent pour un cadre décoratif. */
-      gNotch.setAttribute('d', seg(ph(-0.010, PH.u1 - 0.016), ph(0.010, PH.u1 - 0.016)));
+      att(gNotch, 'd', seg(ph(-0.010, PH.u1 - 0.016), ph(0.010, PH.u1 - 0.016)));
       var face = [ph(-PH.r, PH.u0), ph(PH.r, PH.u0), ph(PH.r, PH.u1), ph(-PH.r, PH.u1)];
       var dockPt = proj(DOCK);
       put(node, { cx: dockPt[0].toFixed(1), cy: dockPt[1].toFixed(1) });
@@ -765,7 +800,7 @@
          de 10 à 20 px du bord du boîtier pendant tout le pas, et le trait de
          rappel garde sa forme en L. */
       var lx = top[0] + away * 24, ly = top[1] - 30;
-      lead.setAttribute('d', 'M' + top[0].toFixed(1) + ' ' + top[1].toFixed(1) +
+      att(lead, 'd', 'M' + top[0].toFixed(1) + ' ' + top[1].toFixed(1) +
                              'L' + lx.toFixed(1) + ' ' + ly.toFixed(1) +
                              'h' + (away * 18));
       label(labDock, lx + away * 22, ly, away > 0 ? 'start' : 'end', 150);
@@ -782,17 +817,17 @@
          L'opacité du calque suit donc l'ouverture. Elle est écrite ici plutôt que
          déduite d'un pas, parce que c'est la seule grandeur qui dise s'il y a un
          écartement à montrer. */
-      root.style.setProperty('--sc-burst', kt.toFixed(3));
+      poser(root.style, '--sc-burst', kt.toFixed(3));
       for (i = 0; i < PARTS.length; i++) {
         var s0 = PARTS[i].seat, now = add(s0, PARTS[i].v, kt);
-        burst[i].line.setAttribute('d', seg(s0, now));
+        att(burst[i].line, 'd', seg(s0, now));
         var c0 = proj(s0);
         put(burst[i].ring, { cx: c0[0].toFixed(1), cy: c0[1].toFixed(1), r: (2.5 + 2 * kt).toFixed(1) });
       }
 
       /* ── Pas 4 : feuille de référence et cotes ─────────────────────────────────── */
       var sh = [[-SHEET.x, 0, -SHEET.z], [SHEET.x, 0, -SHEET.z], [SHEET.x, 0, SHEET.z], [-SHEET.x, 0, SHEET.z]];
-      sheet.setAttribute('d', poly(sh, true));
+      att(sheet, 'd', poly(sh, true));
       /* Équerres de repérage aux quatre coins : le langage d'un plan, et le
          seul endroit du tracé où le teal est franc. */
       var mk4 = '', L = 0.026;
@@ -801,7 +836,7 @@
         var c = [sx * SHEET.x, 0, sz * SHEET.z];
         mk4 += seg(c, [c[0] - sx * L, 0, c[2]]) + seg(c, [c[0], 0, c[2] - sz * L]);
       }
-      marks.setAttribute('d', mk4);
+      att(marks, 'd', mk4);
       /* La feuille n'est plus légendée : la mention « feuille A3 » a été retirée du
          site à la demande du client, qui la juge inutile puisque les trois cotes
          disent déjà l'encombrement. Le tracé de la feuille reste — c'est lui qui
@@ -990,8 +1025,14 @@
     var camLag = false;
     if (viewer && loaded) {
       var goal = cur.theta + drift;
-      viewer.cameraOrbit = goal.toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
-      viewer.currentTime = cur.t;
+      /* MÊME RÈGLE QUE POUR LES MATÉRIAUX : on n'écrit que ce qui change. Ces deux
+         propriétés sont les plus coûteuses de la boucle, non par leur exécution
+         mais par le rendu qu'elles déclenchent. `currentTime` en particulier : aux
+         pas 1, 2 et 4 le clip est immobile à 0, et le réécrire à chaque image
+         faisait rejouer l'animation ET la passe d'ombre pour rien. */
+      var orb = goal.toFixed(2) + 'deg ' + cur.phi.toFixed(2) + 'deg ' + cur.r.toFixed(4) + 'm';
+      if (orb !== derniereOrbite) { viewer.cameraOrbit = orb; derniereOrbite = orb; }
+      if (Math.abs(cur.t - dernierTemps) > 0.0005) { viewer.currentTime = cur.t; dernierTemps = cur.t; }
       var shown = HUD.draw(cur.t, SCENES[i]) * 180 / Math.PI;
       camLag = Math.abs(shown - goal) > 0.02;
 
@@ -1058,9 +1099,15 @@
       still = Math.min(1, Math.max(0, (21 - spin) / 15));
       setXray(1 - (1 - cur.alpha) * still, 1 - (1 - cur.isoA) * still);
     }
-    stage.style.setProperty('--sc-zoom', cur.zoom.toFixed(4));
-    stage.style.setProperty('--sc-glow', (p * 60 - 30).toFixed(1) + 'px');
-    if (bar) bar.style.setProperty('--sc-p', p.toFixed(4));
+    /* Même règle, et elle compte autant : `--sc-zoom` porte un `scale()` sur la
+       scène qui CONTIENT le canevas, donc chaque écriture demande au compositeur
+       de rematricer la couche ; `--sc-glow` déplace le centre d'un dégradé de
+       4 Mpx, le piège documenté dans la feuille de style. Trois décimales pour le
+       zoom (un dix-millième de facteur ne se voit pas sur 660 px) et le pixel
+       entier pour le halo. */
+    poser(stage.style, '--sc-zoom', cur.zoom.toFixed(3));
+    poser(stage.style, '--sc-glow', (p * 60 - 30).toFixed(0) + 'px');
+    if (bar) poser(bar.style, '--sc-p', p.toFixed(3));
 
     if (i !== lastP) {
       lastP = i;
