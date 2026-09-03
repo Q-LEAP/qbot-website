@@ -3011,7 +3011,14 @@ a:focus-visible { border-radius: var(--radius-sm); }
 }
 .article-meta strong { color: var(--dark); }
 .article-body {
-  max-width: 780px;
+  /* 70ch et non 780 px : à 16 px la prose juridique tenait 99 caractères par
+     ligne, pour une cible de 80 (cf. « PLAFONDS DE LECTURE » plus bas). Relevé
+     après : 629 px, 79 caractères en anglais et 81 en français.
+     LE PLAFOND EST SUR LE CONTENEUR ET NON SUR SES PARAGRAPHES, contrairement
+     aux réponses de FAQ : les `h2` de ces pages portent un filet bas, et le
+     poser sur les seuls paragraphes laisserait ce filet dépasser le texte de
+     150 px. Ici le conteneur ne sert qu'à la prose, il peut se resserrer. */
+  max-width: 70ch;
 }
 .article-body h2 {
   font-size: 1.5rem;
@@ -5486,25 +5493,44 @@ label > input[type="checkbox"] {
 
 /* ══ PLAFONDS DE LECTURE ═══════════════════════════════════════════════════
    Le conteneur pouvant aller jusqu'à 1440 px, deux blocs de prose devenaient trop
-   longs à lire. Mesuré à 1440 px de conteneur : une réponse de FAQ passait de ~850
-   à ~1100 px de large, et un volet de cas d'usage de 520 à 660. Au-delà d'environ
-   80 caractères par ligne, l'œil perd la ligne suivante.
+   longs à lire. Au-delà d'environ 80 caractères par ligne, l'œil perd la ligne
+   suivante.
+
+   LE PLAFOND ÉTAIT ÉCRIT EN PIXELS ALORS QUE LA CIBLE EST EN CARACTÈRES, ET IL
+   NE LA TENAIT PAS. Relevé à 1440 px, sur 24 paragraphes de réponse de FAQ et
+   14 de politique de confidentialité :
+
+     | bloc                        | avant           | après          |
+     | réponse de FAQ (15 px)      | 758 px,  93 car | 658 px, 79 car |
+     | réponse de FAQ, EN          | 758 px,  89 car | 658 px, 80 car |
+     | politique (16 px)           | 780 px,  99 car | 629 px, 81 car |
+     | politique, EN               | 780 px,  98 car | 629 px, 79 car |
+
+   D'OÙ LE `ch`, ET CE N'EST PAS UNE COQUETTERIE D'UNITÉ. Un plafond en pixels
+   est juste pour UNE taille de police : `.container > p` porte de la prose à
+   15 px (86 car. à 760 px) et à 17 px (77 car. à la même largeur), donc aucune
+   valeur en pixels ne convient aux deux. En `ch` le plafond suit la police et
+   les deux tombent sous 80.
+
+   LES DEUX VALEURS DIFFÈRENT PARCE QUE LA PROSE DIFFÈRE : le registre juridique
+   a des mots plus longs, donc moins d'espaces, donc plus de caractères pour la
+   même largeur. À 78ch la politique remonterait à 90 car. Les valeurs sont
+   mesurées, pas déduites l'une de l'autre.
 
    Le plafond porte sur les PARAGRAPHES et non sur leur conteneur : la colonne, elle,
    doit continuer de suivre la grille, sinon l'index collant de la FAQ et les deux
    volets d'un cas d'usage se décaleraient. */
 .faq-item__answer p,
-.faq-item__answer li { max-width: 760px; }
+.faq-item__answer li { max-width: 78ch; }
 
 .usecase__part p { max-width: 620px; }
 
 /* Un paragraphe posé DIRECTEMENT dans le conteneur occupe toute sa largeur, donc il
    s'allonge avec lui. Mesuré à 1920 px : « Q-Bot ne nécessite aucune installation… »
    sur l'accueil tenait 139 caractères par ligne, et la phrase de conclusion de
-   l'éditeur de scénarios 170. Au-delà de 80, l'œil ne retrouve plus la ligne
-   suivante. Les paragraphes encadrés (cartes, grilles, volets) ne sont pas concernés :
-   leur colonne les borne déjà. */
-.container > p { max-width: 760px; }
+   l'éditeur de scénarios 170. Les paragraphes encadrés (cartes, grilles, volets) ne
+   sont pas concernés : leur colonne les borne déjà. */
+.container > p { max-width: 78ch; }
 
 
 /* ══ MATRICE DE COMPATIBILITÉ ══════════════════════════════════════════════
