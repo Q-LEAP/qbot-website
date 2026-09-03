@@ -7583,3 +7583,94 @@ Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Bala
 accueils en normal et en mouvement réduit, 0 révélation invisible, 0 erreur console. Balayage fin du
 pas 3 en 21 positions : le fondu démarre bien pendant l'ouverture, l'opacité revient bien avant la
 rotation, et la géométrie est encore ouverte quand la caméra part.
+
+## Le fondu se joue pendant la rotation d'entrée (2026-09-03)
+
+Dernier réglage demandé : « je changerais juste la transparence pour qu'elle commence à fade
+durant la rotation et soit terminée à la fin de la rotation ».
+
+### C'EST UN RENVERSEMENT DE RÈGLE, ET IL FAUT LE SAVOIR
+
+La séquence portait depuis longtemps une contrainte tenue pour dure : **la coque ne doit pas être
+en verre pendant que la caméra tourne.** Elle était née d'un défaut réel (« on voyait une coque en
+verre qui tourne »), et un filet la faisait respecter, `still`, qui annulait la transparence dès
+6 degrés par seconde de rotation. Le client demande maintenant l'inverse. C'est sa décision, et
+elle est jouable parce que **la cause technique du défaut d'alors est traitée depuis** : une
+surface `BLEND` DOUBLE FACE additionne ses faces arrière aux faces avant sans les trier, d'où les
+coutures, et `setXray` la repasse en SIMPLE face le temps de la transparence. Contrôlé à l'image
+sur six positions du balayage d'entrée : aucune couture, aucun empilement de plans.
+
+`still` ne disparaît pas, il change d'office : il n'interdit plus le verre en rotation, il
+l'interdit pendant un balayage ANORMALEMENT rapide. Seuils relevés à partir de mesures sur GPU :
+
+| geste | pic de rotation |
+|---|---|
+| un cran, 1 -> 2 | 336 à 350°/s |
+| un cran, 2 -> 3 | 304 à 583°/s |
+| un cran, 3 -> 4 | 505 à 633°/s |
+| pastille 1 -> 3 | 463°/s |
+| pastille 4 -> 1 | 701°/s |
+| pastille 1 -> 4 | 1 988°/s |
+
+900 laisse passer toutes les transitions normales, 1 800 n'annule que l'extrême. Et les deux sauts
+les plus rapides arrivent sur un pas où la cible du fondu est nulle, donc sans verre à montrer.
+
+### IL NE POUVAIT PAS S'EXPRIMER EN `f`
+
+La rotation 2 -> 3 se joue de `u = 1,68` à `u = 1,96`, donc ENTIÈREMENT avant que le pas 3 ne
+commence : `nearest()` y renvoie encore le pas 2, `scrub` est faux et `f` est écrasé à 0. La seule
+grandeur qui décrive cette course est celle de la caméra. Le fondu est donc piloté par elle à
+l'entrée, et par `f` à la sortie.
+
+**Et il se lit sur l'angle RÉELLEMENT ATTEINT, pas sur la consigne.** `mix.e`, la progression voulue
+de la rotation, était mon premier choix, et il était faux : la caméra suit sa consigne avec un
+lissage de 96 ms, si bien que le fondu se terminait environ 100 ms trop tôt. Relevé image par
+image, il était achevé à **-22,6°** alors que la rotation va jusqu'à -42°. `cur.theta` traîne comme
+la caméra, donc le fondu s'achève avec elle : relevé après correction, il est complet à **-39,5°**
+sur -42, soit à 94 % de la course.
+
+La condition porte sur `mix.b`, c'est-à-dire « la caméra se dirige vers le pas 3, ou elle y est
+posée ». Pendant la rotation 3 -> 4, `mix.b` vaut 3, donc l'entrée retombe à 0 : sans cela le
+rapport d'angles, qui dépasse 1 dans ce sens, aurait remis le boîtier en verre APRÈS le pas 4.
+
+### TROIS SAUTS D'UNE IMAGE, TROUVÉS EN LISANT LE RELEVÉ IMAGE PAR IMAGE
+
+C'est le contrôle qui a tout trouvé, et aucune moyenne ne les aurait montrés.
+
+1. **Le fondu sautait de 0,95 à 0,26 en une image**, au moment où `nearest()` basculait sur le
+   pas 3 : le code posait la valeur sans lissage à chaque changement de `scrub`. Ce saut existait
+   pour la position dans le clip, dont la cible change de nature au franchissement ; l'opacité,
+   elle, est CONTINUE par construction (juste avant elle vaut l'entrée, déjà à 1 quand la caméra
+   est posée ; juste après elle vaut 1). Le saut annulait donc le fondu qu'on venait d'écrire.
+2. **Le clip sautait de 0,00 à 0,34 en une image** à l'entrée du pas, pour la même raison : le
+   défilement avait déjà franchi le début de la fenêtre de scrub pendant cette image, et le saut
+   posait la valeur atteinte. Le boîtier s'ouvrait donc d'un tiers d'un coup. Ramené à 0,148 en
+   laissant le lissage faire.
+3. **Le clip sautait de 0,297 en une image à la SORTIE du pas**, ce qui refermait d'un coup ce qui
+   restait ouvert, juste au moment où la refermeture devait se voir pendant la rotation. Le
+   commentaire d'origine invoquait un « réassemblage d'une seconde », et c'était juste À L'ÉPOQUE :
+   le lissage était alors appliqué une fois par image, sans normalisation au temps. Il est
+   aujourd'hui d'une constante de 67 ms, donc les 30 % restants se referment en 200 ms quand la
+   rotation en dure 400. Ramené à 0,127.
+
+Il ne reste donc **aucun saut au franchissement du pas**, ni à l'entrée ni à la sortie. Seul un
+vrai saut de défilement (barre, ancre, lien) pose encore les valeurs.
+
+### La mise en scène qui en résulte
+
+    la caméra balaie vers le pas 3, et le boîtier se dissout pendant ce balayage
+    elle se pose sur un boîtier DÉJÀ fantôme, encore fermé
+    il s'ouvre, et il ne reste de solide que la carte
+    palier : ouvert, isolé, texte centré
+    l'opacité revient, puis la géométrie se referme
+    la caméra repart vers le pas 4 pendant que la refermeture s'achève
+
+Relevé de la dissolution, sur GPU : 1,00 à -13,2° | 0,65 à -25,8° | 0,47 à -29,7° | 0,29 à -36,0° |
+0,26 à -39,5°. Le boîtier fond pendant que la caméra tourne autour de lui, et la carte apparaît
+dedans avant même que le boîtier ne s'ouvre.
+
+Contrôles : cinq crans successifs et quatre sauts de pastille sur GPU, tous atterrissant juste,
+16,70 ms de médiane partout, 0 image de verre sur balayage extrême. Les deux audits à 1440 et
+390 px, 17 pages sur 17, 0 constat. Balayage des deux accueils en normal et en mouvement réduit.
+En mouvement réduit la séquence reste une liste (clip 0, coque 1,00) et sur téléphone la mise en
+scène est identique.

@@ -272,11 +272,12 @@
 
      Le minutage retenu, en fraction de la fenêtre de scrub :
 
-       ouverture de la géométrie     0,00 -> 0,38
-       isolement (le fondu)          0,06 -> 0,46   <- démarre PENDANT l'ouverture
-       palier : ouvert, isolé, lu    0,46 -> 0,70
-       retour de l'opacité           0,70 -> 0,78
-       refermeture de la géométrie   0,70 -> 1,00   <- finit PENDANT la rotation
+       le fondu                      pendant la ROTATION D'ENTRÉE, achevé quand
+                                     la caméra se pose (u = 1,68 -> 1,96)
+       ouverture de la géométrie     f 0,00 -> 0,38, sur un boîtier déjà fantôme
+       palier : ouvert, isolé, lu    f 0,38 -> 0,70
+       retour de l'opacité           f 0,70 -> 0,78
+       refermeture de la géométrie   f 0,70 -> 1,00  <- finit PENDANT la rotation
        la caméra part                à q = 0,72, soit f ~ 0,90
 
      DEUX PRINCIPES S'OPPOSENT ICI, ET LE SECOND BORNE LE PREMIER. La mise en scène
@@ -294,8 +295,10 @@
      rouvrir un défaut déjà payé. */
   var BURST_FULL = 0.38;   // fin de l'ouverture de la géométrie
   var BURST_HOLD = 0.70;   // fin du palier, début du retour
-  var ISO_START  = 0.06;   // début du fondu : dès que la caméra est arrivée
-  var ISO_END    = 0.46;   // fin du fondu
+  /* ISO_START et ISO_END ont existé le temps d'une passe, quand le fondu partait
+     à l'intérieur du pas. Ils n'ont plus d'objet : le fondu est désormais piloté
+     par la rotation d'entrée elle-même, dont la course n'est pas exprimable en
+     `f`. Cf. le pavé « LE FONDU SE JOUE PENDANT LA ROTATION D'ENTRÉE ». */
   /* 0,78 ET NON 0,86, ET C'EST UNE MESURE. À 0,86 le retour d'opacité finissait
      0,035 de fenêtre avant le départ de la caméra, soit une vingtaine de
      millisecondes de glissade : le lissage (une constante de temps de 67 ms) n'y
@@ -1034,16 +1037,46 @@
        tout l'intervalle [BURST_HOLD, 1] à se refermer. C'est ce décalage qui met
        la refermeture en recouvrement avec la rotation sans mettre du verre en
        rotation. */
-    var opaK = !scrub          ? 0
-             : f <= BURST_FULL ? f / BURST_FULL
+    /* ── LE FONDU SE JOUE PENDANT LA ROTATION D'ENTRÉE ────────────────────
+       Dernier réglage demandé par le client, le 2026-09-03 : « la transparence
+       doit commencer à fade durant la rotation et être terminée à la fin de la
+       rotation ». Le fondu ne part donc plus au début du pas mais au début de la
+       rotation qui y mène, et il est achevé à l'instant où la caméra se pose.
+
+       IL NE POUVAIT PAS S'EXPRIMER EN `f`, et c'est là toute la difficulté. La
+       rotation 2 -> 3 se joue de `u = 1,68` à `u = 1,96`, donc ENTIÈREMENT avant
+       que le pas 3 ne commence : `nearest()` y renvoie encore le pas 2, `scrub`
+       est faux et `f` est écrasé à 0. La seule grandeur qui décrive cette course
+       est celle de la caméra elle-même, le mélange `mix.e` renvoyé par `camAt()`.
+       C'est donc lui qui pilote l'entrée, et `f` qui pilote la sortie.
+
+       La staging s'en trouve d'ailleurs plus claire : la caméra se pose sur un
+       boîtier DÉJÀ fantôme, qui s'ouvre ensuite pour ne laisser de solide que la
+       carte. Le fondu chevauche la rotation au lieu de chevaucher l'ouverture,
+       ce qui reste de l'action chevauchante, avec une paire différente. */
+    /* IL SE LIT SUR L'ANGLE RÉELLEMENT ATTEINT, PAS SUR LA CONSIGNE. `mix.e` est
+       la progression VOULUE de la rotation ; la caméra, elle, la suit avec un
+       lissage dont la constante vaut 96 ms. Piloté par `mix.e`, le fondu se
+       terminait donc environ 100 ms avant que la caméra ne se pose : relevé image
+       par image, il était achevé à -22,6° alors que la rotation va jusqu'à -42°.
+       `cur.theta` est mon angle lissé, donc il traîne comme la caméra : le fondu
+       s'achève avec elle.
+       La condition porte sur `mix.b`, c'est-à-dire « la caméra se dirige vers le
+       pas 3, ou elle y est posée ». Pendant la rotation 3 -> 4, `mix.b` vaut 3,
+       donc `entree` retombe à 0 : sans cela le rapport d'angles, qui dépasse 1
+       dans ce sens, aurait remis le boîtier en verre APRÈS le pas 4. */
+    var entree = (mix.b === EXPLODE_STEP)
+               ? Math.max(0, Math.min(1, (cur.theta - SCENES[EXPLODE_STEP - 1].theta) /
+                                         (SCENES[EXPLODE_STEP].theta - SCENES[EXPLODE_STEP - 1].theta)))
+               : 0;
+    /* L'opacité de la coque et l'isolement du reste ne font plus qu'une seule
+       courbe à l'entrée : ils doivent être tous deux achevés quand la caméra se
+       pose. Ils se séparent à la SORTIE, où l'opacité revient avant la rotation
+       et la géométrie non (cf. OPA_FIN). */
+    var opaK = !scrub          ? entree
              : f <= BURST_HOLD ? 1
              : Math.max(0, 1 - (f - BURST_HOLD) / (OPA_FIN - BURST_HOLD));
-    /* Le fondu démarre à ISO_START, donc PENDANT l'ouverture, et non plus après
-       elle. Au retour il suit l'opacité de la coque : les deux redeviennent
-       solides ensemble, avant la rotation. */
-    var isoK = !scrub          ? 0
-             : f <= BURST_HOLD ? Math.max(0, Math.min(1, (f - ISO_START) / (ISO_END - ISO_START)))
-             : opaK;
+    var isoK = opaK;
     var tTarget = scrub ? burstK * EXPLODE_END : g.t;
     var seg = tTarget < PHONE_HANDOFF;
     /* À l'instant où l'on entre ou sort du pas, on SAUTE : un lissage produisait un
@@ -1060,12 +1093,36 @@
        jamais rompre leur corrélation : c'est le même nombre qui les gouverne. */
     var kt = parImage(0.22, dt);
     if ((cur.t < PHONE_HANDOFF) !== seg) cur.t = tTarget;   // on ne franchit jamais t=1.0
-    else if (scrub !== wasScrub || jump) cur.t = tTarget;   // entrée/sortie du pas, ou saut
+    /* PLUS AUCUN SAUT AU FRANCHISSEMENT DU PAS, NI À L'ENTRÉE NI À LA SORTIE, et
+       les deux raisons sont différentes.
+       À l'ENTRÉE il n'apportait rien et coûtait un « pop » : relevé image par
+       image, le clip passait de 0,00 à 0,34 EN UNE IMAGE au moment où `nearest()`
+       basculait, parce que le défilement avait déjà franchi le début de la fenêtre
+       de scrub pendant cette même image. Le boîtier s'ouvrait donc d'un tiers d'un
+       coup avant de continuer normalement.
+       À la SORTIE il refermait d'un coup ce qui restait ouvert : mesuré, 0,297 de
+       clip en une image. Son commentaire d'origine invoquait un « réassemblage
+       d'une seconde pendant que la caméra pivote de 86° », et c'était juste À
+       L'ÉPOQUE : le lissage était alors appliqué une fois par image, sans
+       normalisation au temps. Il est aujourd'hui d'une constante de 67 ms, donc
+       les 30 % restants se referment en 200 ms, quand la rotation en dure 400.
+       ET C'EST EXACTEMENT LA DEMANDE DU CLIENT : le déséclatement doit se voir
+       pendant la rotation, pas se terminer d'un coup juste avant. Seul un vrai
+       saut de défilement (barre, ancre, lien) pose encore la valeur. */
+    else if (jump) cur.t = tTarget;                        // saut de défilement seulement
     else if (scrub) cur.t = lerp(cur.t, tTarget, kt);       // pendant le pas
     else cur.t = lerp(cur.t, tTarget, k);
     /* Le même mot à mot que ci-dessus, sur la même valeur de lissage : c'est ce qui
        garantit que l'isolement ne prend jamais un pixel de retard sur l'ouverture. */
-    if (scrub !== wasScrub || jump) { cur.iso = isoK; cur.opa = opaK; }
+    /* PAS DE SAUT À L'ENTRÉE DU PAS POUR LE FONDU, contrairement à la position
+       dans le clip. `cur.t` saute parce que sa cible change de nature au
+       franchissement ; `opaK`, lui, est CONTINU par construction : juste avant, il
+       vaut `entree`, qui est déjà à 1 quand la caméra est posée ; juste après, il
+       vaut 1. Le saut n'apportait donc rien et coûtait tout : relevé image par
+       image, l'opacité passait de 0,95 à 0,26 EN UNE IMAGE au moment où
+       `nearest()` basculait sur le pas 3, ce qui annulait le fondu qu'on venait
+       d'écrire. Seul un vrai saut de défilement le remet. */
+    if (jump) { cur.iso = isoK; cur.opa = opaK; }
     else if (scrub) { cur.iso = lerp(cur.iso, isoK, kt); cur.opa = lerp(cur.opa, opaK, kt); }
     else { cur.iso = lerp(cur.iso, isoK, k); cur.opa = lerp(cur.opa, opaK, k); }
     wasScrub = scrub;
@@ -1171,7 +1228,27 @@
          prochain défilement. Même famille que l'oubli de `cur.iso`. */
       var spin = (lastShown === null || dt <= 0) ? 0 : Math.abs(shown - lastShown) * 1000 / dt;
       lastShown = shown;
-      still = Math.min(1, Math.max(0, (21 - spin) / 15));
+      /* ── LES SEUILS SONT DESSERRÉS, ET C'EST UN RENVERSEMENT ASSUMÉ ────────
+         Ce filet interdisait le verre dès que la caméra bougeait : 6 degrés par
+         seconde pour le tolérer, 21 pour l'annuler. Il avait été posé parce qu'une
+         coque en verre qui tourne était tenue pour un DÉFAUT.
+         LE CLIENT A DEMANDÉ L'INVERSE le 2026-09-03 : « la transparence doit
+         commencer à fade durant la rotation et être terminée à la fin de la
+         rotation ». Le fondu se joue donc désormais pendant la rotation d'entrée,
+         et des seuils à 6 et 21 degrés par seconde l'auraient purement et
+         simplement supprimé.
+         Ce qui rendait la coque en verre laide est traité ailleurs, et depuis
+         longtemps : une surface `BLEND` DOUBLE FACE additionne ses faces arrière
+         aux faces avant sans les trier, d'où les coutures. `setXray` la repasse en
+         SIMPLE face le temps de la transparence, ce qui supprime la cause.
+         Il reste donc à ne pas montrer de verre pendant un balayage ANORMALEMENT
+         rapide. Les seuils sont relevés pour cela, et à partir de mesures :
+           transitions au cran      336, 580 et 505 degrés par seconde de pic ;
+           sauts de pastille        463 (1 vers 3), 701 (4 vers 1), 1 988 (1 vers 4).
+         Les deux sauts les plus rapides arrivent sur un pas où la cible du fondu
+         est nulle, donc sans verre à montrer. 900 laisse passer toutes les
+         transitions normales, 1 800 n'annule que l'extrême. */
+      still = Math.min(1, Math.max(0, (1800 - spin) / 900));
       setXray(1 - (1 - cur.alpha) * still, 1 - (1 - cur.isoA) * still);
     }
     /* Même règle, et elle compte autant : `--sc-zoom` porte un `scale()` sur la
