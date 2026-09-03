@@ -62,6 +62,12 @@ SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
           # `MODEL_VERSION` de `main.js` ne le couvre pas : il vit dans le module
           # 12, celui de la page « Modèle 3D » supprimée le 2026-08-28.
           'assets/models/qbot.glb',
+          # LE FILM DE L'INTÉRIEUR ET SON AFFICHE, DEPUIS LE 2026-09-03 : tous deux
+          # réécrits sous le même nom à chaque relance de
+          # `tools/render/shoot-interieur.py`, donc mêmes pièges de cache que le
+          # film de démonstration. L'affiche compte autant que le film : c'est
+          # elle qu'on voit en mouvement réduit et sans JavaScript.
+          'assets/video/qbot-interieur.mp4', 'assets/img/qbot-interieur-poster.jpg',
           'assets/video/qbot-demo.mp4']
 
 

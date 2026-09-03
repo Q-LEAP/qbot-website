@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=4ff1f653">
+  <link rel="stylesheet" href="../assets/css/style.css?v=ea65094e">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -217,13 +217,22 @@
         <h3>A nano computer the size of a credit card</h3>
         <p>The device is a complete, self-hosted computer that sits on the network of your choice. It drives the smartphone over USB and needs no internet connection during test runs.</p>
       </div>
+      <!-- LE FILM REMPLACE UNE PHOTO QUI N'EXISTE PAS. La section parle de ce
+           qu'il y a DANS le boîtier et montrait le boîtier fermé : aucune photo de
+           son intérieur n'existe, et le film de démonstration ne l'ouvre jamais.
+           Le client a tranché le 2026-09-03 : reprendre le bout de l'animation 3D
+           qui montre la carte et la figer là. Le boîtier tourne, son enveloppe
+           devient translucide, la carte reste solide, et le film s'arrête dessus.
+           Ni `loop` ni `controls` : ce n'est pas un média qu'on pilote, c'est une
+           image qui arrive. Le `src` est dans `data-film`, donc rien n'est
+           téléchargé avant que la section approche (module 18 de main.js), et
+           l'affiche est la DERNIÈRE image du film : sans JavaScript, en mouvement
+           réduit ou sur connexion lente, on voit donc déjà la carte. -->
       <div class="specs__image">
-        <img
-          src="../assets/img/qbot-film-boitier.jpg"
-          alt="The Q-Bot enclosure in use on a desk: the docked smartphone shows a LuxTrust validation request, the adjacent screen shows the authentication page"
-          width="1340" height="1050"
-          loading="lazy"
-        >
+        <video class="video__player specs__film" data-film="../assets/video/qbot-interieur.mp4?v=85ceb7e2"
+               poster="../assets/img/qbot-interieur-poster.jpg?v=4fc061ec"
+               width="1280" height="1000" muted playsinline preload="none"
+               aria-label="The enclosure turns, then its shell turns translucent: the Raspberry Pi 5 nano computer appears, seated at the bottom of the tray, towards the front"></video>
       </div>
     </div>
     <div class="tools__grid" style="gap:40px 48px;">
@@ -618,6 +627,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=3c977777" defer></script>
+<script src="../assets/js/main.js?v=4422c592" defer></script>
 </body>
 </html>

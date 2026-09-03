@@ -53,6 +53,9 @@ const SUIVIS = [
   // `src` du <model-viewer> des deux accueils, jamais par un script. Cf. le
   // jumeau Python.
   'assets/models/qbot.glb',
+  // LE FILM DE L'INTÉRIEUR ET SON AFFICHE, DEPUIS LE 2026-09-03 : réécrits sous
+  // le même nom à chaque relance de shoot-interieur.py. Cf. le jumeau Python.
+  'assets/video/qbot-interieur.mp4', 'assets/img/qbot-interieur-poster.jpg',
 ];
 
 const empreinte = c =>

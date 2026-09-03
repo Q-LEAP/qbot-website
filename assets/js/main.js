@@ -1740,6 +1740,14 @@ backToTop.addEventListener('click', () => {
     var visible = false, manuel = false;
     film.addEventListener('pause', function () { if (visible) manuel = true; });
     film.addEventListener('play', function () { manuel = false; });
+    /* UN FILM QUI S'ARRÊTE À LA FIN NE SE REJOUE PAS. Le film « ce qu'il y a à
+       l'intérieur » de la fiche technique n'est pas bouclé : sa dernière image EST
+       le message, la carte enfin visible dans le boîtier devenu translucide. Sans
+       cette ligne, sortir du champ puis revenir le relançait depuis le boîtier
+       fermé, donc l'affiche « avant » revenait par-dessus l'état « après ».
+       `ended` plutôt que `pause` : à la fin d'une lecture, `paused` ne passe pas à
+       vrai dans tous les moteurs, et l'événement `pause` n'est pas garanti. */
+    film.addEventListener('ended', function () { manuel = true; });
 
     new IntersectionObserver(function (entrees) {
       entrees.forEach(function (e) {

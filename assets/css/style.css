@@ -2840,6 +2840,25 @@ p { color: var(--gray); }
   transition: transform 0.85s var(--ease-out);
 }
 
+/* ---- .specs__film : le film « ce qu'il y a à l'intérieur » ----
+   Posé le 2026-09-03. Il prend la place exacte de l'image qu'il remplace, mais il
+   ne reçoit NI rayon NI ombre, contrairement à `.specs__image img`, et ce n'est
+   pas un oubli : son fond est peint dans le fichier à `#121212`, c'est-à-dire la
+   couleur de fond de la section (relevée dans le navigateur). Le rectangle est
+   donc invisible, un rayon n'arrondirait rien de visible, et une ombre
+   dessinerait une boîte autour du vide. C'est le défaut déjà documenté sur
+   `.intro__image` et `.specs__image`, et la seule façon de ne pas le reproduire
+   est de ne pas poser l'ombre.
+   `pointer-events: none` pour la même raison que `.video__wrapper--film` : le
+   film n'a pas de commandes, et sans cette ligne un clic droit ouvrirait le menu
+   du navigateur avec « télécharger » et « boucle », donc une interface. */
+.specs__film {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
 /* ── Timeline dot — glow au reveal ── */
 .timeline-item__dot {
   transition: box-shadow 0.45s ease 0.3s;

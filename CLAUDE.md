@@ -6866,3 +6866,91 @@ Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Bala
 sur les deux accueils en normal et en mouvement réduit, 0 anomalie, 0 erreur console. Relevé du
 fondu sur 20 positions de défilement : monotone à l'aller comme au retour, boîtier revenu à 1,00
 avant que la caméra ne pivote vers le pas suivant.
+
+## Le film « ce qu'il y a à l'intérieur », à la place d'une photo qui n'existe pas (2026-09-03)
+
+Point ouvert depuis le 2026-09-02 : la section « Un nano-ordinateur de la taille d'une carte de
+crédit » des deux fiches techniques parlait de ce qu'il y a DANS le boîtier et montrait le boîtier
+FERMÉ. Aucune photo de son intérieur n'existe, et le film de démonstration ne l'ouvre jamais.
+Arbitrage du client : « à la place d'une photo de l'intérieur, tu peux reprendre le bout de
+l'animation qui montre le raspberry en 3D et tu le freeze au moment où on voit le raspberry ».
+
+`assets/video/qbot-interieur.mp4` : 3,4 s, 1280 x 1000, **500 Ko**, sans son. Le boîtier tourne,
+la caméra se rapproche, tout ce qui n'est pas la carte devient translucide, et le film s'arrête
+là. Régénéré par `tools/render/shoot-interieur.py`, qui sert le dépôt lui-même, capture 102 images
+par model-viewer et les encode avec ffmpeg.
+
+### Pourquoi un film et non un `<model-viewer>` dans la page
+
+La visionneuse pèse 1 043 Ko, le modèle 714 et le décodeur Draco 279, soit **2 Mo** sur une page
+qui porte déjà les 2 Mo du film de démonstration. Le film ci-dessus en fait 500 Ko et ne demande
+AUCUN script de plus : le module 18 sait déjà charger un film à l'approche de sa section et le
+mettre en pause hors champ. La contrepartie est qu'il faut le régénérer quand le modèle change,
+et c'est une commande.
+
+### L'AFFICHE EST LA DERNIÈRE IMAGE DU FILM, ET C'EST STRUCTUREL
+
+Sans JavaScript, en mouvement réduit, en économiseur de données ou sur connexion lente, le module
+18 ne charge rien : c'est l'affiche qui reste. Elle doit donc être l'état d'ARRIVÉE et non une
+image de début, sinon ces visiteurs voient un boîtier fermé sous un titre qui parle de ce qu'il y
+a dedans, c'est-à-dire exactement le défaut qu'on corrige. Vérifié en mouvement réduit sur les
+deux langues et à deux largeurs : `src` jamais posé, affiche affichée, carte visible.
+
+L'affiche est le SEUL octet de cette chaîne que tout le monde paie, l'attribut `poster` étant
+demandé au chargement de la page. D'où la qualité 82 et non 88 : elle ne s'affiche jamais au-delà
+de 640 px, soit la moitié de sa taille native, et l'écart moyen entre les deux réglages à cette
+taille vaut **0,60/255** pour 42 Ko de moins.
+
+### Le fond est PEINT dans le film, et c'est pour cela que le cadre est invisible
+
+H.264 n'a pas de couche alpha. Le fond est donc rendu en `#121212`, la couleur de fond de la
+section, relevée dans le navigateur (`rgb(18, 18, 18)`) et **opaque** : aucune couture possible.
+Conséquence sur le CSS, et c'est un piège déjà documenté deux fois : `.specs__film` ne reçoit
+**ni rayon ni ombre**, contrairement à `.specs__image img`. Le rectangle étant invisible, un rayon
+n'arrondirait rien et une ombre dessinerait une boîte autour du vide.
+
+Deux limites à connaître : si la section changeait de fond il faudrait relancer le script, et une
+page à halo dérivant (`.orbz`) rendrait l'exercice impossible. La fiche technique n'en a pas.
+
+### CRF 28, mesuré et non choisi
+
+| encodage | poids | SSIM |
+|---|---|---|
+| CRF 24 | 1 214 Ko | 0,9744 |
+| **CRF 28 (retenu)** | **500 Ko** | 0,9568 |
+| CRF 31 | 231 Ko | 0,9421 |
+
+Puis la dernière image comparée à la source **à la taille d'affichage réelle** (640 px, donc
+réduite de moitié) et recadrée sur la carte au zoom 2 : CRF 24 et 28 sont indiscernables de la
+source, CRF 31 adoucit le grain et les broches du connecteur GPIO. CRF 28 garde la marge.
+
+`FRAMES=<dossier>` garde les 102 captures et saute le rendu si elles sont déjà là : c'est ce qui
+permet de comparer des encodages sans refaire une minute et demie de captures.
+
+### LE FILM NE SE REJOUE PAS, ET IL A FALLU UNE LIGNE POUR ÇA
+
+Le module 18 remet en lecture tout film qui revient dans le champ, ce qui est juste pour une
+boucle et faux ici : la dernière image EST le message. Sortir du champ puis revenir relançait le
+film depuis le boîtier fermé, donc l'état « avant » repassait par-dessus l'état « après ».
+
+Le discriminant est `ended` et **pas** `pause` : à la fin d'une lecture, `paused` ne passe pas à
+vrai dans tous les moteurs et l'événement `pause` n'est pas garanti par la spécification. Vérifié
+sur les deux moteurs après un aller-retour hors champ : `currentTime` reste à 3,40 et `ended` à
+vrai.
+
+### Note d'outillage, corrigée
+
+La note du 2026-08-31 disait « le Chromium de Playwright ne décode pas le H.264 ». C'est trop
+large : la LECTURE avance normalement (`currentTime`, `ended`), donc tout le comportement du
+module 18 se contrôle avec lui. Ce qui ne marche pas est la relecture des PIXELS, une capture du
+lecteur revenant noire. Pour VOIR un film, c'est WebKit.
+
+### Intendance
+
+`qbot-film-boitier.jpg` n'est plus référencé et sort de la publication. Le film et son affiche
+entrent dans les deux versionneurs d'actifs : ils sont réécrits sous le même nom à chaque relance
+du script, donc c'est le piège de cache du 2026-08-25.
+
+Contrôles : les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des trois pages
+touchées x (normal, mouvement réduit) x (1440, 390 px) : 0 révélation invisible, 0 débordement,
+0 erreur console, 0 requête en échec. Aucune requête vers le `.mp4` avant que la section approche.

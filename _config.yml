@@ -76,6 +76,10 @@ exclude:
   # 2026-09-02 : plus aucune page ne les cite.
   - assets/img/qbot-proto-1-boitier.webp
   - assets/img/qbot-nfc.webp
+  # Le plan du boîtier fermé tiré du film, qui illustrait « un nano-ordinateur de
+  # la taille d'une carte de crédit » : remplacé le 2026-09-03 par le film de
+  # l'intérieur, qui montre la carte au lieu de l'enveloppe.
+  - assets/img/qbot-film-boitier.jpg
   # La boucle décorative de 8,7 s et son affiche : le film de démonstration a
   # pris sa place dans les deux accueils le 2026-09-02.
   - assets/video/qbot-home.mp4
