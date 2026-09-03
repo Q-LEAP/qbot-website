@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/style.css?v=ea65094e">
-  <link rel="stylesheet" href="../assets/css/scrolly.css?v=b12356a0">
+  <link rel="stylesheet" href="../assets/css/scrolly.css?v=3ffe527b">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
        local est refusé : ouvert en file://, un script « module » local a l'origine
@@ -251,7 +251,7 @@
      Une scène collante, cinq pas de texte. Le scroll ne déclenche pas une
      animation : il en écrit la position, image par image. Cf. assets/js/scrolly.js
      et la section « Scrollytelling » de assets/css/scrolly.css. -->
-<!-- Hauteur : elle est dans assets/css/scrolly.css (`--scrolly-screens`), et
+<!-- Hauteur : elle est dans assets/css/scrolly.css (`--sc-step` et `--sc-queue`), et
      surtout PAS ici. Écrite en style en ligne, aucune requête média ne pouvait la
      reprendre : sous « mouvement réduit » la section gardait 4,5 écrans pour un
      contenu qui n'en occupait plus que deux, et le mobile ne pouvait pas la
@@ -746,6 +746,6 @@
 </footer>
 
 <script src="../assets/js/main.js?v=fae6c519" defer></script>
-<script src="../assets/js/scrolly.js?v=3355a116" defer></script>
+<script src="../assets/js/scrolly.js?v=6384776f" defer></script>
 </body>
 </html>

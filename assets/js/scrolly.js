@@ -343,6 +343,7 @@
   var TELEPORT = 0.5;
   var lastU = null;
   var camPosee = false;   // cf. « le plan coté n'apparaît que caméra arrivée »
+  var still = 1;          // 1 = caméra posée, 0 = elle tourne (cf. le verre)
   var lastShown = null;   // angle RÉEL de la caméra à l'image précédente, en degrés
   var cur = { theta: SCENES[0].theta, phi: SCENES[0].phi, r: SCENES[0].r,
               zoom: SCENES[0].zoom, t: SCENES[0].t, alpha: 1, iso: 0, isoA: 1 };
@@ -1039,9 +1040,22 @@
          vrai, donc jusqu'à ce qu'elle soit posée. Sur un défilement à la molette le
          déplacement reste sous le seuil pendant toute la fenêtre : ce filet ne
          change rien à ce qui a été validé, il ne rattrape que les sauts. */
-      var spin = lastShown === null ? 0 : Math.abs(shown - lastShown);
+      /* LA VITESSE EST EN DEGRÉS PAR SECONDE, PLUS PAR IMAGE, DEPUIS LE 2026-09-03.
+         Par image, le seuil dépendait de la cadence exactement comme les lissages
+         (cf. `parImage`) : sur un écran à 120 Hz la caméra paraissait deux fois plus
+         lente qu'à 60, et sur une machine qui tombe à 7 images par seconde elle
+         paraissait vingt fois plus rapide, donc la coque restait opaque en
+         permanence. Le défaut s'est révélé quand les pas ont été raccourcis le
+         2026-09-03 : à 7 images par seconde, la coque ne repassait plus au verre au
+         pas 3, alors qu'elle le faisait avec des pas d'un écran. Les seuils sont les
+         anciens convertis à 60 Hz : 0,10 et 0,35 degré par image valent 6 et 21
+         degrés par seconde.
+         ET `still` DOIT ENTRER DANS `moving`, sinon la boucle peut s'arrêter sur une
+         image où la caméra bougeait encore : la coque resterait opaque jusqu'au
+         prochain défilement. Même famille que l'oubli de `cur.iso`. */
+      var spin = (lastShown === null || dt <= 0) ? 0 : Math.abs(shown - lastShown) * 1000 / dt;
       lastShown = shown;
-      var still = Math.min(1, Math.max(0, (0.35 - spin) / 0.25));
+      still = Math.min(1, Math.max(0, (21 - spin) / 15));
       setXray(1 - (1 - cur.alpha) * still, 1 - (1 - cur.isoA) * still);
     }
     stage.style.setProperty('--sc-zoom', cur.zoom.toFixed(4));
@@ -1131,6 +1145,7 @@
                     aucune image n'était demandée. Toute valeur lissée ajoutée à
                     `apply()` doit entrer dans ce test. */
                  Math.abs(isoK - cur.iso) > 0.002 ||
+                 still < 0.999 ||
                  /* la dérive entretient la boucle : sans ça elle s'arrêterait au repos,
                     c'est-à-dire précisément quand elle doit jouer. */
                  idle || idleK > 0.002 || camLag;
@@ -1228,7 +1243,28 @@
   }
 
   var STACKED = window.matchMedia('(max-width: 900px) and (not ((orientation: landscape) and (max-height: 520px)))');
+
+  /* ── LA HAUTEUR DE LA SECTION EST LA SOMME MESURÉE DES PAS ────────────────
+     Le CSS demande `--sc-step` par pas et en déduit quatre pas plus la queue.
+     Mais `min-height` cède à son contenu : là où une carte est plus haute que le
+     pas demandé, le pas grandit et la somme réelle dépasse la hauteur de la
+     section. Les pas débordent alors la section, et la scène collante se
+     désynchronise des textes.
+     C'EST UN DÉFAUT ANTÉRIEUR À LA RÉDUCTION DU 2026-09-03, et il se mesure : à
+     844 x 390 (téléphone en paysage), les quatre pas faisaient déjà
+     390 / 463 / 390 / 521 px, soit 1 764, pour une section de 1 638. Écrire la
+     somme relevée referme la classe entière, quelle que soit la hauteur qu'une
+     carte finit par prendre.
+     Sans JavaScript, le repli du CSS (quatre fois le pas demandé) reste ce qu'il
+     était : on ne perd rien, on ne gagne simplement pas la correction. */
+  function measureSteps() {
+    var somme = 0;
+    for (var i = 0; i < steps.length; i++) somme += steps[i].getBoundingClientRect().height;
+    if (somme > 0) root.style.setProperty('--sc-steps-sum', Math.ceil(somme) + 'px');
+  }
+
   function measureCards() {
+    measureSteps();
     if (!STACKED.matches) { root.style.removeProperty('--sc-card-zone'); return; }
     var max = 0;
     for (var i = 0; i < steps.length; i++) {
@@ -1238,6 +1274,9 @@
     if (!max) return;
     var pad = parseFloat(getComputedStyle(steps[0]).paddingBottom) || 0;
     root.style.setProperty('--sc-card-zone', Math.ceil(max + pad) + 'px');
+    /* La zone réservée change la hauteur de la scène, donc celle des pas sur
+       téléphone : on remesure la somme APRÈS l'avoir écrite. */
+    measureSteps();
   }
 
   /* ══ ACCROCHAGE : LE PAS SE POSE TOUT SEUL ═══════════════════════════════

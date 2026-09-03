@@ -7196,3 +7196,82 @@ mécanismes de plus : le glissement du module 22 (jusqu'à 534 ms) et, sur l'acc
 faire aussi. Et pour mesurer une courbe de glissement sur l'accueil, il faut **bloquer le modèle
 3D** (`route('**/qbot.glb*', abort)`) : son rendu logiciel tombe à 7 images par seconde en mode
 invisible et étrangle la boucle.
+
+## Le défilement de la séquence raccourcit de 38 % (2026-09-03)
+
+Demande du client : « réduis le nombre de scroll nécessaire au passage des étapes ». Il a joint un
+enregistrement d'écran de scfo.de.
+
+**Ce que l'enregistrement a appris, et qui corrige ma note du même jour.** On y voit une sculpture
+noire et un anneau lumineux qui tournent au défilement, ce que mon relevé n'avait pas trouvé.
+Contrôlé : leur page ne télécharge **aucun média 3D**, le plus lourd de ses quatorze fichiers est
+une vignette webp de 22,7 Ko, et elle est **parfaitement immobile au repos** (écart moyen 0,00/255
+entre deux captures espacées de 3 s). L'objet est donc du dessin CSS ou SVG animé par transformées,
+pas un modèle. Il n'y a rien à en reprendre pour un vrai modèle 3D ; ce qui se reprend est leur
+gouvernement du défilement, et c'est fait.
+
+**Un cran de molette valait déjà un pas depuis l'accrochage**, donc le nombre de GESTES était déjà
+au minimum. Ce qui restait à réduire est la DISTANCE.
+
+### Le pas n'a plus besoin d'un écran, et c'est l'accrochage qui l'autorise
+
+Avant lui, la hauteur du pas était la course pendant laquelle le visiteur construisait le mouvement
+à la main : la raccourcir accélérait la rotation par pixel, ce qui se voyait, et la note du
+2026-08-20 avait justement calé les paliers pour tenir 0,13 à 0,165 degré par pixel. Depuis que le
+geste est commis sur une glissade de 450 ms, **la vitesse de la caméra est fixée par cette durée et
+par l'amplitude du cadrage, pas par la hauteur du pas** : un pas plus court ne rend donc pas la
+rotation plus rapide, il coûte seulement moins de doigt.
+
+Le pas passe de `100svh` à `max(0,62 * 100svh, min(480px, 100svh))` et la queue de 0,5 à 0,3 écran.
+Relevé :
+
+| fenêtre | avant | après | gain |
+|---|---|---|---|
+| 1440 x 900 | 4 050 px | 2 502 px | **38 %** |
+| 1920 x 1080 | 4 860 px | 3 003 px | **38 %** |
+| 2560 x 1440 | 6 480 px | 4 004 px | **38 %** |
+| 1440 x 700 | 3 150 px | 2 130 px | 32 % |
+| 1440 x 600 | 2 700 px | 2 100 px | 22 % |
+| 390 x 844 | 3 545 px | 2 263 px | 36 % |
+| 375 x 667 | 2 801 px | 2 053 px | 27 % |
+
+### LE PLANCHER DE 480 px EST LA CONTRAINTE DURE, ET IL EST BORNÉ À UN ÉCRAN
+
+La carte est calée en haut de son pas sous 164 px de remplissage, et la plus haute des quatre fait
+308 px au-delà de 1024 px de large : il faut donc 472 px pour qu'elle tienne, d'où 480. En dessous,
+`min-height` cède à son contenu, le pas grandit, et la somme des pas ne vaut plus la hauteur de la
+section.
+
+**Et le plancher doit être borné à un écran, sans quoi il devient un PLAFOND.** Mesuré à 844 x 390
+(téléphone en paysage) : 480 px de pas pour 390 px de fenêtre faisait passer la section de 4,2 à
+5,12 écrans, donc la demande du client se retournait. `min(480px, 100svh)` rend à ce cas exactement
+le comportement d'avant.
+
+### La hauteur de la section est désormais la somme RELEVÉE des pas
+
+`min-height` cède à son contenu : là où une carte dépasse le pas demandé, le pas grandit et un
+calcul théorique se met à mentir. `scrolly.js` relève donc la somme réelle et l'écrit dans
+`--sc-steps-sum`.
+
+**C'est un défaut ANTÉRIEUR à cette passe**, et il se mesure : à 844 x 390, les quatre pas
+faisaient déjà 390 / 463 / 390 / 521 px, soit 1 764, pour une section de 1 638 px. Les pas
+débordaient la section de 126 px et la scène collante se désynchronisait des textes. Relevé après :
+**0 px de débordement à onze tailles de fenêtre**. La section y passe de 1 638 à 1 843 px, ce qui
+n'est pas une régression mais la hauteur juste de pas qui étaient déjà là.
+
+### ET LE FILET DU VERRE ÉTAIT EN DEGRÉS PAR IMAGE
+
+Défaut révélé par le raccourcissement, et c'est le troisième de la même famille en une journée.
+Le verre de la coque n'apparaît que caméra posée, et « posée » se mesurait en degrés par IMAGE. Or
+la même transition tient maintenant dans moins de pixels : à 7 images par seconde (le rendu logiciel
+du mode invisible), la vitesse par image explose, `still` reste à 0 et **la coque ne repassait plus
+jamais au verre au pas 3**. Mesuré : opacité 1 au lieu de 0,26, alors qu'elle passait avec des pas
+d'un écran. Les seuils sont convertis en degrés par SECONDE (0,10 et 0,35 par image à 60 Hz valent
+6 et 21 par seconde), et `still` entre dans le test `moving`, sinon la boucle peut s'arrêter sur une
+image où la caméra bougeait encore et laisser la coque opaque jusqu'au défilement suivant. Même
+oubli que pour `cur.iso` la veille.
+
+Contrôles : un cran de molette vaut un pas de l'entrée à la sortie, à 1440 x 900 comme à 390 x 844,
+avec `t = 0,92` et boîtier à 0,26 au pas 3. 0 débordement des pas à onze tailles. Les deux audits à
+1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des révélations en normal et en mouvement
+réduit, 0 anomalie, 0 erreur console.

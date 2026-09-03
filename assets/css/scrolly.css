@@ -59,7 +59,54 @@
      mesurés à 390 px. C'est le troisième piège du même genre sur ce site (cf. les
      fonds en ligne de `.spec-item` et les centrages de `commandez`) : une valeur
      qui doit varier selon le contexte n'a rien à faire dans un attribut `style`. */
-  height: calc(var(--scrolly-screens, 4.5) * 100svh);
+  /* ── COMBIEN DE DÉFILEMENT COÛTE LA SÉQUENCE ──────────────────────────
+     Un pas mesurait UN ÉCRAN, et la section 4,5 écrans sur grand écran. Le
+     client a demandé le 2026-09-03 de réduire le défilement nécessaire au
+     passage des étapes. Deux leviers, et un seul nombre à régler pour chacun.
+
+     LE PAS N'A PLUS BESOIN D'UN ÉCRAN, ET C'EST L'ACCROCHAGE QUI L'AUTORISE.
+     Avant lui, la hauteur du pas était la course pendant laquelle le visiteur
+     construisait le mouvement à la main : la raccourcir accélérait la rotation
+     par pixel de défilement, ce qui se voyait. Depuis que le geste est commis
+     sur une glissade de 450 ms, la vitesse de la caméra est fixée par cette
+     durée et par l'amplitude du cadrage, pas par la hauteur du pas : un pas
+     plus court ne rend donc PAS la rotation plus rapide, il coûte seulement
+     moins de doigt. Ce que la hauteur gouverne encore est la finesse du scrub
+     pendant le geste, et 0,62 écran laisse ~360 px de course d'éclatement, de
+     quoi le lire en continu.
+
+     LE PLANCHER DE 480 px EST LA CONTRAINTE DURE, ET ELLE EST MESURÉE. La carte
+     est calée en haut de son pas sous 164 px de remplissage, et la plus haute
+     des quatre fait 308 px au-delà de 1024 px de large : il faut donc 472 px
+     pour qu'elle tienne. En dessous, `min-height` cède à son contenu, le pas
+     grandit, la somme des pas ne vaut plus la hauteur de la section, et la scène
+     collante se désynchronise des textes. Le plancher garde 8 px de marge.
+     C'est aussi lui qui rend le passage à `clamp()` inutile sur le remplissage :
+     à 480 px le compte tombe juste à toutes les hauteurs de fenêtre.
+
+     ET LE PLANCHER EST LUI-MÊME BORNÉ À UN ÉCRAN, sans quoi il devient un
+     PLAFOND. Sur un téléphone en paysage (844 x 390) il imposait 480 px de pas
+     pour 390 px de fenêtre : la section passait de 4,2 à 5,12 écrans, donc la
+     demande du client se retournait, et les pas cessaient d'être uniformes
+     (480, 480, 480, 521), ce qui désynchronise la scène collante des textes.
+     `min(480px, 100svh)` rend à ce cas exactement le comportement d'avant.
+
+     LA HAUTEUR DE LA SECTION EST DÉRIVÉE, JAMAIS ÉCRITE. Elle vaut la somme des
+     pas plus la queue, et cette somme est RELEVÉE par `scrolly.js` : `min-height`
+     cède à son contenu, donc une carte plus haute que le pas demandé fait grandir
+     ce pas, et un calcul théorique se mettrait à mentir. Le repli sans JavaScript
+     est ce calcul théorique, quatre fois le pas ; son 4 est en dur, comme les
+     trois cartes de l'acte épinglé. */
+  --sc-step: max(0.62 * 100svh, min(480px, 100svh));
+  /* La queue, en écrans : le défilement qui reste après que la dernière carte
+     est centrée, et qui sert à décoller la scène. Elle valait 0,5 écran sur
+     grand écran, ramenée à 0,3 : après le dernier texte il reste encore un demi
+     pas plus cette queue, soit ~550 px, de quoi sortir sans à-coup. */
+  --sc-queue: 0.3;
+  /* `--sc-steps-sum` est la somme RELEVÉE des quatre pas, écrite par scrolly.js.
+     Le repli `4 * var(--sc-step)` est le calcul théorique, juste tant qu'aucune
+     carte ne dépasse la hauteur demandée. Cf. `measureSteps()`. */
+  height: calc(var(--sc-steps-sum, calc(4 * var(--sc-step))) + var(--sc-queue) * 100svh);
 }
 
 /* LA SECTION QUI PRÉCÈDE LA SÉQUENCE SE RAPPROCHE D'ELLE. Le rythme de 112 px
@@ -272,8 +319,10 @@
   margin-top: -100svh;
 }
 .scrolly__step {
+  /* Un pas ne fait plus un écran : cf. `--sc-step` sur `.scrolly`. Le repli
+     couvre un moteur qui ne connaîtrait pas `max()` ou `svh`. */
   min-height: 100vh;
-  min-height: 100svh;
+  min-height: var(--sc-step, 100svh);
   display: grid;
   /* LA CARTE EST CALÉE EN HAUT DE SON PAS, PLUS CENTRÉE. Centrée, sa position
      dépendait de la hauteur de la fenêtre et elle arrivait à environ 300 px du
@@ -497,8 +546,9 @@
        au lieu de s'en approcher. */
     --sc-zoom-max: 1.08;
     /* Un pas de moins à parcourir : après le dernier texte il restait 422 px de
-       défilement où le modèle dérivait seul (mesuré à 390 px). */
-    --scrolly-screens: 4.2;
+       défilement où le modèle dérivait seul (mesuré à 390 px). La hauteur du pas,
+       elle, est commune à toutes les largeurs depuis le 2026-09-03. */
+    --sc-queue: 0.2;
   }
   /* Une rangée de grille exactement égale à la place libre, la scène centrée
      dedans : au zoom maximum la boîte transformée coïncide avec la rangée, donc
@@ -1163,7 +1213,7 @@ main .section-label::before {
    mise en page plutôt que d'en inventer une troisième. */
 @media (max-width: 939px) and (orientation: landscape) and (max-height: 520px) {
   .scrolly {
-    --scrolly-screens: 4.2;
+    --sc-queue: 0.2;
     /* Plus d'empilement, donc plus de zone à réserver en bas : la rangée de
        grille et la réserve de la mise en page verticale doivent être annulées,
        sinon `--sc-free` devient négatif et la scène part hors de l'écran
