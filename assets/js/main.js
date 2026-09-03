@@ -1517,6 +1517,27 @@ backToTop.addEventListener('click', () => {
     a.addEventListener('click', function () {
       var item = document.getElementById(a.getAttribute('href').slice(1));
       if (!item) return;
+
+      /* ON POSE LA RÉVÉLATION AVANT DE LAISSER LE NAVIGATEUR CALER LA PAGE.
+         La variante « carte » du module 4 part de `translateY(30px)`, et le
+         calage d'ancre se calcule sur la boîte VISUELLE, transformations
+         comprises : tant que la question n'est pas révélée, le navigateur la
+         croit 30 px plus bas qu'elle n'est, cale d'autant trop bas, puis la
+         révélation la fait remonter sous la barre.
+         Relevé avant : la question atterrissait pile sur le bas de la barre
+         (0 px de dégagement), contre 31 px après. En mouvement réduit le
+         défaut n'existait pas, ce qui est la signature d'une course avec une
+         animation.
+         `transition: none` le temps d'un reflux : on veut l'état d'arrivée
+         tout de suite, pas une seconde animation. */
+      if (!item.classList.contains('is-visible')) {
+        var t = item.style.transition;
+        item.style.transition = 'none';
+        item.classList.add('is-visible');
+        void item.offsetHeight;
+        item.style.transition = t;
+      }
+
       var bouton = item.querySelector('.faq-item__question');
       if (bouton && bouton.getAttribute('aria-expanded') !== 'true') bouton.click();
     });

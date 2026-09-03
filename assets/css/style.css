@@ -144,6 +144,14 @@
   --container:   clamp(1180px, 72vw, 1440px);
   --section-py:  112px;
 
+  /* Hauteur de la barre de navigation. Elle était écrite trois fois en dur :
+     la hauteur de `.nav__inner`, le `top` du menu déroulant sous 901 px, et
+     rien ne disait que les trois valeurs devaient rester d'accord. Le décalage
+     d'ancre ci-dessous en dérive aussi : la barre est collante à toutes les
+     largeurs (relevé : 72 px de 375 à 2560 px), donc elle occulte en
+     permanence le haut de la zone de défilement. */
+  --nav-h:       72px;
+
   /* ── Espace de protection du logo (charte p. 3 : « Always allow a minimum
      space around the logo »).
      Mesuré sur la grille pointillée du PDF : marge uniforme de 42,8 pt autour
@@ -166,7 +174,34 @@
    place au calque ambiant (`body::before`, plus bas), qui doit se glisser ENTRE
    le fond et le contenu. Avec le fond sur `body`, un pseudo-élément en
    `z-index: -1` passe derrière lui et ne se voit jamais. */
-html { font-size: var(--font-size); scroll-behavior: smooth; background: var(--white); }
+/* ══ LE HAUT DE LA PAGE EST OCCULTÉ PAR LA BARRE ═══════════════════════════
+   `scroll-padding-top` décrit une bande du haut de la zone de défilement que
+   quelque chose recouvre en permanence. Le navigateur la retire de tous ses
+   calages : navigation par ancre, `scrollIntoView`, retour de focus.
+
+   SANS ELLE, L'INDEX DE LA FAQ ENVOYAIT LE VISITEUR SUR UNE QUESTION
+   INVISIBLE. Relevé avant correction, clic sur « Combien coûte Q-Bot ? » : la
+   question arrivait à 0 px du haut de la fenêtre et le bas de la barre à
+   72 px, donc elle était entièrement derrière, et le visiteur atterrissait au
+   milieu de la réponse. Même effet à l'arrivée directe sur
+   `cas-usage.html#cas`, que 17 pieds de page visent : les 72 premiers pixels
+   de la section passaient sous la barre.
+
+   ON LA POSE SUR LA ZONE DE DÉFILEMENT ET NON EN `scroll-margin-top` SUR LES
+   CIBLES : il y a 19 questions de FAQ par langue, cinq exemples d'appel, les
+   quatre pas de la séquence et les sections à ancre, et une ancre écrite plus
+   tard n'aurait pas la règle. Une seule déclaration sur la zone les couvre
+   toutes, y compris celles qui n'existent pas encore.
+
+   Les 16 px sont l'échelle du site : la cible se pose SOUS la barre, elle ne
+   la touche pas. Les autres zones de défilement du site (la piste du
+   carrousel, la bande d'exemples) sont horizontales et n'en héritent pas. */
+html {
+  font-size: var(--font-size);
+  scroll-behavior: smooth;
+  background: var(--white);
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+}
 
 body {
   font-family: var(--font);
@@ -404,7 +439,7 @@ p { color: var(--gray); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
+  height: var(--nav-h);
 }
 
 /* Desktop : logo à gauche, puis menu + actions groupés à droite — l'implantation
@@ -2268,7 +2303,7 @@ p { color: var(--gray); }
 @media (max-width: 768px) {
   :root { --section-py: 64px; }
 
-  .nav__menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: flex-start; padding: 16px 24px 24px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .nav__menu { display: none; position: absolute; top: var(--nav-h); left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: flex-start; padding: 16px 24px 24px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; }
 
