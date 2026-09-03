@@ -7109,3 +7109,90 @@ Contrôles : un cran vaut un pas à 1440x900 comme à 390x844, avec `t = 0,92` e
 l'arrivée sur le pas 3, donc l'animation se termine bien seule. En mouvement réduit, aucun
 accrochage et aucune pastille interceptée. Les deux audits à 1440 et 390 px, 17 pages sur 17,
 0 constat. Balayage des révélations sur les deux accueils en normal et en mouvement réduit.
+
+## Le défilement du site glisse : module 22 (2026-09-03)
+
+Second volet de la demande du 2026-09-03 : « aussi smooth que sur leur site ». Le premier volet,
+l'accrochage, est documenté juste au-dessus.
+
+**Écrit à la main, et c'est une décision.** La passe du 2026-08-25 a supprimé TOUTES les
+dépendances tierces du site (Roboto, model-viewer et le décodeur Draco sont servis par ce
+domaine) : ajouter Lenis, que scfo.de emploie, rouvrirait cette porte pour une quarantaine de
+lignes de comportement, et il faudrait de toute façon l'auto-héberger. Le mécanisme tient en trois
+idées : une cible, une approche exponentielle normalisée au temps, une resynchro quand la boucle
+dort.
+
+**La resynchro est ce qui le rend compatible avec le reste.** Tant que la boucle dort, la cible est
+relue dans `window.scrollY`. Le clavier, la barre de défilement, les liens d'ancre (qui gardent le
+`scroll-behavior: smooth` du CSS et son `scroll-padding-top`), la restauration de position au
+rechargement et la glissade d'accrochage de la séquence 3D continuent donc de fonctionner sans
+rien savoir de ce module. Vérifié : `scrollTo(3000)` puis un cran donne 3118, pas un saut.
+
+### IL SE MET EN RETRAIT DANS LA SÉQUENCE 3D, ET C'EST LE POINT LE PLUS IMPORTANT
+
+Là, le défilement a déjà un propriétaire : le scrub colle la position dans le clip au doigt (règle
+du dépôt : une tête de lecture qui traîne se perçoit comme du retard) et l'accrochage commet le
+geste sur une cubique de 450 ms. Deux moteurs sur la même valeur donneraient soit un double délai
+(le glissement PUIS l'accrochage, presque une seconde pour un cran), soit une reprise en main à
+vitesse non nulle, qui se voit comme un à-coup. Un seul propriétaire par zone, et le drapeau
+`body.is-scrolly` que `scrolly.js` pose déjà suffit à le dire.
+
+Mesuré : dans la séquence, un cran déplace de 120 px en 60 ms (saut natif, le scrub suit le doigt)
+puis l'accrochage pose le pas ; hors séquence sur la même page, le même cran donne 63 px à 60 ms
+puis se termine en glissant.
+
+### POURQUOI PAS LEUR CUBIQUE SUR LE DÉFILEMENT LIBRE
+
+Leur courbe a une vraie entrée en douceur : 2 % seulement de la course au bout de 59 ms. C'est très
+beau sur un mouvement ENGAGÉ (un panneau chez eux, un pas de la séquence chez nous, où elle est
+justement employée) et c'est du retard pur sur un défilement libre, où le geste est déjà décidé.
+Leur site peut se le permettre parce que leur molette n'est pas un défilement mais un déclencheur
+de pagination, avec un verrou : deux gestes ne se chevauchent jamais. Ici ils se chevauchent en
+permanence, et une entrée en douceur redémarrée à chaque cran donnerait un mouvement qui hésite.
+
+D'où le partage, qui est le coeur de ce lot : **cubique en S sur les mouvements engagés,
+exponentielle sur le défilement libre, avec des durées du même ordre.** Si le client préfère
+l'entrée en douceur partout, c'est une rampe de ~110 ms à poser sur `k`, et c'est de la latence
+assumée.
+
+### La durée : la leur est fixe, la nôtre dépend de la course
+
+Leur transition se termine à 459 ms, et TOUJOURS en 459 ms, parce que c'est un fondu à durée fixe
+sur une course fixe d'un panneau. Une approche exponentielle met d'autant plus longtemps que la
+course est longue, ce qu'il faut pour un défilement libre. Le facteur (0,15 par image de 16,67 ms)
+encadre donc leur durée sur les gestes courants : **310 ms pour un cran de 120 px, 534 ms pour
+quatre**.
+
+### LE CRITÈRE D'ARRÊT PORTE SUR LE PAS, PAS SUR LE RESTE
+
+Défaut mesuré deux fois avant d'être compris. `scrollTo` arrondit au pixel du périphérique : dès
+que le pas d'une image passe sous un demi-pixel, la position ne bouge plus alors que le reste est
+encore de deux ou trois pixels. La boucle continuait donc de tourner et la course rampait **de
+97,5 % à 100 % pendant 200 à 430 ms** selon le réglage. Le mouvement se lisait comme s'il ne
+finissait jamais, et un seuil sur le reste seul ne le corrige pas : il faut poser la valeur dès que
+le PAS devient sous-pixellaire. Après : arrivée franche, plus de traîne.
+
+### Ce qu'il ne prend jamais, et les contrôles
+
+- **le zoom du navigateur** (`ctrlKey`, `metaKey`) ;
+- **un geste au-dessus d'un bloc qui défile VERTICALEMENT** : l'index de la FAQ à partir de
+  1024 px. Vérifié, une molette au-dessus de lui le fait défiler de 120 px et la page de 0. Les
+  blocs de code et la piste du carrousel, eux, défilent à l'horizontale : la molette verticale n'y
+  a rien à faire, donc on la prend. Vérifié sur les deux moteurs, la page avance de 144 à 150 px et
+  la piste ne bouge pas ;
+- **une fenêtre modale ouverte** : vérifié en injectant un `dialog[open]`, la molette redevient
+  native. Le verrouillage du défilement pendant la fenêtre reste l'affaire du module 20 ;
+- **le mouvement réduit**, où le module ne s'installe pas du tout.
+
+Les deux audits à 1440 et 390 px, 17 pages sur 17, 0 constat. Balayage des révélations sur cinq
+pages en normal et en mouvement réduit, 0 anomalie. Aucune erreur console sur Chromium ni WebKit.
+
+### Conséquence de méthode pour les prochains balayages
+
+Un balayage qui pose `window.scrollTo` puis mesure 110 ms plus tard mesure désormais deux
+mécanismes de plus : le glissement du module 22 (jusqu'à 534 ms) et, sur l'accueil, l'accrochage
+(110 ms de repos puis 450 ms de glissade). Les sondes existantes écrivent toutes en
+`behavior: 'instant'` et laissent au moins 700 ms, donc elles passent ; une sonde nouvelle doit le
+faire aussi. Et pour mesurer une courbe de glissement sur l'accueil, il faut **bloquer le modèle
+3D** (`route('**/qbot.glb*', abort)`) : son rendu logiciel tombe à 7 images par seconde en mode
+invisible et étrangle la boucle.

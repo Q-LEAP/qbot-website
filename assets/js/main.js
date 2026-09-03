@@ -2180,3 +2180,150 @@ backToTop.addEventListener('click', () => {
     rythme();
   });
 }());
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   22. LE DÉFILEMENT GLISSE
+
+   Demandé le 2026-09-03, sur la référence de `https://scfo.de/#start` : « aussi
+   smooth que sur leur site ». Chez eux, un cran de molette ne saute pas, il
+   glisse : mesuré, un cran de 120 px déplace la page de 900 px en 444 ms sur une
+   cubique en S. Ils y parviennent avec Lenis plus un découpage en panneaux.
+
+   ICI C'EST ÉCRIT À LA MAIN, ET C'EST UNE DÉCISION, PAS UNE PARESSE. La passe du
+   2026-08-25 a supprimé TOUTES les dépendances tierces du site (Roboto,
+   model-viewer, le décodeur Draco sont servis par ce domaine) : ajouter Lenis
+   rouvrirait cette porte pour une quarantaine de lignes de comportement, et il
+   faudrait de toute façon l'auto-héberger. Le mécanisme tient en trois idées :
+   une cible, une approche exponentielle normalisée au temps, et une resynchro
+   quand la boucle dort.
+
+   LA RESYNCHRO EST CE QUI REND L'ENSEMBLE COMPATIBLE AVEC LE RESTE. Tant que la
+   boucle dort, la cible est relue dans `window.scrollY` : le clavier, la barre de
+   défilement, les liens d'ancre (qui gardent le `scroll-behavior: smooth` du CSS
+   et son `scroll-padding-top`), la restauration de position au rechargement et la
+   glissade d'accrochage de la séquence 3D continuent donc de fonctionner sans
+   rien savoir de ce module. Sans elle, le premier cran après un de ces
+   déplacements ramènerait brutalement la page là où la cible était restée.
+
+   IL SE MET EN RETRAIT DANS LA SÉQUENCE 3D, et c'est le point le plus important.
+   Là, le défilement a déjà un propriétaire : le scrub colle la position dans le
+   clip au doigt (règle du dépôt : une tête de lecture qui traîne se perçoit comme
+   du retard) et l'accrochage commet le geste sur une cubique de 450 ms. Deux
+   moteurs sur la même valeur donneraient soit un double délai (le glissement
+   PUIS l'accrochage, presque une seconde), soit une reprise en main à vitesse non
+   nulle, qui se voit comme un à-coup. Un seul propriétaire par zone : le drapeau
+   `body.is-scrolly`, que `scrolly.js` pose déjà, suffit à le dire.
+
+   CE QU'IL NE PREND JAMAIS :
+   - le zoom du navigateur (`ctrlKey`, `metaKey`) ;
+   - un geste au-dessus d'un bloc qui peut lui-même défiler VERTICALEMENT, comme
+     l'index de la FAQ à partir de 1024 px. Les blocs de code et la piste du
+     carrousel défilent à l'horizontale : pour eux la molette verticale n'a rien à
+     faire, on la prend donc ;
+   - une fenêtre modale ouverte (l'agenda de réservation), où le défilement de la
+     page est verrouillé ;
+   - le mouvement réduit, où il ne s'installe pas du tout.
+════════════════════════════════════════════════════════════════════════ */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('requestAnimationFrame' in window)) return;
+
+  /* LES DEUX CONSTANTES SONT CALÉES SUR LA RÉFÉRENCE, PAS CHOISIES. Leur
+     transition se termine à 459 ms, et TOUJOURS en 459 ms, parce que c'est un
+     fondu à durée fixe sur une course fixe d'un panneau. Une approche
+     exponentielle, elle, met d'autant plus longtemps que la course est longue :
+     c'est ce qu'il faut pour un défilement libre, où la course n'est pas bornée.
+     Le facteur est donc réglé pour encadrer leur durée sur les gestes courants.
+     Mesuré : **310 ms pour un cran (120 px), 534 ms pour quatre (480 px)**, contre
+     459 ms chez eux quelle que soit l'ampleur.
+
+     POURQUOI PAS LEUR CUBIQUE ICI, ALORS QU'ELLE EST UTILISÉE POUR L'ACCROCHAGE
+     ET LES PASTILLES. Leur courbe a une vraie entrée en douceur : mesuré, 2 %
+     seulement de la course au bout de 59 ms. C'est très beau sur un mouvement
+     ENGAGÉ (un panneau, un pas de la séquence), et c'est un retard pur sur un
+     défilement libre, où le geste est déjà décidé. Leur site peut se le permettre
+     parce que leur molette n'est pas un défilement mais un déclencheur de
+     pagination, avec un verrou : deux gestes ne se chevauchent jamais. Ici ils se
+     chevauchent en permanence, et une entrée en douceur redémarrée à chaque cran
+     donnerait un mouvement qui hésite. D'où le partage : cubique en S sur les
+     mouvements engagés, exponentielle sur le défilement libre, avec la même durée
+     totale. Si le client préfère l'entrée en douceur partout, c'est une rampe de
+     ~110 ms à poser sur `k`, et c'est de la latence assumée.
+     ET LE SEUIL D'ARRÊT COMPTE AUTANT QUE LE FACTEUR. À 0,4 px, mesuré, la course
+     rampait de 97,5 % à 100 % pendant 430 ms : le pas par image devenait
+     sous-pixellaire, `scrollTo` l'arrondissait, la position ne bougeait plus mais
+     la boucle continuait de tourner. Le mouvement se lisait comme s'il ne
+     finissait jamais. À 1,2 px, la dernière image pose la valeur et la boucle
+     dort. */
+  var LERP = 0.15;
+  var ARRET = 1.2;          // en dessous, on pose la valeur et on dort
+
+  var cible = 0, actif = false, derniere = 0;
+
+  function maxi() {
+    var d = document.scrollingElement || document.documentElement;
+    return Math.max(0, d.scrollHeight - window.innerHeight);
+  }
+
+  /* Un ancêtre du point visé peut-il absorber ce geste verticalement ? */
+  function absorbe(el, dy) {
+    for (var n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+      var st = getComputedStyle(n);
+      if (!/(auto|scroll|overlay)/.test(st.overflowY)) continue;
+      var reste = n.scrollHeight - n.clientHeight;
+      if (reste <= 1) continue;
+      if (dy > 0 && n.scrollTop < reste - 1) return true;
+      if (dy < 0 && n.scrollTop > 1) return true;
+    }
+    return false;
+  }
+
+  function boucle() {
+    var maintenant = performance.now();
+    var dt = derniere ? maintenant - derniere : 16.67;
+    derniere = maintenant;
+    /* Même normalisation que `parImage()` dans scrolly.js, et pour la même
+       raison : sans elle le glissement est deux fois plus rapide sur un écran à
+       120 Hz que sur un 60 Hz. */
+    var k = dt > 0 ? 1 - Math.pow(1 - LERP, dt / 16.67) : LERP;
+    /* LE CRITÈRE D'ARRÊT PORTE SUR LE PAS, PAS SEULEMENT SUR LE RESTE, et c'est
+       ce qui supprime la traîne. `scrollTo` arrondit au pixel du périphérique :
+       dès que le pas d'une image passe sous un demi-pixel, la position ne bouge
+       plus alors que le reste, lui, est encore de deux ou trois pixels. Mesuré à
+       deux reprises, la course rampait de 97,5 % à 100 % pendant 200 à 430 ms
+       selon le réglage, et le mouvement se lisait comme s'il ne finissait jamais.
+       On pose donc la valeur dès que le pas devient sous-pixellaire. */
+    var reste = cible - window.scrollY;
+    var pas = reste * k;
+    var y;
+    if (Math.abs(reste) < ARRET || Math.abs(pas) < 0.5) { y = cible; actif = false; derniere = 0; }
+    else y = window.scrollY + pas;
+    /* `behavior: 'instant'` obligatoire : `<html>` porte `scroll-behavior: smooth`,
+       donc un `scrollTo` par défaut confierait chaque image au lissage du
+       navigateur, qui interromprait la précédente. */
+    window.scrollTo({ top: y, behavior: 'instant' });
+    if (actif) requestAnimationFrame(boucle);
+  }
+
+  window.addEventListener('wheel', function (e) {
+    if (e.defaultPrevented || e.ctrlKey || e.metaKey || !e.deltaY) return;
+    if (document.body.classList.contains('is-scrolly')) return;
+    if (document.querySelector('dialog[open]')) return;
+    if (absorbe(e.target, e.deltaY)) return;
+    var m = maxi();
+    if (m <= 0) return;
+    /* `deltaMode` : 0 pixels, 1 lignes, 2 pages. Firefox envoie des LIGNES. */
+    var d = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1);
+    e.preventDefault();
+    if (!actif) cible = window.scrollY;                 // resynchro
+    cible = Math.max(0, Math.min(m, cible + d));
+    if (!actif) { actif = true; derniere = 0; requestAnimationFrame(boucle); }
+  }, { passive: false });
+
+  /* Un geste au doigt, une touche ou un glissé de barre reprend la main : on
+     laisse le navigateur faire et on se resynchronisera au prochain cran. */
+  ['touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { actif = false; derniere = 0; }, { passive: true });
+  });
+}());
