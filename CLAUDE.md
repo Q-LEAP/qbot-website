@@ -6714,13 +6714,28 @@ un massif haut de 42 à 74 mm, l'avant (z de -15 à +100 mm) est une plaque plan
 culmine à **4,25 mm** sous l'empreinte visée. C'est ce plancher-là, « le socle en bas », et la
 carte y est posée à cette cote, donc sans traverser aucune nervure.
 
-**Rotation de -90° autour de Y**, pour deux raisons qui vont dans le même sens : le grand côté de
-la carte (87,7 mm) suit alors la profondeur du boîtier (206 mm de plancher libre) et non sa
-largeur (100 mm) ; et le bloc Ethernet/USB, qui déborde du côté +X de la carte, se retrouve tourné
-vers la FACE AVANT, celle qui porte l'embase USB-C du téléphone (`bracket`, z de 88,7 à 103,7 mm).
-Le câblage du produit se lit tout seul. La matrice est une vraie rotation (déterminant +1) et non
-un échange d'axes, qui serait une réflexion et retournerait les normales : même précaution que
-pour le téléphone.
+**Rotation de +90° autour de Y** : le grand côté de la carte (87,7 mm) suit la profondeur du
+boîtier (206 mm de plancher libre) et non sa largeur (100 mm), et le bloc Ethernet/USB, qui déborde
+du côté +X de la carte, se retrouve tourné vers l'ARRIÈRE. La matrice est une vraie rotation
+(déterminant +1) et non un échange d'axes, qui serait une réflexion et retournerait les normales :
+même précaution que pour le téléphone.
+
+**LE SENS ÉTAIT INVERSÉ, CORRIGÉ LE 2026-09-03 SUR CONSTAT DU CLIENT** : « ce qui s'apparente aux
+entrées Ethernet est à l'avant alors qu'il devrait être à l'arrière ». Ma première version tournait
+de -90°, en raisonnant sur le câblage INTERNE : l'embase USB-C du téléphone étant à l'avant,
+rapprocher les ports du téléphone semblait juste. C'est la connectique EXTERNE qui commande, le
+réseau et l'alimentation sortant du côté opposé au poste de travail. Leçon : sur une pièce réelle,
+c'est ce qui sort du boîtier qui décide de son orientation, pas ce qui se câble dedans.
+
+**ET CE N'EST PAS UNE ROTATION AUTOUR DE X**, malgré la formulation de la demande. Un demi-tour
+autour de X enverrait bien les prises vers l'arrière, mais il retournerait la carte, composants
+vers le plancher. Le geste demandé est un demi-tour à plat, donc autour de la verticale.
+
+Contrôle qui vaut mieux qu'un coup d'œil : la boîte englobante de `pi-blue`, le bloc Ethernet.
+Avant, elle était au bout du côté z POSITIF de la carte ; après, elle est en z de -0,9 à +16,0 mm
+alors que le circuit va de +1,5 à +86,3, donc à l'extrémité ARRIÈRE, et les blindages (`pi-silver`)
+débordent jusqu'à -1,3 mm au-delà de l'arête. L'empreinte au sol et le centre au repos sont
+inchangés au dixième de millimètre, donc l'entrée `PARTS` de `scrolly.js` reste juste.
 
 ### L'écartement : la coque est EN VERRE, et c'est ce qui change tout
 
@@ -6887,7 +6902,10 @@ FERMÉ. Aucune photo de son intérieur n'existe, et le film de démonstration ne
 Arbitrage du client : « à la place d'une photo de l'intérieur, tu peux reprendre le bout de
 l'animation qui montre le raspberry en 3D et tu le freeze au moment où on voit le raspberry ».
 
-`assets/video/qbot-interieur.mp4` : 3,4 s, 1280 x 1000, **500 Ko**, sans son. Le boîtier tourne,
+`assets/video/qbot-interieur.mp4` : 3,4 s, 1280 x 1000, **497 Ko**, sans son.
+**IL DÉPEND DU MODÈLE, DONC IL SE REGÉNÈRE AVEC LUI** : le demi-tour de la carte du 2026-09-03 a
+demandé de le refaire, captures comprises (`FRAMES` doit être vidé, sinon le script réencode les
+images de l'ancien modèle sans rien signaler). Le boîtier tourne,
 la caméra se rapproche, tout ce qui n'est pas la carte devient translucide, et le film s'arrête
 là. Régénéré par `tools/render/shoot-interieur.py`, qui sert le dépôt lui-même, capture 102 images
 par model-viewer et les encode avec ffmpeg.

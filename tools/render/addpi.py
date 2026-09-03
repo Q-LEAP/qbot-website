@@ -60,14 +60,15 @@ estimé à l'œil :
     plane dont le dessus culmine à 4,25 mm. C'est ce plancher-là, « le socle en
     bas », qui reçoit la carte ; la cote 4,25 est le maximum relevé sous
     l'empreinte, donc la carte ne traverse aucune nervure ;
-  - **rotation de -90° autour de Y**, si bien que le grand côté de la carte
+  - **rotation de +90° autour de Y**, si bien que le grand côté de la carte
     (87,7 mm) suit la profondeur du boîtier (206 mm de plancher libre) et non sa
-    largeur (100 mm). Et surtout le bloc Ethernet/USB, qui déborde du côté +X de
-    la carte, se retrouve tourné vers +Z, c'est-à-dire vers la FACE AVANT, celle
-    qui porte l'embase USB-C du téléphone (`bracket`, z de 88,7 à 103,7 mm). Le
-    câblage du produit se lit donc tout seul. La matrice est une vraie rotation
-    (déterminant +1), pas un échange d'axes, qui serait une réflexion et
-    retournerait les normales. Même précaution que pour le téléphone.
+    largeur (100 mm). Et le bloc Ethernet/USB, qui déborde du côté +X de la carte,
+    se retrouve tourné vers -Z, c'est-à-dire vers l'ARRIÈRE du boîtier : c'est de
+    là que sortent le réseau et l'alimentation, à l'opposé du poste de travail.
+    Le sens était inversé jusqu'au 2026-09-03, cf. le commentaire sur place. La
+    matrice est une vraie rotation (déterminant +1), pas un échange d'axes, qui
+    serait une réflexion et retournerait les normales. Même précaution que pour le
+    téléphone.
 
 **5. Il ajoute la carte au clip « Explode ».** Trois keyframes aux MÊMES instants
 que les quatre pièces mobiles du boîtier : 0 -> écarté à t=0,98 -> réassemblé à
@@ -373,8 +374,20 @@ def main():
     print(f"total : {tri0} -> {tri1} faces ({100*tri1/tri0:.0f} %)")
 
     # ── orientation et pose ───────────────────────────────────────────────
-    # -90° autour de Y : +X (bloc Ethernet/USB) -> +Z (face avant du boîtier).
-    RY = np.array([[0., 0., -1.], [0., 1., 0.], [1., 0., 0.]])
+    # +90° autour de Y : +X (bloc Ethernet/USB) -> -Z, donc vers l'ARRIÈRE.
+    #
+    # LE SENS A ÉTÉ INVERSÉ LE 2026-09-03, SUR CONSTAT DU CLIENT : les prises se
+    # présentaient à l'avant du boîtier alors qu'elles sortent à l'arrière. La
+    # première version tournait de -90°, en raisonnant sur le câblage INTERNE
+    # (l'embase USB-C du téléphone est à l'avant, donc rapprocher les ports du
+    # téléphone semblait juste). C'est la connectique EXTERNE qui commande : le
+    # réseau et l'alimentation sortent du côté opposé au poste de travail.
+    #
+    # ET CE N'EST PAS UNE ROTATION AUTOUR DE X, malgré la formulation de la
+    # demande : un demi-tour autour de X enverrait bien les prises vers l'arrière,
+    # mais il retournerait la carte, composants vers le plancher. Le geste demandé
+    # est un demi-tour à plat, donc autour de la verticale.
+    RY = np.array([[0., 0., 1.], [0., 1., 0.], [-1., 0., 0.]])
     assert abs(np.linalg.det(RY) - 1) < 1e-12, 'la matrice doit être une rotation, pas une réflexion'
     for name in parts:
         P, F = parts[name]
