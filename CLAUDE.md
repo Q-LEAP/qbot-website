@@ -7674,3 +7674,184 @@ Contrôles : cinq crans successifs et quatre sauts de pastille sur GPU, tous att
 390 px, 17 pages sur 17, 0 constat. Balayage des deux accueils en normal et en mouvement réduit.
 En mouvement réduit la séquence reste une liste (clip 0, coque 1,00) et sur téléphone la mise en
 scène est identique.
+
+## Passe de contrôle du 2026-09-04, sur un poste neuf
+
+Dépôt cloné sur une machine Windows qui a **Python 3.12 ET Node 24**, contrairement au poste
+du 2026-08-28 : tous les `tools/*.py` redeviennent donc exécutables, et la note de reprise qui
+les donnait pour inutilisables est périmée. `playwright` a été installé (`pip install
+playwright` puis `python -m playwright install chromium`) : sans lui, les deux audits sortent
+en code 2, ce qui est le garde-fou du 2026-08-31 et il fonctionne.
+
+**IL FAUT SERVIR SUR LE PORT 8137, ET EN MULTI-FIL.** Les deux audits y attendent le site, et
+`python -m http.server` est mono-fil donc s'étrangle sur les pages qui portent le modèle 3D
+(note déjà écrite plus haut). Un `ThreadingTCPServer` de quatre lignes suffit.
+
+### LES EMPREINTES D'ACTIFS ÉTAIENT PÉRIMÉES, POUR LA TROISIÈME FOIS
+
+Le seul défaut grave de la passe, et il n'était visible d'aucune façon depuis le dépôt.
+`bump-assets` a annoncé **17 pages sur 17 à mettre à jour** sur un arbre propre, sans une seule
+modification en attente : les quatre fichiers versionnés portaient les empreintes d'avant la
+série de commits du 2026-09-03.
+
+    style.css   ea65094e -> 99e9d72c
+    scrolly.css d451c23e -> 8c766cff
+    main.js     499ccafb -> 397bcc4b
+    scrolly.js  82ce0feb -> 3e02b8fa
+
+Autrement dit : **rien de la journée du 2026-09-03 n'atteignait un visiteur déjà venu** — ni
+l'accrochage de la séquence, ni le module 22, ni l'action chevauchante, ni la dissolution du
+boîtier. Son navigateur servait l'ancien `scrolly.js` depuis son cache. C'est exactement le
+sinistre du 2026-08-25 (le film qui ne démarrait pas) et celui du 2026-08-31, à l'identique.
+
+**Le contrôle est une commande et il tient en une seconde**, il est déjà écrit plus haut :
+relancer le versionneur sur un arbre propre et vérifier qu'il annonce **0 page à mettre à
+jour**. S'il a quelque chose à écrire alors que rien n'a changé depuis le dernier commit, c'est
+qu'il n'a pas été lancé au bon moment. Il ne suffit visiblement pas de l'avoir écrit deux fois :
+il faut le passer.
+
+**Et les deux jumeaux sont d'accord**, ce qui était l'autre hypothèse à écarter : le `.py` a
+annoncé 17 puis le `.mjs` 0, non pas parce qu'ils calculent différemment mais parce que le
+premier avait déjà écrit. Relancés tous les deux à la suite, ils annoncent 0. À savoir aussi :
+**`bump-assets` n'a pas de mode simulation, il écrit par défaut.**
+
+### LE VIDE DE 248 PX DES DEUX FICHES TECHNIQUES : ENCORE UN STYLE EN LIGNE
+
+`.specs__grid` portait `style="margin-bottom:56px; align-items:center;"` sur
+`caracteristiques.html` et `en/technical-specs.html`, alors que la feuille de style dit
+`align-items: start`. Aucune règle ne pouvait donc rétablir le comportement voulu, et
+**personne ne l'avait vu parce que les deux audits ne mesurent pas la géométrie de lecture.**
+
+Mesuré à 1440 px : le bloc de texte fait 108 px de haut contre 401 px pour le film de
+l'intérieur du boîtier, donc le centrage le poussait de 155 px vers le bas et ouvrait **248 px
+de vide entre le chapeau de section et son propre titre**. C'est le motif déjà jugé fautif le
+2026-08-26 — un écart de cette taille ENTRE deux blocs liés se lit comme un manque, alors que
+le même espace APRÈS le texte se lit comme une marge. Le signe qui ne trompe pas : la section
+voisine de la même page, elle, était bien en `start` (écart 22 px).
+
+Passé en `.specs__grid--intro`. Relevé après : **écart 32 px**, soit exactement le rythme
+titre → bloc fixé le 2026-08-25, et **hauteur de section inchangée** (2 537 px) — le correctif
+ne coûte rien, il remonte seulement le texte contre le haut du film. La marge basse, elle, est
+RÉELLE et a été gardée : le voisin `.tools__grid` a `margin-top: 0`.
+
+**Sixième fois que ce dépôt se fait prendre par un style en ligne**, après les centrages de
+`commandez`, les vignettes de blog, les fonds clairs de `.spec-item` et les deux listes de FAQ.
+La sonde qui les trouve est un `grep` des attributs `style` contenant une propriété de
+DISPOSITION (`align-items`, `grid-template`, `max-width`, `margin:0 auto`, `text-align`) : elle
+remonte 41 occurrences, dont 37 sont des habillages de composants légitimes (pastilles rondes,
+rangées de cases à cocher) et 4 étaient ces deux grilles.
+
+**LES DEUX `.split-2` DE `cas-usage` NE SONT PAS LE MÊME CAS, ne pas les « corriger ».** Leur
+bloc court descend aussi (113 et 125 px), mais par le `align-items: center` de la règle de base
+de `.split-2`, qui est JUSTE pour les quatre autres grilles du site (écarts de 4 à 24 px sur
+`commandez` / `order`, où les deux colonnes sont équilibrées). Et il s'agit là d'un paragraphe
+seul centré contre un film, pas d'un titre arraché à son chapeau. Le passer en `start` toucherait
+quatre grilles saines pour un gain nul.
+
+### Le contrôle qui manquait : est-ce que le texte rendu SE LIT ?
+
+C'est le trou des deux audits du dépôt, et il est déjà noté au 2026-09-02 : ils mesurent le
+contraste, les titres, les cibles tactiles et les liens, **jamais si deux mots se collent**.
+C'est un lecteur humain qui avait trouvé « 0intervention humaine » et « 1 appelpar verrou ».
+
+La sonde est désormais écrite, et **elle est STRUCTURELLE et non lexicale** : pour chaque paire
+d'éléments en ligne voisins rendus sur la même ligne, le premier finit-il par un non-espace
+quand le second commence par un non-espace, sans rien entre eux dans le DOM ? Un motif lexical
+ne peut pas voir « appelpar », qui est deux minuscules — ma première version cherchait
+`minuscule+Majuscule` et **ratait les deux défauts historiques**, ce qui est la leçon de
+l'exercice. Deux garde-fous contre le faux positif : exiger que les deux boîtes soient sur la
+même ligne de rendu (sinon toute pile verticale remonte), et laisser passer les jointures
+légitimes (ponctuation, parenthèses, tiret, apostrophe).
+
+Relevé : **0 jointure sur les 17 pages**, et la sonde est prouvée vivante (0 sur la page saine,
+2 après injection des deux formes historiques). S'y ajoutent, sur 17 pages × 6 largeurs (390,
+768, 900, 1024, 1440, 2560), **0 débordement horizontal, 0 image cassée, 0 erreur console,
+0 requête en échec**.
+
+### TROIS FAUX POSITIFS, UNE SEULE CAUSE : L'ONGLET N'EST PAS AU PREMIER PLAN
+
+Le site a été ouvert dans le vrai Chrome du client (RTX 5080, `ANGLE (NVIDIA … D3D11)`), donc
+sur un vrai GPU. Trois « défauts » y ont été observés, tous inexistants :
+
+1. **« l'accrochage de la séquence ne se déclenche pas »** : chaque cran avançait de 100 px sur
+   un pas de 1 046, et rien ne se recalait après deux secondes de repos. Cause : l'action de
+   défilement de l'extension est un `scrollBy` programmatique, **elle n'émet aucun événement
+   `wheel`**. Compté : `wheel: 0, scroll: 1`. Or l'accrochage est armé par `wheel`,
+   `touchstart`, `keydown` et `pointerup` — jamais par `scroll`. Rejoué avec
+   `page.mouse.wheel` de Playwright : un cran = un pas, recalage à 0,499 du pas, pas 3 à
+   clip 0,92 et coque 0,26, les deux bouts libèrent (0,666 puis 0,833). Tout est conforme ;
+2. **« la boucle vidéo de `cas-usage` affiche un rectangle noir »**, alors que le texte annonce
+   « la boucle ci-contre montre le geste ». La vidéo était bien là (670 × 376, `readyState 4`),
+   mais `paused: true` à t = 0,06 s, donc sur une image noire. Cause : **Chrome bride la lecture
+   des médias dans un onglet d'arrière-plan.** Rejoué sous Playwright, parcours par pas de
+   400 px : les six films des six pages avancent de 1,5 s en 1,5 s. Et vérifié aussi par le
+   chemin qui inquiétait, l'arrivée par un SAUT (rechargement en milieu de page, lien d'ancre) :
+   le film part quand même, le module 18 ne prend pas « jamais parti » pour « arrêté par le
+   visiteur » ;
+3. **« il manque des images par seconde »** : `requestAnimationFrame` est bridé lui aussi, donc
+   toute mesure de cadence faite par ce canal vaut zéro.
+
+**RÈGLE QUI EN DÉCOULE, et elle vaut pour toute session menée depuis ce navigateur** :
+l'extension sert à REGARDER (captures, mise en page, inspection du DOM, styles calculés). Tout
+ce qui dépend du temps, d'un vrai geste ou de la lecture d'un média se mesure avec Playwright.
+C'est le pendant exact de la note du 2026-08-25 sur SwiftShader, dans l'autre sens : là le mode
+invisible mentait sur le rendu, ici le vrai navigateur mentait sur le mouvement.
+
+### Un chiffre périmé dans le fichier que les IA lisent en premier
+
+`llms.txt` annonçait « all 20 pages carry `noindex, nofollow` ». Il y en a **16** au plan du
+site, plus `404.html` : le compte n'avait pas suivi les suppressions du 2026-09-02 (les deux
+pages légales et la page de réservation). Sa propre date de mise à jour disait d'ailleurs
+2026-08-31, soit avant le contenu qu'il décrit. Les 16 URL qu'il liste, elles, correspondent
+exactement au `sitemap.xml` — c'était bien le seul comptage en écart. `robots.txt`, lui, disait
+juste.
+
+Quatrième fois qu'un nombre écrit à la main périme dans ce dépôt, après les « 34 redirections »
+de `go-live.py`, ses « 4 newsletters » et les « seize questions » de la FAQ. La formulation ne
+porte plus de nombre là où elle peut l'éviter, et renvoie à la liste qui suit.
+
+### Deux modules MORTS, à arbitrer
+
+Contrôle systématique : pour chaque module de `main.js`, son sélecteur d'entrée existe-t-il
+encore dans le balisage servi ? Les modules 1, 2, 3, 7, 7 bis, 11, 13, 16 à 22 sont tous vivants.
+Deux ne le sont plus :
+
+- **le module 12 (viseur 3D personnalisé), 210 lignes** (940 à 1 149) : `.model-viewer-frame`
+  n'existe dans **aucune** des 17 pages depuis la suppression de `modele-3d.html` le 2026-08-28.
+  Avec lui, **`assets/models/qbot.glb.data.js` est servi pour rien : 0,91 Mo, soit plus lourd
+  que le modèle lui-même (0,68 Mo)**, et il n'est pas exclu dans `_config.yml`. La dette était
+  déjà notée au 2026-09-03 ; elle est ici chiffrée. L'audit RosoAI n°6 ne l'avait pas vue parce
+  que la référence EXISTE dans `main.js` : un relevé qui cherche le nom du fichier dans les
+  sources servies le trouve. **Le contrôle qui l'attrape est de vérifier que le code qui cite
+  l'actif est encore atteignable** ;
+- **le module 5 (compteur animé), 33 lignes** (369 à 401) : `[data-count]` n'existe dans aucune
+  page. Jamais signalé jusqu'ici.
+
+Rien n'a été supprimé : la convention du dépôt est de garder et d'annoter (`.timeline`,
+`.video__wrapper`, la famille `.usecase*`), et le sort du sidecar est explicitement un
+arbitrage du client. Les trois issues sont : supprimer module + sidecar + CSS, ou n'exclure que
+le sidecar de la publication, ou ne rien faire.
+
+### Le reste est sain
+
+Les deux audits : **17 pages sur 17, 0 constat**, à 1440 comme à 390 px. 54 redirections,
+0 défaut. `sync-faq-jsonld.py` : 40 entrées comparées, 0 recalée, donc le texte visible et sa
+copie structurée ne divergent nulle part. `maj-nav-booking.py` : 17 boutons déjà à jour, donc la
+source unique de l'agenda l'est toujours. `maj-sitemap.py` sans écart avant la passe.
+
+`__pycache__/` entre dans `.gitignore` : les modules de `tools/` s'importent entre eux, donc le
+premier lancement des contrôles l'écrit, et il apparaissait en fichier non suivi. Même famille
+que `padel_alerte.py` — un fichier de travail qui entre dans le suivi finit par être servi, et
+l'exclusion de `_config.yml` est SILENCIEUSE.
+
+### Ce qui reste, et qui ne dépend pas du code
+
+Inchangé depuis le 2026-09-02, et hors de ce dépôt : la fiche Ministry of Testing (« tokens on
+100% of your tests », plus un lien vers `bot.q-leap.eu` qui meurt avec le WordPress), les quatre
+pages tierces qui décrivent encore l'actionneur et la caméra, l'absence d'annuaire
+professionnel, et le « Depuis 10 ans » de `q-leap.eu` qui contredit de quatre ans le
+`foundingDate` du 5 avril 2012.
+
+Sans matière disponible : la question de FAQ « plusieurs équipes » (demande une information
+produit que personne n'a fournie — celle sur les demandes simultanées a pu être écrite le
+2026-09-03 parce que le client a donné le fait) et le logo « Made in Luxembourg ».
