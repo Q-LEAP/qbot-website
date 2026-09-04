@@ -1414,6 +1414,24 @@ p { color: var(--gray); }
   align-items: start;
 }
 
+/* Le bloc qui ouvre la fiche technique, à côté du film de l'intérieur du boîtier.
+   IL PORTAIT `style="margin-bottom:56px; align-items:center;"` EN LIGNE, et le
+   centrage contredisait le `start` ci-dessus, qu'aucune règle ne pouvait donc
+   rétablir. Effet mesuré à 1440 px : le texte fait 108 px de haut contre 401 px
+   pour le film, donc le centrage le poussait de 155 px vers le bas et ouvrait
+   248 px de vide entre le chapeau de section et son propre titre. C'est le motif
+   déjà jugé fautif le 2026-08-26 — un écart de cette taille ENTRE deux blocs liés
+   se lit comme un manque, alors que le même espace APRÈS le texte se lit comme une
+   marge — et la section voisine de la même page, elle, était bien en `start`.
+   Relevé après retrait : 32 px, soit exactement le rythme titre → bloc fixé le
+   2026-08-25, et hauteur de section inchangée (2 537 px).
+   Sixième fois que ce dépôt se fait prendre par un style en ligne, après les
+   centrages de `commandez`, les vignettes de blog, les fonds clairs de
+   `.spec-item` et les deux listes de FAQ. La marge basse, elle, est RÉELLE : le
+   voisin `.tools__grid` a `margin-top: 0`, donc rien ne la remplace. */
+.specs__grid--intro { margin-bottom: 56px; }
+@media (max-width: 900px) { .specs__grid--intro { margin-bottom: 40px; } }
+
 /* Fiche technique sur deux colonnes, demandé le 2026-08-28.
    DEUX LISTES CÔTE À CÔTE, PAS UNE LISTE À QUATRE PISTES. L'alignement des
    valeurs repose sur `subgrid` (voir plus haut) : il fait qu'une liste a UNE
