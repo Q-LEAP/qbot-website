@@ -61,3 +61,14 @@ padel_alerte.py
 # qui changerait quelque chose de plus est le passage du dépôt en privé, qui
 # demande un plan GitHub payant : c'est l'arbitrage budgétaire déjà noté.
 assets/3d/
+
+# ── Octets compilés de Python ───────────────────────────────────────────────
+# `tools/` contient des modules que les scripts s'importent entre eux
+# (`redirections_map`, `bookings_conf`, `vignettes_guides`) : le premier
+# lancement écrit donc `tools/__pycache__/`. Ce sont des artefacts de machine,
+# jamais du projet, et ils apparaissaient en fichiers non suivis dès qu'on
+# passait les contrôles du dépôt. Même famille que `padel_alerte.py` : un
+# fichier de travail qui entre dans le suivi finit par être servi, et
+# l'exclusion de `_config.yml` est SILENCIEUSE.
+__pycache__/
+*.pyc
