@@ -231,6 +231,14 @@ if ('IntersectionObserver' in window) {
       /* Colonne de texte d'une section intro : label → titre → paragraphes
          arrivent en cascade. `:not()` écarte la colonne image du même grid. */
       '.intro__grid > div:not(.intro__image)',
+      /* Le schéma du parcours de « La solution » (2026-09-07). En groupe et non
+         en carte : le cadre ne bouge pas et les cinq pas s'enchaînent, segment
+         de trait compris, si bien que le parcours SE DESSINE au lieu d'arriver
+         d'un bloc. Il a exactement cinq enfants, donc les cinq retards de
+         `.reveal--group` (0 à 0,34 s) tombent juste.
+         IL LUI FAUT SA PROPRE ENTRÉE : le sélecteur ci-dessus vise les `div`
+         de la grille, et celui-ci est un `<ol>`. */
+      '.flow2fa__steps',
     ]],
     /* La variante « éventail » doit précéder « carte » : un élément ne prend que la
        première variante qui le désigne. Réservée aux grilles à plusieurs colonnes —

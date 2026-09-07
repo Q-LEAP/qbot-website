@@ -121,5 +121,9 @@ exclude:
   # puis remplacé le même jour par le visuel fourni par le client. Gardé dans git
   # (il se remet en place en changeant un `src`), mais plus servi : la règle du
   # jour est qu'aucun actif servi n'est sans référence.
+  # Photo verticale du boîtier, remplacée dans « La solution » par le schéma
+  # `.flow2fa` le 2026-09-07 (retour client : « trop de vide » à droite du texte).
+  # Plus aucune page ne la cite. Master dans Documentations/assets-sources/.
+  - assets/img/qbot-photo-ecran.jpg
   - assets/img/qbot-2fa-flux.jpg
   - assets/img/qbot-2fa-flux-en.jpg
