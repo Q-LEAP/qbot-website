@@ -314,12 +314,17 @@
      3 avantages maximum ». Sont parties « Mise en service immédiate » (fausse :
      il faut construire ses scénarios) et « Deux accès », dont le contenu est
      repris dans « Simple à intégrer ».
-     « ZÉRO FAUX POSITIF » EST REMPLACÉ PAR « EXÉCUTION DÉTERMINISTE ». La
-     review le demande pour la crédibilité technique : un zéro absolu ne se
-     démontre pas, alors qu'un appui prédéfini rejoué à l'identique se décrit.
-     Et la formulation ne dit plus « rien n'est deviné à l'image » mais « aucune
-     reconnaissance d'image pendant l'exécution » : les captures servent bien à
+     « ZÉRO FAUX POSITIF » A ÉTÉ REMPLACÉ LE 2026-09-02, et ne doit pas revenir :
+     un zéro absolu ne se démontre pas, alors qu'un parcours rejoué à l'identique
+     se décrit. Et la formulation ne dit pas « rien n'est deviné à l'image » mais
+     « rien n'est interprété PENDANT LE TEST » : les captures servent bien à
      CONSTRUIRE les scénarios, il ne faut pas laisser croire l'inverse.
+     LE VOCABULAIRE A ÉTÉ SIMPLIFIÉ LE 2026-09-07, sur retour joint par le
+     client : « exécution déterministe », « appuis prédéfinis » et « aucun
+     sélecteur à maintenir » sont justes pour un QA mais sonnent documentation
+     sur une page d'accueil. Les deux contraintes ci-dessus tiennent dans la
+     nouvelle formule ; le mot « déterministe » reste sur la FAQ et sur
+     « Comment ça marche », qui est le partage demandé.
      Le paragraphe « Q-Bot ne demande ni installation ni configuration » est
      retiré pour la même raison : la configuration des scénarios est justement
      le travail que fait le testeur. -->
@@ -339,7 +344,7 @@
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
         <h3>Sur la vraie application 2FA</h3>
-        <p>Exécution déterministe&nbsp;: <span class="nb">Q-Bot</span> exécute des appuis prédéfinis sur la véritable application, sans reconnaissance visuelle de l'interface pendant l'exécution.</p>
+        <p><span class="nb">Q-Bot</span> rejoue à l'identique le parcours que vous avez enregistré, dans la véritable application. Rien n'est interprété à l'écran pendant le test.</p>
       </article>
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
@@ -464,7 +469,7 @@
 
     <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
       <h3 style="margin-bottom:12px;">Créer une automatisation visuellement, sans écrire de code</h3>
-      <p class="section-subtitle" style="margin-bottom:24px;">Les scénarios se construisent dans l'interface web, sur les captures d'écran de l'application à tester. Aucun script, aucun sélecteur à maintenir.</p>
+      <p class="section-subtitle" style="margin-bottom:24px;">Les scénarios se construisent dans l'interface web, sur les captures d'écran de l'application à tester. Aucune ligne de code&nbsp;: un scénario, c'est une capture et les endroits où il faut appuyer.</p>
       <ul class="api-facts api-facts--deux">
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
         <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui en cliquant, et réglez chaque temps d'attente</span></li>
@@ -642,8 +647,8 @@
         <div class="scrolly__step-inner">
           <span class="scrolly__label">L'intérieur</span>
           <h2 class="scrolly__title">Ce qu’il y a à l’intérieur</h2>
-          <p class="scrolly__text">Un Raspberry Pi 5 (Cortex A76, 4 Go) coordonne l'ensemble. Pilotage par interface web ou par API REST, depuis Selenium, Cypress, Appium et tous vos pipelines.</p>
-          <p class="scrolly__fig"><b>Pi 5</b> <span>Wi-Fi, Gigabit Ethernet</span></p>
+          <p class="scrolly__text">Un Raspberry Pi 5 coordonne l'ensemble. Le pilotage se fait par l'interface web ou par l'API REST, depuis Selenium, Cypress, Appium et vos chaînes d'intégration.</p>
+          <p class="scrolly__fig"><b>Rien</b> <span>ne quitte votre réseau</span></p>
         </div>
       </div>
       <div class="scrolly__step" data-step="3" id="qbot-etape-4">
