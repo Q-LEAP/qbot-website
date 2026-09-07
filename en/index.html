@@ -241,6 +241,163 @@
   </div>
 </section>
 
+<!-- ======= FEATURES ======= -->
+<!-- Trois cartes et pas quatre, cf. la note française. « Zero false positives »
+     devient « Deterministic execution », et « nothing is guessed from an image »
+     devient « no image recognition during execution » : les captures servent à
+     CONSTRUIRE les scénarios. -->
+<section class="section" aria-labelledby="features-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Benefits</span>
+      <h2 class="section-title" id="features-title">What <span class="nb">Q-Bot</span> changes for a test team</h2>
+      <p class="section-subtitle">It removes the one step test tools cannot get past, without bypassing it: the approval happens in the genuine 2FA app, on a genuine smartphone.</p>
+    </div>
+    <div class="features__grid features__grid--3">
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg></div>
+        <h3>No human intervention</h3>
+        <p>No tester needed to approve the 2FA step. The run goes through, at any hour.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
+        <h3>On the genuine 2FA app</h3>
+        <p>Deterministic execution: <span class="nb">Q-Bot</span> replays predefined taps in the genuine app, with no visual recognition of the interface during execution.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>Simple to integrate</h3>
+        <p>One HTTP call from your test pipeline, or the companion app reacting to the notification. No SDK, no agent to install.</p>
+      </article>
+    </div>
+    <div style="margin-top:36px;">
+      <a href="technical-specs.html" class="btn btn--outline">
+        Technical specifications
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ======= LE FILM PRODUIT ======= -->
+    <!-- LE FILM DE DÉMONSTRATION EST ICI DEPUIS LE 2026-09-02, sur retour du client :
+     « la vidéo Q-Bot qu'on a fait, ne doit-on pas la trouver sur le site,
+     homepage ? c'est un bon moyen de comprendre ce que fait Q-Bot et plus
+     facilement que la lecture du contenu ».
+     CE QUI ÉTAIT LÀ AVANT : `qbot-home.mp4`, une boucle muette de 8,7 s posée dans
+     la moitié d'une colonne, décorative et sans titre. Le film produit (QBV1.2.12,
+     50,9 s) ne se trouvait que sur la fiche technique, où il est une boucle.
+     TROIS ÉCARTS AVEC CETTE BOUCLE, et ils tiennent tous à ce que ce film-ci n'est
+     pas un décor mais un contenu :
+     1. il porte `controls`. Un film de cinquante secondes qu'on ne peut ni
+        arrêter, ni reprendre, ni rejouer se subit ; celui-là sert à comprendre,
+        donc il se pilote. D'où `--playable`, qui rend au lecteur les
+        `pointer-events` que `--film` coupe ;
+     2. il n'est plus `aria-hidden` : c'est du contenu, donc il porte un nom
+        accessible et la section qui l'entoure a un titre ;
+     3. il tient toute la largeur du conteneur, aligné sur le titre.
+     Il reste `muted` et `loop` : la piste audio a été RETIRÉE du fichier
+     (ffmpeg -an), il n'y a donc rien à couper, et `muted` est ce qui autorise le
+     démarrage automatique. Les incrustations du film sont en ANGLAIS, y compris
+     sur la page française, et le chapeau de la section le dit : c'est une
+     propriété du fichier fourni, pas de la page.
+     `data-film` ET NON `src` : le module 18 ne demande les 2,0 Mo que quand la
+     section approche, avec 200 px d'avance. Sans JavaScript, en mouvement réduit,
+     en économiseur de données ou sur connexion lente, il reste l'affiche, qui est
+     une vraie image du film. -->
+<section class="section section--gray" aria-labelledby="film-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">In video</span>
+      <h2 class="section-title" id="film-title"><span class="nb">Q-Bot</span> in action</h2>
+      <p class="section-subtitle">Fifty seconds to see what these pages describe&nbsp;: the enclosure on a desk, the smartphone docked at the front, a scenario running and the authentication going through. The film is silent.</p>
+    </div>
+    <div class="video__wrapper video__wrapper--film video__wrapper--playable">
+      <video class="video__player" data-film="../assets/video/qbot-demo.mp4?v=301fa999"
+             poster="../assets/img/qbot-demo-poster.jpg"
+             controls muted loop playsinline
+             aria-label="Q-Bot demonstration film, fifty seconds, no sound"></video>
+    </div>
+  </div>
+</section>
+
+<!-- ======= COMMENT ÇA FONCTIONNE =======
+     Section demandée à la review (point 6) : la homepage expliquait ce que
+     Q-Bot change et ce qu'il est, jamais ce qu'il FAIT, étape par étape.
+     ELLE EST PASSÉE AVANT LA SÉQUENCE 3D LE 2026-09-07, sur retour du client :
+     « il faut d'abord montrer simplement le problème et le fonctionnement de
+     Q-Bot [...] et seulement ensuite mettre en avant le rendu 3D du produit ».
+     Le parcours est donc : je découvre le problème, je comprends le
+     fonctionnement, je vois le produit, je vérifie, je réserve. Ne pas la
+     remettre sous la séquence sans nouvelle demande.
+     LES CINQ ÉTAPES SONT LE TEXTE DU BRIEF, mot pour mot.
+     LE COMPOSANT EST CELUI DE LA PAGE DÉMO (`.order-process`), pas un nouveau :
+     ronds numérotés, trait de liaison, même typographie. Seule la variante à
+     cinq colonnes est ajoutée, avec sa formule de trait redérivée.
+     L'ANCRE `after-sequence` N'EST PLUS ICI : le lien d'évitement doit tomber sur
+     ce qui SUIT la séquence, et depuis le réordonnancement c'est la section
+     Compatibilité. Elle a déjà déménagé deux fois ; elle suit la séquence, pas
+     cette section.
+     LE BLOC « SANS CODE » EST LA SECONDE MOITIÉ DE LA SECTION (point 4). Le
+     message est jugé assez important pour la homepage, mais le brief interdit de
+     recopier la fiche technique : quatre lignes suffisent à dire l'idée, et le
+     détail reste sur la page Caractéristiques. Volontairement SANS visuel : la
+     maquette de l'éditeur illustre déjà la fiche technique, et la review demande
+     moins de répétition. -->
+<section class="section" aria-labelledby="how-home-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">In five steps</span>
+      <h2 class="section-title" id="how-home-title">How it works</h2>
+      <p class="section-subtitle"><span class="nb">Q-Bot</span> takes over the moment your automated test reaches the two-factor authentication step.</p>
+    </div>
+    <div class="order-process order-process--5" role="list">
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">1</div>
+        <h3>Your test reaches the 2FA step</h3>
+        <p>The automated journey hits the step that needs an approval on a smartphone.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">2</div>
+        <h3><span class="nb">Q-Bot</span> is triggered</h3>
+        <p>Your test calls <span class="nb">Q-Bot</span>, or <span class="nb">Q-Bot</span> reacts on its own to an incoming notification.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">3</div>
+        <h3><span class="nb">Q-Bot</span> drives the smartphone</h3>
+        <p>It runs the saved scenario directly in the genuine 2FA app.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">4</div>
+        <h3>The approval goes through</h3>
+        <p>The request is approved, or the required code is retrieved.</p>
+      </div>
+      <div class="order-step" role="listitem">
+        <div class="order-step__number">5</div>
+        <h3>Your test carries on</h3>
+        <p>The automated journey resumes with no human intervention.</p>
+      </div>
+    </div>
+    <div style="margin-top:44px;">
+      <a href="use-cases.html" class="btn btn--outline">
+        See how it works
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
+      <h3 style="margin-bottom:12px;">Build an automation visually, without writing code</h3>
+      <p class="section-subtitle" style="margin-bottom:24px;">Scenarios are built in the web interface, on top of screenshots of the app under test. No scripting, no selectors to maintain.</p>
+      <ul class="api-facts api-facts--deux">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You drop in a screenshot, which becomes the background of the step</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You place the tap points by clicking, and set each wait time</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You add, reorder or remove a step at any time</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The scenario is saved on the device, and reusable at will</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <!-- Lien d'évitement de la séquence. Quatre écrans épinglés, c'est quatre
      hauteurs de fenêtre à traverser : à la souris on ne le sent pas, au clavier
      ou au lecteur d'écran c'est un couloir. Masqué au repos, révélé à la prise
@@ -432,112 +589,44 @@
   <span class="scrolly__cta-label">Technical Specs</span>
 </a>
 
-<!-- ======= COMMENT ÇA FONCTIONNE =======
-     Section demandée à la review (point 6) : la homepage expliquait ce que
-     Q-Bot change et ce qu'il est, jamais ce qu'il FAIT, étape par étape. Elle se
-     pose juste après la séquence 3D, donc entre « le produit » et « les
-     avantages », ce qui suit le parcours voulu : je découvre le problème, je
-     comprends le produit, je comprends le fonctionnement, je vérifie, je réserve.
-     LES CINQ ÉTAPES SONT LE TEXTE DU BRIEF, mot pour mot.
-     LE COMPOSANT EST CELUI DE LA PAGE DÉMO (`.order-process`), pas un nouveau :
-     ronds numérotés, trait de liaison, même typographie. Seule la variante à
-     cinq colonnes est ajoutée, avec sa formule de trait redérivée.
-     L'ANCRE `after-sequence` DÉMÉNAGE ICI depuis la section des avantages : le lien
-     d'évitement « passer la séquence » doit tomber sur ce qui suit la séquence.
-     LE BLOC « SANS CODE » EST LA SECONDE MOITIÉ DE LA SECTION (point 4). Le
-     message est jugé assez important pour la homepage, mais le brief interdit de
-     recopier la fiche technique : quatre lignes suffisent à dire l'idée, et le
-     détail reste sur la page Caractéristiques. Volontairement SANS visuel : la
-     maquette de l'éditeur illustre déjà la fiche technique, et la review demande
-     moins de répétition. -->
-<section class="section" id="after-sequence" aria-labelledby="how-home-title">
+<!-- ======= COMPATIBILITY =======
+     CETTE SECTION PORTE L'ANCRE `after-sequence` depuis le réordonnancement du
+     2026-09-07 : c'est elle qui suit la séquence 3D, donc c'est ici que tombe
+     le lien d'évitement « skip the product sequence ». -->
+<!-- La section LuxTrust devient la section Compatibilité, cf. la note
+     française. « Any type of 2FA solution » est banni : la formulation dit le
+     périmètre réel. Grille reprise du composant `.compat` de la fiche
+     technique. -->
+<section class="section section--gray" id="after-sequence" aria-labelledby="compat-home-title">
   <div class="container">
     <div class="section-header">
-      <span class="section-label">In five steps</span>
-      <h2 class="section-title" id="how-home-title">How it works</h2>
-      <p class="section-subtitle"><span class="nb">Q-Bot</span> takes over the moment your automated test reaches the two-factor authentication step.</p>
+      <span class="section-label">Compatibility</span>
+      <h2 class="section-title" id="compat-home-title">Works with your tools and your 2FA apps</h2>
+      <p class="section-subtitle">Compatible with the 2FA apps installed on your smartphone, including LuxTrust Mobile, itsme, Microsoft Authenticator and Google Authenticator. On the pipeline side, any tool that can make an HTTP call can drive <span class="nb">Q-Bot</span>.</p>
     </div>
-    <div class="order-process order-process--5" role="list">
-      <div class="order-step" role="listitem">
-        <div class="order-step__number">1</div>
-        <h3>Your test reaches the 2FA step</h3>
-        <p>The automated journey hits the step that needs an approval on a smartphone.</p>
+    <div class="tools__grid" style="gap:48px;">
+      <div>
+        <h3 class="compat__head">2FA apps</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">LuxTrust Mobile</li>
+          <li class="compat__item" role="listitem">itsme</li>
+          <li class="compat__item" role="listitem">Microsoft Authenticator</li>
+          <li class="compat__item" role="listitem">Google Authenticator</li>
+        </ul>
       </div>
-      <div class="order-step" role="listitem">
-        <div class="order-step__number">2</div>
-        <h3><span class="nb">Q-Bot</span> is triggered</h3>
-        <p>Your test calls <span class="nb">Q-Bot</span>, or <span class="nb">Q-Bot</span> reacts on its own to an incoming notification.</p>
+      <div>
+        <h3 class="compat__head">Automation tools</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">Selenium</li>
+          <li class="compat__item" role="listitem">Cypress</li>
+          <li class="compat__item" role="listitem">Playwright</li>
+          <li class="compat__item" role="listitem">Robot Framework</li>
+          <li class="compat__item" role="listitem">Katalon</li>
+          <li class="compat__item" role="listitem">Appium</li>
+          <li class="compat__item" role="listitem">Jenkins CI</li>
+          <li class="compat__item" role="listitem">GitLab CI</li>
+        </ul>
       </div>
-      <div class="order-step" role="listitem">
-        <div class="order-step__number">3</div>
-        <h3><span class="nb">Q-Bot</span> drives the smartphone</h3>
-        <p>It runs the saved scenario directly in the genuine 2FA app.</p>
-      </div>
-      <div class="order-step" role="listitem">
-        <div class="order-step__number">4</div>
-        <h3>The approval goes through</h3>
-        <p>The request is approved, or the required code is retrieved.</p>
-      </div>
-      <div class="order-step" role="listitem">
-        <div class="order-step__number">5</div>
-        <h3>Your test carries on</h3>
-        <p>The automated journey resumes with no human intervention.</p>
-      </div>
-    </div>
-    <div style="margin-top:44px;">
-      <a href="use-cases.html" class="btn btn--outline">
-        See how it works
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-
-    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
-      <h3 style="margin-bottom:12px;">Build an automation visually, without writing code</h3>
-      <p class="section-subtitle" style="margin-bottom:24px;">Scenarios are built in the web interface, on top of screenshots of the app under test. No scripting, no selectors to maintain.</p>
-      <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You drop in a screenshot, which becomes the background of the step</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You place the tap points by clicking, and set each wait time</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You add, reorder or remove a step at any time</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The scenario is saved on the device, and reusable at will</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ======= FEATURES ======= -->
-<!-- Trois cartes et pas quatre, cf. la note française. « Zero false positives »
-     devient « Deterministic execution », et « nothing is guessed from an image »
-     devient « no image recognition during execution » : les captures servent à
-     CONSTRUIRE les scénarios. -->
-<section class="section section--gray" aria-labelledby="features-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Benefits</span>
-      <h2 class="section-title" id="features-title">What <span class="nb">Q-Bot</span> changes for a test team</h2>
-      <p class="section-subtitle">It removes the one step test tools cannot get past, without bypassing it: the approval happens in the genuine 2FA app, on a genuine smartphone.</p>
-    </div>
-    <div class="features__grid features__grid--3">
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg></div>
-        <h3>No human intervention</h3>
-        <p>No tester needed to approve the 2FA step. The run goes through, at any hour.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
-        <h3>On the genuine 2FA app</h3>
-        <p>Deterministic execution: <span class="nb">Q-Bot</span> replays predefined taps in the genuine app, with no visual recognition of the interface during execution.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <h3>Simple to integrate</h3>
-        <p>One HTTP call from your test pipeline, or the companion app reacting to the notification. No SDK, no agent to install.</p>
-      </article>
-    </div>
-    <div style="margin-top:36px;">
-      <a href="technical-specs.html" class="btn btn--outline">
-        Technical specifications
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
     </div>
   </div>
 </section>
@@ -575,87 +664,6 @@
         Use cases in detail
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-    </div>
-  </div>
-</section>
-
-<!-- ======= COMPATIBILITY ======= -->
-<!-- La section LuxTrust devient la section Compatibilité, cf. la note
-     française. « Any type of 2FA solution » est banni : la formulation dit le
-     périmètre réel. Grille reprise du composant `.compat` de la fiche
-     technique. -->
-<section class="section section--gray" aria-labelledby="compat-home-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Compatibility</span>
-      <h2 class="section-title" id="compat-home-title">Works with your tools and your 2FA apps</h2>
-      <p class="section-subtitle">Compatible with the 2FA apps installed on your smartphone, including LuxTrust Mobile, itsme, Microsoft Authenticator and Google Authenticator. On the pipeline side, any tool that can make an HTTP call can drive <span class="nb">Q-Bot</span>.</p>
-    </div>
-    <div class="tools__grid" style="gap:48px;">
-      <div>
-        <h3 class="compat__head">2FA apps</h3>
-        <ul class="compat" role="list">
-          <li class="compat__item" role="listitem">LuxTrust Mobile</li>
-          <li class="compat__item" role="listitem">itsme</li>
-          <li class="compat__item" role="listitem">Microsoft Authenticator</li>
-          <li class="compat__item" role="listitem">Google Authenticator</li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="compat__head">Automation tools</h3>
-        <ul class="compat" role="list">
-          <li class="compat__item" role="listitem">Selenium</li>
-          <li class="compat__item" role="listitem">Cypress</li>
-          <li class="compat__item" role="listitem">Playwright</li>
-          <li class="compat__item" role="listitem">Robot Framework</li>
-          <li class="compat__item" role="listitem">Katalon</li>
-          <li class="compat__item" role="listitem">Appium</li>
-          <li class="compat__item" role="listitem">Jenkins CI</li>
-          <li class="compat__item" role="listitem">GitLab CI</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======= LE FILM PRODUIT ======= -->
-    <!-- LE FILM DE DÉMONSTRATION EST ICI DEPUIS LE 2026-09-02, sur retour du client :
-     « la vidéo Q-Bot qu'on a fait, ne doit-on pas la trouver sur le site,
-     homepage ? c'est un bon moyen de comprendre ce que fait Q-Bot et plus
-     facilement que la lecture du contenu ».
-     CE QUI ÉTAIT LÀ AVANT : `qbot-home.mp4`, une boucle muette de 8,7 s posée dans
-     la moitié d'une colonne, décorative et sans titre. Le film produit (QBV1.2.12,
-     50,9 s) ne se trouvait que sur la fiche technique, où il est une boucle.
-     TROIS ÉCARTS AVEC CETTE BOUCLE, et ils tiennent tous à ce que ce film-ci n'est
-     pas un décor mais un contenu :
-     1. il porte `controls`. Un film de cinquante secondes qu'on ne peut ni
-        arrêter, ni reprendre, ni rejouer se subit ; celui-là sert à comprendre,
-        donc il se pilote. D'où `--playable`, qui rend au lecteur les
-        `pointer-events` que `--film` coupe ;
-     2. il n'est plus `aria-hidden` : c'est du contenu, donc il porte un nom
-        accessible et la section qui l'entoure a un titre ;
-     3. il tient toute la largeur du conteneur, aligné sur le titre.
-     Il reste `muted` et `loop` : la piste audio a été RETIRÉE du fichier
-     (ffmpeg -an), il n'y a donc rien à couper, et `muted` est ce qui autorise le
-     démarrage automatique. Les incrustations du film sont en ANGLAIS, y compris
-     sur la page française, et le chapeau de la section le dit : c'est une
-     propriété du fichier fourni, pas de la page.
-     `data-film` ET NON `src` : le module 18 ne demande les 2,0 Mo que quand la
-     section approche, avec 200 px d'avance. Sans JavaScript, en mouvement réduit,
-     en économiseur de données ou sur connexion lente, il reste l'affiche, qui est
-     une vraie image du film. -->
-<section class="section" aria-labelledby="film-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">In video</span>
-      <h2 class="section-title" id="film-title"><span class="nb">Q-Bot</span> in action</h2>
-      <p class="section-subtitle">Fifty seconds to see what these pages describe&nbsp;: the enclosure on a desk, the smartphone docked at the front, a scenario running and the authentication going through. The film is silent.</p>
-    </div>
-    <div class="video__wrapper video__wrapper--film video__wrapper--playable">
-      <video class="video__player" data-film="../assets/video/qbot-demo.mp4?v=301fa999"
-             poster="../assets/img/qbot-demo-poster.jpg"
-             controls muted loop playsinline
-             aria-label="Q-Bot demonstration film, fifty seconds, no sound"></video>
     </div>
   </div>
 </section>
