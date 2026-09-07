@@ -36,7 +36,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=527e60c8">
+  <link rel="stylesheet" href="assets/css/style.css?v=d88d0231">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -437,49 +437,74 @@
 </section>
 
 <!-- ======= INTERFACE & API ======= -->
-<section class="section section--gray pin-modes" aria-labelledby="interface-title"
-         data-panel="0">
-  <!-- Rail d'épinglage : sur grand écran la section tient trois écrans et son
-       contenu reste collé pendant qu'on les traverse ; le texte ne bouge pas,
-       c'est le cadrage de la maquette qui change. Sous 900 px le rail retombe
-       à sa hauteur naturelle (cf. scrolly.css : sur téléphone on raccourcit,
-       on n'épingle pas). -->
-  <div class="pin-modes__track">
-   <div class="pin-modes__stage">
+<!-- L'ACTE ÉPINGLÉ A ÉTÉ RETIRÉ LE 2026-09-07, avec la maquette qu'il annotait.
+     Ses trois zones de projecteur étaient MESURÉES sur l'ancienne maquette (la
+     liste des étapes, le pied de page, l'étape « notification ») : aucune de ces
+     régions n'existe dans les captures de l'interface réelle, et un projecteur ne
+     se recale pas sur une autre image. Le rail épinglé est gardé et annoté dans la
+     feuille de style, comme la frise datée. Ce qui le remplace est la fenêtre
+     ci-dessous : bandeau en balisage, corps en captures, bascule au clic
+     (module 23 de main.js). -->
+<section class="section section--gray" aria-labelledby="interface-title">
   <div class="container">
-    <div class="about-section__grid reverse">
-      <div class="about-section__content">
-        <span class="section-label">Interface & API</span>
-        <h2 class="section-title" id="interface-title">Une interface web et une API REST</h2>
-        <p>
-          <span class="nb">Q-Bot</span> se pilote depuis son interface web, ou par un appel HTTP depuis votre chaîne de tests.
-        </p>
-        <div style="margin-top:28px; display:flex; flex-direction:column; gap:20px;">
-          <div class="spec-item spec-item--card pin-modes__card" data-mode="0">
-            <span class="spec-item__label">Interface Web</span>
-            <span class="spec-item__value">Une capture de l'écran 2FA, des points d'appui numérotés, des temps d'attente. Aucun script, aucun sélecteur à maintenir.</span>
+    <div class="section-header">
+      <span class="section-label">Interface &amp; API</span>
+      <h2 class="section-title" id="interface-title">Une interface web et une API REST</h2>
+      <p class="section-subtitle"><span class="nb">Q-Bot</span> se pilote depuis son interface web, ou par un appel HTTP depuis votre chaîne de tests. Les captures ci-dessous sont l'interface livrée avec le boîtier, telle qu'elle est aujourd'hui.</p>
+    </div>
+
+    <div class="features__grid features__grid--3 modes-grid">
+        <div class="spec-item spec-item--card">
+          <span class="spec-item__label">Interface Web</span>
+          <span class="spec-item__value">Une capture de l'écran 2FA, des points d'appui numérotés, des temps d'attente. Aucun script, aucun sélecteur à maintenir.</span>
+        </div>
+        <div class="spec-item spec-item--card">
+          <span class="spec-item__label">API REST</span>
+          <span class="spec-item__value">Trois points d'entrée, appelés depuis vos scripts de test. Aucun SDK, aucun agent à installer.</span>
+        </div>
+        <div class="spec-item spec-item--card">
+          <span class="spec-item__label">App compagnon</span>
+          <span class="spec-item__value">Installée sur le téléphone sous test, elle surveille les notifications 2FA et déclenche le scénario dès qu'une arrive. Aucun appel depuis votre chaîne de tests.</span>
+        </div>
+    </div>
+
+    <figure class="appwin" data-appwin>
+      <div class="appwin__win">
+        <div class="appwin__bar">
+          <span class="appwin__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <div class="appwin__tabs" role="tablist" aria-label="Écrans de l'interface Q-Bot">
+          <button type="button" class="appwin__tab" role="tab" id="appwin-t1"
+                  aria-controls="appwin-p1" aria-selected="true" lang="en"
+                  data-appwin-tab data-appwin-cap="L'accueil de l'interface, servie par le boîtier lui-même : tout se fait depuis un navigateur, sur votre réseau, sans rien installer.">Home</button>
+          <button type="button" class="appwin__tab" role="tab" id="appwin-t2"
+                  aria-controls="appwin-p2" aria-selected="false" lang="en"
+                  data-appwin-tab data-appwin-cap="L'éditeur de scénarios : le scénario s'écrit sur la capture de l'écran du téléphone, avec la palette d'appuis et de temps d'attente.">Scenario Editor</button>
+          <button type="button" class="appwin__tab" role="tab" id="appwin-t3"
+                  aria-controls="appwin-p3" aria-selected="false" lang="en"
+                  data-appwin-tab data-appwin-cap="La documentation de l'API, servie par le boîtier elle aussi : chaque point d'entrée avec ses paramètres et sa réponse.">API</button>
           </div>
-          <div class="spec-item spec-item--card pin-modes__card" data-mode="1">
-            <span class="spec-item__label">API REST</span>
-            <span class="spec-item__value">Trois points d'entrée, appelés depuis vos scripts de test. Aucun SDK, aucun agent à installer.</span>
+          <span class="appwin__ver" aria-hidden="true">v2.1.2</span>
+        </div>
+        <div class="appwin__body">
+          <div class="appwin__panel is-active" id="appwin-p1" role="tabpanel"
+               aria-labelledby="appwin-t1" tabindex="0">
+            <img src="assets/img/qbot-ui-home.webp?v=2efca181" loading="lazy" width="2360" height="1500"
+                 alt="Page d'accueil de l'interface web Q-Bot : le logo, la promesse « Automate touch-based test cases on physical mobile devices », un bouton « Open Scenario Editor » et quatre cartes qui décrivent les étapes par capture, les points d'appui, l'exécution des scénarios et l'API ouverte.">
           </div>
-          <div class="spec-item spec-item--card pin-modes__card" data-mode="2">
-            <span class="spec-item__label">App compagnon</span>
-            <span class="spec-item__value">Installée sur le téléphone sous test, elle surveille les notifications 2FA et déclenche le scénario dès qu'une arrive. Aucun appel depuis votre chaîne de tests.</span>
+          <div class="appwin__panel" id="appwin-p2" role="tabpanel"
+               aria-labelledby="appwin-t2" tabindex="0">
+            <img data-src="assets/img/qbot-ui-scenario.webp?v=426ea24e" width="2360" height="1500"
+                 alt="Éditeur de scénarios de l'interface web Q-Bot : le scénario « Homescreen » sélectionné, la palette d'outils (déplacer, appui, supprimer, temps d'attente) et l'écran du téléphone sous test, où l'on voit les applications LuxTrust Mobile, itsme, Google Authenticator et Microsoft Authenticator.">
+          </div>
+          <div class="appwin__panel" id="appwin-p3" role="tabpanel"
+               aria-labelledby="appwin-t3" tabindex="0">
+            <img data-src="assets/img/qbot-ui-api.webp?v=30847547" width="2360" height="1500"
+                 alt="Documentation de l'API REST de Q-Bot : le point d'entrée GET /scenarios/:id/execute avec son paramètre id et sa réponse JSON, suivi de GET /get-luxtrust-otp.">
           </div>
         </div>
       </div>
-      <div class="specs__image pin-modes__zoom">
-        <img
-          src="assets/img/qbot-interface.jpg?v=681af5c6"
-          alt="Schéma de l'interface web Q-Bot : scénario d'authentification et appel API"
-          width="560" height="461"
-          loading="lazy"
-        >
-      </div>
-    </div>
-   </div>
-   </div>
+      <figcaption class="appwin__cap">L'accueil de l'interface, servie par le boîtier lui-même : tout se fait depuis un navigateur, sur votre réseau, sans rien installer.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -647,6 +672,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=061ba862" defer></script>
+<script src="assets/js/main.js?v=2a69a488" defer></script>
 </body>
 </html>

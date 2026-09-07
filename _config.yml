@@ -127,3 +127,11 @@ exclude:
   - assets/img/qbot-photo-ecran.jpg
   - assets/img/qbot-2fa-flux.jpg
   - assets/img/qbot-2fa-flux-en.jpg
+  # LA MAQUETTE FICTIVE DE « INTERFACE & API », remplacée le 2026-09-07 par les
+  # captures de l'interface réellement livrée (`qbot-ui-home/scenario/api.webp`).
+  # Elle était signalée comme maquette depuis le 2026-08-11 et gardée sur
+  # arbitrage du 2026-08-27 (« pour l'instant c'est du full préprod côté Q-Bot
+  # donc c'est moche ») : l'interface existe désormais et elle est présentable.
+  # Gardée dans git avec sa chaîne de génération (tools/render/), plus servie.
+  - assets/img/qbot-interface.jpg
+  - assets/img/qbot-interface-en.jpg

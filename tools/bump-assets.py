@@ -45,7 +45,15 @@ SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
           # photos ajoutées ce jour-là) n'a pas besoin d'être ici.
           # `qbot-og.jpg` en particulier : versionner son URL est aussi le moyen de
           # forcer les réseaux sociaux à relire l'aperçu.
-          'assets/img/qbot-interface.jpg', 'assets/img/qbot-interface-en.jpg',
+          # LES CAPTURES DE L'INTERFACE LIVRÉE, DEPUIS LE 2026-09-07. Elles
+          # remplacent `qbot-interface.jpg` / `-en.jpg`, la maquette fictive,
+          # sortis de cette liste avec elle : plus aucune page ne les cite. Les
+          # trois captures sont régénérées sous le même nom si le client renvoie
+          # un jeu d'écrans, donc même piège de cache que le film. UN SEUL JEU
+          # POUR LES DEUX LANGUES : l'application est en anglais, il n'y a pas de
+          # variante `-en` à tenir.
+          'assets/img/qbot-ui-home.webp', 'assets/img/qbot-ui-scenario.webp',
+          'assets/img/qbot-ui-api.webp',
           # `qbot-film-poster.jpg` est sorti de la liste le 2026-09-02 : plus
           # aucune page ne le cite depuis que le film de démonstration a
           # remplacé la boucle décorative des accueils.

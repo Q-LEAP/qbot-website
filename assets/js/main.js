@@ -294,6 +294,12 @@ if ('IntersectionObserver' in window) {
       /* Exclu de « media » : le bloc contient aussi un bouton, un masque
          clippé lui rognerait les angles (cf. .specs__image dans style.css). */
       '.specs__image',
+      /* La fenêtre de l'interface livrée (2026-09-07). Exclue de « media »
+         pour la même raison que `.specs__image` et `.model-viewer-frame` :
+         la variante « média » sur-dimensionne l'<img> de 8 % pour masquer
+         ses bords pendant le parallaxe, ce qui ROGNERAIT la capture, et son
+         masque arrondi trancherait le bandeau d'onglets. */
+      '.appwin',
       '.badge-lux',
       /* Exclu de « media » : un clip-path permanent sur le cadre du viewer 3D
          interférerait avec son passage en plein écran (et avec son canvas). */
@@ -649,6 +655,11 @@ backToTop.addEventListener('click', () => {
      l'allure, il dit seulement où l'on en est. */
   var PROGRESS = [
     ['.timeline', '--tl-p'],
+    /* `.pin-modes` : plus aucune page ne le porte depuis le 2026-09-07 — la
+       maquette fictive de « Interface & API » a été remplacée par les captures
+       de l'interface livrée, et l'acte épinglé est parti avec elle (ses trois
+       zones de projecteur étaient mesurées SUR cette maquette). Gardé, comme
+       `.timeline` : c'est le chemin de code d'un rail épinglé à trois états. */
     ['.pin-modes', '--pin-p', 3],
     ['.faq-layout', '--faq-p'],
     /* `.evolution__rail` était ici : son trait teal se remplissait au scroll.
@@ -2434,5 +2445,126 @@ backToTop.addEventListener('click', () => {
      laisse le navigateur faire et on se resynchronisera au prochain cran. */
   ['touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
     window.addEventListener(ev, function () { actif = false; derniere = 0; pose = 0; }, { passive: true });
+  });
+}());
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   23. LA FENÊTRE DE L'INTERFACE : LES ONGLETS
+
+   Posée le 2026-09-07 avec le composant `.appwin` (cf. la feuille de style) :
+   le client a remis les captures de l'interface réellement livrée pour remplacer
+   la maquette fictive, en demandant « un rendu similaire à ce que tu as fait
+   maintenant avec un petit truc dynamique ». Le petit truc dynamique, c'est ce
+   module : trois onglets, et la capture qui change.
+
+   ELLE FONCTIONNE SANS CE MODULE, ET C'EST LE POINT DE DÉPART. Le premier
+   panneau porte `is-active` dans le HTML et un vrai `src` : sans JavaScript la
+   fenêtre montre l'accueil de l'application, entier, légendé, dans son cadre.
+   Le module n'ajoute que la bascule.
+
+   LES DEUX AUTRES CAPTURES SONT DEMANDÉES À L'APPROCHE, jamais au chargement.
+   Elles pèsent 107 Ko à elles deux et la section est loin dans la page : leur
+   `src` vit dans `data-src` et ce module le pose quand la fenêtre approche, avec
+   200 px d'avance. C'est la discipline du module 18 pour les films, et le même
+   chiffre : 200 px et pas 400, sinon l'observateur s'arme dès le chargement sur
+   un téléphone et le bénéfice disparaît. Résultat : un clic sur un onglet est
+   instantané, et le premier écran ne paie rien.
+
+   POURQUOI PAS `loading="lazy"` SUR LES DEUX AUTRES. Un `<img loading="lazy">`
+   dans un parent en `display: none` n'intersecte jamais rien : le navigateur
+   diffère son chargement indéfiniment, donc le premier clic sur un onglet
+   afficherait un cadre vide le temps du téléchargement. C'est exactement le
+   défaut que l'observateur supprime.
+
+   `hidden` EST POSÉ PAR LE SCRIPT, JAMAIS ÉCRIT DANS LA PAGE. Discipline du
+   module 3 : écrit en dur, il servirait deux panneaux en contenu masqué à tout
+   le monde, robots compris. Ici il n'existe que dans les navigateurs qui savent
+   aussi les rouvrir.
+
+   LE CLAVIER SUIT LE MOTIF ARIA DES ONGLETS : flèches gauche/droite, Début, Fin,
+   et un seul onglet dans l'ordre de tabulation (`tabindex` mobile). Sans cela une
+   barre de trois onglets coûte trois arrêts de tabulation pour un seul choix.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var fenetres = document.querySelectorAll('.appwin[data-appwin]');
+  if (!fenetres.length) return;
+
+  Array.prototype.forEach.call(fenetres, function (fen) {
+    var onglets = Array.prototype.slice.call(fen.querySelectorAll('[data-appwin-tab]'));
+    var panneaux = Array.prototype.slice.call(fen.querySelectorAll('.appwin__panel'));
+    var legende = fen.querySelector('.appwin__cap');
+    if (onglets.length < 2 || onglets.length !== panneaux.length) return;
+
+    /* État initial : ce que le HTML dit déjà. On ne redécide pas de l'onglet
+       courant, on masque seulement les autres pour les lecteurs d'écran. */
+    panneaux.forEach(function (p) {
+      if (!p.classList.contains('is-active')) p.hidden = true;
+    });
+    onglets.forEach(function (o) {
+      o.tabIndex = o.getAttribute('aria-selected') === 'true' ? 0 : -1;
+    });
+
+    function montre(i, focaliser) {
+      onglets.forEach(function (o, k) {
+        var actif = k === i;
+        o.setAttribute('aria-selected', actif ? 'true' : 'false');
+        o.tabIndex = actif ? 0 : -1;
+        /* L'ordre compte : on démasque AVANT d'ajouter la classe qui déclenche le
+           fondu, et on masque le sortant après lui avoir retiré la sienne. Un
+           élément `hidden` est en `display: none`, donc son animation ne part
+           pas. Même leçon que l'ordre des deux lignes du module 3. */
+        if (actif) {
+          panneaux[k].hidden = false;
+          panneaux[k].classList.add('is-active');
+        } else {
+          panneaux[k].classList.remove('is-active');
+          panneaux[k].hidden = true;
+        }
+      });
+      /* La légende de l'onglet vit sur le bouton : un seul endroit à traduire, et
+         le HTML reste la source des textes. */
+      if (legende) {
+        var t = onglets[i].getAttribute('data-appwin-cap');
+        if (t) legende.textContent = t;
+      }
+      if (focaliser) onglets[i].focus();
+    }
+
+    onglets.forEach(function (o, i) {
+      o.addEventListener('click', function () { montre(i); });
+      o.addEventListener('keydown', function (e) {
+        var j = -1;
+        if (e.key === 'ArrowRight') j = (i + 1) % onglets.length;
+        else if (e.key === 'ArrowLeft') j = (i - 1 + onglets.length) % onglets.length;
+        else if (e.key === 'Home') j = 0;
+        else if (e.key === 'End') j = onglets.length - 1;
+        if (j < 0) return;
+        e.preventDefault();
+        montre(j, true);
+      });
+    });
+
+    /* ── Les captures des onglets non ouverts, à l'approche ── */
+    var differees = Array.prototype.slice.call(fen.querySelectorAll('img[data-src]'));
+    if (!differees.length) return;
+
+    function charge() {
+      differees.forEach(function (img) {
+        img.src = img.getAttribute('data-src');
+        img.removeAttribute('data-src');
+      });
+      differees = [];
+    }
+
+    if (!('IntersectionObserver' in window)) { charge(); return; }
+    var obs = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        obs.disconnect();
+        charge();
+      });
+    }, { rootMargin: '200px 0px' });
+    obs.observe(fen);
   });
 }());

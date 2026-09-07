@@ -72,3 +72,18 @@ assets/3d/
 # l'exclusion de `_config.yml` est SILENCIEUSE.
 __pycache__/
 *.pyc
+
+# ── Captures de l'interface livrée (ScreenUI/) ──────────────────────────────
+# Fournies par le client le 2026-09-07 pour remplacer la maquette fictive de la
+# section « Interface & API ». Les TROIS captures publiées sont archivées sous
+# Documentations/assets-sources/ (qbot-ui-*-source.jpeg) et leurs découpes
+# vivent dans assets/img/qbot-ui-*.webp.
+#
+# LA QUATRIÈME NE DOIT PAS ENTRER DANS GIT, ET C'EST LA RAISON DE CETTE LIGNE.
+# « Credits.jpeg » nomme sept contributeurs AVEC LEUR ADRESSE DE COURRIEL, dont
+# deux extérieures à Q-Leap. Le dépôt est PUBLIC : la commiter publierait ces
+# adresses, et l'historique git ne se réécrit pas (cf. la note sur assets/3d/).
+# C'est aussi pourquoi il n'y a pas d'onglet « Credits » dans la fenêtre du
+# site : la règle du dépôt est de ne nommer personne sans accord écrit, nom par
+# nom, et elle vaut a fortiori pour une adresse de courriel.
+ScreenUI/

@@ -4928,7 +4928,252 @@ label > input[type="checkbox"] {
    (section NAV) — hauteur ≈31px, largeur ≈50px, au-delà du minimum de 24. */
 
 
+/* ══ LA FENÊTRE DE L'INTERFACE LIVRÉE (.appwin) ════════════════════════════
+   Posée le 2026-09-07, sur remise du dossier `ScreenUI/` par le client : « voici
+   l'UI actuel du site pour remplacer la fictive dans "INTERFACE & API — une
+   interface web et une API REST", le but étant d'avoir un rendu similaire à ce
+   que tu as fait maintenant avec un petit truc dynamique ».
+
+   CE QUI PART : `qbot-interface.jpg` / `-en.jpg`, une MAQUETTE HTML/CSS capturée
+   (tools/render/interface-mockup.html), signalée comme telle depuis le
+   2026-08-11 et gardée sur arbitrage du 2026-08-27 (« pour l'instant c'est du
+   full préprod côté Q-Bot donc c'est moche »). L'interface existe désormais et
+   elle est présentable : la maquette n'a plus de raison d'être, et avec elle part
+   l'acte épinglé, dont les trois zones de projecteur étaient MESURÉES sur cette
+   maquette (cf. le bloc suivant). Un projecteur ne se recale pas sur une autre
+   image : ses régions visaient « la liste des étapes », « le pied de page » et
+   « l'étape notification », trois objets qui n'existent pas dans les captures.
+
+   CE QUI ARRIVE : une fenêtre d'application dont le bandeau est du BALISAGE et
+   le corps une CAPTURE. Le bandeau reproduit la barre de l'application (fond
+   #212429, relevé dans les captures), ses trois onglets réels — Home, Scenario
+   Editor, API — et son numéro de version ; le corps montre le haut de la page
+   correspondante, découpée sous la barre. Basculer d'onglet échange la capture :
+   c'est le « petit truc dynamique », et il est PILOTÉ PAR LE VISITEUR.
+
+   PAS DE DÉFILEMENT AUTOMATIQUE, ET C'EST UNE RÈGLE DU DÉPÔT. Le client a fait
+   retirer les bandes d'outils défilantes le 2026-08-20 (« les carrousels sont un
+   peu illisibles cognitivement ») : ce qui les rendait illisibles était le
+   défilement automatique, pas le motif. Un défilement automatique demanderait de
+   surcroît un bouton de pause (WCAG 2.2.2).
+
+   LES ONGLETS GARDENT LEURS LIBELLÉS ANGLAIS, MÊME EN FRANÇAIS, parce que
+   l'application est en anglais : les traduire ferait dire à la fenêtre autre
+   chose que ce que le visiteur verra en s'en servant. C'est la légende, elle,
+   qui est dans la langue de la page.
+
+   PAS D'ONGLET « CREDITS ». La quatrième capture nomme sept contributeurs avec
+   leur adresse de courriel : la règle du dépôt est de ne nommer personne sans
+   accord écrit (arbitrage du 2026-08-26 sur les références clients). Le fichier
+   est en plus tenu hors de git, cf. .gitignore.
+
+   LA LARGEUR EST CALCULÉE, PAS CHOISIE, et c'est ce qui rend les captures
+   lisibles. Les originaux sont des captures DPR 2 d'une fenêtre de 1 575 px CSS,
+   donc 1 px source = 0,5 px CSS de l'application. Une découpe de 2 360 px
+   affichée sur 1 180 px — la largeur plancher du conteneur — rend l'application
+   à SA taille native (texte de 15 px à 15 px) et, sur un écran de densité 2,
+   à 1 pixel pour 1 pixel. Au-delà de 2 000 px de fenêtre le conteneur monte à
+   1 440 et l'agrandissement plafonne à 1,22, ce que le dépôt accepte (précédent
+   du 2026-08-26 : on cape au-delà de 1,5, on accepte à 1,26).
+   C'EST AUSSI POURQUOI LA FENÊTRE N'EST PAS DANS UNE COLONNE. Une capture de
+   bureau dans la demi-colonne de 526 px de l'ancienne grille tomberait à un tiers
+   de son échelle, texte à 5 px : c'est le défaut mesuré sur `qbot-2fa-flux.jpg`
+   (note du 2026-09-02), et il est structurel, pas réglable.
+
+   LES TROIS DÉCOUPES SONT LE HAUT DE LEUR PAGE, sous la barre : x [404, 2764),
+   y [123, 1623) dans les originaux, soit 2 360 × 1 500 (rapport 1,573). Aucune
+   n'est retouchée, aucune n'est complétée, et le contenu qui dépasse le bord bas
+   est coupé net — dans un cadre qui se lit comme une fenêtre, une page qui
+   continue sous le bord est ce qu'on attend, pas un défaut. Vérifié avant
+   découpe : aucune couture de capture d'écran et aucun texte coupé
+   horizontalement dans cette fenêtre.
+
+   LE CORPS EST BLANC PARCE QUE LES PAGES LE SONT. Sur un site noir, une capture
+   claire a besoin d'un cadre : c'est le traitement déjà écrit pour `.hero__shot`
+   et `.hero__film` (angles arrondis, filet teal, halo teal doux) et il est repris
+   ici aux mêmes valeurs. Aucune vignette intérieure en revanche : assombrir les
+   coins d'une capture d'interface se lirait comme un filtre photo.
+
+   PAS DE VERRE. `.appwin` n'est PAS dans la liste des surfaces sombres de la
+   section « verre » : un flou d'arrière-plan derrière un corps blanc opaque ne
+   sert à rien, et cette règle-là (`[data-theme="dark"] .x`, 0,2,0) écraserait le
+   filet teal du cadre — le piège déjà payé sur `.booking-modal__box`. */
+/* ── Les trois modes de pilotage, en rangée de trois cartes ──
+   LE LIBELLÉ PASSE AU-DESSUS DE SA VALEUR, ET C'EST OBLIGATOIRE ICI.
+   `.spec-item` est un flex à deux colonnes avec un libellé à `min-width: 120px`
+   — juste dans une LISTE de fiche technique, faux dans une carte de 310 px : le
+   libellé y prenait 120 px et il ne restait que 174 px pour le texte, soit trois
+   mots par ligne. C'est exactement le défaut mesuré sur les fiches à 390 px le
+   2026-08-25, et le correctif est le même, seul le seuil change : ici ce n'est
+   pas la fenêtre qui manque de place mais la carte.
+   Les deux sélecteurs sont à (0,2,0), donc ils passent devant `.spec-item`
+   (0,1,0) ET devant la requête média à 560 px, qui est au même poids : sans
+   cela l'ordre du fichier trancherait, et cette règle est écrite APRÈS. */
+.modes-grid .spec-item--card { display: block; }
+.modes-grid .spec-item__label { display: block; min-width: 0; margin-bottom: 8px; }
+
+/* LA LÉGENDE EST HORS DU CADRE, d'où la <figure> qui l'englobe : le cadre est en
+   `overflow: hidden` pour que ses angles arrondis découpent la capture, et une
+   `<figcaption>` posée dedans se retrouverait dans la fenêtre, sur son fond
+   blanc. La figure ne porte donc que la mise en page. */
+.appwin { margin: 40px 0 0; }
+
+.appwin__win {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(0, 203, 190, 0.22);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45),
+              0 0 60px rgba(0, 203, 190, 0.10);
+  background: #212429;
+}
+
+/* ── Le bandeau ── */
+.appwin__bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  min-height: 46px;
+  background: #212429;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Les trois pastilles de fenêtre. Neutres et de la même teinte : des feux
+   tricolores seraient hors charte, et rien ici n'est cliquable. */
+.appwin__dots { display: flex; gap: 6px; flex: 0 0 auto; }
+.appwin__dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.20);
+}
+
+.appwin__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* L'onglet. `padding` et non `min-height` : la cible utile fait 31 px de haut et
+   44 px au moins de large, donc au-delà des 24 px de WCAG 2.5.8, et le bandeau
+   n'a pas à grandir pour autant. */
+.appwin__tab {
+  appearance: none;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.62);
+  padding: 9px 12px;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.25s var(--ease-out, ease), background-color 0.25s var(--ease-out, ease);
+}
+.appwin__tab:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
+
+/* L'ONGLET ACTIF EST BLANC ET GRAS, comme dans l'application ; le trait teal est
+   NOTRE affordance, pas la sienne. L'application marque son onglet courant en
+   blanc gras sans aucun trait : on reproduit ce qu'elle fait et on ajoute la
+   marque du site, sans repeindre son interface en teal. */
+.appwin__tab[aria-selected="true"] { color: #fff; font-weight: 700; }
+.appwin__tab[aria-selected="true"]::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--teal);
+}
+
+/* Le numéro de version, relevé dans le pied de page de l'application. Il vieillit
+   avec la capture, ce qui est cohérent : les deux disent la même livraison. */
+.appwin__ver {
+  flex: 0 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Le corps ──
+   `aspect-ratio` sur le corps et non sur l'image : les trois captures ont
+   exactement la même taille, donc la hauteur ne bouge pas d'un onglet à l'autre
+   et il n'y a AUCUN décalage de mise en page au clic. */
+.appwin__body {
+  position: relative;
+  aspect-ratio: 2360 / 1500;
+  background: #fff;
+}
+
+.appwin__panel {
+  position: absolute;
+  inset: 0;
+}
+/* L'ÉTAT AU REPOS EST UN ÉTAT COMPLET : `is-active` est écrit dans le HTML sur le
+   premier panneau, donc sans JavaScript la fenêtre montre l'accueil de
+   l'application, entière et légendée. Les deux autres sont masqués par le CSS et
+   non par un attribut `hidden` écrit dans la page — c'est la discipline du
+   module 3 (accordéon de la FAQ) : l'attribut est POSÉ PAR LE SCRIPT, jamais
+   servi, pour que le balisage reste lisible par un robot. */
+.appwin__panel:not(.is-active) { display: none; }
+
+.appwin__panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fondu à l'arrivée seulement. Un fondu enchaîné demanderait de garder les deux
+   panneaux affichés et de différer le masquage du sortant : trois captures de
+   pages blanches n'y gagneraient rien de visible pour un minuteur de plus. */
+.appwin__panel.is-active { animation: appwinIn 0.3s var(--ease-out, ease) both; }
+@keyframes appwinIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* La légende. Elle dit ce qu'on regarde, dans la langue de la page, et elle
+   garde sa mesure de lecture. `.appwin__cap` seule pèse (0,1,0) : le sélecteur
+   est doublé parce que `.container > p` (0,1,1) la précède dans ce fichier et
+   gagnerait sur la largeur — le piège relevé quatre fois sur ce dépôt
+   (`.usecase__fig`, `.newsletter__legal`, `.evo-card__link`, `.guide-date`). */
+.appwin .appwin__cap {
+  margin: 16px 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--gray);
+  max-width: 78ch;
+}
+
+@media (max-width: 600px) {
+  /* Le bandeau s'enroule : trois onglets, un numéro de version et les pastilles
+     ne tiennent pas sur 342 px. Les pastilles partent — elles ne portent aucune
+     information — et le numéro de version passe à la ligne avec les onglets. */
+  .appwin__dots { display: none; }
+  .appwin__bar { padding: 4px 10px; gap: 8px; flex-wrap: wrap; }
+  .appwin__tab { font-size: 12.5px; padding: 8px 10px; }
+}
+
 /* ══ ACTE ÉPINGLÉ « INTERFACE & API » ══════════════════════════════════════
+   PLUS AUCUNE PAGE NE PORTE `.pin-modes` DEPUIS LE 2026-09-07. La maquette
+   fictive a été remplacée par les captures de l'interface livrée (bloc `.appwin`
+   juste au-dessus), et l'acte est parti avec elle : SES TROIS ZONES DE PROJECTEUR
+   ÉTAIENT MESURÉES SUR CETTE MAQUETTE — « la liste des étapes », « le pied de
+   page », « l'étape notification » — trois objets qui n'existent nulle part dans
+   les captures. Un projecteur ne se recale pas sur une autre image, et le
+   commentaire ci-dessous le disait déjà : « si la maquette est refaite, il faut
+   refaire ce relevé ».
+   LE BLOC EST GARDÉ ET ANNOTÉ, comme `.timeline` et `.video__wrapper` : c'est le
+   chemin de code d'une section épinglée à trois temps, et l'entrée
+   `['.pin-modes', '--pin-p', 3]` du module 9 reste avec lui. Le supprimer est un
+   arbitrage du client, pas d'une passe de remplacement d'image.
+   Ce qui suit décrit l'état d'avant.
+
    Proposition B de la revue : le procédé n°2 de linearity.io, où le texte reste en
    place et c'est le visuel qui change. Les trois modes de pilotage — interface web,
    API REST, notification mobile — se lisaient comme trois cartes empilées qu'on

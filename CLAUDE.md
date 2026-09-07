@@ -8014,3 +8014,175 @@ lues, **0 référence vers un actif exclu**. 0 débordement horizontal à neuf l
 contraste 7,8 et 14,9:1 sur le pire composite du schéma. **La séquence 3D fonctionne
 toujours après son déplacement** : modèle chargé, un cran de molette = un pas, pas 0 à 3
 enchaînés, clip à 0,905 au pas 3, sortie libre ensuite.
+## La maquette fictive quitte le site : l'interface livrée est dans une fenêtre (2026-09-07)
+
+Le client a remis un dossier `ScreenUI/` (quatre captures de l'interface réellement livrée)
+avec la consigne : « pour remplacer la fictive dans "INTERFACE & API — une interface web et
+une API REST", je te laisse faire les assemblages, montage etc et mettre dans le bon dossier,
+le but étant d'avoir un rendu similaire à ce que tu as fait maintenant avec un petit truc
+dynamique ».
+
+**LA DETTE LA PLUS ANCIENNE DU SITE EST DONC SOLDÉE.** `qbot-interface.jpg` / `-en.jpg` était
+une **maquette HTML/CSS capturée**, signalée comme telle depuis le 2026-08-11, et le client
+avait arbitré le 2026-08-27 qu'elle restait faute de mieux (« pour l'instant c'est du full
+préprod côté Q-Bot donc c'est moche »). L'interface existe désormais et elle est présentable.
+Les deux fichiers sont **exclus de la publication** et sortis des deux versionneurs d'actifs ;
+`tools/render/interface-mockup.html` et `shoot-interface.py` sont **gardés et annotés HORS
+SERVICE** (le jour où il faut un *schéma* d'interface, la chaîne est là — ce qui a disparu est
+le besoin, pas l'outil).
+
+### Ce qui est en place : `.appwin`, bandeau en balisage, corps en captures
+
+Une fenêtre d'application dont le **bandeau est du balisage** (fond `#212429` relevé dans les
+captures, les trois onglets réels de l'application — *Home*, *Scenario Editor*, *API* — et son
+numéro de version) et dont le **corps est une capture**, découpée sous la barre de
+l'application. Basculer d'onglet échange la capture : c'est le « petit truc dynamique », et il
+est **piloté par le visiteur**. Module **23** de `main.js`.
+
+- **pas de défilement automatique**, règle du dépôt : le client avait fait retirer les bandes
+  d'outils défilantes le 2026-08-20 (« les carrousels sont un peu illisibles cognitivement »),
+  et ce qui les rendait illisibles était le défilement automatique, pas le motif. Un
+  défilement automatique demanderait de surcroît un bouton de pause (WCAG 2.2.2) ;
+- **les onglets gardent leurs libellés anglais, même en français**, parce que l'application est
+  en anglais : les traduire ferait dire à la fenêtre autre chose que ce que le visiteur verra
+  en s'en servant. C'est la **légende** qui est dans la langue de la page, et elle vit sur le
+  bouton (`data-appwin-cap`), donc un seul endroit à traduire ;
+- **un seul jeu de captures pour les deux langues.** L'application est en anglais : il n'y a
+  pas de variante `-en` à tenir, contrairement à la maquette qui en avait une.
+
+### LA LARGEUR EST CALCULÉE, ET C'EST CE QUI REND LES CAPTURES LISIBLES
+
+Les originaux sont des captures **DPR 2 d'une fenêtre de 1 575 px CSS** (mesuré : barre de
+l'application haute de 123 px, ascenseur en colonnes 3151 à 3162). Donc 1 px source = 0,5 px
+CSS de l'application. Une découpe de **2 360 px** affichée sur les **1 132 px** de la boîte de
+contenu du conteneur rend l'application à sa taille native — texte de 15 px à 15 px — et, sur
+un écran de densité 2, sans aucun agrandissement (2 264 px de périphérique pour 2 360 px de
+source, donc une légère réduction).
+
+**C'EST AUSSI POURQUOI LA FENÊTRE N'EST PLUS DANS UNE COLONNE.** Une capture de bureau dans la
+demi-colonne de 526 px de l'ancienne grille tomberait au tiers de son échelle, texte à 5 px :
+c'est le défaut mesuré sur `qbot-2fa-flux.jpg` le 2026-09-02, et il est **structurel, pas
+réglable**. La section passe donc en pleine largeur du conteneur : chapeau, les trois cartes en
+rangée, puis la fenêtre.
+
+**Les trois découpes sont le haut de leur page, sous la barre** : `x [404, 2764)`,
+`y [123, 1623)` dans les originaux, soit **2 360 × 1 500** (rapport 1,573), en **WebP q88** pour
+78 + 37 + 70 = **185 Ko** (le JPEG à qualité comparable en faisait 315). Aucune n'est retouchée
+ni complétée, et le contenu qui dépasse le bord bas est **coupé net** : dans un cadre qui se lit
+comme une fenêtre, une page qui continue sous le bord est ce qu'on attend, pas un défaut.
+Vérifié avant découpe : aucune couture de capture d'écran dans la fenêtre retenue, et aucun
+texte coupé horizontalement.
+
+### L'ACTE ÉPINGLÉ EST PARTI AVEC LA MAQUETTE, ET IL LE FALLAIT
+
+`.pin-modes` tenait la section sur trois écrans, un projecteur se déplaçant sur la partie de la
+maquette qui concernait la carte courante. **Ses trois régions étaient MESURÉES sur cette
+maquette** — « la liste des étapes », « le pied de page », « l'étape notification » — et aucune
+n'existe dans les captures de l'interface réelle. Un projecteur ne se recale pas sur une autre
+image, et le commentaire du CSS le disait déjà : « si la maquette est refaite, il faut refaire
+ce relevé ». La piste d'un mappage capture par carte a été essayée et **écartée** : les trois
+cartes sont *Interface Web*, *API REST* et *App compagnon*, et **l'app compagnon est une
+application Android, elle n'a aucun écran dans l'interface web**. Il n'y a donc pas de troisième
+capture à lui associer.
+
+Le bloc CSS `.pin-modes` et l'entrée `['.pin-modes', '--pin-p', 3]` du module 9 sont **gardés et
+annotés**, comme `.timeline` et `.video__wrapper` : c'est le chemin de code d'une section
+épinglée à trois temps. Le supprimer est un arbitrage du client, pas d'une passe de
+remplacement d'image. Effet de bord bienvenu : la section perd trois écrans de défilement, ce
+qui va dans le sens des demandes du 2026-09-02 (« sections beaucoup plus compactes ») et du
+2026-09-03 (« réduis le nombre de scroll »).
+
+### Trois défauts et un piège rencontrés en chemin
+
+- **`.spec-item` est un flex à DEUX colonnes avec un libellé à `min-width: 120px`.** Juste dans
+  une *liste* de fiche technique, faux dans une carte de 356 px : le libellé y prenait 120 px et
+  il ne restait que 174 px pour le texte, soit trois mots par ligne. C'est exactement le défaut
+  mesuré sur les fiches à 390 px le 2026-08-25 — et le correctif est le même, seul le seuil
+  change : **ici ce n'est pas la fenêtre qui manque de place, c'est la carte**. D'où
+  `.modes-grid`, qui empile le libellé au-dessus de sa valeur. Les deux sélecteurs sont à
+  (0,2,0), donc ils passent devant `.spec-item` (0,1,0) **et** devant la requête média à 560 px,
+  qui est au même poids — sans quoi l'ordre du fichier trancherait, et cette règle est écrite
+  après ;
+- **la légende doit être HORS du cadre**, d'où la `<figure>` qui englobe la fenêtre : le cadre
+  est en `overflow: hidden` pour que ses angles arrondis découpent la capture, et une
+  `<figcaption>` posée dedans se retrouverait dans la fenêtre, sur son fond blanc ;
+- **`loading="lazy"` NE SUFFIT PAS pour les onglets fermés**, et c'est le piège du lot : un
+  `<img loading="lazy">` dans un parent en `display: none` n'intersecte jamais rien, donc le
+  navigateur diffère son chargement **indéfiniment** et le premier clic sur un onglet
+  afficherait un cadre vide le temps du téléchargement. Les deux captures fermées portent donc
+  leur URL dans `data-src` et le module la pose **à l'approche de la fenêtre, avec 200 px
+  d'avance** — la discipline et le chiffre du module 18 pour les films (200 et pas 400 : une
+  marge trop large arme l'observateur dès le chargement sur un téléphone). Mesuré : **0 requête
+  vers les trois captures au chargement en haut de page, les trois chargées après approche** ;
+- **`hidden` est posé par le script, jamais écrit dans la page** (discipline du module 3) :
+  vérifié, la source servie ne contient **aucun** attribut `hidden`. Et l'ordre des deux lignes
+  compte à la bascule — on démasque AVANT d'ajouter la classe qui déclenche le fondu, sinon
+  l'animation ne part pas depuis un élément en `display: none`.
+
+**Contrôle de reste : sixième occurrence du piège du dépôt.** Deux de mes assertions ont échoué
+sur **mes propres commentaires**, qui citent à dessein ce qui vient de partir (`pin-modes`,
+`qbot-interface`). Un contrôle de reste porte sur l'**attribut** (`class="pin-modes`,
+`src="…qbot-interface`), jamais sur le mot.
+
+### Ce qui a été écarté, et pourquoi
+
+- **pas d'onglet « Credits ».** La quatrième capture nomme sept contributeurs **avec leur
+  adresse de courriel**, dont deux extérieures à Q-Leap. La règle du dépôt est de ne nommer
+  personne sans accord écrit (arbitrage du 2026-08-26 sur les références clients), et elle vaut
+  a fortiori pour une adresse. **`ScreenUI/` est en plus tenu hors de git** (`.gitignore`) :
+  le dépôt est public et l'historique ne se réécrit pas. Seules les **trois** captures publiées
+  sont archivées sous `Documentations/assets-sources/qbot-ui-*-source.jpeg` ;
+- **pas de vignette intérieure sur le corps**, contrairement à `.hero__film` : assombrir les
+  coins d'une capture d'interface se lirait comme un filtre photo. Le filet teal et le halo
+  suffisent à détacher une capture claire du fond noir ;
+- **`.appwin` n'entre PAS dans la liste des surfaces « verre ».** Un flou d'arrière-plan
+  derrière un corps blanc opaque ne sert à rien, et cette règle-là (`[data-theme="dark"] .x`,
+  0,2,0) écraserait le filet teal du cadre : le piège déjà payé sur `.booking-modal__box` ;
+- **`.appwin` prend la variante de révélation « carte » et non « média »**, pour la raison de
+  `.specs__image` et `.model-viewer-frame` : la variante « média » sur-dimensionne l'`<img>` de
+  8 % pour masquer ses bords pendant le parallaxe, ce qui **rognerait la capture**, et son
+  masque arrondi trancherait le bandeau d'onglets.
+
+### Trois points pour le client, aucun ne bloque
+
+1. **`POST /execute-step` existe dans l'application et pas sur le site.** La page API des
+   captures documente **quatre** points d'entrée (avec « All endpoints are available on port
+   8000 ») là où le site en annonce trois. Ce n'est **pas** une erreur du site : la formulation
+   « trois points d'entrée » vient mot pour mot du document fourni par le client
+   (`Documentations/website/features.html` : « Three endpoints are available for **external
+   use** »), et la découpe publiée n'affiche aucun décompte, donc **rien ne se contredit à
+   l'écran**. Publier le quatrième (et le port) est une décision de contenu, pas une correction.
+   Si elle est prise, il faut reprendre ensemble : la carte « API REST », la fiche des points
+   d'entrée, `llms.txt` et les deux langues ;
+2. **la capture de l'éditeur ne montre AUCUN point d'appui numéroté**, alors que c'est
+   exactement ce que la carte « Interface Web » promet (« des points d'appui numérotés »). Le
+   scénario capturé est vide de tout appui. On voit bien la palette d'outils et l'écran du
+   téléphone (avec LuxTrust Mobile, itsme, Google et Microsoft Authenticator, ce qui sert la
+   compatibilité annoncée), mais la démonstration serait franchement meilleure avec **une
+   capture d'un scénario dont les appuis sont posés**. À demander ;
+3. **sur téléphone, la capture de l'API n'est pas lisible** : une page de documentation de
+   bureau dans un cadre de 342 px tombe au tiers de son échelle. Elle dit « une vraie
+   documentation existe », pas son contenu — et ce sont les trois cartes qui portent le sens à
+   cette largeur. Le rendre lisible demanderait des **découpes propres au téléphone**
+   (six fichiers au lieu de trois, en direction artistique `<picture>`). À arbitrer si cela
+   gêne.
+
+Au passage, deux observations sur l'interface elle-même, hors périmètre du site : son accent est
+un **bleu** (`#0d6efd`-ish) et non le teal de charte, et sa page d'accueil écrit un **cadratin**
+(« physical mobile devices — no scripting required »), que la règle du dépôt bannit du site. Les
+deux vivent dans les pixels des captures, donc ni `document.body.innerText` ni le balayage de
+cadratins ne les voient. À signaler à qui développe l'interface.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 **et** à 390 px, `audit-visibilite.py` : **17 pages lues sur 17,
+0 constat**. Balayage des deux pages × (1440, 390) × (normal, mouvement réduit) × (Chromium,
+WebKit), soit **16 vues, toutes OK** : un seul `h1`, 0 saut de niveau, 0 révélation invisible,
+0 débordement horizontal, 0 image cassée, 0 `alt` manquant, 0 `.nb` dans un conteneur flex,
+0 cadratin et 0 emoji dans le texte rendu, 0 erreur console, 0 requête en échec. 71 pages,
+541 références relatives, **0 cassée**. Contrôle des actifs dans les deux sens : **30 actifs
+servis, 0 orphelin, 0 référence vers un actif exclu**. Sans JavaScript : premier onglet actif et
+visible, légende présente, aucun attribut `hidden` servi. Au clavier : flèches, Début et Fin, un
+seul arrêt de tabulation dans la barre. `sync-faq-jsonld.py` idempotent (40 entrées, 0 recalée),
+`maj-nav-booking.py` à 17 « déjà à jour », `verif-redirections.py` 54 relais 0 défaut, et **les
+deux versionneurs d'actifs d'accord à 0 page à mettre à jour** après la passe.

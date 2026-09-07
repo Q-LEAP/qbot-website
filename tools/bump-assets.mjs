@@ -39,7 +39,12 @@ const RACINE = path.dirname(path.dirname(new URL(import.meta.url).pathname.repla
 const SUIVIS = [
   'assets/css/style.css', 'assets/css/scrolly.css',
   'assets/js/main.js', 'assets/js/scrolly.js',
-  'assets/img/qbot-interface.jpg', 'assets/img/qbot-interface-en.jpg',
+  // LES CAPTURES DE L'INTERFACE LIVRÉE, DEPUIS LE 2026-09-07 : elles remplacent
+  // la maquette fictive `qbot-interface.jpg` / `-en.jpg`, sortie de cette liste
+  // avec elle. Un seul jeu pour les deux langues, l'application étant en
+  // anglais. Cf. le jumeau Python.
+  'assets/img/qbot-ui-home.webp', 'assets/img/qbot-ui-scenario.webp',
+  'assets/img/qbot-ui-api.webp',
   // `qbot-film-poster.jpg` est sorti de la liste le 2026-09-02 : plus aucune
   // page ne le cite depuis que le film de démonstration a remplacé la boucle
   // décorative des accueils.

@@ -1,4 +1,25 @@
 # -*- coding: utf-8 -*-
+# ══════════════════════════════════════════════════════════════════════════════
+# HORS SERVICE DEPUIS LE 2026-09-07 — NE PAS RELANCER SANS LE VOULOIR.
+#
+# La maquette que ce script capture ne sert plus : le client a remis les captures
+# de l'interface RÉELLEMENT LIVRÉE (dossier `ScreenUI/`, hors git) et la section
+# « Interface & API » montre désormais ses trois écrans dans la fenêtre `.appwin`
+# (assets/img/qbot-ui-home|scenario|api.webp). `qbot-interface.jpg` / `-en.jpg`
+# sont exclus de la publication (cf. _config.yml) et sortis des deux versionneurs
+# d'actifs.
+#
+# LE RELANCER RÉÉCRIRAIT DEUX FICHIERS QUE PLUS AUCUNE PAGE NE CITE — sans casser
+# le site, mais sans rien produire d'utile. C'est la leçon de `gen-guides.py`, qui
+# avait recréé seize pages de blog supprimées parce qu'une simple boucle « est-ce
+# que les outils tournent encore ? » l'avait lancé (audit RosoAI n°7). Ce script
+# n'écrit rien de publié, il n'a donc pas besoin d'un drapeau de confirmation,
+# mais il vaut de savoir qu'il ne sert plus.
+#
+# IL EST GARDÉ, comme la maquette elle-même : le jour où il faut un SCHÉMA
+# d'interface (une fonction qui n'existe pas encore, une variante à illustrer), la
+# chaîne est là et elle marche. Ce qui a disparu est le besoin, pas l'outil.
+# ══════════════════════════════════════════════════════════════════════════════
 """Capture la maquette « Interface & API » dans les deux langues.
 
 Ce script n'existait pas : la capture d'origine avait été faite à la main, et c'est
