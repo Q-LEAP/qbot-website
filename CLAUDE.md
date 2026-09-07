@@ -7855,3 +7855,162 @@ professionnel, et le « Depuis 10 ans » de `q-leap.eu` qui contredit de quatre 
 Sans matière disponible : la question de FAQ « plusieurs équipes » (demande une information
 produit que personne n'a fournie — celle sur les demandes simultanées a pu être écrite le
 2026-09-03 parce que le client a donné le fait) et le logo « Made in Luxembourg ».
+
+
+## Les retours du 2026-09-07 : la 3D descend, un schéma prend sa place
+
+Trois retours, le premier du client, le second du client, le troisième joint par lui
+(« et voici un feedback CHATGPT »). Traités à la convention du dépôt, un retour = un
+commit = un push. **Les mots du client sont des décisions, ceux du feedback joint sont
+des suggestions à peser** : plusieurs d'entre elles contredisent des arbitrages déjà
+pris et documentés ici.
+
+### 1. L'ordre de la page d'accueil
+
+« La vue 3D est très belle mais elle arrive un peu trop tôt et casse la dynamique de
+compréhension. À ce stade on n'a pas encore totalement compris ce que fait Q-Bot ni ce
+qu'il y a dans le boîtier. Il faut d'abord montrer simplement le problème et le
+fonctionnement, et seulement ensuite mettre en avant le rendu 3D. Je ne supprimerais
+donc pas la 3D, mais je la déplacerais un peu plus bas. »
+
+Ordre en place : hero, la solution, avantages, film, comment ça fonctionne, séquence 3D,
+compatibilité, pour qui, Made in Luxembourg, appel à l'action.
+
+**Le retour joint proposait la 3D AVANT le fonctionnement détaillé ; c'est le client
+qui tranche**, et il demande l'inverse. Les bénéfices et le film remontent, ce que les
+deux retours demandent.
+
+Deux choses suivent un réordonnancement et ne vont pas de soi : **l'alternance des
+fonds**, recalculée en partant de la fin (les avantages passent en fond de page, le film
+en gris), et **l'ancre du lien d'évitement**, qui doit tomber sur ce qui SUIT la
+séquence, donc désormais la section Compatibilité. Elle a déménagé deux fois : elle suit
+la séquence, pas une section nommée.
+
+Les blocs sont découpés sur les bandeaux `=======` relevés DANS le fichier et
+réassemblés, avec assertions de structure avant écriture (comptes de `<section>`, `<h2>`,
+`<main>`, et le multi-ensemble des lignes inchangé). C'est la leçon des cinq suppressions
+bornées par un motif répété du 2026-09-02.
+
+### 2. Le schéma du parcours (`.flow2fa`)
+
+« À droite du bloc de texte "La solution", il y a un peu trop de vide. C'est justement à
+cet endroit que je verrais bien un schéma très simple pour expliquer le fonctionnement
+avant de montrer le produit physique : test automatisé, 2FA, Q-Bot, smartphone réel, le
+test continue. Si illustration, faut voir le tel et un petit écran avec un code OTP, un
+QR code ou une validation. Le point important est que le visiteur comprenne en un coup
+d'oeil que Q-Bot agit sur un vrai smartphone, il ne simule pas simplement la 2FA. »
+
+**LE VIDE ÉTAIT MESURABLE** : la photo verticale de cette colonne était plafonnée à
+420 px et collée à la gouttière droite, donc **186 px de noir entre le texte et l'image à
+1440 px, 316 à 2560**.
+
+**C'EST DU BALISAGE ET PAS UNE IMAGE, et c'est le point de conception.** La colonne fait
+342 px sur un téléphone, 320 à 769 px de fenêtre (deux colonnes étroites), 526 à 1440,
+656 à 2560. Un raster dessiné pour une de ces largeurs est illisible aux autres, et le
+dépôt en a déjà la preuve : `qbot-2fa-flux.jpg`, dessiné pour un cadre de 656 px, tombait
+à des sous-libellés de 10 px dans une demi-colonne de 566. En balisage, le schéma se
+reflow, son texte est lu par un lecteur d'écran et citable par un moteur de réponse, il
+pèse deux kilo-octets au lieu de 88, et les deux langues sortent du même composant.
+
+Cinq pas, un trait par intervalle (jamais un trait continu qui traverse les anneaux :
+convention d'un indicateur d'étapes, défaut corrigé sur la maquette d'interface le
+2026-08-25), **deux marques et pas trois** — anneau tireté et sourd sur le blocage,
+anneau teal plein sur « sur un vrai smartphone », plus l'illustration du téléphone. Un
+troisième accent les diluerait. L'illustration est iconographique à dessein, comme l'écran
+2FA du modèle 3D : **ce n'est pas une copie de l'application LuxTrust, et il ne faut pas
+la transformer en une.**
+
+**Trois défauts trouvés à la mesure, aucun à l'oeil :**
+
+1. **`.flow2fa__body span` attrapait le `<span class="nb">Q-Bot</span>` du TITRE** et en
+   faisait un bloc gris de 13,5 px sur sa propre ligne, à toutes les largeurs, 2560 px
+   comprise. `> span` le corrige. Un sélecteur descendant dans un composant qui contient
+   `.nb` doit être borné à l'enfant direct ;
+2. **une largeur sur un `<span>` inline est ignorée.** Sous 767 px, où le pas cessait
+   d'être un conteneur flex, le téléphone montait à **244 px dans une colonne de 342**.
+   `display: block` explicite. C'est le pendant du piège du 2026-08-31 (un span dans un
+   flex est blocifié) : ici c'est l'inverse, le flex disparaît et le span redevient inline ;
+3. **posé DANS le pas, le téléphone laissait deux cents pixels de vide sous son texte** —
+   169 px d'illustration contre 110 px de texte, soit le « trop de vide » en miniature. Il
+   est sorti de la liste et devient la colonne droite du panneau : ce sont les pas qui
+   donnent la hauteur, il se centre dedans, et il est plus grand donc plus lisible.
+
+**Le panneau est un FLEX et non une grille** : une grille ne s'enroule pas, elle déborde.
+C'est l'enroulement (base de 210 px sur la colonne des pas) qui fait passer le téléphone
+sous les pas là où la colonne est trop étroite. **Un seuil de fenêtre ne marcherait pas** :
+la colonne ne suit pas la largeur de fenêtre, elle vaut 342 px à 390 et 320 px à 769.
+
+`qbot-photo-ecran.jpg` n'est plus référencée et sort de la publication ; elle reste sur le
+disque et son master dans `Documentations/assets-sources/`. Elle est disponible si le
+client veut la reposer ailleurs.
+
+### 3. Le vocabulaire de fiche technique quitte l'accueil
+
+« Éviter certaines formulations un peu documentation : "exécution déterministe", "appuis
+prédéfinis", "aucun sélecteur à maintenir" sont pertinents pour un QA, mais sur la
+homepage ça pourrait être simplifié. La partie Raspberry Pi est trop technique trop tôt. »
+
+**LA REFORMULATION N'ÉTAIT PAS LIBRE**, et c'est ce qu'il faut retenir. « Exécution
+déterministe » avait REMPLACÉ « Zéro faux positif » le 2026-09-02 parce qu'un zéro absolu
+ne se démontre pas, et « pendant l'exécution » avait été ajouté le même jour parce que les
+captures servent bien à CONSTRUIRE les scénarios. Les deux contraintes tiennent dans la
+nouvelle formule : « Q-Bot rejoue à l'identique le parcours que vous avez enregistré, dans
+la véritable application. Rien n'est interprété à l'écran pendant le test. » Aucun absolu,
+le qualificatif conservé.
+
+**Une version a été écrite puis écartée parce qu'elle était FAUSSE** : « rien à réécrire
+quand l'application change ». Si l'écran de l'application 2FA bouge, il faut bien reposer
+les points d'appui. La formule retenue dit ce qui est vrai, « aucune ligne de code : un
+scénario, c'est une capture et les endroits où il faut appuyer ».
+
+Le pas 3 de la séquence **garde « un Raspberry Pi 5 »** — c'est le pas qui montre
+justement la carte dans le modèle depuis le 2026-09-03, l'en retirer viderait le pas de
+son sujet — et perd Cortex A76, 4 Go, Wi-Fi et Gigabit Ethernet, **vérifiés présents sur
+les deux fiches techniques avant la coupe**. Son chiffre-clé ne redit pas « aucun logiciel
+à installer », que le pas 1 énonce déjà : il porte « rien ne quitte votre réseau ».
+
+Le mot « déterministe » **reste sur la FAQ et sur « Comment ça marche »**, qui est le
+partage demandé. `llms.txt` garde les caractéristiques matérielles dans sa section de
+faits : c'est un inventaire pour les moteurs de réponse, pas de la prose d'accueil.
+
+### Ce qui a été ÉCARTÉ du feedback joint, et pourquoi
+
+- **« Rendre la compatibilité plus visuelle, des logos ou des badges. »** Les badges
+  existent déjà, c'est le composant `.compat`. Les LOGOS de LuxTrust, itsme, Microsoft,
+  Google, Selenium, Playwright et Jenkins sont des **marques déposées de tiers** : les
+  publier sur le site commercial d'une société nommée demande l'autorisation de chacun,
+  et le site déclare par ailleurs n'avoir **aucun lien** avec LuxTrust (guide LuxTrust,
+  `llms.txt`). Aucun logo de tiers n'a jamais été posé sur ce site. **Décision du client,
+  pas une décision technique** ; en attendant, rien n'a changé dans cette section ;
+- **« Alléger la séquence produit, quatre écrans c'est peut-être trop long avant
+  d'arriver au fonctionnement réel. »** La prémisse tombe avec le réordonnancement : la
+  séquence est désormais APRÈS le fonctionnement. Il n'y a plus rien à traverser avant.
+  Les quatre pas restent ;
+- **« Faire de "vrai smartphone, pas un simulateur" un élément visuel fort. »** C'est fait
+  par le schéma, dont le quatrième pas est le seul accent et porte l'illustration.
+
+### Ce que la passe a coûté en méthode
+
+**Un contrôle de reste doit viser l'ATTRIBUT et non le mot** : mon assertion
+`'qbot-photo-ecran' not in t` échouait sur mon PROPRE commentaire, qui cite le nom du
+fichier à dessein. Sixième variante de la famille. Et le contrôle final se fait sur
+`document.body.innerText`, pas sur la source : les six formulations retirées y sont à 0 et
+les cinq nouvelles présentes.
+
+**Le sandbox de cette session bloque `localhost`** : toute sonde de navigateur et tout
+`curl` vers le serveur local doit tourner hors sandbox. Un `curl` qui rend `000` sur un
+serveur qui répond n'est pas un serveur en panne. Et des serveurs de sessions précédentes
+traînaient sur 8000, 8137, 8138, 8139 sans plus accepter de connexion : les tuer avant.
+**Les deux audits attendent le port 8137**, et ils crient correctement quand personne n'y
+répond (code 2, « le résultat ne veut RIEN dire »).
+
+### Contrôles
+
+Les deux audits sur les 17 pages à 1440 et à 390 px : **0 constat**. 71 pages,
+537 références relatives, **0 cassée**. 54 relais, 0 défaut. `sync-faq-jsonld.py`
+idempotent (40 entrées, 0 recalée). Contrôle des actifs dans les deux sens : 96 sources
+lues, **0 référence vers un actif exclu**. 0 débordement horizontal à neuf largeurs de 390
+à 2560 px, 0 révélation invisible en normal comme en mouvement réduit, 0 erreur console,
+contraste 7,8 et 14,9:1 sur le pire composite du schéma. **La séquence 3D fonctionne
+toujours après son déplacement** : modèle chargé, un cran de molette = un pas, pas 0 à 3
+enchaînés, clip à 0,905 au pas 3, sortie libre ensuite.
