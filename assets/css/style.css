@@ -3015,6 +3015,105 @@ p { color: var(--gray); }
   .flow2fa__phone { width: 96px; }
 }
 
+/* ══ COMPARAISON « SANS / AVEC » (.vsflow) ═════════════════════════════════
+   Le bloc Problème de la homepage, demandé le 2026-09-08 : faire comprendre en
+   un regard que la 2FA coupe une campagne, et que Q-Bot recolle la chaîne.
+
+   DEUX RANGÉES ET PAS DEUX COLONNES, et c'est ce qui fait la démonstration :
+   les deux chaînes ont les mêmes quatre positions, alignées verticalement, donc
+   l'oeil compare la troisième case à la troisième case sans avoir à lire. Côte
+   à côte, chaque chaîne n'aurait que la moitié de la largeur pour quatre cases,
+   et la comparaison se ferait de biais.
+
+   AUCUNE ICÔNE SUR LES CASES NEUTRES, à dessein : le schéma `.flow2fa` de la
+   section Solution est justement iconographique, et la review demande qu'une
+   section ne répète pas la précédente. Ici ce sont la couleur et une seule
+   marque par rangée qui portent le sens.
+
+   ENTRÉE : variante « card » du module 4 sur `.vsflow__lane`, donc les deux
+   rangées montent l'une après l'autre, ce qui met la comparaison en scène.
+   L'état au repos est le bloc entier : sans JavaScript tout est visible. */
+.vsflow {
+  display: grid;
+  gap: 20px;
+}
+
+.vsflow__lane {
+  padding: 22px 24px;
+  background: #141414;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* La rangée « avec » se distingue par son bord, pas par un fond plus clair :
+   un fond teal, même très dilué, ferait chuter le contraste du texte posé
+   dessus. Le teal de charte est une couleur CLAIRE. */
+.vsflow__lane--avec { border-color: rgba(0, 203, 190, 0.38); }
+
+.vsflow__label {
+  margin: 0 0 16px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.vsflow__lane--avec .vsflow__label { color: var(--teal); }
+
+.vsflow__chain {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  /* QUATRE COLONNES OU UNE SEULE, JAMAIS D'INTERMÉDIAIRE, et c'est un vrai
+     réglage : un `auto-fit` donnait 3 puis 2 colonnes en descendant, donc une
+     chaîne de quatre cases pliée en 3+1 puis en 2×2. Une séquence lue en deux
+     lignes de deux n'est plus une séquence, et surtout les deux rangées ne se
+     comparent plus case à case, ce qui est toute la démonstration du bloc. */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.vsflow__step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--gray);
+}
+
+/* La case qui porte le problème : trait tireté, comme la porte ouverte de la
+   matrice de compatibilité. Un tireté dit « ça ne tient pas » sans un mot. */
+.vsflow__step--stop {
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.30);
+  color: var(--white);
+}
+
+/* La case qui porte la solution. L'ENCRE EST LE NOIR DE CHARTE ET JAMAIS DU
+   BLANC : sur le teal, le blanc plafonne à 2,04:1 et le noir tient 8:1. C'est
+   le défaut relevé seize fois par l'audit du 2026-08-11. */
+.vsflow__step--go {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #231F20;
+  font-weight: 700;
+}
+
+.vsflow__step svg { flex: none; width: 18px; height: 18px; }
+
+/* Sous 768 px la chaîne passe en colonne : elle se lit de haut en bas, et les
+   deux rangées restent comparables position par position. */
+@media (max-width: 767px) {
+  .vsflow__lane { padding: 18px 18px; }
+  .vsflow__chain { grid-template-columns: 1fr; }
+}
+
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
    restent donc portés par l'image (un cadre clippé arrondirait aussi les
    angles du bouton), et le bloc entier se déplace d'un seul tenant au

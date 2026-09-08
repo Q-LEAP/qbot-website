@@ -300,6 +300,10 @@ if ('IntersectionObserver' in window) {
          ses bords pendant le parallaxe, ce qui ROGNERAIT la capture, et son
          masque arrondi trancherait le bandeau d'onglets. */
       '.appwin',
+      /* Les deux rangées du bloc Problème (2026-09-08). Elles montent l'une
+         après l'autre, ce qui met la comparaison en scène : on voit la chaîne
+         cassée, puis celle que Q-Bot recolle. */
+      '.vsflow__lane',
       '.badge-lux',
       /* Exclu de « media » : un clip-path permanent sur le cadre du viewer 3D
          interférerait avec son passage en plein écran (et avec son canvas). */

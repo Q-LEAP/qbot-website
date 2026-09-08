@@ -37,8 +37,8 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=d88d0231">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=d451c23e">
+  <link rel="stylesheet" href="assets/css/style.css?v=3ec9ddd2">
+  <link rel="stylesheet" href="assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
        local est refusé : ouvert en file://, un script « module » local a l'origine
@@ -233,6 +233,49 @@
 
      Ce qui porte l'autorité de la marque en l'absence de témoignages : le
      fondateur nommé et relié, la citation de presse ITnation, les guides. -->
+
+<!-- ======= LE PROBLÈME =======
+     Bloc demandé le 2026-09-08 : la page présentait la solution sans avoir
+     jamais posé le problème. Il vient donc AVANT la section Solution, et sa
+     seule fonction est de rendre le manque évident en un regard.
+     PEU DE TEXTE, C'EST LA CONSIGNE. Le sens est porté par les deux chaînes,
+     pas par les phrases : mêmes quatre positions, alignées verticalement, une
+     seule case change. Cf. le pavé `.vsflow` de la feuille de style. -->
+<section class="section" aria-labelledby="probleme-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Le problème</span>
+      <h2 class="section-title" id="probleme-title">La double authentification arrête vos tests</h2>
+      <p class="section-subtitle">Une campagne sait tout automatiser, sauf la validation sur smartphone. Il faut donc quelqu'un devant l'écran, et tant qu'il n'est pas là, le test attend.</p>
+    </div>
+    <div class="vsflow">
+      <div class="vsflow__lane vsflow__lane--sans">
+        <h3 class="vsflow__label">Sans <span class="nb">Q-Bot</span></h3>
+        <ol class="vsflow__chain" role="list">
+          <li class="vsflow__step" role="listitem">Test automatisé</li>
+          <li class="vsflow__step" role="listitem">Étape 2FA</li>
+          <li class="vsflow__step vsflow__step--stop" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.4"/><path d="M4.6 20.2a7.4 7.4 0 0 1 14.8 0"/></svg>
+            Intervention humaine
+          </li>
+          <li class="vsflow__step" role="listitem">Suite du test</li>
+        </ol>
+      </div>
+      <div class="vsflow__lane vsflow__lane--avec">
+        <h3 class="vsflow__label">Avec <span class="nb">Q-Bot</span></h3>
+        <ol class="vsflow__chain" role="list">
+          <li class="vsflow__step" role="listitem">Test automatisé</li>
+          <li class="vsflow__step" role="listitem">Étape 2FA</li>
+          <li class="vsflow__step vsflow__step--go" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 10,18 20,6"/></svg>
+            <span class="nb">Q-Bot</span>
+          </li>
+          <li class="vsflow__step" role="listitem">Suite automatique</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ======= INTRO 1 ======= -->
 <section class="section section--gray" aria-labelledby="intro-title">
@@ -849,7 +892,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2a69a488" defer></script>
-<script src="assets/js/scrolly.js?v=82ce0feb" defer></script>
+<script src="assets/js/main.js?v=40ca2152" defer></script>
+<script src="assets/js/scrolly.js?v=3e02b8fa" defer></script>
 </body>
 </html>
