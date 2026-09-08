@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=33626671">
+  <link rel="stylesheet" href="../assets/css/style.css?v=d5a97ff5">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -728,11 +728,22 @@
      française, point 19 du brief. -->
 <section class="section" aria-labelledby="made-title">
   <div class="container">
-    <div class="section-header" style="margin-bottom:0;">
-      <span class="section-label">Made in Luxembourg</span>
-      <h2 class="section-title" id="made-title">Designed and developed in Luxembourg by <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a></h2>
-      <p class="section-subtitle" style="margin-top:16px;"><span class="nb">Q-Bot</span> is built by testers, for testers. The team behind it works in Bertrange, and it is the team that provides support.</p>
-    </div>
+    <h2 id="made-title" class="visually-hidden">What makes <span class="nb">Q-Bot</span> dependable</h2>
+    <ul class="trust" role="list">
+      <li class="trust__item" role="listitem">
+        <span class="trust__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <span class="trust__body"><b>Made in Luxembourg</b><span>Designed and built in Bertrange.</span></span>
+      </li>
+      <li class="trust__item" role="listitem">
+        <span class="trust__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18v-2a4 4 0 0 1 4-4h1"/><path d="M20 18v-2a4 4 0 0 0-4-4h-1"/><path d="M12 3a5 5 0 0 1 5 5v1a5 5 0 0 1-10 0V8a5 5 0 0 1 5-5z"/></svg></span>
+        <span class="trust__body"><b>100&nbsp;% local support</b><span>The team that built it is the team that answers.</span></span>
+      </li>
+      <li class="trust__item" role="listitem">
+        <span class="trust__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg></span>
+        <span class="trust__body"><b>By testers, for testers</b><span>Software testing has been our trade since 2012.</span></span>
+      </li>
+    </ul>
+    <p class="trust__sign">A <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a> product.</p>
   </div>
 </section>
 

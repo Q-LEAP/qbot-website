@@ -3015,6 +3015,72 @@ p { color: var(--gray); }
   .flow2fa__phone { width: 96px; }
 }
 
+/* ══ ZONE DE RÉASSURANCE (.trust) ══════════════════════════════════════════
+   Demandée le 2026-09-08 en remplacement du bloc « Made in Luxembourg » :
+   « je ne souhaite pas avoir de gros bloc corporate », « quelques éléments
+   simples », « renforcer la crédibilité sans alourdir la page ».
+
+   PAS DE TITRE VISIBLE, ET C'EST LE POINT. Un h2 en fait une section de plus,
+   avec le poids qui va avec ; or une réassurance se lit en passant, elle
+   n'annonce rien. Le titre existe quand même, en lecture d'écran seule, parce
+   que la section le désigne par `aria-labelledby` et qu'une section sans nom
+   accessible n'est plus une section. Même solution que la séquence 3D.
+
+   TROIS ÉLÉMENTS, PAS QUATRE : au-delà, la rangée se lit comme une liste
+   d'arguments, donc comme le bloc corporate qu'on vient de retirer. */
+.trust {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trust__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.trust__ico {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 203, 190, 0.3);
+  color: var(--teal);
+}
+.trust__ico svg { width: 18px; height: 18px; }
+
+.trust__body { display: block; }
+.trust__body b {
+  display: block;
+  color: var(--white);
+  font-size: 0.9375rem;
+  margin-bottom: 3px;
+}
+.trust__body span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+/* La signature, discrète, comme le demande le brief (« éventuellement la
+   mention Q-Leap de manière discrète »). */
+.trust__sign {
+  margin: 28px 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .trust { grid-template-columns: 1fr; gap: 20px; }
+}
+
 /* ══ COMPARAISON « SANS / AVEC » (.vsflow) ═════════════════════════════════
    Le bloc Problème de la homepage, demandé le 2026-09-08 : faire comprendre en
    un regard que la 2FA coupe une campagne, et que Q-Bot recolle la chaîne.

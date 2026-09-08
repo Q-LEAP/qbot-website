@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=33626671">
+  <link rel="stylesheet" href="assets/css/style.css?v=d5a97ff5">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -796,11 +796,22 @@
      auto-hébergé et l'API répond sur le réseau où on l'installe. -->
 <section class="section" aria-labelledby="made-title">
   <div class="container">
-    <div class="section-header" style="margin-bottom:0;">
-      <span class="section-label">Made in Luxembourg</span>
-      <h2 class="section-title" id="made-title">Conçu et développé au Luxembourg par <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a></h2>
-      <p class="section-subtitle" style="margin-top:16px;"><span class="nb">Q-Bot</span> est créé par des testeurs, pour des testeurs. L'équipe qui l'a conçu travaille à Bertrange, et c'est elle qui assure le support.</p>
-    </div>
+    <h2 id="made-title" class="visually-hidden">Ce qui rend <span class="nb">Q-Bot</span> fiable</h2>
+    <ul class="trust" role="list">
+      <li class="trust__item" role="listitem">
+        <span class="trust__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <span class="trust__body"><b>Made in Luxembourg</b><span>Conçu et fabriqué à Bertrange.</span></span>
+      </li>
+      <li class="trust__item" role="listitem">
+        <span class="trust__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18v-2a4 4 0 0 1 4-4h1"/><path d="M20 18v-2a4 4 0 0 0-4-4h-1"/><path d="M12 3a5 5 0 0 1 5 5v1a5 5 0 0 1-10 0V8a5 5 0 0 1 5-5z"/></svg></span>
+        <span class="trust__body"><b>Support 100&nbsp;% local</b><span>L'équipe qui l'a conçu est celle qui répond.</span></span>
+      </li>
+      <li class="trust__item" role="listitem">
+        <span class="trust__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg></span>
+        <span class="trust__body"><b>Par des testeurs, pour des testeurs</b><span>Le test logiciel est notre métier depuis 2012.</span></span>
+      </li>
+    </ul>
+    <p class="trust__sign">Un produit <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a>.</p>
   </div>
 </section>
 
