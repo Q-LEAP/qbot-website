@@ -258,8 +258,11 @@
       <div>
         <span class="section-label">The solution</span>
         <h2 class="section-title" id="intro-title">2FA automation with LuxTrust and smartphones</h2>
+        <div class="problem-callout">
+          <span class="nb">Q-Bot</span> connects in one click and automates two-factor authentication across all your test cases, in the 2FA apps on your smartphone.
+        </div>
         <p style="margin-top:16px;">
-          Born from an innovation combining electronics, software and design, <span class="nb">Q-Bot</span> automates LuxTrust dual authentication without human intervention, directly from your existing testing tools.
+          Your test runs go through at night, at the weekend and on every release, with no tester having to approve anything on a phone.
         </p>
       </div>
       <!-- Schéma du parcours, posé le 2026-09-07 : cf. la note française et le
@@ -268,23 +271,23 @@
         <ol class="flow2fa__steps" role="list">
           <li class="flow2fa__step" role="listitem">
             <span class="flow2fa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
-            <span class="flow2fa__body"><b>Your automated test</b><span>Selenium, Cypress, Playwright, or your CI pipeline.</span></span>
+            <span class="flow2fa__body"><b>Your automated test</b><span>The one you already run, in the tools you already use.</span></span>
           </li>
           <li class="flow2fa__step flow2fa__step--stop" role="listitem">
             <span class="flow2fa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
-            <span class="flow2fa__body"><b>It reaches the 2FA step</b><span>With nobody watching the screen, the run stops there.</span></span>
+            <span class="flow2fa__body"><b>It reaches the 2FA step</b><span>It is the one point your tools cannot get past on their own.</span></span>
           </li>
           <li class="flow2fa__step flow2fa__step--pre-key" role="listitem">
             <span class="flow2fa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="12" height="16" rx="2"/><line x1="6" y1="8" x2="12" y2="8"/><path d="M17 9v6"/><path d="M21 9v6"/></svg></span>
-            <span class="flow2fa__body"><b><span class="nb">Q-Bot</span> takes over</b><span>One HTTP call from the test, or the 2FA notification itself.</span></span>
+            <span class="flow2fa__body"><b><span class="nb">Q-Bot</span> takes over</b><span>It performs the approval for you, the moment it is asked for.</span></span>
           </li>
           <li class="flow2fa__step flow2fa__step--key" role="listitem">
             <span class="flow2fa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></span>
-            <span class="flow2fa__body"><b>On a real smartphone</b><span>The tap happens inside the genuine 2FA app, on a phone wired over USB. No simulator, no stub.</span></span>
+            <span class="flow2fa__body"><b>On a real smartphone</b><span>Inside the genuine 2FA app, not in a simulator.</span></span>
           </li>
           <li class="flow2fa__step" role="listitem">
             <span class="flow2fa__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 10,18 20,6"/></svg></span>
-            <span class="flow2fa__body"><b>The test carries on</b><span>Authentication is through, and the run goes to the end.</span></span>
+            <span class="flow2fa__body"><b>The test carries on</b><span>The run goes all the way, with nobody stepping in.</span></span>
           </li>
         </ol>
         <span class="flow2fa__phone"><svg viewBox="0 0 96 176" fill="none" aria-hidden="true">
