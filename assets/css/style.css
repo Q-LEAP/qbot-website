@@ -3127,19 +3127,55 @@ p { color: var(--gray); }
    RIEN N'EST TÉLÉCHARGÉ AVANT LE CLIC : la vignette est une image, le fichier
    de 2 Mo n'est demandé qu'à l'ouverture. C'est le même souci que le module 18,
    obtenu ici sans observateur puisque le clic est le déclencheur. */
+/* ---- Le panneau ----
+   PREMIÈRE VERSION ÉCARTÉE, ET LA RAISON VAUT D'ÊTRE GARDÉE : une petite carte
+   de 320 px posée à gauche d'un bouton. Signalé le 2026-09-08, « ça stick en
+   haut à gauche ». C'était juste : dans une rangée en `flex`, un objet étroit
+   se colle au bord et le reste de la largeur devient du vide, ce qui le fait
+   lire comme un élément oublié plutôt que comme une invitation.
+   Le film a donc son PANNEAU : un texte court à gauche, le cadre à droite, sur
+   toute la largeur du conteneur. C'est la même grammaire que les autres
+   rangées texte/média du site, donc rien de nouveau à comprendre pour l'oeil. */
+.filmband {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 32px 48px;
+  margin-top: 48px;
+  padding: 28px 30px;
+  background: #141414;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.filmband__titre { margin: 6px 0 10px; }
+.filmband__desc { margin: 0 0 22px; }
+
+/* ---- Le cadre ----
+   Traitement du hero (`.hero__film` et `.hero__shot`) : filet teal, ombre
+   portée et halo, plus une vignette intérieure. Elle n'est pas décorative :
+   l'affiche du film a un fond clair posé sur une page noire, et sans elle ses
+   bords se lisent comme un rectangle collé. */
 .filmcard {
   position: relative;
   display: block;
-  width: min(320px, 100%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  border: 1px solid rgba(0, 203, 190, 0.22);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(0, 203, 190, 0.10);
+  background: var(--dark);
   text-decoration: none;
   color: inherit;
-  background: #141414;
-  transition: border-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  transition: border-color 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
 }
-.filmcard:hover { border-color: rgba(0, 203, 190, 0.45); transform: translateY(-2px); }
+.filmcard:hover {
+  border-color: rgba(0, 203, 190, 0.5);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 76px rgba(0, 203, 190, 0.20);
+}
 
 .filmcard__poster {
   display: block;
@@ -3149,41 +3185,79 @@ p { color: var(--gray); }
   object-fit: cover;
 }
 
-/* La pastille de lecture. Encre NOIRE sur le teal, jamais blanche. */
+/* La vignette intérieure, sous les incrustations : `z-index` explicite, sinon
+   elle passerait par-dessus la pastille de lecture. */
+.filmcard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 60px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* La pastille de lecture. Encre NOIRE sur le teal, jamais blanche : le teal de
+   charte est une couleur claire, le blanc y plafonne à 2,04:1. */
 .filmcard__play {
   position: absolute;
-  top: calc(50% - 22px);
-  left: calc(50% - 22px);
-  width: 44px;
-  height: 44px;
+  z-index: 1;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+  width: 64px;
+  height: 64px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: var(--teal);
   color: #231F20;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
-  transition: transform 0.3s var(--ease-out);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+  transition: transform 0.35s var(--ease-out);
 }
-.filmcard:hover .filmcard__play { transform: scale(1.08); }
-.filmcard__play svg { width: 18px; height: 18px; margin-left: 2px; }
+.filmcard:hover .filmcard__play { transform: scale(1.07); }
+.filmcard__play svg { width: 26px; height: 26px; margin-left: 3px; }
 
-.filmcard__texte {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 11px 14px;
+/* La durée est INCRUSTÉE et non posée dans un bandeau sous l'image : un bandeau
+   ajoute une barre de plus au cadre, une incrustation ne coûte rien. Fond noir
+   à 66 %, le même que la mention de durée retirée le 2026-08-24, qui donnait
+   8,43:1 mesuré. */
+.filmcard__meta {
+  position: absolute;
+  z-index: 1;
+  right: 12px;
+  bottom: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.66);
+  color: var(--white);
+  font-size: 0.8125rem;
+  line-height: 1;
 }
-.filmcard__titre { font-weight: 700; font-size: 0.9375rem; color: var(--white); }
-.filmcard__meta { font-size: 0.8125rem; color: var(--muted); white-space: nowrap; }
 
-/* La rangée qui porte la vignette et le lien de la section. */
-.how-after {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 24px 32px;
-  margin-top: 44px;
+/* Le nom du film n'est pas affiché sur le cadre : il est déjà en titre du
+   panneau, juste à côté. Il reste dans le nom accessible du lien, où il sert. */
+.filmcard__titre {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .filmband {
+    grid-template-columns: 1fr;
+    padding: 24px 22px;
+  }
+  /* Le texte avant le média, comme toutes les rangées du site en une colonne. */
+  .filmband__text { order: 1; }
+  .filmcard { order: 2; }
+  .filmcard__play {
+    top: calc(50% - 26px);
+    left: calc(50% - 26px);
+    width: 52px;
+    height: 52px;
+  }
+  .filmcard__play svg { width: 21px; height: 21px; }
 }
 
 /* ---- La modale ----

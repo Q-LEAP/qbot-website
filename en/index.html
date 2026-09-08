@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=e6a637b7">
+  <link rel="stylesheet" href="../assets/css/style.css?v=66f2ef20">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -371,21 +371,24 @@
     <!-- LA VIGNETTE DU FILM, POSÉE ICI LE 2026-09-08. Cf. le pavé de la page
          française : lien vers le fichier, modale par le module 24, rien de
          téléchargé avant le clic. -->
-    <div class="how-after">
+    <div class="filmband">
+      <div class="filmband__text">
+        <span class="section-label">On video</span>
+        <h3 class="filmband__titre"><span class="nb">Q-Bot</span> in action</h3>
+        <p class="filmband__desc">One minute to see what these five steps describe: the device on a desk, the smartphone docked at the front, a scenario playing out and the authentication going through. Silent film, English captions.</p>
+        <a href="use-cases.html" class="btn btn--outline">
+          See how it works
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
       <a class="filmcard" href="../assets/video/qbot-demo.mp4?v=301fa999"
          data-film-modal
          data-film-titre="Q-Bot in action"
          data-film-fermer="Close the video">
         <img class="filmcard__poster" src="../assets/img/qbot-demo-poster.jpg?v=1e26aaa5" alt="" width="1280" height="720" loading="lazy" decoding="async">
         <span class="filmcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span>
-        <span class="filmcard__texte">
-          <span class="filmcard__titre"><span class="nb">Q-Bot</span> in action</span>
-          <span class="filmcard__meta">1 min, no sound</span>
-        </span>
-      </a>
-      <a href="use-cases.html" class="btn btn--outline">
-        See how it works
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <span class="filmcard__titre">Play the film, <span class="nb">Q-Bot</span> in action</span>
+        <span class="filmcard__meta">1 min, no sound</span>
       </a>
     </div>
 
