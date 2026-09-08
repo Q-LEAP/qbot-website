@@ -59,8 +59,13 @@ const LOGOS = path.join(RACINE, 'tools', 'logos');
  * PNG ne peut pas donner une silhouette monochrome propre. */
 const MARQUES = {
   // applications d'authentification
-  'LuxTrust Mobile': null,          // à fournir
-  'itsme': null,                    // à fournir
+  /* Ces deux-là sont des ICÔNES D'APPLICATION en PNG, récupérées chez l'éditeur
+     (icône déclarée dans le <head> d'itsme, favicon 256 px de LuxTrust, extrait
+     de son .ico). Elles portent leur propre fond, donc elles REMPLISSENT la
+     pastille au lieu d'y flotter : c'est ce que dit `plein`. Elles vivent dans
+     `assets/img/brands/` et non dans `tools/logos/`, puisqu'elles sont servies. */
+  'LuxTrust Mobile': { image: 'luxtrust.png', plein: true },
+  'itsme': { image: 'itsme.png', plein: true },
   'Microsoft Authenticator': null,  // à fournir, Microsoft ne diffuse ses marques que par son centre de marque
   'Google Authenticator': { slug: 'googleauthenticator', hex: '#4285F4' },
   'Toute app 2FA Android': null,    // pas une marque
@@ -138,12 +143,29 @@ function marque(slug, hex) {
 
 const MARQUAGES = {};
 for (const [nom, m] of Object.entries(MARQUES)) {
-  if (m) MARQUAGES[nom] = marque(m.slug, m.hex);
+  if (!m) continue;
+  if (m.image) {
+    const f = path.join(RACINE, 'assets', 'img', 'brands', m.image);
+    if (!fs.existsSync(f)) throw new Error('image de marque absente : ' + f);
+    MARQUAGES[nom] = { image: m.image, plein: !!m.plein, formes: 'png' };
+  } else {
+    MARQUAGES[nom] = marque(m.slug, m.hex);
+  }
 }
 
-function emplacement(nom) {
+/* `prefixe` : les pages de `en/` atteignent les actifs par `../`. On le déduit
+   du chemin de la page plutôt que de le déclarer, pour qu'une page ajoutée dans
+   un sous-dossier n'ait rien à configurer. */
+function emplacement(nom, prefixe) {
   const m = MARQUAGES[nom];
   if (!m) return '<span class="compat__logo" aria-hidden="true"></span>';
+
+  if (m.image) {
+    const cls = 'compat__logo' + (m.plein ? ' compat__logo--plein' : '');
+    return '<span class="' + cls + '" aria-hidden="true"><img src="' + prefixe
+      + 'assets/img/brands/' + m.image + '" alt="" width="28" height="28"'
+      + ' loading="lazy" decoding="async"></span>';
+  }
   const teinte = m.hex ? ' fill="' + m.hex + '"' : '';
   return '<span class="compat__logo" aria-hidden="true"><svg viewBox="' + m.vb
     + '"' + teinte + ' aria-hidden="true">' + m.corps + '</svg></span>';
@@ -156,14 +178,15 @@ for (const f of PAGES) {
   const p = path.join(RACINE, f);
   let s = fs.readFileSync(p, 'utf8');
   let n = 0;
+  const prefixe = '../'.repeat(f.split('/').length - 1);
 
   s = s.replace(
-    /(<li class="compat__item[^"]*"[^>]*>)(?:<span class="compat__logo"[\s\S]*?<\/span>)?([\s\S]*?)(<\/li>)/g,
+    /(<li class="compat__item[^"]*"[^>]*>)(?:<span class="compat__logo[^"]*"[\s\S]*?<\/span>)?([\s\S]*?)(<\/li>)/g,
     (tout, ouvre, corps, ferme) => {
       const nom = corps.replace(/<[^>]+>/g, '').trim();
       if (!(nom in MARQUES)) { inconnues.add(nom); return tout; }
       n++;
-      return ouvre + emplacement(nom) + corps + ferme;
+      return ouvre + emplacement(nom, prefixe) + corps + ferme;
     },
   );
 

@@ -6509,6 +6509,18 @@ label > input[type="checkbox"] {
 }
 .compat__logo:empty { background: none; }
 .compat__logo svg { width: 18px; height: 18px; }
+
+/* Les ICÔNES D'APPLICATION portent déjà leur propre fond coloré : elles
+   remplissent la pastille au lieu d'y flotter, sinon on empile un carré sur un
+   carré. Le rayon est repris pour que le coin reste net. */
+.compat__logo--plein { background: none; }
+.compat__logo--plein img {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+}
+
 .compat__item:hover .compat__logo { transform: scale(1.06); }
 
 /* Le liseré. État au repos = entier : c'est la règle du dépôt, l'animation est

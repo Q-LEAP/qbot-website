@@ -8520,13 +8520,24 @@ avaient disparu du fichier écrit, silencieusement. Pour tout texte contenant du
 code, passer par un fichier ou par l'outil d'édition, jamais par `-e` entre
 guillemets doubles.
 
-**NEUF MARQUES SUR TREIZE**, et l'absence de trois
-d'entre elles n'est pas un trou du catalogue :
+**ONZE MARQUES SUR TREIZE** :
 
 | | Posées | En attente du fichier client |
 |---|---|---|
-| Applications 2FA | Google Authenticator | LuxTrust Mobile, itsme, Microsoft Authenticator |
+| Applications 2FA | LuxTrust Mobile, itsme, Google Authenticator | Microsoft Authenticator |
 | Outils de test | Selenium, Cypress, Appium, Playwright, Robot Framework, Katalon, Jenkins, GitLab | TestComplete |
+
+**DEUX FORMATS COEXISTENT, ET C'EST LE PASSAGE À LA COULEUR QUI L'A PERMIS.**
+Neuf marques sont des tracés vectoriels recopiés dans le HTML. Deux sont des
+ICÔNES D'APPLICATION en PNG, servies depuis `assets/img/brands/` : celle
+d'itsme, déclarée dans le `<head>` de son site, et celle de LuxTrust, extraite
+de son favicon 256 px. Elles portent leur propre fond, donc elles remplissent la
+pastille au lieu d'y flotter, ce que dit le drapeau `plein` de la table.
+
+Le favicon de LuxTrust contenait un **BMP non compressé de 270 Ko**, pas un PNG.
+Il a fallu l'extraire et le réencoder (`scratchpad`, 60 lignes : la hauteur
+déclarée dans un ICO vaut DEUX fois la hauteur réelle, elle compte le masque de
+transparence, et les lignes sont stockées de bas en haut). Résultat : 50 Ko.
 
 **MICROSOFT A FAIT RETIRER SES MARQUES** de la collection employée. Ce n'est pas
 un oubli : leurs logos ne s'obtiennent que par leur centre de marque, avec
