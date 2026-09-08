@@ -312,10 +312,15 @@
   var SHELL_BASE = [0.064, 0.068, 0.074];   // charbon de la passe matière
 
   /* ── ISOLEMENT DE LA CARTE ────────────────────────────────────────────────
-     Le pas s'appelle « Ce qu'il y a à l'intérieur » et son texte nomme le nano-
-     ordinateur : à l'instant où on le lit, c'est LUI qui doit être la seule chose
-     solide de l'image. Le boîtier ne disparaît pas pour autant, il reste
-     légèrement visible, sinon la carte flotte dans le vide et on perd l'échelle.
+     Le troisième pas ouvre le boîtier : à l'instant où on le lit, la carte doit
+     être la seule chose solide de l'image. Le boîtier ne disparaît pas pour
+     autant, il reste légèrement visible, sinon elle flotte dans le vide et on
+     perd l'échelle.
+     SON TEXTE NE NOMME PLUS LE NANO-ORDINATEUR depuis le 2026-09-08 : la review
+     demande de ne plus raconter la construction du boîtier sur la homepage, et
+     le pas parle désormais de ce que le visiteur y gagne, ses données qui ne
+     sortent pas de son réseau. La MISE EN SCÈNE, elle, ne change pas : montrer
+     l'intérieur reste la façon de rendre « tout reste dans le boîtier » évident.
 
      LE TRI SE FAIT PAR LE NOM DU MATÉRIAU, ET C'EST LA SEULE FAÇON SÛRE. Les cinq
      matériaux du boîtier n'ont pas de nom dans le fichier (ils sont désignés par
@@ -997,7 +1002,7 @@
     cur.phi   = lerp(cur.phi,   g.phi,   k);
     cur.r     = lerp(cur.r,     g.r,     k);
     cur.zoom  = lerp(cur.zoom,  g.zoom,  k);
-    /* Position dans le clip. Sur le pas « L'intérieur », elle est lue
+    /* Position dans le clip. Sur le pas qui ouvre le boîtier (le 3e), elle est lue
        directement dans le scroll : le boîtier s'ouvre et se referme au rythme du
        geste, sans inertie — une tête de lecture qui traîne se perçoit comme du
        retard, pas comme de la fluidité (même règle que les progressions
