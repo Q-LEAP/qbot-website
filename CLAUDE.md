@@ -8505,13 +8505,20 @@ utilisable, alors qu'un PNG ne peut pas donner une silhouette monochrome propre.
 C'est ce qui rouvre la porte aux marques introuvables en vectoriel.
 
 **LA PASTILLE CLAIRE N'EST PAS UNE COQUETTERIE, ELLE EST MESURÉE.** La couleur
-officielle de Robot Framework est le NOIR () et le symbole de Katalon
+officielle de Robot Framework est le NOIR (`#000000`) et le symbole de Katalon
 est vert et noir : posées telles quelles sur les cartes noires du site, ces deux
 marques disparaissent, la seconde ne laissant qu'un carré vert flottant. Les
 chartes de marque autorisent toutes le logo sur fond blanc et interdisent
 souvent de le recolorer : la pastille est donc la seule solution à la fois
-lisible et conforme.  la retire des cases sans marque, pour ne pas
+lisible et conforme. `:empty` la retire des cases sans marque, pour ne pas
 montrer un carré blanc vide.
+
+**Piège d'outillage rencontré en écrivant cette note** : un texte passé à
+`node -e` entre GUILLEMETS DOUBLES dans un shell POSIX voit ses accents graves
+interprétés comme des substitutions de commande. `` `#000000` `` et `` `:empty` ``
+avaient disparu du fichier écrit, silencieusement. Pour tout texte contenant du
+code, passer par un fichier ou par l'outil d'édition, jamais par `-e` entre
+guillemets doubles.
 
 **NEUF MARQUES SUR TREIZE**, et l'absence de trois
 d'entre elles n'est pas un trou du catalogue :
