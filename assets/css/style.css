@@ -165,6 +165,21 @@
   --logo-clear-y: 0.299;
   --logo-clear-x: 0.084;
 
+  /* ── La marge transparente CUITE DANS LE FICHIER, en fraction de la hauteur
+     de rendu du <img>. Relevée dans `logo-qbot-neg.png` : 300 x 84 px, encre de
+     x 30 à 269, donc 30 px de vide de chaque côté, soit 30/84 = 0,357.
+
+     ELLE EST DISTINCTE DE `--logo-clear-x`, ET C'EST CE QUI MANQUAIT. Le
+     complément d'espace de protection (2,4 px à 29 px de haut) était bien tiré
+     en arrière par une marge négative, mais pas ce vide-là : 10,4 px de plus.
+     Le Q se retrouvait à 7,9 px du bord du conteneur alors que le paragraphe en
+     dessous partait à 0. Signalé le 2026-09-08, « enlever la marge à gauche du
+     logo, le Q doit être justifié au texte ».
+
+     Si le fichier du logo change, cette valeur se REMESURE : c'est une
+     propriété du fichier, pas un réglage. ── */
+  --logo-bleed-x: 0.357;
+
   /* Variante texte du teal — contraste AA (4.5:1) sur fond clair/blanc.
      Le teal de marque (#00CBBE) est trop clair pour du texte sur blanc (2.0:1). */
   --teal-text:   #00857D;
@@ -470,7 +485,9 @@ p { color: var(--gray); }
      la charte interdit. C'est au reste de la barre de céder, pas à la marque. */
   flex-shrink: 0;
   padding: calc(var(--logo-h) * var(--logo-clear-y)) calc(var(--logo-h) * var(--logo-clear-x));
-  margin-left: calc(-1 * var(--logo-h) * var(--logo-clear-x));
+  /* On tire en arrière le remplissage ET le vide du fichier : sans le second,
+     l'encre reste indentée de 10 px. */
+  margin-left: calc(-1 * var(--logo-h) * (var(--logo-clear-x) + var(--logo-bleed-x)));
 }
 .nav__logo img {
   height: var(--logo-h);
@@ -1930,7 +1947,9 @@ p { color: var(--gray); }
   padding: calc(var(--logo-h) * var(--logo-clear-y)) calc(var(--logo-h) * var(--logo-clear-x));
   /* Le padding est retranché de la marge basse : l'espace de protection est
      garanti sans changer le rythme vertical existant du footer. */
-  margin: 0 0 calc(16px - var(--logo-h) * var(--logo-clear-y)) calc(-1 * var(--logo-h) * var(--logo-clear-x));
+  /* Idem barre de navigation : le vide cuit dans le fichier se retranche lui
+     aussi, sinon le Q part 10 px à droite du paragraphe qu'il surplombe. */
+  margin: 0 0 calc(16px - var(--logo-h) * var(--logo-clear-y)) calc(-1 * var(--logo-h) * (var(--logo-clear-x) + var(--logo-bleed-x)));
 }
 .footer__logo img { height: var(--logo-h); width: auto; }
 
