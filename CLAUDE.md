@@ -8339,3 +8339,156 @@ aura des données.
 Le gestionnaire OVH et la Search Console **cessent de répondre à l'injection de script** au bout
 d'un moment dans un onglet donné. Le symptôme est un `Script injection timed out` répété qui
 ressemble à une panne. **Ouvrir un onglet neuf suffit**, et c'est plus rapide que de chercher.
+
+## Refonte de l'accueil sur le retour RH (2026-09-08)
+
+`Documentations/feedbacks homepage q-bot.docx` fixe une logique de lecture pour
+la homepage : je comprends le problème, je comprends la solution, je vois
+comment ça fonctionne, je comprends les bénéfices, je vois dans quels cas
+l'utiliser, je vérifie que ça s'intègre chez moi, je suis rassuré, je demande
+une démo. Dix sections, dans cet ordre. Traité en huit lots, un lot par commit,
+sur les deux langues.
+
+**TROIS DEMANDES ÉTAIENT DÉJÀ SATISFAITES, VÉRIFIÉ AVANT D'AGIR** : le document
+demande de retirer la FAQ, la newsletter et la frise datée de l'accueil. Les
+trois en étaient parties lors des passes du 2026-08-28 et du 2026-09-02. Un
+document de retours se contrôle contre l'état réel avant d'être exécuté.
+
+### Le bloc Problème, qui manquait
+
+La page présentait la solution sans avoir jamais dit ce qu'elle répare. Le
+nouveau bloc arrive en deuxième position et son sens tient dans deux chaînes de
+quatre cases aux mêmes positions : une seule case change, et c'est celle qui
+coûte une intervention humaine.
+
+Deux choix à ne pas défaire :
+
+- **les rangées sont empilées, pas côte à côte.** Côte à côte, chaque chaîne
+  n'aurait que la moitié de la largeur pour quatre cases, et la comparaison se
+  ferait de biais au lieu de se lire verticalement, case contre case ;
+- **les cases neutres ne portent aucune icône**, alors que le schéma
+  `.flow2fa` de la section Solution est justement iconographique. Le document
+  demande qu'une section ne répète pas la précédente ; ici ce sont la couleur
+  et une seule marque par rangée qui portent le sens.
+
+**QUATRE COLONNES OU UNE SEULE, JAMAIS D'INTERMÉDIAIRE.** Un `auto-fit` donnait
+3 puis 2 colonnes en descendant, donc une séquence de quatre pliée en 3+1 puis
+en 2×2 : ce n'est plus une séquence, et surtout les deux rangées ne se comparent
+plus position par position, ce qui est toute la démonstration du bloc.
+
+### Le film quitte sa section pour un panneau
+
+Il occupait une pleine largeur entre les bénéfices et le fonctionnement. Le
+document demande qu'il « complète les cinq étapes » : il est donc dans le bloc
+« Comment ça fonctionne », en vignette qui s'ouvre en modale.
+
+**PREMIÈRE VERSION ÉCARTÉE, ET LA RAISON VAUT POUR TOUT OBJET DE CE GENRE.**
+C'était une carte de 320 px posée à gauche d'un bouton. Retour du client : « ça
+stick en haut à gauche ». Dans une rangée en `flex`, un objet étroit se colle au
+bord et le reste de la largeur devient du vide, ce qui le fait lire comme un
+élément oublié plutôt que comme une invitation. Il a donc son panneau sur toute
+la largeur du conteneur, texte à gauche, cadre à droite, avec le traitement du
+hero (filet teal, halo, vignette intérieure) et une pastille de lecture de
+64 px.
+
+`tools/render` n'entre pas en jeu : l'affiche est celle du film, déjà présente.
+
+**LE NETTOYAGE DE LA MODALE NE PASSE PAS PAR L'ÉVÉNEMENT `close` DU
+`<dialog>`.** Mesuré ce jour-là sur un dialogue neuf créé pour l'essai :
+`showModal()` puis `close()` mettent bien `open` à faux et renseignent
+`returnValue`, mais l'événement `close` n'est dispatché à AUCUN écouteur, pas
+même à un écouteur ajouté sur place. Un module qui s'y fie laisse la modale dans
+le document et le défilement de la page verrouillé pour toujours, ce qui est
+exactement ce qui s'est produit au premier essai. Le module 24 appelle donc son
+nettoyage depuis chaque chemin de fermeture (bouton, voile, Échap), et la
+fonction est idempotente pour que deux chemins simultanés soient sans effet.
+L'écouteur `close` reste en filet, là où l'événement existe.
+
+### Les autres lots
+
+- **Solution** : les sous-lignes du schéma disaient le mécanisme (appel HTTP,
+  câble USB, absence de bouchon), c'est-à-dire ce que raconte la section
+  suivante puis la fiche technique. Elles disent maintenant ce que le visiteur y
+  gagne. Les cinq intitulés du parcours restent, le document les demande mot
+  pour mot. L'anglais ouvrait sur « Born from an innovation combining
+  electronics, software and design », donc sur la fabrication, et gagne au
+  passage le chapeau encadré que le français avait déjà ;
+- **Produit** : le troisième pas de la séquence s'appelait « Ce qu'il y a à
+  l'intérieur » et nommait le nano-ordinateur, l'API REST et quatre outils. Il
+  devient « Tout reste dans le boîtier ». **LA MISE EN SCÈNE NE CHANGE PAS** :
+  le boîtier s'ouvre toujours à ce pas, parce que montrer l'intérieur reste la
+  façon la plus directe de rendre l'idée évidente, et le document demande de
+  garder le produit visuellement ;
+- **Bénéfices** : titres passés à l'impératif et orientés résultats, registre
+  des exemples du document. **RIEN N'EST RETIRÉ** : le document demande « 4 à 5
+  maximum » et il y en avait déjà trois, plafond posé par une review antérieure ;
+- **Cas d'usage** : « Pour qui ? » annonçait des profils quand les trois cartes
+  décrivent des situations. Devient « Quand Q-Bot intervient » ;
+- **Réassurance** : le bloc Luxembourg était une section pleine avec marque,
+  grand titre et chapeau pour dire trois choses. Ce sont maintenant ces trois
+  choses. **PAS DE TITRE VISIBLE, ET C'EST LE POINT** : un h2 en fait une
+  section de plus, alors qu'une réassurance se lit en passant. Le titre existe
+  en lecture d'écran seule, la section le désignant par `aria-labelledby`, même
+  solution que la séquence 3D.
+
+### Le lot Compatibilités a mis au jour trois listes divergentes
+
+**LES LOGOS DES OUTILS SONT DEMANDÉS ET NON POSÉS.** Ce sont des marques
+déposées, leur usage demande un accord que le client doit obtenir, et il figure
+déjà dans sa liste de choses à fournir depuis le 2026-08-28. La grille est prête
+à les recevoir.
+
+Ce qui est fait à la place sert le même but : les deux entrées « porte ouverte »
+manquaient à l'accueil alors qu'elles sont exactement la réponse cherchée, et la
+réponse explicite est posée **sous** la grille et non en fin de chapeau
+au-dessus. Au-dessus, elle se lit avant la liste et s'oublie ; en dessous, elle
+arrive au moment où le lecteur vient de constater que son outil n'y figure pas.
+
+**TROIS LISTES DIFFÉRENTES COEXISTAIENT SUR LE SITE FRANÇAIS**, alors que le
+commentaire de chaque section affirme qu'« un seul endroit fait foi sur la
+compatibilité ». L'accueil avait Katalon sans TestComplete, la fiche technique
+TestComplete sans Katalon, la page Démo les deux. C'est la plus complète qui
+gagne, et ce n'est pas arbitraire : Katalon vient du texte du site d'origine,
+donc le retirer supprimerait une compatibilité réellement revendiquée, et
+TestComplete vient de la fiche technique, autorité sur les outils. Rien n'est
+inventé. Relevé après : une seule liste par langue sur les six pages qui en
+portent une, et « REST API custom » francisé en « API REST ».
+
+### Ce qui n'a PAS pu être vérifié ici, et il faut le savoir
+
+**Le balayage au navigateur des deux accueils n'a pas pu être fait.** Le moteur
+de rendu s'étrangle sur la page d'accueil dès qu'on la parcourt par pas : la
+séquence 3D tourne dans un onglet en **arrière-plan** et l'évaluation dépasse
+45 s. Ce contrôle reste à passer depuis un poste équipé de Python, avec
+`tools/audit-a11y.py` et `tools/audit-visibilite.py`.
+
+Ce qui a été vérifié à la place, par sonde de fichier : sections équilibrées, un
+seul `h1`, aucune référence `aria` orpheline, aucune ancre morte, 188 références
+internes dont 0 cassée, 0 cadratin hors commentaires, listes de compatibilité
+identiques.
+
+Et l'argument qui remplace le balayage des révélations : **une seule des classes
+ajoutées figure dans `REVEAL_MAP`** (`.vsflow__lane`), donc une seule peut porter
+`opacity: 0` en attendant l'observateur, et elle a été vue s'animer. Les autres
+sont visibles par construction. La sonde qui l'établit porte un contrôle de
+vivacité, parce qu'une première version découpait la table au mauvais endroit et
+répondait « hors table » pour tout, y compris pour une classe qui y était.
+
+**LA LECTURE DU FILM N'A PAS PU ÊTRE VÉRIFIÉE NON PLUS**, pour la même raison :
+`visibilityState` vaut `hidden` sur l'onglet piloté, et Chrome y diffère le
+chargement des médias et interdit la lecture automatique. Symptôme trompeur :
+`readyState 0`, `networkState 2`, aucune erreur, aucune requête HTTP. Ce n'est
+pas un défaut de la page. Tout le reste de la modale est mesuré.
+
+**Piège d'outillage à connaître** : un serveur de test qui ne gère pas les
+requêtes de plage laisse un `<video>` dans cet état exact, sans lever d'erreur.
+`python3 -m http.server` et un serveur Node naïf répondent 200 là où le lecteur
+attend 206. GitHub Pages, lui, sert les plages.
+
+### Laissé en l'état, et pourquoi
+
+Le bloc « Créer une automatisation visuellement, sans écrire de code » reste la
+seconde moitié de « Comment ça fonctionne ». Le document ne le mentionne pas,
+et il avait été demandé explicitement par une review antérieure : le retirer
+serait élargir le périmètre sans mandat. À signaler au client, puisque sa
+consigne « une section, une idée principale » le désigne indirectement.
