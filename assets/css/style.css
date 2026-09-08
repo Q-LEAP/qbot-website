@@ -3664,33 +3664,21 @@ a:focus-visible { border-radius: var(--radius-sm); }
    plus bas dans ce fichier. */
 .order-process {
   --op-gap: 32px;
-  --op-rond: 56px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--op-gap);
   margin-top: 48px;
   position: relative;
 }
-/* LE TRAIT RELIE LE CENTRE DU PREMIER ROND À CELUI DU DERNIER, ET LA FORMULE EST
-   DÉRIVÉE, PAS DEVINÉE. Quatre colonnes de largeur c et trois gouttières g dans
-   une largeur W : c = (W − 3g)/4, la dernière colonne commence à 3c + 3g, soit
-   0,75 W + 0,75 g, et le centre de son rond est 28 px plus loin. La distance au
-   bord droit vaut donc 25 % − 0,75 g − 28 px.
-   POURQUOI ELLE EST ÉCRITE EN FONCTION DE `--op-gap` : la valeur figée
-   `25% − 46px` avait été calculée pour des gouttières de 24 px. La passe
-   d'aération du 2026-08-20 les a portées à 32 px, et le trait dépassait depuis
-   le dernier rond de 6 px, ce qui laissait un moignon à droite. Une constante
-   posée à la main périme à la première refonte d'espacement ; celle-ci suit. */
-.order-process::before {
-  content: '';
-  position: absolute;
-  top: calc(var(--op-rond) / 2 - 1px);
-  left: calc(var(--op-rond) / 2);
-  right: calc(25% - 0.75 * var(--op-gap) - var(--op-rond) / 2);
-  height: 2px;
-  background: var(--teal-light);
-  z-index: 0;
-}
+/* LE TRAIT DE LIAISON A ÉTÉ RETIRÉ AVEC LES RONDS, le 2026-09-08. Il reliait le
+   centre du premier rond à celui du dernier ; sans rond, il traverserait les
+   chiffres, ce qui est exactement le défaut corrigé sur la maquette d'interface
+   le 2026-08-25 (un fil d'étapes ne passe jamais par-dessus ses noeuds).
+   Si les ronds reviennent un jour, la formule était dérivée et non devinée :
+   pour n colonnes de largeur c et n−1 gouttières g dans une largeur W, la
+   dernière colonne commence à (n−1)(c+g), donc le bord droit du trait vaut
+   100/n % − (n−1)/n × g − rond/2. Elle vivait ici et dans la variante à cinq
+   colonnes juste en dessous. */
 /* ---- Variante à cinq étapes ----
    Posée le 2026-09-02 pour la section « Comment ça fonctionne » de l'accueil,
    qui compte cinq étapes là où la page Démo en a quatre. Le composant est
@@ -3706,38 +3694,45 @@ a:focus-visible { border-radius: var(--radius-sm); }
    du fichier tranche, ce qui donne précisément la cascade voulue. La variante
    gagne sur la base (elle est écrite après), et les requêtes gagnent sur la
    variante (elles sont écrites après elle), donc la grille retombe bien à deux
-   colonnes sur petit écran, trait masqué. Doubler le sélecteur ici bloquerait ce
-   repli à cinq colonnes sur un téléphone. */
+   colonnes sur petit écran. Doubler le sélecteur ici bloquerait ce repli à cinq
+   colonnes sur un téléphone. */
 .order-process--5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-.order-process--5::before {
-  right: calc(20% - 0.8 * var(--op-gap) - var(--op-rond) / 2);
-}
 
 .order-step { position: relative; z-index: 1; }
+/* LE CHIFFRE SEUL, SANS ROND (retour du 2026-09-08 : « pas de rond coloré pour
+   les numéros, ça prend trop la place, juste les numéros ça ira »). Le rond
+   faisait 56 px, plus 4 px de liseré et 2 px de halo : 72 px de haut pour un
+   chiffre, et sur un téléphone à deux colonnes il occupait le tiers de la carte.
+   Le teal passe de FOND à ENCRE, et c'est ce qui rend le changement possible
+   sans perdre de contraste : le teal de charte est une couleur claire, donc
+   illisible sous du blanc mais excellente en texte sur le fond sombre du site
+   (mesuré 9,4:1). C'est l'inverse exact de la règle du rond, qui exigeait de
+   l'encre noire. */
 .order-step__number {
-  width: 56px;
-  height: 56px;
-  background: var(--teal);
-  /* Pas de blanc sur le teal : il plafonne à 2,04:1 (mesuré). Le teal de charte
-     est une couleur CLAIRE, c'est le noir qui va dessus, même règle que pour la
-     bande newsletter et l'ancienne pastille de prix, cf. la note plus haut. */
-  color: #001A18;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
+  color: var(--teal);
+  font-size: 1.75rem;
   font-weight: 700;
-  /* Le rond suit son texte, à gauche : centré dans sa colonne alors que le titre
-     et le paragraphe sont alignés à gauche, il flottait au-dessus d'eux. C'est
-     aussi ce qui fait tomber juste le trait de `.order-process::before`, calculé
-     entre les CENTRES du premier et du dernier rond. */
-  margin: 0 0 16px;
-  border: 4px solid var(--white);
-  box-shadow: 0 0 0 2px var(--teal);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 12px;
 }
+/* Le numéro de la liste « Comment Q-Bot automatise votre 2FA » des pages Démo.
+   Même arbitrage, même jour : c'était le MÊME rond teal de 48 px, écrit quatre
+   fois par page en STYLE EN LIGNE, donc hors d'atteinte de toute règle. Il est
+   sorti du balisage en même temps qu'il perd son fond. La largeur fixe garde
+   l'alignement des titres, que le rond assurait auparavant. */
+.flow-num {
+  flex-shrink: 0;
+  width: 28px;
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
 .order-step h3 { font-size: .9375rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
 .order-step p { font-size: .875rem; color: var(--gray); }
 .guarantee-grid {
@@ -4063,7 +4058,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
   .article-layout { grid-template-columns: 1fr; }
   .article-sidebar { position: static; }
   .order-process { grid-template-columns: repeat(2, 1fr); }
-  .order-process::before { display: none; }
 }
 @media (max-width: 768px) {
   .blog__featured { grid-template-columns: 1fr; }
@@ -4328,8 +4322,6 @@ a:focus-visible { border-radius: var(--radius-sm); }
 /* ── Order page ── */
 [data-theme="dark"] .order-step h3,
 [data-theme="dark"] .guarantee-item h3   { color: #E6E7E8; }
-[data-theme="dark"] .order-step__number  { border-color: #0A0A0A; }
-[data-theme="dark"] .order-process::before { background: rgba(0, 203, 190, 0.14); }
 
 /* ── Pricing ── */
 [data-theme="dark"] .pricing-card__price       { color: #E6E7E8; }

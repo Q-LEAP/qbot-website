@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=940f3e60">
+  <link rel="stylesheet" href="../assets/css/style.css?v=9fe58fbf">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -362,28 +362,28 @@
       <div>
         <div style="display:flex; flex-direction:column; gap:24px;">
           <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">1</div>
+            <div class="flow-num">1</div>
             <div>
               <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Build</h3>
               <p style="font-size:.9375rem; margin:0;">Build the scenario in the web interface: upload a screenshot of the 2FA screen, place numbered tap points, set wait times. No scripting required.</p>
             </div>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">2</div>
+            <div class="flow-num">2</div>
             <div>
               <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Trigger</h3>
               <p style="font-size:.9375rem; margin:0;">Your test scenario calls the <span class="nb">Q-Bot</span> API. Or the companion app fires on its own, the instant a 2FA notification reaches the device.</p>
             </div>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">3</div>
+            <div class="flow-num">3</div>
             <div>
               <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Execute</h3>
               <p style="font-size:.9375rem; margin:0;"><span class="nb">Q-Bot</span> replays the scenario on the smartphone connected over USB: taps, swipes and waits, via ADB.</p>
             </div>
           </div>
           <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="width:48px; height:48px; background:var(--teal); color:#001A18; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.125rem; flex-shrink:0;">4</div>
+            <div class="flow-num">4</div>
             <div>
               <h3 style="font-size:1rem; font-weight:700; color:var(--black); margin-bottom:4px;">Continue</h3>
               <p style="font-size:.9375rem; margin:0;">2FA handled. Pipeline unblocked. The test continues from exactly where it left off.</p>
