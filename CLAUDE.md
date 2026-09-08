@@ -8734,3 +8734,133 @@ densité 2.
   la grille de compatibilité : onze cases sur treize portent leur logo ;
 - **les visuels de l'interface** au-delà des trois captures livrées, s'il en
   veut d'autres ; la maquette n'est plus utilisée nulle part sur l'accueil.
+
+## Retours sur captures du 2026-09-08 : mobile, numéros, label, logos
+
+Cinq captures d'écran du client, cinq lots, un lot par commit.
+
+### Le bouton de réservation descend dans le tiroir
+
+« Le bouton du header je le mettrais dans le menu sur mobile » et « le menu
+mobile est un peu léger avec juste 2 pages ». Les deux se règlent d'un coup : le
+menu passe de trois entrées à quatre.
+
+**ON DÉPLACE LE NOEUD, ON NE LE DUPLIQUE PAS.** Un second bouton écrit dans le
+balisage donnerait deux arrêts de tabulation et deux fois le même nom
+accessible ; surtout, `tools/maj-nav-booking.py` compte UN bouton par page dans
+la SOURCE, et un doublon le tromperait. Déplacé, le noeud garde ses écouteurs :
+la fenêtre de réservation du module 20 s'ouvre sans une ligne de plus. Sans
+JavaScript le bouton reste dans la barre, c'est l'état d'avant.
+
+**ET UN ÉCOUTEUR `change` DE `matchMedia` NE SUFFIT PAS.** Il ne se réveille
+qu'au FRANCHISSEMENT du seuil : si la fenêtre est étroite à l'instant où le
+script s'exécute puis s'élargit sans repasser par 768 px, le bouton reste coincé
+dans le tiroir pour toute la vie de la page. Le cas se reproduit tel quel dans un
+cadre en ligne, qui commence sa vie à 300 px avant que sa largeur ne lui soit
+appliquée : relevé à 1440 px « barre vide, menu plein », requête média à faux, et
+un redimensionnement de 1440 à 1439 n'y changeait rien puisque le RÉSULTAT de la
+requête ne changeait pas. La largeur est donc relue à chaque appel, sur `resize`
+et sur `load`. Règle générale : **un état qui dépend d'un seuil se recalcule, il
+ne s'écoute pas.**
+
+### La pleine largeur des boutons ne vaut que pour une paire
+
+« Les boutons sur mobile c'est un peu trop », « plus discret le bouton du hero ».
+Le motif avait été posé le 2026-08-11 pour DEUX pastilles empilées, qui se lisent
+mal quand elles n'ont pas la même largeur. Un bouton seul n'a pas ce défaut, et
+pris sur toute la largeur de l'écran il écrase le texte qu'il conclut. Sous
+520 px, `:has(.btn + .btn)` décide : le hero de l'accueil et les blocs d'appel
+final gardent la largeur de leur texte sur la gouttière, les deux boutons du hero
+de la page Démo s'étirent toujours. `btn--lg` redescend d'un cran, sa taille
+étant dimensionnée pour un écran large. Sans `:has()`, largeur automatique
+partout, c'est-à-dire le comportement d'avant la règle.
+
+Mesuré à 390 px : hero de 187 x 54 posé sur la gouttière, contre 342 de large.
+
+### Les numéros d'étape perdent leur rond
+
+« Ça prend trop la place, juste les numéros ça ira. » Le rond faisait 56 px, plus
+4 px de liseré et 2 px de halo : 72 px de haut pour un chiffre.
+
+**LE TEAL PASSE DE FOND À ENCRE**, et c'est ce qui rend le changement possible
+sans perdre de contraste. Le teal de charte est une couleur claire : elle
+plafonne à 2:1 sous du blanc, ce qui imposait l'encre noire DANS le rond, mais
+elle donne 9,4:1 en texte sur le fond sombre du site. La même règle, lue à
+l'envers.
+
+**LE TRAIT DE LIAISON PART AVEC LES RONDS.** Il reliait le centre du premier au
+centre du dernier ; sans rond il traverserait les chiffres, ce qui est le défaut
+corrigé sur la maquette d'interface le 2026-08-25 (un fil d'étapes ne passe
+jamais par-dessus ses noeuds). La formule dérivée est conservée en commentaire,
+généralisée à n colonnes.
+
+**ET LE MÊME MOTIF VIVAIT QUATRE FOIS PAR PAGE EN STYLE EN LIGNE** sur les deux
+pages Démo, deux sections plus bas : mêmes 48 px, même fond teal, même encre
+noire, hors d'atteinte de toute feuille de style. Les laisser aurait remis le
+motif rejeté juste sous celui qu'on venait de corriger. Ils deviennent
+`.flow-num`. Septième occurrence du piège du style en ligne sur ce dépôt.
+
+### Le label Made in Luxembourg passe en encre blanche
+
+« Disproportionné. Pas de fond blanc, le mettre en version blanc et plus petit. »
+
+**L'ENCRE EST EXTRAITE, ELLE N'EST PAS REPEINTE PAR-DESSUS.** L'opacité de chaque
+pixel vient de sa noirceur dans le cartouche d'origine, la couleur est posée à
+blanc : le blanc du carton tombe à zéro, les traits gardent leur anticrénelage,
+et il n'y a ni halo ni bord dur. Une inversion de couleurs aurait rendu tout le
+carton opaque.
+
+Le fichier est recadré au plus près de l'encre, 98 x 79 au lieu de 156 x 118.
+C'est ce qui fait que la taille affichée dit enfin la taille du dessin : le
+cartouche portait 30 px de marge blanche de chaque côté, ce qui est précisément
+ce qui le faisait paraître disproportionné à côté de deux pictogrammes de 38 px.
+60 px dans la bande de réassurance et dans la séquence produit, 52 sur téléphone.
+
+`made-in-luxembourg.png`, au cartouche blanc, reste dans git : c'est la SOURCE de
+celui-ci. Il sort de la publication, plus aucune page ne le cite.
+
+### Microsoft Authenticator est posé, TestComplete n'a pas de symbole
+
+**L'ICÔNE D'APPLICATION EST PUBLIÉE PAR L'ÉDITEUR SUR LES MAGASINS**, même quand
+la marque ne l'est pas. Microsoft a fait retirer ses marques des collections
+publiques et ne les diffuse que par son centre de marque, ce qui m'avait fait
+renoncer le matin même ; sa fiche App Store, elle, sert l'icône en 256 px. C'est
+exactement la source de ses deux voisines de colonne, LuxTrust et itsme, et c'est
+la bonne pour une colonne qui liste des applications. Réduite à 96 px en deux
+passes de moitié, pour ne pas créneler.
+
+**TESTCOMPLETE N'A PAS DE SYMBOLE, ET CE N'EST PAS UN OUBLI.** Cherché sur toutes
+les propriétés de SmartBear : page produit, portail de documentation, CDN de
+marque, conventions de nommage de leurs autres produits (`CBT_Full_CLR.svg`,
+`LN_Full_CLR.svg`, etc., mais aucun `TC_*`). Le seul fichier qui existe est le
+LOGOTYPE en lettres, `viewBox` 554 x 108, rapport 5:1 ; réduit à 22 px il est
+illisible et il redit le nom écrit juste à côté. TestComplete n'étant pas une
+application mobile, il n'y a pas d'icône équivalente à aller chercher. Douze
+marques sur treize ; la case garde son emplacement réservé.
+
+### Le Q du logo tombe enfin sur la gouttière
+
+« Enlever la marge à gauche du logo, le Q doit être justifié au texte. »
+
+**LA MARGE N'ÉTAIT PAS DANS LE CSS, ELLE ÉTAIT CUITE DANS LE FICHIER.**
+`logo-qbot-neg.png` fait 300 x 84 et son encre va de x=30 à x=269 : 30 px de vide
+de chaque côté, soit 10,4 px une fois rendu à 29 px de haut. Le CSS tirait bien
+en arrière le complément d'espace de protection de la charte (2,4 px) mais pas ce
+vide-là. Le Q partait donc à 7,9 px du bord du conteneur quand le paragraphe en
+dessous partait à 0.
+
+Le vide du fichier devient un jeton à part, `--logo-bleed-x`, RELEVÉ et non
+choisi. Il n'a rien à voir avec l'espace de protection : l'un est une propriété
+du fichier, l'autre une règle de charte, et les confondre est ce qui a produit le
+défaut. **Si le fichier du logo change, cette valeur se remesure.** La barre de
+navigation portait la même construction et le même écart, elle est recalée aussi.
+
+Le décalage VERTICAL existe aussi (4,1 px de plus que le rythme voulu, même
+cause) et n'est pas repris : le retour porte sur la gauche.
+
+### Ce qui reste à demander au client
+
+- **le label Made in Luxembourg en vectoriel** : le seul exemplaire dont nous
+  disposions vient de sa brochure, 156 px de large en pixels réels ;
+- **un fichier de marque pour TestComplete**, à obtenir chez SmartBear : il n'en
+  existe aucun de public.
