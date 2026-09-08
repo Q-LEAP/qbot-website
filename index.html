@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=3340a2ca">
+  <link rel="stylesheet" href="assets/css/style.css?v=92789236">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -244,9 +244,9 @@
 <section class="section" aria-labelledby="probleme-title">
   <div class="container">
     <div class="section-header">
-      <span class="section-label">Le problème</span>
-      <h2 class="section-title" id="probleme-title">La double authentification arrête vos tests</h2>
-      <p class="section-subtitle">Une campagne sait tout automatiser, sauf la validation sur smartphone. Il faut donc quelqu'un devant l'écran, et tant qu'il n'est pas là, le test attend.</p>
+      <span class="section-label">Quand la 2FA bloque vos tests</span>
+      <h2 class="section-title" id="probleme-title">Vos tests sont automatisés. Jusqu'à la 2FA.</h2>
+      <p class="section-subtitle">Une campagne sait tout automatiser, sauf la validation sur smartphone. Il faut alors une intervention humaine, et tant qu'elle n'a pas lieu, le test reste bloqué.</p>
     </div>
     <div class="vsflow">
       <div class="vsflow__lane vsflow__lane--sans">
@@ -255,10 +255,10 @@
           <li class="vsflow__step" role="listitem">Test automatisé</li>
           <li class="vsflow__step" role="listitem">Étape 2FA</li>
           <li class="vsflow__step vsflow__step--stop" role="listitem">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.4"/><path d="M4.6 20.2a7.4 7.4 0 0 1 14.8 0"/></svg>
-            Intervention humaine
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18.3A2 2 0 0 0 3.5 21.3h17a2 2 0 0 0 1.7-3l-8.5-14.4a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13.5"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Intervention humaine requise
           </li>
-          <li class="vsflow__step" role="listitem">Suite du test</li>
+          <li class="vsflow__step vsflow__step--attente" role="listitem">Test en attente</li>
         </ol>
       </div>
       <div class="vsflow__lane vsflow__lane--avec">
