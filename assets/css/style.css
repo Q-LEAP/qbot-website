@@ -6375,6 +6375,20 @@ label > input[type="checkbox"] {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
+
+/* La réponse à la seule question que se pose un profil technique devant cette
+   section : « est-ce que ça marche chez nous ? ». Elle était noyée en fin de
+   chapeau, au-dessus de la grille, donc lue avant la liste et oubliée après.
+   Posée SOUS la grille, elle arrive au moment où le lecteur vient de constater
+   que son outil n'y figure pas. Demandé le 2026-09-08 : « qu'un profil
+   technique comprenne très rapidement : oui, Q-Bot peut fonctionner dans notre
+   environnement ». */
+.compat__note {
+  margin: 28px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--teal);
+  color: var(--gray);
+}
 .compat__item {
   position: relative;
   display: flex;

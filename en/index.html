@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=66f2ef20">
+  <link rel="stylesheet" href="../assets/css/style.css?v=33626671">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -690,32 +690,36 @@
     <div class="section-header">
       <span class="section-label">Compatibility</span>
       <h2 class="section-title" id="compat-home-title">Works with your tools and your 2FA apps</h2>
-      <p class="section-subtitle">Compatible with the 2FA apps installed on your smartphone, including LuxTrust Mobile, itsme, Microsoft Authenticator and Google Authenticator. On the pipeline side, any tool that can make an HTTP call can drive <span class="nb">Q-Bot</span>.</p>
+      <p class="section-subtitle"><span class="nb">Q-Bot</span> drives the 2FA apps on an Android smartphone, and is triggered from the test pipeline you already use.</p>
     </div>
     <div class="tools__grid" style="gap:48px;">
       <div>
         <h3 class="compat__head">2FA apps</h3>
         <ul class="compat" role="list">
           <li class="compat__item" role="listitem">LuxTrust Mobile</li>
-          <li class="compat__item" role="listitem">itsme</li>
           <li class="compat__item" role="listitem">Microsoft Authenticator</li>
           <li class="compat__item" role="listitem">Google Authenticator</li>
+          <li class="compat__item" role="listitem">itsme</li>
+          <li class="compat__item compat__item--open" role="listitem">Any Android 2FA app</li>
         </ul>
       </div>
       <div>
-        <h3 class="compat__head">Automation tools</h3>
+        <h3 class="compat__head">Testing tools</h3>
         <ul class="compat" role="list">
           <li class="compat__item" role="listitem">Selenium</li>
           <li class="compat__item" role="listitem">Cypress</li>
+          <li class="compat__item" role="listitem">Appium</li>
           <li class="compat__item" role="listitem">Playwright</li>
           <li class="compat__item" role="listitem">Robot Framework</li>
           <li class="compat__item" role="listitem">Katalon</li>
-          <li class="compat__item" role="listitem">Appium</li>
+          <li class="compat__item" role="listitem">TestComplete</li>
           <li class="compat__item" role="listitem">Jenkins CI</li>
           <li class="compat__item" role="listitem">GitLab CI</li>
+          <li class="compat__item compat__item--open" role="listitem">REST API</li>
         </ul>
       </div>
     </div>
+    <p class="compat__note">Your tool is not on the list? If it can send an HTTP call, it can trigger <span class="nb">Q-Bot</span>.</p>
   </div>
 </section>
 
