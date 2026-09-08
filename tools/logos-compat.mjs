@@ -19,14 +19,17 @@
  * qui aligne les noms et ce qui fait que l'arrivée des marques manquantes ne
  * déplacera rien.
  *
- * SOURCE DES FICHIERS : `tools/logos/<slug>.svg`, un fichier par marque, un
- * seul `<path>` en `viewBox` 24×24 et sans couleur écrite, donc héritant de
- * `currentColor`. Le dossier `tools/` n'est pas publié (cf. `_config.yml`) :
- * seul le tracé est recopié dans le HTML, il n'y a aucune requête de plus.
+ * SOURCE DES FICHIERS : `tools/logos/<slug>.svg`, un fichier par marque, tel
+ * qu'il a été récupéré à sa source officielle. Le script le NORMALISE au
+ * moment de la pose (voir plus bas) : le fichier reste donc intact et son
+ * origine reste vérifiable. Le dossier `tools/` n'est pas publié (cf.
+ * `_config.yml`) et seules les formes sont recopiées dans le HTML, il n'y a
+ * aucune requête de plus.
  *
  * POUR AJOUTER UNE MARQUE MANQUANTE : déposer son SVG dans `tools/logos/`,
- * renseigner son slug dans MARQUES ci-dessous, relancer. Le script vérifie que
- * le fichier existe et refuse de tourner s'il manque.
+ * renseigner son slug dans MARQUES ci-dessous, relancer. Le script refuse de
+ * tourner si le fichier annoncé manque, s'il n'a pas de `viewBox`, ou s'il
+ * contient du texte ou une image matricielle.
  *
  * USAGE
  *     node tools/logos-compat.mjs            # simulation
@@ -57,7 +60,7 @@ const MARQUES = {
   'Appium': 'appium',
   'Playwright': 'playwright',
   'Robot Framework': 'robotframework',
-  'Katalon': null,                  // à fournir
+  'Katalon': 'katalon',            // symbole officiel, katalon.info
   'TestComplete': null,             // à fournir
   'Jenkins CI': 'jenkins',
   'GitLab CI': 'gitlab',
@@ -70,29 +73,61 @@ const PAGES = [
   'en/index.html', 'en/technical-specs.html', 'en/order.html',
 ];
 
-/* On extrait le seul `d` du fichier. Un SVG à plusieurs formes ne passerait pas
-   ce contrôle, et c'est voulu : le rendu monochrome suppose un tracé unique. */
-function trace(slug) {
+/* NORMALISATION D'UN LOGO EN MARQUE MONOCHROME.
+ *
+ * Les fichiers officiels ne se ressemblent pas : la collection de marques donne
+ * un tracé unique en `viewBox` 24×24 sans couleur, un éditeur donne deux formes
+ * en 145×145 avec des `fill` en dur, un autre met ses couleurs dans un bloc
+ * `<style>` et des classes. On ramène tout au même dénominateur : le `viewBox`
+ * d'origine est CONSERVÉ (le forcer déformerait la marque) et toute couleur est
+ * retirée pour que `currentColor` s'applique.
+ *
+ * CE QUI EST REFUSÉ, et c'est volontaire : un logo qui contient du texte ou une
+ * image matricielle. Un `<text>` ne se lit pas à 22 px et dépend d'une police
+ * absente ; un `<image>` n'est pas vectoriel. Dans les deux cas la marque n'est
+ * pas utilisable à cette taille, mieux vaut le dire que le poser quand même.
+ */
+function marque(slug) {
   const f = path.join(LOGOS, slug + '.svg');
   if (!fs.existsSync(f)) throw new Error('logo absent : ' + f);
-  const s = fs.readFileSync(f, 'utf8');
-  const paths = [...s.matchAll(/<path[^>]*\sd="([^"]+)"/g)].map((m) => m[1]);
-  if (paths.length !== 1) throw new Error(slug + ' : ' + paths.length + ' tracés, un seul attendu');
-  if (!/viewBox="0 0 24 24"/.test(s)) throw new Error(slug + " : viewBox inattendu");
-  if (/fill="(?!none)/.test(s)) throw new Error(slug + ' : couleur écrite en dur, elle empêcherait currentColor');
-  return paths[0];
+  let s = fs.readFileSync(f, 'utf8');
+
+  const vb = (s.match(/viewBox="([^"]+)"/) || [])[1];
+  if (!vb) throw new Error(slug + ' : pas de viewBox, la marque ne peut pas être mise à l\'échelle');
+  if (/<text\b/i.test(s)) throw new Error(slug + ' : contient du texte, illisible à 22 px');
+  if (/<image\b/i.test(s)) throw new Error(slug + ' : contient une image matricielle, non vectoriel');
+
+  // le corps, sans l'enveloppe <svg>, sans les blocs <style> ni <defs>
+  let corps = s.replace(/^[\s\S]*?<svg[^>]*>/i, '').replace(/<\/svg>[\s\S]*$/i, '');
+  corps = corps.replace(/<defs\b[\s\S]*?<\/defs>/gi, '').replace(/<style\b[\s\S]*?<\/style>/gi, '');
+  /* LE <title> DU FICHIER SOURCE EST RETIRÉ, et ce n'est pas cosmétique : il
+     porte le nom de la marque, qui est DÉJÀ le texte de la case. Laissé en
+     place, il double ce nom dans `textContent` (« SeleniumSelenium »), ce que
+     verra toute sonde qui lit le texte rendu, et il fait apparaître une bulle
+     d'aide au survol du logo. Un lecteur d'écran ne l'entend pas, l'emplacement
+     étant `aria-hidden`, mais ce n'est pas une raison pour le garder. */
+  corps = corps.replace(/<title\b[\s\S]*?<\/title>/gi, '');
+  // toute couleur retirée : attributs de présentation, styles en ligne, classes
+  corps = corps.replace(/\s(?:fill|stroke)="(?!none)[^"]*"/gi, '');
+  corps = corps.replace(/\s(?:class|style|id)="[^"]*"/gi, '');
+  corps = corps.replace(/\s(?:data-name)="[^"]*"/gi, '');
+  corps = corps.replace(/\s+/g, ' ').trim();
+
+  const formes = (corps.match(/<(path|circle|rect|polygon|ellipse|polyline)\b/gi) || []).length;
+  if (!formes) throw new Error(slug + ' : aucune forme vectorielle trouvée');
+  return { vb, corps, formes };
 }
 
-const TRACES = {};
+const MARQUAGES = {};
 for (const [nom, slug] of Object.entries(MARQUES)) {
-  if (slug) TRACES[nom] = trace(slug);
+  if (slug) MARQUAGES[nom] = marque(slug);
 }
 
 function emplacement(nom) {
-  const d = TRACES[nom];
-  return d
-    ? '<span class="compat__logo" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'
-      + d + '"/></svg></span>'
+  const m = MARQUAGES[nom];
+  return m
+    ? '<span class="compat__logo" aria-hidden="true"><svg viewBox="' + m.vb
+      + '" fill="currentColor" aria-hidden="true">' + m.corps + '</svg></span>'
     : '<span class="compat__logo" aria-hidden="true"></span>';
 }
 
@@ -125,6 +160,7 @@ if (inconnues.size) {
 const manquantes = Object.entries(MARQUES)
   .filter(([n, s]) => s === null && !/Toute app|Any Android|API REST|REST API/.test(n))
   .map(([n]) => n);
-console.log(`\n${total} cases, ${Object.keys(TRACES).length} marques posées.`);
+console.log(`\n${total} cases, ${Object.keys(MARQUAGES).length} marques posées `
+  + `(${Object.entries(MARQUAGES).map(([n, m]) => n + ' ' + m.formes + 'f').join(', ')}).`);
 console.log('En attente de fichier : ' + manquantes.join(', '));
 if (!ecrire) console.log('\nSimulation. Relancer avec --ecrire.');

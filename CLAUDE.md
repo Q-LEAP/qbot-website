@@ -8502,13 +8502,13 @@ l'allure de la section. **Réserve à connaître** : certaines chartes de marque
 interdisent explicitement de recolorer un logo. L'accord obtenu par le client
 couvre cet usage, sinon il faut repasser en couleurs officielles.
 
-**HUIT MARQUES SUR TREIZE SEULEMENT SONT DISPONIBLES**, et l'absence de trois
+**NEUF MARQUES SUR TREIZE**, et l'absence de trois
 d'entre elles n'est pas un trou du catalogue :
 
 | | Posées | En attente du fichier client |
 |---|---|---|
 | Applications 2FA | Google Authenticator | LuxTrust Mobile, itsme, Microsoft Authenticator |
-| Outils de test | Selenium, Cypress, Appium, Playwright, Robot Framework, Jenkins, GitLab | Katalon, TestComplete |
+| Outils de test | Selenium, Cypress, Appium, Playwright, Robot Framework, Katalon, Jenkins, GitLab | TestComplete |
 
 **MICROSOFT A FAIT RETIRER SES MARQUES** de la collection employée. Ce n'est pas
 un oubli : leurs logos ne s'obtiennent que par leur centre de marque, avec
@@ -8537,3 +8537,36 @@ Les tracés sont **recopiés dans le HTML**, pas chargés : `tools/` n'est pas
 publié, il n'y a aucune requête de plus, et 12,2 Ko de tracé par page pour huit
 marques. Un fichier de sprite aurait été plus léger mais ajoutait une requête
 et casse en `file://`.
+
+**QUATRE MARQUES RESTENT INTROUVABLES À LEUR SOURCE OFFICIELLE**, cherchées le
+2026-09-08 sur demande du client (« je te laisse les prendre sur internet ») :
+
+- **LuxTrust** ne publie qu'un LOGOTYPE en lettres (`viewBox` 699 × 63).
+  Réduit à 22 px il est illisible, et il redit le nom écrit juste à côté. Un
+  logotype n'est pas une icône ;
+- **itsme** n'expose aucun SVG de marque : son site sert du matriciel et son
+  portail de marque ne rend rien d'exploitable ;
+- **TestComplete** : SmartBear publie les logos des outils avec lesquels il
+  s'intègre, pas une marque de son propre produit en SVG ;
+- **Microsoft Authenticator** n'a pas été cherché ailleurs qu'à sa source :
+  Microsoft a fait retirer ses marques des collections publiques, les prendre
+  sur un agrégateur irait contre une volonté explicitement exprimée.
+
+**KATALON, LUI, A ÉTÉ TROUVÉ** : symbole officiel sur `katalon.info`, deux
+formes en `viewBox` 145 × 145. C'est ce qui a fait assouplir le générateur, qui
+n'acceptait qu'un tracé unique en 24 × 24.
+
+**LE FICHIER SOURCE RESTE INTACT, LA NORMALISATION SE FAIT À LA POSE.** Le
+`viewBox` d'origine est conservé (le forcer déformerait la marque) et les
+couleurs sont retirées sous toutes leurs formes : attributs de présentation,
+styles en ligne, et classes renvoyant à un bloc `<style>`, que LuxTrust utilise.
+Le script refuse un logo contenant du texte ou une image matricielle : dans les
+deux cas la marque n'est pas utilisable à 22 px, et mieux vaut le dire que la
+poser quand même.
+
+**LE `<title>` DES FICHIERS SOURCES EST RETIRÉ**, et ce n'est pas cosmétique :
+il porte le nom de la marque, qui est déjà le texte de la case. Laissé en place,
+il donnait « SeleniumSelenium » dans `textContent`, ce que voit toute sonde qui
+lit le texte rendu, et une bulle d'aide au survol. Un lecteur d'écran ne
+l'entendait pas, l'emplacement étant `aria-hidden`, mais ce n'était pas une
+raison de le garder.
