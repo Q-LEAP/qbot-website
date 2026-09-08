@@ -67,7 +67,13 @@ const MARQUES = {
      `assets/img/brands/` et non dans `tools/logos/`, puisqu'elles sont servies. */
   'LuxTrust Mobile': { image: 'luxtrust.png', plein: true },
   'itsme': { image: 'itsme.png', plein: true },
-  'Microsoft Authenticator': null,  // à fournir, Microsoft ne diffuse ses marques que par son centre de marque
+  /* Microsoft a fait retirer ses marques des collections publiques et ne les
+     diffuse que par son centre de marque, mais l'ICÔNE DE L'APPLICATION est
+     publiée par l'éditeur lui-même sur les magasins : celle-ci vient de la
+     fiche App Store, en 256 px, réduite à 96. C'est exactement la même source
+     que ses deux voisines, et c'est la bonne pour une colonne qui liste des
+     applications. */
+  'Microsoft Authenticator': { image: 'microsoft-authenticator.png', plein: true },
   'Google Authenticator': { slug: 'googleauthenticator', hex: '#4285F4' },
   'Toute app 2FA Android': null,    // pas une marque
   'Any Android 2FA app': null,      // pas une marque
@@ -78,7 +84,15 @@ const MARQUES = {
   'Playwright': { slug: 'playwright', hex: '#2EAD33' },
   'Robot Framework': { slug: 'robotframework', hex: '#000000' },
   'Katalon': { slug: 'katalon', hex: null },  // symbole officiel bicolore, katalon.info
-  'TestComplete': null,             // à fournir
+  /* TESTCOMPLETE N'A PAS DE SYMBOLE, ET CE N'EST PAS UN OUBLI. Cherché le
+     2026-09-08 sur toutes les propriétés de SmartBear : la page produit, le
+     portail de documentation et le CDN de marque. Le seul fichier qui existe
+     est le LOGOTYPE en lettres, `viewBox` 554 x 108, soit un rapport de 5:1 ;
+     réduit à 22 px il est illisible et il redit le nom écrit juste à côté. Un
+     logotype n'est pas une icône, c'est le même arbitrage que pour LuxTrust,
+     dont l'icône d'application a fini par servir. TestComplete n'étant pas une
+     application mobile, il n'y a pas d'icône équivalente à aller chercher. */
+  'TestComplete': null,
   'Jenkins CI': { slug: 'jenkins', hex: '#D24939' },
   'GitLab CI': { slug: 'gitlab', hex: '#FC6D26' },
   'API REST': null,                 // pas une marque
