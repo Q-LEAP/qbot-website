@@ -8599,3 +8599,138 @@ il donnait « SeleniumSelenium » dans `textContent`, ce que voit toute sonde qu
 lit le texte rendu, et une bulle d'aide au survol. Un lecteur d'écran ne
 l'entendait pas, l'emplacement étant `aria-hidden`, mais ce n'était pas une
 raison de le garder.
+
+## Second retour sur l'accueil : le doc2 (2026-09-08)
+
+`Documentations/doc2.pdf`, sept points, reçus dans la foulée du retour RH du même
+jour et traités par lots, un lot par commit. Ils portent tous sur la homepage,
+dans les deux langues.
+
+Ce qui a changé, en une phrase par point :
+
+1. **le bloc Problème montre le blocage** au lieu de le décrire (cases plus
+   contrastées, « Test en attente » au bout de la chaîne sans Q-Bot, liaison
+   rompue avant lui) ;
+2. **« La solution » et « Comment ça marche » n'en font plus qu'une** ; le schéma
+   iconographique `.flow2fa` part avec la section absorbée, et ses 172 lignes de
+   CSS avec lui ;
+3. **le film redevient une section**, avec son titre, son texte et un bouton
+   « Voir la démo » qui ouvre la même modale que la vignette ;
+4. **« Configurez un scénario sans coder »** est une section à part, qui MONTRE
+   l'éditeur au lieu de le raconter ;
+5. **la séquence produit** dit « 100 % local » et « 20 cm », et porte le label
+   Made in Luxembourg à la place de son dernier chiffre-clé ;
+6. **les avantages passent de trois à quatre**, en grille deux par deux, et
+   perdent leur bouton ;
+7. **la bande de réassurance** perd « Un produit Q-Leap. » et son premier
+   pictogramme devient le label.
+
+### Le label Made in Luxembourg, et d'où il sort
+
+**IL N'Y A PAS DE FICHIER DE MARQUE DANS LE DÉPÔT, ET IL NE FAUT PAS EN CHERCHER
+UN SUR LE WEB** : « Made in Luxembourg » est un label officiel, sous licence. Le
+seul exemplaire dont nous disposions légitimement est celui que le client publie
+lui-même, dans `Documentations/Brochure Q-Bot-FR.pdf`, dont `qbot-photo-dock.jpg`
+est déjà une découpe. Le label y occupe **156 × 118 pixels réels** : la brochure
+est aplatie à 300 points par pouce, il n'y a rien de plus à en tirer, et un
+agrandissement n'ajouterait que du vide. D'où 124 px dans la séquence produit et
+102 px dans la bande de réassurance, et pas davantage.
+
+**À DEMANDER AU CLIENT : le label en vectoriel.** C'est la seule chose qui le
+rendra net sur un écran à forte densité.
+
+Le découpage lui-même : bornes du cartouche mesurées par comptage de pixels
+clairs par ligne et par colonne (un simple seuil sur du blanc ne suffit pas, le
+fond de la brochure est déjà très clair et le bruit JPEG casse les zones unies),
+puis inondation depuis les quatre coins pour rendre transparent tout ce qui n'est
+pas le cartouche, ce qui préserve ses angles arrondis.
+
+**AUCUN POSTE DE CETTE MACHINE N'A PYTHON NI BIBLIOTHÈQUE D'IMAGES.** Le
+découpage est fait par le **canevas du navigateur**, seul décodeur JPEG
+disponible, et un passe-plat local de vingt lignes (POST de base64 vers un petit
+serveur Node) écrit le résultat sur le disque. À refaire de la même façon si un
+autre découpage est nécessaire ; le lire en sortie de tuyau est impossible, la
+sortie du navigateur d'analyse filtre les URL de données.
+
+### Le label coûtait 70 px de scène 3D sur téléphone
+
+Empilé sous le texte du pas 4, il faisait de cette carte la plus haute des
+quatre. Or `scrolly.js` mesure la plus haute et RETIRE sa hauteur à la scène :
+mesuré, la scène tombait de 414 à **344 px** sur un iPhone 14, alors que la passe
+mobile du 2026-08-19 s'était battue pour ces pixels-là.
+
+Sous 900 px, le label partage donc sa rangée avec l'appel à l'action, par une
+grille à deux colonnes posée sur la carte. Relevé après, à 390 et à 375 px : la
+carte du pas 4 mesure 322 px contre 332 pour la plus haute, donc elle ne gouverne
+plus rien, et la zone de texte est inchangée. Sans `:has()` tout s'empile : plus
+long, jamais cassé.
+
+**La leçon est générale sur cette séquence** : tout ce qu'on ajoute dans une
+carte se paie en hauteur de scène 3D sur téléphone, et le prix ne se voit pas au
+bureau.
+
+### La variante à deux colonnes double son sélecteur
+
+`.features__grid--2` écrit une seule fois pèse (0,1,0), c'est-à-dire exactement
+le poids des deux requêtes média génériques écrites plus loin dans la feuille,
+qui rabattent `.features__grid` à 2 puis à 1 colonne : à poids égal l'ordre
+tranche, et la grille serait tombée à une colonne dès 768 px. Doublé, il pèse
+(0,2,0) et gouverne sa grille, il doit donc porter lui-même son rabattement.
+C'est exactement le piège déjà documenté pour `.features__grid--3`, retombé à
+l'identique quatre mois plus tard.
+
+Et deux colonnes exactement, pas `auto-fit` : à quatre cartes courtes, `auto-fit`
+en poserait quatre de front sur un écran large, et la lecture par paires que la
+grille 2 × 2 met en scène disparaîtrait.
+
+### L'insertion d'une section retourne toute l'alternance des fonds
+
+Les dix sections de l'accueil alternaient strictement fond de page et fond gris.
+En insérer une au milieu met deux fonds identiques côte à côte pour toutes les
+suivantes. Le script qui pose la section retourne donc la classe des six
+sections qui la suivent, et le contrôle porte sur l'alternance, pas sur la
+section ajoutée.
+
+Détail qui a fait échouer le premier essai : la section des atouts porte un `id`
+en plus de sa classe, donc un motif qui suppose l'ordre et la liste des attributs
+ne la trouve pas. On ne remplace que la classe, en gardant le reste tel quel.
+
+### LE NAVIGATEUR D'ANALYSE NE FAIT TOURNER AUCUN `requestAnimationFrame`
+
+**Nouveau piège de mesure, et il ressemble trait pour trait au vrai défaut « un
+bloc reste invisible ».** Le balayage des révélations a annoncé **23 éléments
+sous 0,9 d'opacité** sur un accueil parfaitement sain. Mesuré ensuite :
+`document.visibilityState` vaut `hidden` sur TOUS les onglets pilotés (la fenêtre
+Chrome est au second plan sur le poste du client), et dans un onglet masqué
+Chrome **ne déclenche pas une seule image d'animation** : une promesse sur
+`requestAnimationFrame` n'est jamais résolue, mesuré à 36 secondes d'attente sans
+un seul appel. Or le module 4 passe par une double image pour poser
+`.is-visible`. La sonde mesurait donc l'économie d'énergie du navigateur.
+
+**Le contrôle qui vaut est celui-ci** : prendre une capture d'écran, ce qui force
+l'onglet à peindre, PUIS lire les opacités des éléments en vue dans le même lot
+d'appels. Relevé de cette façon sur les quatre écrans neufs des deux accueils :
+**opacité 1 partout**. Une capture seule ne suffit pas non plus à conclure, il
+faut la lecture qui la suit.
+
+À ajouter à la famille déjà connue (le pas de défilement, le temps de repos, le
+mode logiciel de SwiftShader) : **une sonde d'animation doit d'abord prouver que
+l'animation tourne**.
+
+### Contrôles
+
+75 pages, 411 liens et 183 ressources : **0 cible absente**. Un seul `h1` par
+page, aucun titre au-delà de 62 caractères, **0 cadratin et 0 emoji** hors des
+maquettes fournies par le client sous `website 3/`, qui ne sont pas publiées.
+Les onze sections des deux accueils dans le même ordre, alternance des fonds
+stricte, 0 débordement horizontal, 0 image cassée, 0 erreur console. Grille des
+avantages relevée à `680px 680px`, label à x1,00 d'agrandissement sur un écran de
+densité 2.
+
+### Ce qui reste à demander au client
+
+- **le label Made in Luxembourg en vectoriel** (cf. ci-dessus) ;
+- **les marques Microsoft Authenticator et TestComplete**, toujours absentes de
+  la grille de compatibilité : onze cases sur treize portent leur logo ;
+- **les visuels de l'interface** au-delà des trois captures livrées, s'il en
+  veut d'autres ; la maquette n'est plus utilisée nulle part sur l'accueil.
