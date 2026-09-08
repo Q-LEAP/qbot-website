@@ -8186,3 +8186,156 @@ visible, légende présente, aucun attribut `hidden` servi. Au clavier : flèche
 seul arrêt de tabulation dans la barre. `sync-faq-jsonld.py` idempotent (40 entrées, 0 recalée),
 `maj-nav-booking.py` à 17 « déjà à jour », `verif-redirections.py` 54 relais 0 défaut, et **les
 deux versionneurs d'actifs d'accord à 0 page à mettre à jour** après la passe.
+
+## La migration est faite : q-bot.eu est servi par GitHub Pages (2026-09-08)
+
+Le jour J, déroulé en une séance. Le site répond sur `https://q-bot.eu/`, les verrous
+d'indexation sont levés, la Search Console est en place. Ce qui suit est ce qu'il faut savoir
+si la question se repose, sur ce domaine ou sur un autre.
+
+### LE DNS N'ÉTAIT PAS CHEZ OVH, ET C'EST LA DÉCOUVERTE QUI A TOUT CONDITIONNÉ
+
+`q-bot.eu` et `q-bot.lu` sont **achetés** chez OVH mais étaient **délégués à
+`ns1/ns2/ns3.wordpress.com`**. Toute la zone vivait donc chez WordPress.com, y compris les
+enregistrements A. Conséquence qu'il faut avoir en tête avant toute migration de ce genre :
+**supprimer le WordPress sans rapatrier la zone d'abord aurait rendu le domaine
+irrésolvable**, pas seulement le site indisponible.
+
+Aucun MX sur ces deux domaines, donc aucune boîte à préserver : les adresses du site sont
+`@q-leap.eu`, un autre domaine, hors périmètre.
+
+### L'ordre suivi, et pourquoi
+
+1. **domaine personnalisé posé sur GitHub Pages d'abord**, par `gh api`. Le site en ligne
+   (WordPress) n'est pas touché, et le jour où le DNS bascule tout fonctionne immédiatement.
+   L'ordre inverse (A vers GitHub avant que GitHub connaisse le nom) donne une vraie coupure,
+   GitHub répondant 404 sur un nom qu'il ne sert pas ;
+2. **zones OVH préparées pendant qu'elles dorment.** Tant que les serveurs de noms pointent
+   ailleurs, la zone OVH n'est pas autoritaire : on peut la réécrire sans aucun effet en ligne.
+   C'est la fenêtre où l'on travaille sans risque ;
+3. **bascule des serveurs de noms**, qui est le seul geste irréversible à l'échelle de la
+   minute ;
+4. vérifications, puis **levée des verrous**, puis certificat, puis Search Console.
+
+**LE CONTRÔLE AVANT BASCULE QU'IL FAUT REFAIRE À CHAQUE FOIS**, parce qu'il coûte dix secondes
+et vérifie la seule chose qu'on ne peut pas deviner, à savoir que GitHub sert bien le site
+sous le VRAI nom d'hôte :
+
+    curl -s -o /dev/null -w '%{http_code}' --resolve q-bot.eu:80:185.199.108.153 http://q-bot.eu/
+
+On force la résolution vers les IP de GitHub sans toucher au DNS. Relevé ce jour-là : 200 sur
+les pages, 404 sur `CLAUDE.md`, `tools/` et `Documentations/`, donc l'exclusion `_config.yml`
+validée elle aussi, avant la bascule et non après.
+
+**Le DNSSEC se vérifie AVANT**, et c'était sain ici : aucun DS au registre pour les deux
+domaines (une requête DS qui renvoie le SOA du parent est une réponse négative). Un DS publié
+pour les clés de l'ancien hébergeur aurait rendu le domaine irrésolvable pour tout résolveur
+qui valide, ce qui est le pire mode de panne possible : invisible depuis un poste qui ne valide
+pas.
+
+### La zone, et ce qu'on garde
+
+Quatre `A` (`185.199.108-111.153`) et quatre `AAAA` (`2606:50c0:800{0,1,2,3}::153`) sur l'apex,
+`www` en `CNAME` vers `q-leap.github.io.`. Les MX et le SPF OVH sont **conservés** : ils ne
+servent à rien aujourd'hui mais ne coûtent rien, et les retirer serait une décision de plus.
+Les reliquats de parking partent (`ftp`, les TXT `"1|www.q-bot.eu"` et `"3|welcome"`, les A
+vers `213.186.33.5`).
+
+Le mode textuel d'OVH est le bon outil **tant que la zone dort** : il est atomique et
+relisible. Une fois la zone active, on passe par le formulaire d'ajout d'une entrée, qui ne
+touche qu'un enregistrement. La liste affichée sous le formulaire reste en cache après un
+import : c'est le mode textuel rouvert, ou le numéro de série SOA, qui dit la vérité.
+
+### `q-bot.lu` : une seule règle remplace les deux redirections de parking
+
+`q-bot.lu` **et** `www.q-bot.lu` en redirection visible permanente (301) vers
+`https://q-bot.eu/`, ce qui reproduit le comportement du WordPress. L'assistant OVH n'offre
+aucune option SSL, ce qui m'a fait annoncer une régression : **c'était faux**,
+`https://q-bot.lu/` fonctionne. Il reste que `https://www.q-bot.lu/` n'a pas de certificat
+(poignée de main TLS refusée) alors que le `http` redirige bien. Point ouvert, mineur, sur le
+`www` d'un domaine de protection de marque.
+
+### LE CERTIFICAT ÉTAIT BLOQUÉ, PAS LENT
+
+GitHub annonce « jusqu'à une heure ». Au bout de 29 minutes, l'API ne montrait **aucun objet
+`https_certificate`**, ce qui n'est pas de la lenteur mais l'absence de demande. Causes écartées
+une par une avant d'agir : A et AAAA corrects et visibles depuis plusieurs résolveurs publics,
+**aucun CAA** qui interdirait Let's Encrypt, `pending_domain_unverified_at` nul.
+
+Le remède est de **retirer puis remettre le domaine personnalisé**, les deux appels enchaînés
+pour réduire la fenêtre où le nom n'est pas servi :
+
+    echo '{"cname":null}'          | gh api --method PUT repos/Q-LEAP/qbot-website/pages --input -
+    echo '{"cname":"q-bot.eu"}'    | gh api --method PUT repos/Q-LEAP/qbot-website/pages --input -
+
+Certificat `approved` en moins de deux minutes ensuite, couvrant `q-bot.eu` et `www.q-bot.eu`.
+`https_enforced` posé dans la foulée. À savoir : chaque pose du domaine fait commiter un fichier
+`CNAME` par GitHub sur `main`, donc penser à `git pull` après.
+
+**Et poser un domaine personnalisé fait rediriger `<org>.github.io/<dépôt>` vers ce domaine en
+301.** On perd donc l'URL de prévisualisation tant que le DNS n'a pas basculé. Ce n'est pas
+grave, mais il faut le dire avant de le faire.
+
+### La levée des verrous
+
+`node tools/go-live.mjs --appliquer` : 16 pages perdent leur balise `noindex` et le commentaire
+qui l'accompagne, `robots.txt` passe à son contenu d'ouverture. `404.html` garde la sienne, une
+page d'erreur ne s'indexe pas.
+
+**`tools/go-live.mjs` est le jumeau Node de `go-live.py`**, écrit parce que ce poste n'a pas de
+Python utilisable. Les deux doivent rester d'accord. Il traite deux pièges du dépôt que la
+version Python n'avait pas à traiter : les fins de ligne **CRLF** (Python lit en mode texte,
+Node lit les octets, donc tout motif s'écrit `\r?\n` et on ne s'ancre jamais en début de ligne
+pour supprimer), et les deux graphies **NFC/NFD** du « É » de PRÉ-LANCEMENT, écrites en
+échappements dans le fichier.
+
+**Défaut relevé au passage** : les deux pages « conditions de vente » ne portaient **aucune**
+balise `noindex`, contrairement à leurs pendants « confidentialité ». Le verrou de pré-lancement
+était incomplet depuis le début. Sans conséquence, `robots.txt` fermait tout, et le problème
+disparaît avec l'ouverture.
+
+### Search Console : propriété de type Domaine, et ce que cela implique
+
+Propriété `sc-domain:q-bot.eu`, validée par un `TXT` dans la zone OVH.
+
+**UNE PROPRIÉTÉ DE TYPE DOMAINE SE VALIDE PAR LE DNS, DONC LA PROPRIÉTÉ EST RÉCUPÉRABLE.**
+Quiconque contrôle la zone peut la revendiquer à tout moment, indépendamment du compte qui l'a
+créée. C'est ce qui a permis de démarrer sans attendre : elle est créée sur
+`lucas.dansac@gmail.com`, un compte **personnel**, parce que l'adresse professionnelle n'est pas
+un compte Google. **C'est un point de passation, pas un verrou** : le jour où un compte
+d'entreprise existe, il suffit de recréer la propriété et de valider avec le même
+enregistrement. Ne pas supprimer le `TXT` de la zone, il maintient la validation.
+
+Le plan du site a été soumis et Google a d'abord répondu « Impossible de récupérer le sitemap ».
+Vérifié plutôt que supposé : `200`, `Content-Type: application/xml`, XML valide, 16 URL,
+`robots.txt` l'annonce. L'explication tient à la fenêtre de vingt minutes pendant laquelle notre
+`robots.txt` a servi `Disallow: /` après la bascule et avant le déploiement de l'ouverture : un
+`robots.txt` est gardé en cache jusqu'à 24 h par Google. Se résout seul.
+
+**ET UN FAIT QUI CHANGE LES ATTENTES** : l'inspection d'URL montre que la **dernière exploration
+de `q-bot.eu` par Google date du 17 août 2026**, et qu'à cette date Googlebot voyait déjà un
+`noindex`. Le WordPress n'était donc pas indexé. Il y a donc probablement **peu de référencement
+acquis à préserver**, ce qui relativise l'urgence des 54 relais sans les rendre inutiles (ils
+protègent les liens entrants, pas seulement le classement). À confirmer quand la Search Console
+aura des données.
+
+### Ce qui reste ouvert
+
+- **`bot.q-leap.eu`**, qui répond 301 vers `q-bot.eu` et vers laquelle pointe la fiche Ministry
+  of Testing. Elle est servie par le WordPress et tombera avec lui. Et **`q-leap.eu` a lui aussi
+  son DNS chez WordPress.com** : le sujet dépasse ce dépôt et touche le domaine de la maison
+  mère. La sortie la plus propre est de faire corriger la fiche pour qu'elle pointe directement
+  sur `https://q-bot.eu/`, ce qui est de toute façon nécessaire puisqu'elle annonce « Automate
+  the use of tokens on 100% of your tests », soit les deux revendications retirées du site ;
+- **la vérification de domaine GitHub** (`TXT _github-pages-challenge-q-leap`), qui empêche
+  qu'un tiers revendique `q-bot.eu` sur ses propres Pages. Elle est réservée aux **propriétaires
+  de l'organisation**, et le compte utilisé ici n'est que membre. À faire par `Desmu59` ou
+  `sylvain-perez` ;
+- **`https://www.q-bot.lu/`**, sans certificat ;
+- **la suppression du WordPress**, qui reste le point de non-retour et n'a pas été faite.
+
+### Note d'outillage
+
+Le gestionnaire OVH et la Search Console **cessent de répondre à l'injection de script** au bout
+d'un moment dans un onglet donné. Le symptôme est un `Script injection timed out` répété qui
+ressemble à une panne. **Ouvrir un onglet neuf suffit**, et c'est plus rapide que de chercher.
