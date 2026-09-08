@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=76c361d8">
+  <link rel="stylesheet" href="assets/css/style.css?v=876a2390">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -335,16 +335,39 @@
       </div>
     </div>
 
-    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
-      <h3 style="margin-bottom:12px;">Créer une automatisation visuellement, sans écrire de code</h3>
-      <p class="section-subtitle" style="margin-bottom:24px;">Les scénarios se construisent dans l'interface web, sur les captures d'écran de l'application à tester. Aucune ligne de code&nbsp;: un scénario, c'est une capture et les endroits où il faut appuyer.</p>
-      <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui en cliquant, et réglez chaque temps d'attente</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le scénario est enregistré dans le boîtier, et réutilisable à volonté</span></li>
-      </ul>
+  </div>
+</section>
+
+<!-- ======= L'ÉDITEUR DE SCÉNARIOS =======
+     Point 4 du retour du 2026-09-08 : le bloc « sans coder » prend son propre
+     titre et montre l'interface. Un seul panneau, donc pas de liste d'onglets :
+     le bandeau porte le nom de l'écran, et il n'y a rien à cliquer. Le texte
+     alternatif est celui de la page Caractéristiques, qui porte la même capture. -->
+<section class="section" aria-labelledby="editeur-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">L'éditeur</span>
+      <h2 class="section-title" id="editeur-title">Configurez un scénario sans coder</h2>
+      <p class="section-subtitle">Prenez une capture de l'application, indiquez les zones à toucher et <span class="nb">Q-Bot</span> rejoue ensuite le parcours automatiquement.</p>
     </div>
+
+    <figure class="appwin">
+      <div class="appwin__win">
+        <div class="appwin__bar">
+          <span class="appwin__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="appwin__nom" lang="en">Scenario Editor</span>
+          <span class="appwin__ver" aria-hidden="true">v2.1.2</span>
+        </div>
+        <div class="appwin__body">
+          <div class="appwin__panel is-active">
+            <img src="assets/img/qbot-ui-scenario.webp?v=426ea24e"
+                 loading="lazy" width="2360" height="1500"
+                 alt="Éditeur de scénarios de l'interface web Q-Bot : le scénario « Homescreen » sélectionné, la palette d'outils (déplacer, appui, supprimer, temps d'attente) et l'écran du téléphone sous test, où l'on voit les applications LuxTrust Mobile, itsme, Google Authenticator et Microsoft Authenticator.">
+          </div>
+        </div>
+      </div>
+      <figcaption class="appwin__cap">L'éditeur de scénarios de <span class="nb">Q-Bot</span>, servi par le boîtier lui-même&nbsp;: le parcours s'écrit sur la capture de l'écran du téléphone, avec ses points d'appui et ses temps d'attente.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -354,7 +377,7 @@
      du produit ». Le bouton porte `data-film-modal` comme la vignette : le
      module 24 vise tous les liens qui le portent, donc les deux ouvrent la même
      modale, et sans JavaScript les deux restent des liens vers le fichier. -->
-<section class="section" aria-labelledby="film-title">
+<section class="section section--gray" aria-labelledby="film-title">
   <div class="container">
     <div class="filmband">
       <div class="filmband__text">
@@ -592,7 +615,7 @@
      Le paragraphe « Q-Bot ne demande ni installation ni configuration » est
      retiré pour la même raison : la configuration des scénarios est justement
      le travail que fait le testeur. -->
-<section class="section section--gray" id="apres-sequence" aria-labelledby="features-title">
+<section class="section" id="apres-sequence" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Avantages</span>
@@ -636,7 +659,7 @@
      milieu d'une phrase sur les métiers. Le périmètre est désormais dit là où
      on le cherche : la section Compatibilité juste en dessous, la fiche
      technique, et la question 17 de la FAQ. -->
-<section class="section" aria-labelledby="audience-title">
+<section class="section section--gray" aria-labelledby="audience-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Cas d'usage</span>
@@ -684,7 +707,7 @@
      CETTE SECTION PORTE L'ANCRE `apres-sequence` depuis le réordonnancement du
      2026-09-07 : c'est elle qui suit la séquence 3D, donc c'est ici que tombe
      le lien d'évitement « passer la séquence ». -->
-<section class="section section--gray" aria-labelledby="compat-home-title">
+<section class="section" aria-labelledby="compat-home-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Compatibilité</span>
@@ -731,7 +754,7 @@
      documents fournis ne décrit d'authentification, d'ACL ni d'isolation
      réseau. Ce qui est documenté, et donc ce qui reste dit : le boîtier est
      auto-hébergé et l'API répond sur le réseau où on l'installe. -->
-<section class="section" aria-labelledby="made-title">
+<section class="section section--gray" aria-labelledby="made-title">
   <div class="container">
     <h2 id="made-title" class="visually-hidden">Ce qui rend <span class="nb">Q-Bot</span> fiable</h2>
     <ul class="trust" role="list">
@@ -753,7 +776,7 @@
 </section>
 
 <!-- ======= CTA FINAL ======= -->
-<section class="section section--gray" aria-labelledby="cta-title">
+<section class="section" aria-labelledby="cta-title">
   <div class="container cta-block">
     <h2 class="section-title" id="cta-title" style="margin-bottom:32px;">Prêt à en finir avec la dernière étape manuelle&nbsp;?</h2>
     <a href="contact.html" class="btn btn--primary btn--lg">Réserver une démo</a>

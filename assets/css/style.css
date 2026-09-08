@@ -5333,6 +5333,23 @@ label > input[type="checkbox"] {
   background: var(--teal);
 }
 
+/* ── UN SEUL ÉCRAN (page d'accueil) ──
+   L'accueil ne montre que l'éditeur de scénarios : il n'y a rien à choisir, donc
+   ni `role="tablist"` ni onglets, sous peine de promettre un comportement qui
+   n'existe pas. Le bandeau porte simplement le nom de l'écran, à la place et
+   dans l'aplomb qu'occupaient les onglets. */
+.appwin__nom {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Le numéro de version, relevé dans le pied de page de l'application. Il vieillit
    avec la capture, ce qui est cohérent : les deux disent la même livraison. */
 .appwin__ver {

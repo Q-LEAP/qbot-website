@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=76c361d8">
+  <link rel="stylesheet" href="../assets/css/style.css?v=876a2390">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -309,16 +309,39 @@
       </div>
     </div>
 
-    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
-      <h3 style="margin-bottom:12px;">Build an automation visually, without writing code</h3>
-      <p class="section-subtitle" style="margin-bottom:24px;">Scenarios are built in the web interface, on top of screenshots of the app under test. No code at all: a scenario is a screenshot and the places to tap on it.</p>
-      <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You drop in a screenshot, which becomes the background of the step</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You place the tap points by clicking, and set each wait time</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You add, reorder or remove a step at any time</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The scenario is saved on the device, and reusable at will</span></li>
-      </ul>
+  </div>
+</section>
+
+<!-- ======= L'ÉDITEUR DE SCÉNARIOS =======
+     Point 4 du retour du 2026-09-08 : le bloc « sans coder » prend son propre
+     titre et montre l'interface. Un seul panneau, donc pas de liste d'onglets :
+     le bandeau porte le nom de l'écran, et il n'y a rien à cliquer. Le texte
+     alternatif est celui de la page Caractéristiques, qui porte la même capture. -->
+<section class="section" aria-labelledby="editeur-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">The editor</span>
+      <h2 class="section-title" id="editeur-title">Set up a scenario without writing code</h2>
+      <p class="section-subtitle">Take a screenshot of the app, mark the areas to tap, and <span class="nb">Q-Bot</span> then replays the journey automatically.</p>
     </div>
+
+    <figure class="appwin">
+      <div class="appwin__win">
+        <div class="appwin__bar">
+          <span class="appwin__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="appwin__nom" lang="en">Scenario Editor</span>
+          <span class="appwin__ver" aria-hidden="true">v2.1.2</span>
+        </div>
+        <div class="appwin__body">
+          <div class="appwin__panel is-active">
+            <img src="../assets/img/qbot-ui-scenario.webp?v=426ea24e"
+                 loading="lazy" width="2360" height="1500"
+                 alt="Scenario editor of the Q-Bot web interface: the “Homescreen” scenario selected, the tool palette (move, tap, delete, wait) and the screen of the phone under test, showing the LuxTrust Mobile, itsme, Google Authenticator and Microsoft Authenticator apps.">
+          </div>
+        </div>
+      </div>
+      <figcaption class="appwin__cap"><span class="nb">Q-Bot</span>'s scenario editor, served by the device itself: the journey is built on a screenshot of the phone under test, with its tap points and wait times.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -328,7 +351,7 @@
      du produit ». Le bouton porte `data-film-modal` comme la vignette : le
      module 24 vise tous les liens qui le portent, donc les deux ouvrent la même
      modale, et sans JavaScript les deux restent des liens vers le fichier. -->
-<section class="section" aria-labelledby="film-title">
+<section class="section section--gray" aria-labelledby="film-title">
   <div class="container">
     <div class="filmband">
       <div class="filmband__text">
@@ -555,7 +578,7 @@
      Vocabulaire simplifié le 2026-09-07 comme côté français : « deterministic
      execution » et « predefined taps » sonnaient documentation. Le mot
      « deterministic » reste sur la FAQ et sur « How it works ». -->
-<section class="section section--gray" id="after-sequence" aria-labelledby="features-title">
+<section class="section" id="after-sequence" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Benefits</span>
@@ -592,7 +615,7 @@
 <!-- Fusion des deux blocs, cf. la note française. La phrase sur la « vraie
      limite » Android est partie : le périmètre est dit dans la section
      Compatibilité, dans la fiche technique et dans la FAQ. -->
-<section class="section" aria-labelledby="audience-title">
+<section class="section section--gray" aria-labelledby="audience-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Use cases</span>
@@ -633,7 +656,7 @@
      française. « Any type of 2FA solution » est banni : la formulation dit le
      périmètre réel. Grille reprise du composant `.compat` de la fiche
      technique. -->
-<section class="section section--gray" aria-labelledby="compat-home-title">
+<section class="section" aria-labelledby="compat-home-title">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Compatibility</span>
@@ -674,7 +697,7 @@
 <!-- ======= MADE IN LUXEMBOURG ======= -->
 <!-- Compacté à la review, et « simple, secure API » est parti : cf. la note
      française, point 19 du brief. -->
-<section class="section" aria-labelledby="made-title">
+<section class="section section--gray" aria-labelledby="made-title">
   <div class="container">
     <h2 id="made-title" class="visually-hidden">What makes <span class="nb">Q-Bot</span> dependable</h2>
     <ul class="trust" role="list">
@@ -696,7 +719,7 @@
 </section>
 
 <!-- ======= CTA ======= -->
-<section class="section section--gray" aria-labelledby="cta-title">
+<section class="section" aria-labelledby="cta-title">
   <div class="container cta-block">
     <h2 class="section-title" id="cta-title" style="margin-bottom:32px;">Ready to eliminate your last manual test step?</h2>
     <div class="cta-block__actions">
