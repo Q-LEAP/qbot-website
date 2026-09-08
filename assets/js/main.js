@@ -49,10 +49,19 @@ navToggle?.addEventListener('click', () => {
   const actions  = document.querySelector('.nav__actions');
   const lang     = document.querySelector('.nav__lang');
   if (ctaNav && navMenu && actions) {
-    const etroit = window.matchMedia('(max-width: 768px)');
     let hote = null;
+    /* LA LARGEUR EST RELUE À CHAQUE APPEL, ET LE DÉCLENCHEUR EST `resize`, PAS
+       `change` DE `matchMedia`. Un écouteur `change` ne se réveille qu'au
+       FRANCHISSEMENT du seuil : si la fenêtre était étroite au moment où le
+       script s'exécute puis s'élargit sans repasser par 768 px, le bouton reste
+       coincé dans le tiroir pour toute la vie de la page. Constaté en mesurant
+       dans un cadre en ligne, qui commence sa vie à 300 px avant que sa largeur
+       réelle ne lui soit appliquée : à 1440 px le bouton était dans le menu, et
+       aucun redimensionnement ultérieur ne le ramenait. `place()` ne fait rien
+       quand l'état est déjà le bon, donc l'appeler à chaque redimensionnement ne
+       coûte rien. */
     const place = () => {
-      if (etroit.matches) {
+      if (window.matchMedia('(max-width: 768px)').matches) {
         if (!hote) {
           hote = document.createElement('li');
           hote.className = 'nav__menu-cta';
@@ -66,7 +75,8 @@ navToggle?.addEventListener('click', () => {
       }
     };
     place();
-    etroit.addEventListener('change', place);
+    window.addEventListener('load', place);
+    window.addEventListener('resize', place, { passive: true });
 
     /* Il ouvre une fenêtre modale au lieu de naviguer : sans cela le menu
        resterait déplié derrière elle, et on le retrouverait ouvert en sortant. */
