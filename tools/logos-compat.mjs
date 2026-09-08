@@ -38,6 +38,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const RACINE = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -147,7 +148,8 @@ for (const [nom, m] of Object.entries(MARQUES)) {
   if (m.image) {
     const f = path.join(RACINE, 'assets', 'img', 'brands', m.image);
     if (!fs.existsSync(f)) throw new Error('image de marque absente : ' + f);
-    MARQUAGES[nom] = { image: m.image, plein: !!m.plein, formes: 'png' };
+    const v = crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex').slice(0, 8);
+    MARQUAGES[nom] = { image: m.image, plein: !!m.plein, formes: 'png', v };
   } else {
     MARQUAGES[nom] = marque(m.slug, m.hex);
   }
@@ -162,9 +164,18 @@ function emplacement(nom, prefixe) {
 
   if (m.image) {
     const cls = 'compat__logo' + (m.plein ? ' compat__logo--plein' : '');
+    /* PAS DE `loading="lazy"` SUR CES DEUX-LÀ, et c'est un choix mesuré.
+       Réduites, elles pèsent 3 et 9 Ko : le report de chargement ne fait rien
+       gagner, alors qu'il crée une classe entière de « je ne vois pas les
+       logos ». Une image différée n'est chargée ni dans un onglet en
+       arrière-plan, ni tant que l'observateur du navigateur ne l'a pas vue
+       approcher, et le symptôme est indistinguable d'une image cassée.
+       `?v=` : l'empreinte du contenu. Ces fichiers ont déjà été RÉÉCRITS sous
+       le même nom (256 px puis 96 px) ; sans version, un visiteur qui a la
+       première garderait la première. C'est le défaut du 2026-08-25. */
     return '<span class="' + cls + '" aria-hidden="true"><img src="' + prefixe
-      + 'assets/img/brands/' + m.image + '" alt="" width="28" height="28"'
-      + ' loading="lazy" decoding="async"></span>';
+      + 'assets/img/brands/' + m.image + '?v=' + m.v + '" alt="" width="28" height="28"'
+      + ' decoding="async"></span>';
   }
   const teinte = m.hex ? ' fill="' + m.hex + '"' : '';
   return '<span class="compat__logo" aria-hidden="true"><svg viewBox="' + m.vb
