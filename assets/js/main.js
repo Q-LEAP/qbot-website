@@ -2572,3 +2572,139 @@ backToTop.addEventListener('click', () => {
     obs.observe(fen);
   });
 }());
+
+
+/* ════════════════════════════════════════
+   24. LA VIGNETTE DE FILM S'OUVRE EN MODALE
+   Demandé le 2026-09-08 : le film de démonstration ne doit plus occuper une
+   section à lui seul, mais « une petite vignette à côté du bloc Comment ça
+   fonctionne », avec un bouton de lecture et une ouverture en modale.
+
+   SANS CE MODULE, LA VIGNETTE RESTE UN LIEN VERS LE FICHIER, et le film s'ouvre
+   dans le lecteur du navigateur. C'est le point de départ, pas un repli de
+   dernière minute : l'état au repos est un état complet, règle du dépôt déjà
+   appliquée au film de l'accueil le 2026-08-24.
+
+   ET RIEN N'EST TÉLÉCHARGÉ AVANT LE CLIC. Le fichier pèse 2 Mo ; la vignette
+   n'est qu'une image. Le module 18 obtient la même chose avec un observateur
+   parce que ses films démarrent seuls ; ici le clic EST le déclencheur, donc
+   aucun observateur n'est nécessaire.
+
+   `<dialog>` NATIF, ET C'EST CE QUI FAIT LE TRAVAIL D'ACCESSIBILITÉ : voile,
+   piège de focus, fermeture à Échap et restitution du focus à l'élément
+   d'origine sont apportés par le navigateur. Un div maison redemanderait tout
+   cela à la main, et c'est exactement là que ce genre de composant échoue.
+
+   LA LECTURE AUTOMATIQUE EST LÉGITIME ICI : elle suit un clic, donc aucune
+   politique de lecture automatique ne s'y oppose. Le film n'a pas de piste
+   audio (retirée du fichier), mais il part quand même `muted` : c'est le seul
+   état où un navigateur ne peut pas refuser.
+
+   LA FERMETURE DÉTRUIT LE LECTEUR, elle ne le met pas en pause. Un <video>
+   laissé dans le document continue d'être décodé dans plusieurs navigateurs, et
+   surtout il garderait sa position : rouvrir la vignette doit redonner le film
+   depuis le début, pas reprendre au milieu.
+════════════════════════════════════════ */
+(function () {
+  var liens = document.querySelectorAll('a[data-film-modal]');
+  if (!liens.length || !window.HTMLDialogElement) return;
+
+  var n = 0;
+
+  function ouvre(lien) {
+    var titre = lien.getAttribute('data-film-titre') || 'Vidéo';
+    var idt = 'film-modal-titre-' + (++n);
+
+    var fen = document.createElement('dialog');
+    fen.className = 'media-modal';
+    fen.setAttribute('aria-labelledby', idt);
+
+    var barre = document.createElement('div');
+    barre.className = 'media-modal__bar';
+
+    var h = document.createElement('p');
+    h.className = 'media-modal__titre';
+    h.id = idt;
+    h.textContent = titre;
+
+    var croix = document.createElement('button');
+    croix.type = 'button';
+    croix.className = 'media-modal__close';
+    croix.setAttribute('aria-label', lien.getAttribute('data-film-fermer') || 'Fermer');
+    croix.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" ' +
+      'stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">' +
+      '<line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>';
+
+    barre.appendChild(h);
+    barre.appendChild(croix);
+
+    var v = document.createElement('video');
+    v.className = 'media-modal__video';
+    v.src = lien.getAttribute('href');
+    v.controls = true;
+    v.autoplay = true;
+    v.muted = true;
+    v.playsInline = true;
+    v.setAttribute('aria-label', titre);
+    var poster = lien.querySelector('img');
+    if (poster) v.poster = poster.getAttribute('src');
+
+    fen.appendChild(barre);
+    fen.appendChild(v);
+    document.body.appendChild(fen);
+
+    /* showModal() n'empêche pas partout la page de défiler derrière : on la
+       verrouille explicitement, et on restaure la valeur d'origine. */
+    var deb = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+
+    /* LE NETTOYAGE NE PASSE PAS PAR L'ÉVÉNEMENT `close` DU <dialog>, ET C'EST
+       DÉLIBÉRÉ. Mesuré le 2026-09-08 sur ce navigateur, avec un <dialog> neuf
+       créé pour l'essai : `showModal()` puis `close()` mettent bien `open` à
+       faux et renseignent `returnValue`, mais l'événement `close` n'est
+       dispatché à AUCUN écouteur. Un module qui s'y fie laisserait la modale
+       dans le document et le défilement de la page verrouillé pour toujours.
+       On appelle donc le nettoyage depuis chaque chemin de fermeture, et la
+       fonction est idempotente pour que deux chemins simultanés soient sans
+       effet. L'écouteur `close` est conservé en filet : là où l'événement
+       existe, il ne fait que rejouer un nettoyage déjà fait. */
+    var fini = false;
+    function fermer() {
+      if (fini) return;
+      fini = true;
+      try { fen.close(); } catch (e) { /* déjà fermée */ }
+      document.documentElement.style.overflow = deb;
+      /* On détruit la source : un <video> laissé en place continue d'être
+         décodé, et rouvrir la vignette doit redonner le film depuis le début. */
+      v.pause();
+      v.removeAttribute('src');
+      v.load();
+      if (fen.parentNode) fen.parentNode.removeChild(fen);
+      /* Le focus revient sur la vignette : sans cela il retombe sur le document
+         et le visiteur au clavier repart du haut de la page. */
+      lien.focus();
+    }
+
+    croix.addEventListener('click', fermer);
+    /* Clic sur le voile : la cible est le <dialog> lui-même, son contenu étant
+       à l'intérieur. C'est la façon standard de distinguer les deux. */
+    fen.addEventListener('click', function (e) { if (e.target === fen) fermer(); });
+    /* Échap : le navigateur ferme le dialogue de lui-même, mais comme on ne peut
+       pas compter sur l'événement qui s'ensuit, on fait le nettoyage ici. */
+    fen.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); fermer(); }
+    });
+    fen.addEventListener('cancel', function (e) { e.preventDefault(); fermer(); });
+    fen.addEventListener('close', fermer);
+
+    fen.showModal();
+    croix.focus();
+  }
+
+  Array.prototype.forEach.call(liens, function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      ouvre(a);
+    });
+  });
+}());

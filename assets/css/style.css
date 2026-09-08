@@ -3114,6 +3114,130 @@ p { color: var(--gray); }
   .vsflow__chain { grid-template-columns: 1fr; }
 }
 
+/* ══ VIGNETTE DE FILM (.filmcard) ET SA MODALE (.media-modal) ══════════════
+   Demandé le 2026-09-08 : le film ne doit plus être une section à lui seul mais
+   « une petite vignette à côté du bloc Comment ça fonctionne », avec un bouton
+   de lecture et une ouverture en modale.
+
+   SANS JAVASCRIPT, LA VIGNETTE EST UN LIEN VERS LE FICHIER, et le film s'ouvre
+   dans le lecteur du navigateur. C'est la règle du dépôt appliquée à un média :
+   l'état au repos est un état complet. Le module 22 ne fait que remplacer ce
+   comportement par la modale.
+
+   RIEN N'EST TÉLÉCHARGÉ AVANT LE CLIC : la vignette est une image, le fichier
+   de 2 Mo n'est demandé qu'à l'ouverture. C'est le même souci que le module 18,
+   obtenu ici sans observateur puisque le clic est le déclencheur. */
+.filmcard {
+  position: relative;
+  display: block;
+  width: min(320px, 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  background: #141414;
+  transition: border-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+.filmcard:hover { border-color: rgba(0, 203, 190, 0.45); transform: translateY(-2px); }
+
+.filmcard__poster {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* La pastille de lecture. Encre NOIRE sur le teal, jamais blanche. */
+.filmcard__play {
+  position: absolute;
+  top: calc(50% - 22px);
+  left: calc(50% - 22px);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #231F20;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s var(--ease-out);
+}
+.filmcard:hover .filmcard__play { transform: scale(1.08); }
+.filmcard__play svg { width: 18px; height: 18px; margin-left: 2px; }
+
+.filmcard__texte {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 14px;
+}
+.filmcard__titre { font-weight: 700; font-size: 0.9375rem; color: var(--white); }
+.filmcard__meta { font-size: 0.8125rem; color: var(--muted); white-space: nowrap; }
+
+/* La rangée qui porte la vignette et le lien de la section. */
+.how-after {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px 32px;
+  margin-top: 44px;
+}
+
+/* ---- La modale ----
+   Un <dialog> natif : il apporte le voile, le piège de focus et la fermeture au
+   clavier sans une ligne de script. Même langage visuel que la modale de
+   l'agenda, mais un bloc séparé : celle-ci n'a ni état de chargement ni filet
+   de délai, et partager les sélecteurs ferait dépendre l'une de l'autre. */
+.media-modal {
+  width: min(1000px, 94vw);
+  max-width: none;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: #0A0A0A;
+  color: var(--white);
+  overflow: hidden;
+}
+.media-modal::backdrop { background: rgba(0, 0, 0, 0.78); }
+
+.media-modal__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.media-modal__titre { margin: 0; font-size: 0.9375rem; font-weight: 700; }
+
+.media-modal__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--white);
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease-out), color 0.25s var(--ease-out);
+}
+.media-modal__close:hover { border-color: var(--teal); color: var(--teal); }
+
+.media-modal__video {
+  display: block;
+  width: 100%;
+  /* Le film est en 16/9. La borne de hauteur évite qu'il dépasse de l'écran sur
+     un portable bas, où la fenêtre fait moins de 700 px de haut. */
+  max-height: calc(100vh - 160px);
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
 /* .specs__image : image + bouton dans le même bloc. Le radius et l'ombre
    restent donc portés par l'image (un cadre clippé arrondirait aussi les
    angles du bouton), et le bloc entier se déplace d'un seul tenant au

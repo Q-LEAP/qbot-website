@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=3ec9ddd2">
+  <link rel="stylesheet" href="assets/css/style.css?v=e6a637b7">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=8c766cff">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -348,100 +348,6 @@
   </div>
 </section>
 
-<!-- ======= AVANTAGES ======= -->
-<!-- TROIS CARTES ET PAS QUATRE, demandé à la review : « limiter la section à
-     3 avantages maximum ». Sont parties « Mise en service immédiate » (fausse :
-     il faut construire ses scénarios) et « Deux accès », dont le contenu est
-     repris dans « Simple à intégrer ».
-     « ZÉRO FAUX POSITIF » A ÉTÉ REMPLACÉ LE 2026-09-02, et ne doit pas revenir :
-     un zéro absolu ne se démontre pas, alors qu'un parcours rejoué à l'identique
-     se décrit. Et la formulation ne dit pas « rien n'est deviné à l'image » mais
-     « rien n'est interprété PENDANT LE TEST » : les captures servent bien à
-     CONSTRUIRE les scénarios, il ne faut pas laisser croire l'inverse.
-     LE VOCABULAIRE A ÉTÉ SIMPLIFIÉ LE 2026-09-07, sur retour joint par le
-     client : « exécution déterministe », « appuis prédéfinis » et « aucun
-     sélecteur à maintenir » sont justes pour un QA mais sonnent documentation
-     sur une page d'accueil. Les deux contraintes ci-dessus tiennent dans la
-     nouvelle formule ; le mot « déterministe » reste sur la FAQ et sur
-     « Comment ça marche », qui est le partage demandé.
-     Le paragraphe « Q-Bot ne demande ni installation ni configuration » est
-     retiré pour la même raison : la configuration des scénarios est justement
-     le travail que fait le testeur. -->
-<section class="section" aria-labelledby="features-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Avantages</span>
-      <h2 class="section-title" id="features-title">Ce que <span class="nb">Q-Bot</span> change pour une équipe de test</h2>
-      <p class="section-subtitle">Il supprime la seule étape que les outils de test ne savent pas franchir, sans la contourner&nbsp;: la validation se fait sur la vraie application 2FA, sur un vrai smartphone.</p>
-    </div>
-    <div class="features__grid features__grid--3">
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg></div>
-        <h3>Sans intervention humaine</h3>
-        <p>Plus besoin d'un testeur pour valider la 2FA. La campagne va au bout, à toute heure.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
-        <h3>Sur la vraie application 2FA</h3>
-        <p><span class="nb">Q-Bot</span> rejoue à l'identique le parcours que vous avez enregistré, dans la véritable application. Rien n'est interprété à l'écran pendant le test.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <h3>Simple à intégrer</h3>
-        <p>Un appel HTTP depuis votre chaîne de tests, ou l'app compagnon qui réagit à la notification. Aucun SDK, aucun agent à installer.</p>
-      </article>
-    </div>
-    <div style="margin-top:36px;">
-      <a href="caracteristiques.html" class="btn btn--outline">
-        Caractéristiques techniques
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ======= LE FILM PRODUIT ======= -->
-    <!-- LE FILM DE DÉMONSTRATION EST ICI DEPUIS LE 2026-09-02, sur retour du client :
-     « la vidéo Q-Bot qu'on a fait, ne doit-on pas la trouver sur le site,
-     homepage ? c'est un bon moyen de comprendre ce que fait Q-Bot et plus
-     facilement que la lecture du contenu ».
-     CE QUI ÉTAIT LÀ AVANT : `qbot-home.mp4`, une boucle muette de 8,7 s posée dans
-     la moitié d'une colonne, décorative et sans titre. Le film produit (QBV1.2.12,
-     50,9 s) ne se trouvait que sur la fiche technique, où il est une boucle.
-     TROIS ÉCARTS AVEC CETTE BOUCLE, et ils tiennent tous à ce que ce film-ci n'est
-     pas un décor mais un contenu :
-     1. il porte `controls`. Un film de cinquante secondes qu'on ne peut ni
-        arrêter, ni reprendre, ni rejouer se subit ; celui-là sert à comprendre,
-        donc il se pilote. D'où `--playable`, qui rend au lecteur les
-        `pointer-events` que `--film` coupe ;
-     2. il n'est plus `aria-hidden` : c'est du contenu, donc il porte un nom
-        accessible et la section qui l'entoure a un titre ;
-     3. il tient toute la largeur du conteneur, aligné sur le titre.
-     Il reste `muted` et `loop` : la piste audio a été RETIRÉE du fichier
-     (ffmpeg -an), il n'y a donc rien à couper, et `muted` est ce qui autorise le
-     démarrage automatique. Les incrustations du film sont en ANGLAIS, y compris
-     sur la page française, et le chapeau de la section le dit : c'est une
-     propriété du fichier fourni, pas de la page.
-     `data-film` ET NON `src` : le module 18 ne demande les 2,0 Mo que quand la
-     section approche, avec 200 px d'avance. Sans JavaScript, en mouvement réduit,
-     en économiseur de données ou sur connexion lente, il reste l'affiche, qui est
-     une vraie image du film. -->
-<section class="section section--gray" aria-labelledby="film-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">En vidéo</span>
-      <h2 class="section-title" id="film-title"><span class="nb">Q-Bot</span> en action</h2>
-      <p class="section-subtitle">Cinquante secondes pour voir ce que ces pages décrivent&nbsp;: le boîtier posé sur un bureau, le smartphone à l'avant, un scénario qui se joue et l'authentification qui passe. Film muet, incrustations en anglais.</p>
-    </div>
-    <div class="video__wrapper video__wrapper--film video__wrapper--playable">
-      <video class="video__player" data-film="assets/video/qbot-demo.mp4?v=301fa999"
-             poster="assets/img/qbot-demo-poster.jpg"
-             controls muted loop playsinline
-             aria-label="Film de démonstration de Q-Bot, cinquante secondes, sans son"></video>
-    </div>
-  </div>
-</section>
-
 <!-- ======= COMMENT ÇA FONCTIONNE =======
      Section demandée à la review (point 6) : la homepage expliquait ce que
      Q-Bot change et ce qu'il est, jamais ce qu'il FAIT, étape par étape.
@@ -499,7 +405,24 @@
         <p>Le parcours automatisé reprend sans intervention humaine.</p>
       </div>
     </div>
-    <div style="margin-top:44px;">
+    <!-- LA VIGNETTE DU FILM, POSÉE ICI LE 2026-09-08. Le film occupait une
+         section à lui seul ; la review demande qu'il « complète les cinq
+         étapes » au lieu de faire écran entre elles et la suite.
+         C'EST UN LIEN VERS LE FICHIER, et c'est volontaire : sans JavaScript le
+         film s'ouvre dans le lecteur du navigateur. Le module 24 remplace ce
+         comportement par la modale. Rien n'est téléchargé avant le clic. -->
+    <div class="how-after">
+      <a class="filmcard" href="assets/video/qbot-demo.mp4?v=301fa999"
+         data-film-modal
+         data-film-titre="Q-Bot en action"
+         data-film-fermer="Fermer la vidéo">
+        <img class="filmcard__poster" src="assets/img/qbot-demo-poster.jpg?v=1e26aaa5" alt="" width="1280" height="720" loading="lazy" decoding="async">
+        <span class="filmcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+        <span class="filmcard__texte">
+          <span class="filmcard__titre"><span class="nb">Q-Bot</span> en action</span>
+          <span class="filmcard__meta">1 min, sans son</span>
+        </span>
+      </a>
       <a href="cas-usage.html" class="btn btn--outline">
         Voir le fonctionnement
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -710,51 +633,54 @@
   <span class="scrolly__cta-label">Voir les caractéristiques</span>
 </a>
 
-<!-- ======= COMPATIBILITÉ ======= -->
-<!-- LA SECTION LUXTRUST DEVIENT LA SECTION COMPATIBILITÉ, demandé à la review :
-     « ne pas faire de LuxTrust une section disproportionnée ». LuxTrust reste
-     nommée en premier, ce qui est juste au Luxembourg, mais dans une liste.
-     LA PHRASE « TOUT TYPE DE SOLUTION 2FA » EST BANNIE par la review, ici comme
-     dans le chapeau de « La solution » : elle promet plus large que le produit.
-     La formulation retenue est celle du brief, mot pour mot.
-     La grille réutilise le composant `.compat` de la fiche technique, avec les
-     mêmes listes : un seul endroit fait foi sur la compatibilité.
-     La photo du téléphone docké a quitté cette section : la page montrait déjà
-     le produit plusieurs fois et la review demande moins de répétition. Elle
-     reste employée sur la page Démo.
-     CETTE SECTION PORTE L'ANCRE `apres-sequence` depuis le réordonnancement du
-     2026-09-07 : c'est elle qui suit la séquence 3D, donc c'est ici que tombe
-     le lien d'évitement « passer la séquence ». -->
-<section class="section section--gray" id="apres-sequence" aria-labelledby="compat-home-title">
+<!-- ======= AVANTAGES ======= -->
+<!-- TROIS CARTES ET PAS QUATRE, demandé à la review : « limiter la section à
+     3 avantages maximum ». Sont parties « Mise en service immédiate » (fausse :
+     il faut construire ses scénarios) et « Deux accès », dont le contenu est
+     repris dans « Simple à intégrer ».
+     « ZÉRO FAUX POSITIF » A ÉTÉ REMPLACÉ LE 2026-09-02, et ne doit pas revenir :
+     un zéro absolu ne se démontre pas, alors qu'un parcours rejoué à l'identique
+     se décrit. Et la formulation ne dit pas « rien n'est deviné à l'image » mais
+     « rien n'est interprété PENDANT LE TEST » : les captures servent bien à
+     CONSTRUIRE les scénarios, il ne faut pas laisser croire l'inverse.
+     LE VOCABULAIRE A ÉTÉ SIMPLIFIÉ LE 2026-09-07, sur retour joint par le
+     client : « exécution déterministe », « appuis prédéfinis » et « aucun
+     sélecteur à maintenir » sont justes pour un QA mais sonnent documentation
+     sur une page d'accueil. Les deux contraintes ci-dessus tiennent dans la
+     nouvelle formule ; le mot « déterministe » reste sur la FAQ et sur
+     « Comment ça marche », qui est le partage demandé.
+     Le paragraphe « Q-Bot ne demande ni installation ni configuration » est
+     retiré pour la même raison : la configuration des scénarios est justement
+     le travail que fait le testeur. -->
+<section class="section section--gray" id="apres-sequence" aria-labelledby="features-title">
   <div class="container">
     <div class="section-header">
-      <span class="section-label">Compatibilité</span>
-      <h2 class="section-title" id="compat-home-title">Compatible avec vos outils et applications 2FA</h2>
-      <p class="section-subtitle">Compatible avec les applications 2FA installées sur votre smartphone, dont LuxTrust Mobile, itsme, Microsoft Authenticator et Google Authenticator. Côté chaîne de tests, tout outil sachant faire un appel HTTP sait piloter <span class="nb">Q-Bot</span>.</p>
+      <span class="section-label">Avantages</span>
+      <h2 class="section-title" id="features-title">Ce que <span class="nb">Q-Bot</span> change pour une équipe de test</h2>
+      <p class="section-subtitle">Il supprime la seule étape que les outils de test ne savent pas franchir, sans la contourner&nbsp;: la validation se fait sur la vraie application 2FA, sur un vrai smartphone.</p>
     </div>
-    <div class="tools__grid" style="gap:48px;">
-      <div>
-        <h3 class="compat__head">Applications 2FA</h3>
-        <ul class="compat" role="list">
-          <li class="compat__item" role="listitem">LuxTrust Mobile</li>
-          <li class="compat__item" role="listitem">itsme</li>
-          <li class="compat__item" role="listitem">Microsoft Authenticator</li>
-          <li class="compat__item" role="listitem">Google Authenticator</li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="compat__head">Outils d'automatisation</h3>
-        <ul class="compat" role="list">
-          <li class="compat__item" role="listitem">Selenium</li>
-          <li class="compat__item" role="listitem">Cypress</li>
-          <li class="compat__item" role="listitem">Playwright</li>
-          <li class="compat__item" role="listitem">Robot Framework</li>
-          <li class="compat__item" role="listitem">Katalon</li>
-          <li class="compat__item" role="listitem">Appium</li>
-          <li class="compat__item" role="listitem">Jenkins CI</li>
-          <li class="compat__item" role="listitem">GitLab CI</li>
-        </ul>
-      </div>
+    <div class="features__grid features__grid--3">
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg></div>
+        <h3>Sans intervention humaine</h3>
+        <p>Plus besoin d'un testeur pour valider la 2FA. La campagne va au bout, à toute heure.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
+        <h3>Sur la vraie application 2FA</h3>
+        <p><span class="nb">Q-Bot</span> rejoue à l'identique le parcours que vous avez enregistré, dans la véritable application. Rien n'est interprété à l'écran pendant le test.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <h3>Simple à intégrer</h3>
+        <p>Un appel HTTP depuis votre chaîne de tests, ou l'app compagnon qui réagit à la notification. Aucun SDK, aucun agent à installer.</p>
+      </article>
+    </div>
+    <div style="margin-top:36px;">
+      <a href="caracteristiques.html" class="btn btn--outline">
+        Caractéristiques techniques
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </div>
 </section>
@@ -803,6 +729,55 @@
   </div>
 </section>
 
+<!-- ======= COMPATIBILITÉ ======= -->
+<!-- LA SECTION LUXTRUST DEVIENT LA SECTION COMPATIBILITÉ, demandé à la review :
+     « ne pas faire de LuxTrust une section disproportionnée ». LuxTrust reste
+     nommée en premier, ce qui est juste au Luxembourg, mais dans une liste.
+     LA PHRASE « TOUT TYPE DE SOLUTION 2FA » EST BANNIE par la review, ici comme
+     dans le chapeau de « La solution » : elle promet plus large que le produit.
+     La formulation retenue est celle du brief, mot pour mot.
+     La grille réutilise le composant `.compat` de la fiche technique, avec les
+     mêmes listes : un seul endroit fait foi sur la compatibilité.
+     La photo du téléphone docké a quitté cette section : la page montrait déjà
+     le produit plusieurs fois et la review demande moins de répétition. Elle
+     reste employée sur la page Démo.
+     CETTE SECTION PORTE L'ANCRE `apres-sequence` depuis le réordonnancement du
+     2026-09-07 : c'est elle qui suit la séquence 3D, donc c'est ici que tombe
+     le lien d'évitement « passer la séquence ». -->
+<section class="section section--gray" aria-labelledby="compat-home-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Compatibilité</span>
+      <h2 class="section-title" id="compat-home-title">Compatible avec vos outils et applications 2FA</h2>
+      <p class="section-subtitle">Compatible avec les applications 2FA installées sur votre smartphone, dont LuxTrust Mobile, itsme, Microsoft Authenticator et Google Authenticator. Côté chaîne de tests, tout outil sachant faire un appel HTTP sait piloter <span class="nb">Q-Bot</span>.</p>
+    </div>
+    <div class="tools__grid" style="gap:48px;">
+      <div>
+        <h3 class="compat__head">Applications 2FA</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">LuxTrust Mobile</li>
+          <li class="compat__item" role="listitem">itsme</li>
+          <li class="compat__item" role="listitem">Microsoft Authenticator</li>
+          <li class="compat__item" role="listitem">Google Authenticator</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="compat__head">Outils d'automatisation</h3>
+        <ul class="compat" role="list">
+          <li class="compat__item" role="listitem">Selenium</li>
+          <li class="compat__item" role="listitem">Cypress</li>
+          <li class="compat__item" role="listitem">Playwright</li>
+          <li class="compat__item" role="listitem">Robot Framework</li>
+          <li class="compat__item" role="listitem">Katalon</li>
+          <li class="compat__item" role="listitem">Appium</li>
+          <li class="compat__item" role="listitem">Jenkins CI</li>
+          <li class="compat__item" role="listitem">GitLab CI</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ======= MADE IN LUXEMBOURG ======= -->
 <!-- COMPACTÉ À LA REVIEW : « conserver la section mais la rendre compacte, ne
      pas la transformer en long argumentaire ». Deux paragraphes de savoir-faire
@@ -812,7 +787,7 @@
      documents fournis ne décrit d'authentification, d'ACL ni d'isolation
      réseau. Ce qui est documenté, et donc ce qui reste dit : le boîtier est
      auto-hébergé et l'API répond sur le réseau où on l'installe. -->
-<section class="section section--gray" aria-labelledby="made-title">
+<section class="section" aria-labelledby="made-title">
   <div class="container">
     <div class="section-header" style="margin-bottom:0;">
       <span class="section-label">Made in Luxembourg</span>
@@ -823,7 +798,7 @@
 </section>
 
 <!-- ======= CTA FINAL ======= -->
-<section class="section" aria-labelledby="cta-title">
+<section class="section section--gray" aria-labelledby="cta-title">
   <div class="container cta-block">
     <h2 class="section-title" id="cta-title" style="margin-bottom:32px;">Prêt à en finir avec la dernière étape manuelle&nbsp;?</h2>
     <a href="contact.html" class="btn btn--primary btn--lg">Réserver une démo</a>
@@ -892,7 +867,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=40ca2152" defer></script>
+<script src="assets/js/main.js?v=aa4a1d4e" defer></script>
 <script src="assets/js/scrolly.js?v=3e02b8fa" defer></script>
 </body>
 </html>
