@@ -2844,177 +2844,6 @@ p { color: var(--gray); }
                            max-width: 410px; }
 }
 
-/* ══ SCHÉMA « LE PARCOURS D'UN TEST » (.flow2fa) ═══════════════════════════
-   Posé le 2026-09-07 sur retour du client : « à droite du bloc de texte "La
-   solution", je trouve qu'il y a un peu trop de vide. C'est justement à cet
-   endroit que je verrais bien un schéma très simple pour expliquer le
-   fonctionnement avant de montrer le produit physique. Par exemple : test
-   automatisé -> 2FA -> Q-Bot -> smartphone réel -> le test continue. »
-   Le vide était réel et mesurable : la photo verticale qui occupait cette
-   colonne était plafonnée à 420 px et collée à la gouttière droite, donc il
-   restait 186 px de noir entre le texte et l'image à 1440 px, 316 à 2560.
-
-   C'EST DU BALISAGE, PAS UNE IMAGE, et c'est le point de conception. La colonne
-   fait 526 px à 1440, 656 à 2560 et environ 342 px sur un téléphone : un raster
-   dessiné pour une de ces largeurs est illisible aux autres. Le dépôt en a la
-   preuve — `qbot-2fa-flux.jpg`, dessiné pour un cadre de 656 px, tombait à des
-   sous-libellés de 10 px dans une demi-colonne de 566 (note du 2026-09-02).
-   En balisage : le schéma se reflow, son texte est lu par un lecteur d'écran et
-   citable par un moteur de réponse, il pèse deux kilo-octets au lieu de 88, et
-   les deux langues sortent du même composant sans regénérer quoi que ce soit.
-
-   DEUX COLONNES : les cinq pas à gauche, le téléphone à droite, centré. LE
-   TÉLÉPHONE EST HORS DE LA LISTE, et c'est un correctif : posé DANS le pas
-   « sur un vrai smartphone », il faisait 169 px de haut contre 110 px de texte,
-   donc il restait deux cents pixels de vide dans le cadre de ce pas — le même
-   « trop de vide » en miniature. Hors de la liste, c'est la colonne des pas qui
-   donne la hauteur et le téléphone se centre dedans, sans vide et plus grand,
-   donc plus lisible.
-
-   L'ILLUSTRATION N'EST PAS UNE REPRODUCTION D'INTERFACE. Anneau de validation,
-   six pavés muets pour le code, une pastille d'action et l'onde d'un appui :
-   même précaution que l'écran 2FA du modèle 3D, il ne faut pas la transformer
-   en copie de l'application LuxTrust.
-
-   DEUX MARQUES, PAS TROIS. Le deuxième pas porte le blocage (anneau tireté et
-   sourd : ici ça s'arrête), le quatrième porte le différenciateur (anneau teal
-   plein, plus le téléphone à côté : « le visiteur doit comprendre en un coup
-   d'oeil que Q-Bot agit sur un vrai smartphone, il ne simule pas simplement la
-   2FA »). Un troisième accent les diluerait.
-
-   LE TRAIT EST UN SEGMENT PAR INTERVALLE, du bas d'un anneau au haut du
-   suivant, jamais un trait continu qui traverse les anneaux : c'est la
-   convention d'un indicateur d'étapes, et c'est le défaut corrigé sur la
-   maquette d'interface le 2026-08-25. Le dernier pas n'en porte pas, il n'y a
-   rien après lui.
-
-   ENTRÉE : variante « groupe » du module 4 sur `.flow2fa__steps` (l'élément est
-   dans REVEAL_MAP), donc le cadre ne bouge pas et les cinq pas s'enchaînent,
-   segment de trait compris, ce qui fait que le parcours SE DESSINE. L'état au
-   repos est l'état complet : sans JavaScript le module n'ajoute pas `.reveal`
-   et tout est visible. */
-.flow2fa {
-  /* FLEX ET NON GRID : une grille ne s'enroule pas, elle déborde. C'est
-     l'enroulement qui fait passer le téléphone sous les pas là où la colonne est
-     trop étroite pour les deux (320 px à 769 px de fenêtre). */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px 24px;
-  align-items: center;
-  padding: 28px 26px;
-  background: #141414;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-}
-
-.flow2fa__steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  row-gap: 18px;
-  /* Base d'enroulement : sous 210 px de place le téléphone passe SOUS les pas.
-     Un seuil de fenêtre ne marcherait pas — la colonne ne suit pas la largeur de
-     fenêtre : 342 px à 390 (une colonne), puis 320 px à 769 (deux colonnes),
-     386 à 900, 526 à 1440. Entre 769 et 1000 px, un seuil de fenêtre laissait
-     donc le téléphone à côté d'un texte de 182 px. Mesuré. */
-  flex: 1 1 210px;
-  min-width: 210px;
-}
-
-.flow2fa__step {
-  position: relative;
-  padding-left: 42px;
-  min-height: 26px;
-}
-
-/* Le segment de liaison. `top` part sous l'anneau, `bottom` mord de 12 px dans
-   la gouttière de 18, ce qui laisse 6 px de dégagement avant l'anneau suivant. */
-.flow2fa__step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 31px;
-  bottom: -12px;
-  width: 2px;
-  border-radius: 1px;
-  background: var(--teal);
-  opacity: 0.5;
-}
-
-.flow2fa__ico {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 1.5px solid rgba(0, 203, 190, 0.45);
-  background: rgba(0, 203, 190, 0.10);
-  color: var(--teal);
-}
-.flow2fa__ico svg { width: 14px; height: 14px; }
-
-.flow2fa__body { display: block; }
-.flow2fa__body b {
-  display: block;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--black);
-}
-/* `> span` ET NON `span` : le sélecteur descendant attrapait aussi le
-   `<span class="nb">Q-Bot</span>` qui vit DANS le titre, et en faisait un bloc
-   gris de 13,5 px sur sa propre ligne. Mesuré : le titre du troisième pas tenait
-   sur deux lignes à toutes les largeurs, 2560 px comprise. */
-.flow2fa__body > span {
-  display: block;
-  margin-top: 3px;
-  font-size: 13.5px;
-  line-height: 1.45;
-  color: var(--gray);
-}
-
-/* ---- Le pas du blocage : anneau tireté et sourd ---- */
-.flow2fa__step--stop .flow2fa__ico {
-  border-style: dashed;
-  border-color: rgba(255, 255, 255, 0.28);
-  background: transparent;
-  color: var(--muted);
-}
-
-/* ---- Le pas différenciant : anneau teal plein ----
-   L'ENCRE EST LE NOIR DE CHARTE ET JAMAIS DU BLANC : le teal de charte est une
-   couleur CLAIRE, du blanc dessus plafonne à 2,04:1. Le noir y tient 8:1. C'est
-   le défaut relevé seize fois par l'audit du 2026-08-11. */
-.flow2fa__step--key .flow2fa__ico {
-  background: var(--teal);
-  border-color: var(--teal);
-  color: #231F20;
-}
-
-.flow2fa__phone {
-  display: block;
-  width: 112px;
-  color: var(--teal);
-  /* Le halo, comme le cadre du film du hero : c'est ce qui détache
-     l'illustration du fond de panneau sans lui poser de cadre de plus. */
-  filter: drop-shadow(0 0 26px rgba(0, 203, 190, 0.16));
-}
-.flow2fa__phone svg { display: block; width: 100%; height: auto; }
-
-@media (max-width: 767px) {
-  /* La requête média ne décide pas du placement du téléphone, c'est
-     l'enroulement de la grille qui le fait. Elle ne garde que ce qui dépend
-     vraiment de la fenêtre : moins de remplissage, un téléphone plus petit, et
-     un téléphone plus petit. */
-  .flow2fa { padding: 22px 20px; }
-  .flow2fa__step { padding-left: 38px; }
-  .flow2fa__phone { width: 96px; }
-}
-
 /* ══ ZONE DE RÉASSURANCE (.trust) ══════════════════════════════════════════
    Demandée le 2026-09-08 en remplacement du bloc « Made in Luxembourg » :
    « je ne souhaite pas avoir de gros bloc corporate », « quelques éléments
@@ -3091,10 +2920,10 @@ p { color: var(--gray); }
    à côte, chaque chaîne n'aurait que la moitié de la largeur pour quatre cases,
    et la comparaison se ferait de biais.
 
-   AUCUNE ICÔNE SUR LES CASES NEUTRES, à dessein : le schéma `.flow2fa` de la
-   section Solution est justement iconographique, et la review demande qu'une
-   section ne répète pas la précédente. Ici ce sont la couleur et une seule
-   marque par rangée qui portent le sens.
+   AUCUNE ICÔNE SUR LES CASES NEUTRES, à dessein : ce sont la couleur, la
+   liaison rompue et une seule marque par rangée qui portent le sens. Le schéma
+   iconographique qui vivait dans la section Solution a disparu avec elle le
+   2026-09-08, la Solution ayant fusionné avec « Comment ça marche ».
 
    ENTRÉE : variante « card » du module 4 sur `.vsflow__lane`, donc les deux
    rangées montent l'une après l'autre, ce qui met la comparaison en scène.
@@ -7058,7 +6887,6 @@ body:has(.orbz)::after { content: none; }
 [data-theme="dark"] .problem-callout,
 [data-theme="dark"] .blog-card,
 [data-theme="dark"] .compat__item,
-[data-theme="dark"] .flow2fa,
 [data-theme="dark"] .roi__panel {
   background: var(--glass);
   border-color: var(--glass-line);
@@ -7089,8 +6917,7 @@ body:has(.orbz)::after { content: none; }
   [data-theme="dark"] .problem-callout,
   [data-theme="dark"] .blog-card,
   [data-theme="dark"] .compat__item,
-  [data-theme="dark"] .flow2fa,
-  [data-theme="dark"] .roi__panel,
+    [data-theme="dark"] .roi__panel,
   [data-theme="dark"] .code-block pre,
   [data-theme="dark"] .article-body pre { background: #141414; }
 }
