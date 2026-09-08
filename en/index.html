@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=876a2390">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2bbf1517">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=a6cfc246">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -585,28 +585,27 @@
       <h2 class="section-title" id="features-title">What <span class="nb">Q-Bot</span> changes for a test team</h2>
       <p class="section-subtitle">It removes the one step test tools cannot get past, without bypassing it: the approval happens in the genuine 2FA app, on a genuine smartphone.</p>
     </div>
-    <div class="features__grid features__grid--3">
+    <div class="features__grid features__grid--2">
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20.2a6.4 6.4 0 0 1 11.3-4.1"/><path d="M17 15.4l4.4 4.4M21.4 15.4L17 19.8"/></svg></div>
-        <h3>Remove the last manual step</h3>
-        <p>Nobody to pull in to approve the 2FA step. The run goes all the way, at night and at the weekend.</p>
+        <h3>Your test runs can finally go all the way on their own</h3>
+        <p>At night, at the weekend, on every commit or release.</p>
       </article>
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg></div>
-        <h3>Test on the real app</h3>
-        <p><span class="nb">Q-Bot</span> replays the exact scenario you recorded, in the genuine app. Nothing is read off the screen while the test runs.</p>
+        <h3>Test on the genuine 2FA app</h3>
+        <p>No mock, no simulator.</p>
       </article>
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <h3>Fit it into your existing pipeline</h3>
-        <p>One call from your tests, or the companion app reacting to the notification. No SDK, no agent to install.</p>
+        <h3>Fit <span class="nb">Q-Bot</span> into your existing pipeline</h3>
+        <p>One HTTP call is all it takes.</p>
       </article>
-    </div>
-    <div style="margin-top:36px;">
-      <a href="technical-specs.html" class="btn btn--outline">
-        Technical specifications
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5.2c0 4.4-2.9 7.8-7 9.8-4.1-2-7-5.4-7-9.8V6z"/><polyline points="9,12 11.2,14.2 15.2,10"/></svg></div>
+        <h3>Keep control inside your own environment</h3>
+        <p><span class="nb">Q-Bot</span> runs locally, on your network.</p>
+      </article>
     </div>
   </div>
 </section>

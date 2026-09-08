@@ -749,6 +749,22 @@ p { color: var(--gray); }
    donc sans plancher explicite un contenu large étire sa colonne. */
 .features__grid.features__grid--3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 
+/* ---- Variante à deux colonnes ----
+   Demandée le 2026-09-08 : « grille 2 × 2, avec 4 avantages courts ».
+
+   DEUX COLONNES EXACTEMENT, ET PAS `auto-fit` : à quatre cartes courtes,
+   `auto-fit` en poserait quatre de front sur un écran large, et la lecture par
+   paires que la grille 2 × 2 met en scène disparaîtrait.
+
+   SÉLECTEUR DOUBLÉ, même raison qu'au-dessus : écrit une seule fois il pèse
+   autant que les deux requêtes média génériques écrites plus loin dans ce
+   fichier, qui gagneraient par l'ordre. Doublé, il gouverne sa grille — et il
+   doit donc porter lui-même son rabattement en une colonne. */
+.features__grid.features__grid--2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 760px) {
+  .features__grid.features__grid--2 { grid-template-columns: 1fr; }
+}
+
 .feature-card {
   position: relative;
   overflow: hidden;
