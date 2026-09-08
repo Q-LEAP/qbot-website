@@ -2914,13 +2914,33 @@ p { color: var(--gray); }
   line-height: 1.45;
 }
 
-/* La signature, discrète, comme le demande le brief (« éventuellement la
-   mention Q-Leap de manière discrète »). */
-.trust__sign {
-  margin: 28px 0 0;
-  font-size: 0.875rem;
-  color: var(--muted);
+/* LE LABEL MADE IN LUXEMBOURG À LA PLACE DU PICTOGRAMME (point 8 du retour du
+   2026-09-08). Il porte lui-même les mots « MADE IN LUXEMBOURG », donc il
+   remplace aussi l'intitulé en gras, qui les aurait écrits deux fois côte à
+   côte ; les mots restent annoncés par le texte alternatif de l'image.
+
+   102 PX, ET C'EST LA RÉSOLUTION QUI DÉCIDE : le seul exemplaire du label dont
+   nous disposions est celui de la brochure du client, 156 px de large en pixels
+   réels. Au-delà on n'agrandirait que du vide. Un fichier vectoriel de la marque
+   le rendrait net sur un écran à forte densité, il est à demander.
+
+   Les angles arrondis sont dans le fichier, transparents : pas de
+   `border-radius` ici, sous peine de rogner deux fois. */
+.trust__label {
+  flex: none;
+  width: 102px;
+  height: auto;
+  /* Le pictogramme qu'il remplace fait 38 px et l'élément est aligné en haut :
+     sans ce recalage, le label dépasse la ligne de base de ses deux voisins. */
+  margin-top: -6px;
 }
+/* La phrase se cale sur le milieu du label, sinon elle flotte en haut d'un bloc
+   deux fois plus grand que celui des deux autres éléments. */
+.trust__item--label { align-items: center; }
+
+/* La signature « Un produit Q-Leap. » a été retirée le 2026-09-08 à la demande
+   du client (point 8 du retour). La classe `.trust__sign` part avec elle :
+   plus une page ne l'emploie. */
 
 @media (max-width: 900px) {
   .trust { grid-template-columns: 1fr; gap: 20px; }
