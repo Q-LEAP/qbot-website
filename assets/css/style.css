@@ -6474,6 +6474,37 @@ label > input[type="checkbox"] {
     border-color 0.35s ease,
     background 0.35s ease;
 }
+/* ---- L'emplacement de marque (2026-09-08) ----
+   Le client a obtenu l'accord d'usage des logos. Ils sont posés en MONOCHROME,
+   à la taille d'une icône, dans l'encre de la case : c'est le langage des
+   pictogrammes du site, et une grille de quinze logos en couleurs sur fond noir
+   changerait l'allure de la section.
+
+   L'EMPLACEMENT EST RÉSERVÉ SUR TOUTES LES CASES, y compris celles dont la
+   marque n'est pas encore fournie et les deux entrées « porte ouverte », qui
+   n'en auront jamais. C'est ce qui aligne tous les noms sur la même abscisse,
+   et surtout ce qui fait que l'arrivée des cinq marques manquantes ne déplacera
+   rien. Une case en attente montre un creux, pas un décalage.
+
+   `aria-hidden` sur l'emplacement : le nom de la marque est déjà le texte de la
+   case, un lecteur d'écran n'a pas à l'entendre deux fois. */
+.compat__logo {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-right: 12px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  transition: color 0.35s ease;
+}
+.compat__logo svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+.compat__item:hover .compat__logo { color: var(--teal); }
+
 /* Le liseré. État au repos = entier : c'est la règle du dépôt, l'animation est
    ajoutée par `.is-visible`, jamais défaite par une autre règle. */
 .compat__item::before {

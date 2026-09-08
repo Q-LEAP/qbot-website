@@ -8492,3 +8492,48 @@ seconde moitié de « Comment ça fonctionne ». Le document ne le mentionne pas
 et il avait été demandé explicitement par une review antérieure : le retirer
 serait élargir le périmètre sans mandat. À signaler au client, puisque sa
 consigne « une section, une idée principale » le désigne indirectement.
+
+### Les logos de marque dans la grille de compatibilité (2026-09-08)
+
+Le client a obtenu l'accord d'usage. Les marques sont posées en **monochrome**,
+à la taille d'une icône, dans l'encre de la case : c'est le langage des
+pictogrammes du site, et quinze logos en couleurs sur un fond noir changeraient
+l'allure de la section. **Réserve à connaître** : certaines chartes de marque
+interdisent explicitement de recolorer un logo. L'accord obtenu par le client
+couvre cet usage, sinon il faut repasser en couleurs officielles.
+
+**HUIT MARQUES SUR TREIZE SEULEMENT SONT DISPONIBLES**, et l'absence de trois
+d'entre elles n'est pas un trou du catalogue :
+
+| | Posées | En attente du fichier client |
+|---|---|---|
+| Applications 2FA | Google Authenticator | LuxTrust Mobile, itsme, Microsoft Authenticator |
+| Outils de test | Selenium, Cypress, Appium, Playwright, Robot Framework, Jenkins, GitLab | Katalon, TestComplete |
+
+**MICROSOFT A FAIT RETIRER SES MARQUES** de la collection employée. Ce n'est pas
+un oubli : leurs logos ne s'obtiennent que par leur centre de marque, avec
+acceptation de leurs conditions.
+
+**L'EMPLACEMENT EST RÉSERVÉ SUR TOUTES LES CASES**, y compris celles sans marque
+et les deux entrées « porte ouverte », qui n'en auront jamais. C'est ce qui
+aligne tous les noms d'une même colonne sur la même abscisse, et surtout ce qui
+fait que l'arrivée des cinq marques manquantes ne déplacera rien. Une case en
+attente montre un creux, pas un décalage.
+
+`tools/logos-compat.mjs` pose les marques sur les **six** pages qui portent une
+grille. C'est un générateur et pas six éditions à la main, pour la raison
+mesurée le jour même : ces grilles avaient déjà divergé, trois listes d'outils
+différentes coexistaient côté français. Il est **idempotent**, vérifié par
+empreinte.
+
+**POUR AJOUTER UNE MARQUE MANQUANTE** : déposer son SVG dans `tools/logos/`,
+renseigner son slug dans la table `MARQUES` du script, relancer avec
+`--ecrire`. Le script refuse de tourner si le fichier annoncé n'existe pas, et
+contrôle que chaque SVG a un tracé UNIQUE en `viewBox` 24×24 sans couleur
+écrite : c'est ce qui permet l'héritage de `currentColor`, donc le monochrome
+et le survol en teal.
+
+Les tracés sont **recopiés dans le HTML**, pas chargés : `tools/` n'est pas
+publié, il n'y a aucune requête de plus, et 12,2 Ko de tracé par page pour huit
+marques. Un fichier de sprite aurait été plus léger mais ajoutait une requête
+et casse en `file://`.
