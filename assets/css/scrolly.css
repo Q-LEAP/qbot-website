@@ -459,6 +459,54 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* Le label Made in Luxembourg, à la place du chiffre-clé du dernier pas (point
+   5 du retour du 2026-09-08).
+
+   124 PX ET PAS DAVANTAGE, et ce n'est pas un choix esthétique : le seul
+   exemplaire du label dont nous disposions est celui de la brochure du client,
+   qui en fait 156 de large en pixels réels. Au-delà on n'agrandit que du vide.
+   Un fichier vectoriel de la marque le rendrait net sur un écran à forte
+   densité ; il est demandé au client.
+
+   Les angles arrondis sont dans le fichier, transparents : pas de
+   `border-radius` ici, sous peine de rogner deux fois. */
+.scrolly__fig--label {
+  display: block;
+  margin-top: 22px;
+}
+.scrolly__fig--label img {
+  display: block;
+  width: 124px;
+  height: auto;
+}
+
+/* SUR TÉLÉPHONE, LE LABEL PARTAGE SA RANGÉE AVEC L'APPEL À L'ACTION, et c'est
+   une contrainte de place, pas un effet : la hauteur de la plus haute des
+   quatre cartes est mesurée par `scrolly.js` et RETIRÉE à la scène 3D. Empilé,
+   le label lui coûtait 70 px, soit une scène de 344 px au lieu de 414 sur un
+   iPhone 14 — la passe mobile du 2026-08-19 s'était justement battue pour ces
+   pixels-là. Côte à côte, la carte est plus courte qu'avant.
+
+   Sans `:has()`, tout s'empile comme le reste : plus long, jamais cassé. */
+@media (max-width: 900px) {
+  .scrolly__step-inner:has(.scrolly__fig--label) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+  .scrolly__step-inner:has(.scrolly__fig--label) > * { grid-column: 1 / -1; }
+  .scrolly__step-inner:has(.scrolly__fig--label) > .scrolly__fig--label {
+    grid-column: 1;
+    margin-top: 16px;
+  }
+  .scrolly__step-inner:has(.scrolly__fig--label) > .scrolly__step-cta {
+    grid-column: 2;
+    justify-self: end;
+    margin-top: 16px;
+  }
+  .scrolly__fig--label img { width: 96px; }
+}
+
 /* ── CTA persistant ───────────────────────────────────────────────────── */
 .scrolly__cta {
   position: fixed;
