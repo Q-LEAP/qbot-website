@@ -309,17 +309,38 @@
       </div>
     </div>
 
-    <!-- LA VIGNETTE DU FILM, POSÉE ICI LE 2026-09-08. Cf. le pavé de la page
-         française : lien vers le fichier, modale par le module 24, rien de
-         téléchargé avant le clic. -->
+    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
+      <h3 style="margin-bottom:12px;">Build an automation visually, without writing code</h3>
+      <p class="section-subtitle" style="margin-bottom:24px;">Scenarios are built in the web interface, on top of screenshots of the app under test. No code at all: a scenario is a screenshot and the places to tap on it.</p>
+      <ul class="api-facts api-facts--deux">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You drop in a screenshot, which becomes the background of the step</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You place the tap points by clicking, and set each wait time</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You add, reorder or remove a step at any time</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The scenario is saved on the device, and reusable at will</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======= LA DÉMONSTRATION EN VIDÉO =======
+     Point 3 du retour du 2026-09-08 : le film redevient une section, avec son
+     titre et son appel à l'action, « davantage présenté comme une démonstration
+     du produit ». Le bouton porte `data-film-modal` comme la vignette : le
+     module 24 vise tous les liens qui le portent, donc les deux ouvrent la même
+     modale, et sans JavaScript les deux restent des liens vers le fichier. -->
+<section class="section" aria-labelledby="film-title">
+  <div class="container">
     <div class="filmband">
       <div class="filmband__text">
-        <span class="section-label">On video</span>
-        <h3 class="filmband__titre"><span class="nb">Q-Bot</span> in action</h3>
-        <p class="filmband__desc">One minute to see what these five steps describe: the device on a desk, the smartphone docked at the front, a scenario playing out and the authentication going through. Silent film, English captions.</p>
-        <a href="use-cases.html" class="btn btn--outline">
-          See how it works
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <span class="section-label">The demo</span>
+        <h2 class="section-title filmband__titre" id="film-title">Watch <span class="nb">Q-Bot</span> clear a 2FA in 60 seconds</h2>
+        <p class="filmband__desc">A test reaches the 2FA step. <span class="nb">Q-Bot</span> takes over on a real smartphone. The test carries on automatically.</p>
+        <a class="btn btn--primary" href="../assets/video/qbot-demo.mp4?v=301fa999"
+           data-film-modal
+           data-film-titre="Q-Bot in action"
+           data-film-fermer="Close the video">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+          Watch the demo
         </a>
       </div>
       <a class="filmcard" href="../assets/video/qbot-demo.mp4?v=301fa999"
@@ -331,17 +352,6 @@
         <span class="filmcard__titre">Play the film, <span class="nb">Q-Bot</span> in action</span>
         <span class="filmcard__meta">1 min, no sound</span>
       </a>
-    </div>
-
-    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
-      <h3 style="margin-bottom:12px;">Build an automation visually, without writing code</h3>
-      <p class="section-subtitle" style="margin-bottom:24px;">Scenarios are built in the web interface, on top of screenshots of the app under test. No code at all: a scenario is a screenshot and the places to tap on it.</p>
-      <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You drop in a screenshot, which becomes the background of the step</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You place the tap points by clicking, and set each wait time</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>You add, reorder or remove a step at any time</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The scenario is saved on the device, and reusable at will</span></li>
-      </ul>
     </div>
   </div>
 </section>

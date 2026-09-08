@@ -335,20 +335,38 @@
       </div>
     </div>
 
-    <!-- LA VIGNETTE DU FILM, POSÉE ICI LE 2026-09-08. Le film occupait une
-         section à lui seul ; la review demande qu'il « complète les cinq
-         étapes » au lieu de faire écran entre elles et la suite.
-         C'EST UN LIEN VERS LE FICHIER, et c'est volontaire : sans JavaScript le
-         film s'ouvre dans le lecteur du navigateur. Le module 24 remplace ce
-         comportement par la modale. Rien n'est téléchargé avant le clic. -->
+    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
+      <h3 style="margin-bottom:12px;">Créer une automatisation visuellement, sans écrire de code</h3>
+      <p class="section-subtitle" style="margin-bottom:24px;">Les scénarios se construisent dans l'interface web, sur les captures d'écran de l'application à tester. Aucune ligne de code&nbsp;: un scénario, c'est une capture et les endroits où il faut appuyer.</p>
+      <ul class="api-facts api-facts--deux">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui en cliquant, et réglez chaque temps d'attente</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le scénario est enregistré dans le boîtier, et réutilisable à volonté</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======= LA DÉMONSTRATION EN VIDÉO =======
+     Point 3 du retour du 2026-09-08 : le film redevient une section, avec son
+     titre et son appel à l'action, « davantage présenté comme une démonstration
+     du produit ». Le bouton porte `data-film-modal` comme la vignette : le
+     module 24 vise tous les liens qui le portent, donc les deux ouvrent la même
+     modale, et sans JavaScript les deux restent des liens vers le fichier. -->
+<section class="section" aria-labelledby="film-title">
+  <div class="container">
     <div class="filmband">
       <div class="filmband__text">
-        <span class="section-label">En vidéo</span>
-        <h3 class="filmband__titre"><span class="nb">Q-Bot</span> en action</h3>
-        <p class="filmband__desc">Une minute pour voir ce que ces cinq étapes décrivent&nbsp;: le boîtier sur un bureau, le smartphone à l'avant, un scénario qui se joue et l'authentification qui passe. Film muet, incrustations en anglais.</p>
-        <a href="cas-usage.html" class="btn btn--outline">
-          Voir le fonctionnement
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <span class="section-label">La démonstration</span>
+        <h2 class="section-title filmband__titre" id="film-title">Voyez <span class="nb">Q-Bot</span> passer une 2FA en 60 secondes</h2>
+        <p class="filmband__desc">Un test arrive à l'étape 2FA. <span class="nb">Q-Bot</span> prend le relais sur un vrai smartphone. Le test continue automatiquement.</p>
+        <a class="btn btn--primary" href="assets/video/qbot-demo.mp4?v=301fa999"
+           data-film-modal
+           data-film-titre="Q-Bot en action"
+           data-film-fermer="Fermer la vidéo">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+          Voir la démo
         </a>
       </div>
       <a class="filmcard" href="assets/video/qbot-demo.mp4?v=301fa999"
@@ -360,17 +378,6 @@
         <span class="filmcard__titre">Lire le film, <span class="nb">Q-Bot</span> en action</span>
         <span class="filmcard__meta">1 min, sans son</span>
       </a>
-    </div>
-
-    <div style="margin-top:64px; padding-top:40px; border-top:1px solid var(--border);">
-      <h3 style="margin-bottom:12px;">Créer une automatisation visuellement, sans écrire de code</h3>
-      <p class="section-subtitle" style="margin-bottom:24px;">Les scénarios se construisent dans l'interface web, sur les captures d'écran de l'application à tester. Aucune ligne de code&nbsp;: un scénario, c'est une capture et les endroits où il faut appuyer.</p>
-      <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui en cliquant, et réglez chaque temps d'attente</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le scénario est enregistré dans le boîtier, et réutilisable à volonté</span></li>
-      </ul>
     </div>
   </div>
 </section>
