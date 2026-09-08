@@ -2934,20 +2934,19 @@ p { color: var(--gray); }
    remplace aussi l'intitulé en gras, qui les aurait écrits deux fois côte à
    côte ; les mots restent annoncés par le texte alternatif de l'image.
 
-   102 PX, ET C'EST LA RÉSOLUTION QUI DÉCIDE : le seul exemplaire du label dont
-   nous disposions est celui de la brochure du client, 156 px de large en pixels
-   réels. Au-delà on n'agrandirait que du vide. Un fichier vectoriel de la marque
-   le rendrait net sur un écran à forte densité, il est à demander.
+   PLUS DE CARTOUCHE BLANC : le label est en encre BLANCHE sur transparence
+   (second retour du 2026-09-08, « pas de fond blanc, le mettre en version blanc
+   et plus petit »). Le carré blanc de la brochure faisait une tache sur une page
+   noire, et il pesait plus lourd que les deux pictogrammes voisins.
 
-   Les angles arrondis sont dans le fichier, transparents : pas de
-   `border-radius` ici, sous peine de rogner deux fois. */
+   60 PX, ET C'EST LA RÉSOLUTION QUI DÉCIDE : le fichier fait 98 px de large,
+   recadré au plus près de l'encre. Au-delà on n'agrandirait que du vide. Un
+   fichier vectoriel de la marque le rendrait net sur un écran à forte densité,
+   il est à demander. */
 .trust__label {
   flex: none;
-  width: 102px;
+  width: 60px;
   height: auto;
-  /* Le pictogramme qu'il remplace fait 38 px et l'élément est aligné en haut :
-     sans ce recalage, le label dépasse la ligne de base de ses deux voisins. */
-  margin-top: -6px;
 }
 /* La phrase se cale sur le milieu du label, sinon elle flotte en haut d'un bloc
    deux fois plus grand que celui des deux autres éléments. */

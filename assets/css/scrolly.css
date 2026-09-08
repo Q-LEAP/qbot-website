@@ -462,21 +462,21 @@
 /* Le label Made in Luxembourg, à la place du chiffre-clé du dernier pas (point
    5 du retour du 2026-09-08).
 
-   124 PX ET PAS DAVANTAGE, et ce n'est pas un choix esthétique : le seul
-   exemplaire du label dont nous disposions est celui de la brochure du client,
-   qui en fait 156 de large en pixels réels. Au-delà on n'agrandit que du vide.
-   Un fichier vectoriel de la marque le rendrait net sur un écran à forte
-   densité ; il est demandé au client.
+   ENCRE BLANCHE SUR TRANSPARENCE, plus de cartouche : second retour du même
+   jour, « pas de fond blanc, le mettre en version blanc et plus petit ». Le
+   carré blanc de la brochure faisait une tache sur la scène sombre.
 
-   Les angles arrondis sont dans le fichier, transparents : pas de
-   `border-radius` ici, sous peine de rogner deux fois. */
+   60 PX ET PAS DAVANTAGE, et ce n'est pas un choix esthétique : le fichier fait
+   98 px de large, recadré au plus près de l'encre, et il n'existe pas de source
+   plus fine. Un fichier vectoriel de la marque le rendrait net sur un écran à
+   forte densité ; il est demandé au client. */
 .scrolly__fig--label {
   display: block;
   margin-top: 22px;
 }
 .scrolly__fig--label img {
   display: block;
-  width: 124px;
+  width: 60px;
   height: auto;
 }
 
@@ -504,7 +504,7 @@
     justify-self: end;
     margin-top: 16px;
   }
-  .scrolly__fig--label img { width: 96px; }
+  .scrolly__fig--label img { width: 52px; }
 }
 
 /* ── CTA persistant ───────────────────────────────────────────────────── */

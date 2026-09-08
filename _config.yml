@@ -80,6 +80,11 @@ exclude:
   # la taille d'une carte de crédit » : remplacé le 2026-09-03 par le film de
   # l'intérieur, qui montre la carte au lieu de l'enveloppe.
   - assets/img/qbot-film-boitier.jpg
+  # Le label Made in Luxembourg sur son cartouche BLANC, découpé de la brochure
+  # le 2026-09-08. Le client l'a voulu le même jour « en version blanc et plus
+  # petit », sans fond : c'est `made-in-luxembourg-blanc.png` qui est servi.
+  # Celui-ci reste dans git, il est la SOURCE dont l'autre est tiré.
+  - assets/img/made-in-luxembourg.png
   # La boucle décorative de 8,7 s et son affiche : le film de démonstration a
   # pris sa place dans les deux accueils le 2026-09-02.
   - assets/video/qbot-home.mp4
