@@ -30,6 +30,53 @@ navToggle?.addEventListener('click', () => {
   navToggle.setAttribute('aria-expanded', String(isOpen));
 });
 
+/* ── Le bouton de réservation rejoint le menu sur téléphone ──
+   Demandé le 2026-09-08 : « le bouton du header je le mettrais dans le menu sur
+   mobile », et « le menu mobile est un peu léger avec juste 2 pages ». Les deux
+   se règlent d'un coup, le menu passant de trois entrées à quatre.
+
+   ON DÉPLACE LE NOEUD, ON NE LE DUPLIQUE PAS. Un second bouton donnerait deux
+   arrêts de tabulation et deux fois le même nom accessible ; surtout,
+   `tools/maj-nav-booking.py` compte UN bouton par page dans la SOURCE, et un
+   doublon écrit dans le balisage le tromperait. Déplacé, le noeud garde ses
+   écouteurs : la fenêtre de réservation du module 20 s'ouvre sans une ligne de
+   plus.
+
+   Sans JavaScript, le bouton reste dans la barre. C'est l'état d'avant : il
+   n'est jamais perdu. */
+{
+  const ctaNav   = document.querySelector('.nav__actions .btn');
+  const actions  = document.querySelector('.nav__actions');
+  const lang     = document.querySelector('.nav__lang');
+  if (ctaNav && navMenu && actions) {
+    const etroit = window.matchMedia('(max-width: 768px)');
+    let hote = null;
+    const place = () => {
+      if (etroit.matches) {
+        if (!hote) {
+          hote = document.createElement('li');
+          hote.className = 'nav__menu-cta';
+          hote.appendChild(ctaNav);
+          navMenu.appendChild(hote);
+        }
+      } else if (hote) {
+        actions.insertBefore(ctaNav, lang);
+        hote.remove();
+        hote = null;
+      }
+    };
+    place();
+    etroit.addEventListener('change', place);
+
+    /* Il ouvre une fenêtre modale au lieu de naviguer : sans cela le menu
+       resterait déplié derrière elle, et on le retrouverait ouvert en sortant. */
+    ctaNav.addEventListener('click', () => {
+      navMenu.classList.remove('open');
+      navToggle?.setAttribute('aria-expanded', 'false');
+    });
+  }
+}
+
 // Ferme au clic extérieur
 document.addEventListener('click', (e) => {
   if (navMenu?.classList.contains('open') && !nav?.contains(e.target)) {

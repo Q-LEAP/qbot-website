@@ -1231,16 +1231,14 @@ p { color: var(--gray); }
   gap: 16px;
   flex-wrap: wrap;
 }
-/* Sous 520 px les boutons prennent toute la largeur, comme ceux des hero : c'est
-   la même règle, pour la même raison — une cible à la largeur du pouce et une
-   hiérarchie qui se lit. */
+/* Sous 520 px les boutons s'empilent, comme ceux des hero, et la pleine largeur
+   ne vaut que pour une PAIRE : voir la règle des hero, même arbitrage du
+   2026-09-08. Un bouton seul garde la largeur de son texte, posé sur la
+   gouttière comme tout le reste du bloc. */
 @media (max-width: 520px) {
-  .cta-block__actions { flex-direction: column; align-items: stretch; }
-  /* Le sélecteur couvre aussi le bouton seul, sans rangée autour de lui : la
-     moitié des blocs n'en a qu'un, et sans ça le même bloc changeait d'allure
-     selon qu'il portait un bouton ou deux. */
-  .cta-block__actions .btn,
-  .cta-block > .btn { width: 100%; justify-content: center; }
+  .cta-block__actions { flex-direction: column; align-items: flex-start; }
+  .cta-block__actions:has(.btn + .btn) { align-items: stretch; }
+  .cta-block__actions:has(.btn + .btn) .btn { width: 100%; justify-content: center; }
 }
 
 /* ---- Deux colonnes égales ---- */
@@ -2381,6 +2379,12 @@ p { color: var(--gray); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; }
 
+  /* Le bouton de réservation, déplacé dans le menu par le module 1 (retour du
+     2026-09-08). Pleine largeur du tiroir : c'est l'action principale, et un
+     tiroir déplié n'a pas de raison de la laisser flotter à mi-largeur. */
+  .nav__menu-cta { width: 100%; margin-top: 4px; }
+  .nav__menu-cta .btn { width: 100%; justify-content: center; }
+
   /* 16 px sur tous les champs de saisie, et pas 15. En dessous de 16 px, Safari
      iOS ZOOME la page à la prise de focus pour rendre le texte lisible, puis ne
      dézoome pas : le visiteur se retrouve dans un formulaire recadré, décalé
@@ -2419,23 +2423,34 @@ p { color: var(--gray); }
      globe. `font-size: 0` masque le code « FR » sans toucher au SVG, qui porte
      ses propres dimensions — l'alternative demandait d'envelopper ce texte dans
      un span sur les 23 pages. L'intitulé accessible du lien reste complet. */
-    /* Les boutons des deux hero (accueil et commande) prennent toute la largeur
-     sous 520 px. Ils gardaient la largeur de leur texte, centrés : deux pastilles
-     de tailles différentes, empilées, dont on devait viser le milieu. Pleine
-     largeur, la hiérarchie se lit (le teal d'abord, le contour ensuite) et la
-     cible fait la largeur du pouce. Cela ne vaut que pour les hero : ce sont les
-     seuls endroits où le bouton EST l'action de l'écran. */
+    /* Les boutons des deux hero (accueil et commande) s'empilent sous 520 px.
+     LA PLEINE LARGEUR NE VAUT QUE POUR UNE PAIRE, et c'est un retour du client
+     (« les boutons sur mobile c'est un peu trop », « plus discret le bouton du
+     hero »). Le motif avait été posé pour deux boutons empilés : deux pastilles
+     de tailles différentes l'une sous l'autre se lisent mal, les étirer rend la
+     hiérarchie évidente. Un bouton SEUL n'a pas ce problème, et pris sur toute
+     la largeur de l'écran il écrase le texte qu'il conclut.
+     `:has()` absent, tout reste en largeur automatique : c'est le comportement
+     d'avant l'introduction de la règle, jamais un défaut. */
   @media (max-width: 520px) {
     .hero__actions,
     .order-hero__actions {
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
     }
-    .hero__actions .btn,
-    .order-hero__actions .btn {
+    .hero__actions:has(.btn + .btn),
+    .order-hero__actions:has(.btn + .btn) { align-items: stretch; }
+    .hero__actions:has(.btn + .btn) .btn,
+    .order-hero__actions:has(.btn + .btn) .btn {
       width: 100%;
       justify-content: center;
     }
+    /* Et la grande taille redescend : `btn--lg` est dimensionné pour un écran
+       large, il donne une pastille de 52 px de haut sur un téléphone. */
+    .hero__actions .btn--lg,
+    .order-hero__actions .btn--lg,
+    .cta-block > .btn--lg,
+    .cta-block__actions .btn--lg { padding: 12px 26px; font-size: 0.9375rem; }
   }
 
 @media (max-width: 400px) {
