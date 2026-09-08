@@ -8495,12 +8495,23 @@ consigne « une section, une idée principale » le désigne indirectement.
 
 ### Les logos de marque dans la grille de compatibilité (2026-09-08)
 
-Le client a obtenu l'accord d'usage. Les marques sont posées en **monochrome**,
-à la taille d'une icône, dans l'encre de la case : c'est le langage des
-pictogrammes du site, et quinze logos en couleurs sur un fond noir changeraient
-l'allure de la section. **Réserve à connaître** : certaines chartes de marque
-interdisent explicitement de recolorer un logo. L'accord obtenu par le client
-couvre cet usage, sinon il faut repasser en couleurs officielles.
+Le client a obtenu l'accord d'usage. **LES MARQUES SONT DANS LEURS COULEURS
+OFFICIELLES**, posées sur une pastille claire, à la taille d'une icône. Le
+monochrome a été essayé d'abord puis abandonné le même jour, à la demande du
+client : « reprends tous les logos avec leurs colorimétries de base si ça nous
+permet de gagner du temps ». Et cela en fait gagner, pour une raison qui n'est
+pas évidente : en couleur, une icône d'application MATRICIELLE devient
+utilisable, alors qu'un PNG ne peut pas donner une silhouette monochrome propre.
+C'est ce qui rouvre la porte aux marques introuvables en vectoriel.
+
+**LA PASTILLE CLAIRE N'EST PAS UNE COQUETTERIE, ELLE EST MESURÉE.** La couleur
+officielle de Robot Framework est le NOIR () et le symbole de Katalon
+est vert et noir : posées telles quelles sur les cartes noires du site, ces deux
+marques disparaissent, la seconde ne laissant qu'un carré vert flottant. Les
+chartes de marque autorisent toutes le logo sur fond blanc et interdisent
+souvent de le recolorer : la pastille est donc la seule solution à la fois
+lisible et conforme.  la retire des cases sans marque, pour ne pas
+montrer un carré blanc vide.
 
 **NEUF MARQUES SUR TREIZE**, et l'absence de trois
 d'entre elles n'est pas un trou du catalogue :
