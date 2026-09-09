@@ -1605,12 +1605,22 @@ p { color: var(--gray); }
    maintenant la même pour les deux, et `object-position: left` garde les deux
    logos alignés SUR le même bord gauche — centrés, ils se décaleraient entre eux
    de la moitié de l'écart, ce qui remplacerait un défaut par un autre. */
+/* LA PASTILLE CLAIRE EST CE QUI REND LE LOGO VISIBLE EN COULEURS (2026-09-09).
+   Ces lockups ont une encre NOIRE : posés tels quels sur une carte noire ils
+   disparaissent, et c'est bien pour cela qu'ils étaient filtrés en blanc. La
+   pastille garde leur encre et leur accent, exactement comme les marques de la
+   grille de compatibilité. `box-sizing: content-box` pour que le remplissage
+   s'ajoute aux 140 x 36 de la zone d'image au lieu de les rogner. */
 .product-card__icon {
   height: 36px;
   width: 140px;
   object-fit: contain;
   object-position: left center;
   flex-shrink: 0;
+  box-sizing: content-box;
+  padding: 10px 14px;
+  background: #FFFFFF;
+  border-radius: 10px;
 }
 .product-card h3 { margin-bottom: 6px; font-size: 1rem; }
 .product-card p { font-size: 0.875rem; }
@@ -1690,6 +1700,22 @@ p { color: var(--gray); }
   padding-left: 20px;
   border-left: 2px solid rgba(0, 203, 190, 0.42);
 }
+/* LE PORTRAIT EST UN AVATAR, PAS UNE PHOTO DE CARTE (2026-09-09, « réduis la
+   taille de l'image pour que ça rentre dans les cases »). Pleine largeur de la
+   case (331 px utiles), une photo carrée ferait 331 px de haut et la case
+   deviendrait une carte photo avec un peu de texte dessous. À 104 px elle
+   annonce la personne et laisse la biographie être le contenu.
+   104 px affichés, sortie en 320 px : couvre une densité 3 sans agrandissement
+   (les sources sont des recadrages, il n'y a pas plus de pixels à aller
+   chercher au-delà). */
+.equipe__photo {
+  display: block;
+  width: 104px;
+  height: 104px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  object-fit: cover;
+}
 .equipe__nom {
   margin: 0 0 4px;
   font-weight: 700;
@@ -1743,6 +1769,8 @@ p { color: var(--gray); }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 }
+/* Même pastille que les deux cartes filles, à l'échelle du bloc parent : voir
+   le pavé de `.product-card__icon`. */
 .ecosys__logo {
   flex: none;
   width: 174px;
@@ -1750,6 +1778,10 @@ p { color: var(--gray); }
   object-fit: contain;
   object-position: left center;
   margin-top: 2px;
+  box-sizing: content-box;
+  padding: 14px 18px;
+  background: #FFFFFF;
+  border-radius: 12px;
 }
 .ecosys__corps { max-width: 68ch; }
 .ecosys__corps p { margin: 0 0 14px; }
@@ -2100,6 +2132,28 @@ p { color: var(--gray); }
   margin-top: 28px !important;
   font-size: 0.9375rem;
   line-height: 1.9;
+}
+
+/* ══ LA PHOTO DES BUREAUX, SOUS LES COORDONNÉES (.contact-photo) ══════════
+   Posée le 2026-09-09 sur demande du client. Elle n'est PAS bornée par le
+   `max-width: 34ch` de `.contact-coord` : ce plafond cale une mesure de lecture
+   sur une adresse, il n'a rien à faire sur une image, et la photo est donc
+   sortie du bloc de texte plutôt qu'imbriquée dedans.
+   Le plafond de 460 px est calculé, pas choisi : la source fait 1000 px, donc
+   c'est la largeur au-delà de laquelle un écran de densité 2 agrandirait. La
+   colonne fait moins que cela sur un téléphone, où la photo reste donc pleine
+   largeur.
+   Traitement sobre : un rayon et un filet, pas de vignette ni de halo. C'est un
+   complément d'information sur un lieu, pas un visuel produit, et la page est
+   celle qu'on a justement allégée de ses cadres le même jour. */
+.contact-photo {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  margin-top: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
 }
 .contact-coord__joindre a { color: var(--teal-text); }
 .contact-coord__joindre a:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -5116,20 +5170,18 @@ a:focus-visible { border-radius: var(--radius-sm); }
   background: #141414;
   border-color: #2B2B2B;
 }
-/* Logos noirs sur transparent (partenaires/produits) : invisibles sur fond
-   sombre sans ce filtre — même traitement que le logo de nav/footer. */
-[data-theme="dark"] .product-card__icon {
-  filter: brightness(0) invert(1);
-}
-/* LE LOGO DU BLOC PARENT PREND LE MÊME FILTRE, et c'était un vrai défaut
-   (2026-09-09) : `.ecosys__logo` n'est pas un `.product-card__icon`, donc il
-   n'héritait de rien et s'affichait en ENCRE NOIRE sur le fond #141414 du bloc.
-   Mesuré sur les pixels rendus : (0,0,0) sur (20,20,20), c'est-à-dire invisible.
-   Les trois logos de cette section sont donc traités pareil, et leurs accents
-   propres (le bleu de Q-Leap, le tick teal de Q-Bot) sont aplatis avec : c'est
-   le prix d'un traitement uniforme, et il est cohérent puisque les trois sont
-   des lockups noirs posés sur une surface sombre. */
-[data-theme="dark"] .ecosys__logo { filter: brightness(0) invert(1); }
+/* LES TROIS LOGOS DE L'ÉCOSYSTÈME NE SONT PLUS FILTRÉS, ils sont posés sur une
+   pastille claire (2026-09-09, « mets les logos en couleurs ici plutôt »). Le
+   `filter: brightness(0) invert(1)` qu'ils portaient jusque-là aplatissait les
+   trois lockups en blanc pur et DÉTRUISAIT leur accent propre, qui est la seule
+   chose qui les distingue : Q-Leap porte un bleu #0064DD, Q-Guard un indigo
+   #493AEB, Q-Bot le teal de charte #00CABD (couleurs relevées dans les
+   fichiers, pas devinées).
+   La pastille est le traitement déjà retenu le 2026-09-08 pour la grille de
+   compatibilité, et pour la même cause : un lockup à encre noire disparaît sur
+   une carte noire, et les chartes de marque autorisent toutes le logo sur fond
+   blanc alors qu'elles interdisent souvent de le recolorer. Voir les règles
+   `.ecosys__logo` et `.product-card__icon` plus haut. */
 
 /* ── Tags / badges ── */
 [data-theme="dark"] .badge-lux {

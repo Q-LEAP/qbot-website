@@ -10147,3 +10147,102 @@ pas). Textes du client ; l'anglais rend l'intention.
 601 / 768 / 860 / 900 / 901 / 1024 / 1440 / 2560 px : **0 débordement horizontal**, 0 révélation
 invisible, un seul `h1`, 0 cadratin, 0 erreur console, écart titre vers chapeau à 16 px partout,
 et le chapeau aligné au pixel sur la gouttière du logo.
+
+## Les logos reprennent leurs couleurs, l'équipe ses visages (2026-09-09, 16 h)
+
+Cinq retours enchaînés, tous appliqués dans les deux langues.
+
+### LES TROIS LOGOS DE L'ÉCOSYSTÈME PASSENT SUR PASTILLE CLAIRE
+
+« Mets les logos en couleurs ici plutôt. » Ils étaient aplatis en blanc pur par un
+`filter: brightness(0) invert(1)`, qui **détruisait leur accent propre**, c'est-à-dire la
+seule chose qui les distingue. Couleurs relevées dans les fichiers, pas devinées :
+
+| | accent |
+|---|---|
+| `logo-qleap.png` | bleu **#0064DD** |
+| `logo-qguard.png` | indigo **#493AEB** |
+| `logo-qbot-card.png` | teal de charte **#00CABD** |
+
+**LA PASTILLE CLAIRE EST LA SEULE SOLUTION, et le précédent est du 2026-09-08.** Ces
+lockups ont une encre NOIRE : posés tels quels sur une carte noire ils disparaissent, et
+c'est bien pour cela qu'ils étaient filtrés. Les chartes de marque autorisent toutes le
+logo sur fond blanc alors qu'elles interdisent souvent de le recolorer, exactement le
+raisonnement qui avait mis les marques de la grille de compatibilité sur pastille.
+
+Fond posé sur l'`<img>` elle-même (`box-sizing: content-box` plus un remplissage), donc
+**aucun changement de balisage** : un PNG transparent laisse voir le fond de sa propre
+boîte. Contrepartie connue et acceptée : sur fond sombre, l'indigo de Q-Guard ne donnerait
+que 2,8:1 et le bleu de Q-Leap 3,5:1 ; sur la pastille ils sont à leur contraste d'origine.
+
+### Trois portraits, et il n'y avait que trois images pour quatre usages
+
+« Mets les 3 photos que je t'ai donné de Nikola, Sylvain et Joao pour illustrer la team
+(réduis la taille de l'image pour que ça rentre dans les cases évidemment, et enlève les
+du carrousel). »
+
+**« 11_04_35.png » ET « 11_04_35 1.png » SONT LE MÊME FICHIER** (md5 identique). La photo
+de la section « Origine du produit » et celle que le client attribue à João ont donc la
+même source. Les deux recadrages restent très différents, plan large de la scène contre
+portrait serré, comme le sont déjà `qbot-photo-poste.jpg` et le carré de « La solution »,
+tirés du même instant du film.
+
+**ET LA PHOTO ATTRIBUÉE À NIKOLA EN MONTRE DEUX.** Le recadrage porte sur l'homme de
+GAUCHE (chemise blanche), faute de tout élément permettant de trancher. **C'est signalé au
+client, et changer de côté est une ligne dans `scratchpad/portraits.py`.**
+
+L'avatar fait **104 px, pas la largeur de la case** : pleine largeur (331 px utiles) une
+photo carrée ferait 331 px de haut et la case deviendrait une carte photo avec un peu de
+texte dessous. Sortie en 320 px, ce qui couvre une densité 3 sans agrandissement.
+
+Les deux vues sorties du carrousel (4 vues, 4 pastilles) sont **exclues de la
+publication** : plus aucune page ne les cite.
+
+### « Origine du produit » passe en paysage
+
+Recadrage 3/2 pris **bas dans la source**, ce qui sort le kakemono du champ : il porte
+« 100% automate », la revendication retirée du site le 2026-08-24. Elle reste dans les
+pixels des autres recadrages et y est illisible, mais autant ne pas la cadrer.
+
+Le cadre perd `--portrait` et redevient une `.intro__image` ordinaire : c'est le
+comportement voulu sur une photo (sur-échelle de 8 % et contre-parallaxe), la variante
+`--portrait` n'existant que pour caler une image verticale devant un texte court.
+
+### La photo des bureaux sur la page contact
+
+`qleap-bureaux.jpg`, sous le bloc adresse. **Elle est posée APRÈS `.contact-coord`, jamais
+dedans** : ce bloc porte un `max-width: 34ch` qui cale une mesure de lecture sur une
+adresse et n'a rien à faire sur une image. Plafond de 460 px calculé et non choisi : la
+source fait 1000 px, c'est la largeur au-delà de laquelle un écran de densité 2
+agrandirait. Traitement sobre, un rayon et un filet, sans vignette ni halo : la page est
+celle qu'on a justement allégée de ses cadres le matin même.
+
+**Même manifeste C2PA que les autres photos fournies** (`gpt-image`,
+`trainedAlgorithmicMedia`, `watermarked`). Arbitrage du client du 2026-09-09, inchangé.
+
+### Les deux textes de la page Caractéristiques
+
+Chapeau de page et première section, textes du client. Le titre « Un format pensé pour un
+poste de travail » devient **« Un format bureau »** et reçoit un chapeau, qui n'existait
+pas. Le texte du client dit « smartphone Android » : c'est cohérent avec l'arbitrage du
+2026-09-01, qui garde Android **là où il porte un fait**, et la fiche technique est
+précisément cet endroit.
+
+### Deux pièges rencontrés
+
+- **`src.index(nom)` trouve le `founder` du JSON-LD, en tête de page**, pas le membre de la
+  liste : le nom d'une personne vit à deux endroits dans ce document. La recherche est
+  bornée à `<ul class="equipe">` ;
+- **`aria-labelledby="x"` n'est pas `id="x"`.** Mon garde-fou attendait deux occurrences de
+  `id="compact-title"` et il n'y en a qu'une : c'est l'attribut entier qu'il faut compter,
+  la leçon déjà écrite pour `api-title` contenu dans `pi-title`.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et à 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat**. 75 pages, 647 références internes, **0 cassée**. Contrôle des actifs dans les
+deux sens : **0 référence vers un actif exclu**, et les orphelins restants sont les faux
+positifs connus. 12 vues des six pages touchées à 1440 et 390 px : un seul `h1`,
+0 débordement horizontal, 0 image cassée, 0 révélation invisible, 0 erreur console.
+Agrandissements relevés : portraits 0,65, photo de contact 0,92, photo d'origine 1,14 en
+boîte transformée (1,05 au repos).

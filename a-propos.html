@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=abe6aff8">
+  <link rel="stylesheet" href="assets/css/style.css?v=c1506a7e">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -190,8 +190,8 @@
         <h2 class="section-title" id="besoin-title"><span class="nb">Q-Bot</span> est né d'un besoin concret</h2>
         <p class="section-subtitle">Automatiser une étape qui restait difficile à intégrer aux tests end-to-end&nbsp;: la double authentification sur smartphone. Développé au Luxembourg par les équipes Q-Leap, <span class="nb">Q-Bot</span> transforme ce dernier point manuel en une étape automatisable du parcours de test.</p>
       </div>
-      <div class="intro__image intro__image--portrait">
-        <img src="assets/img/qleap-origine.jpg" alt="Deux membres de l'équipe Q-Leap devant un écran dans les bureaux de Q-Leap au Luxembourg, le boîtier Q-Bot posé sur la table et la signalétique Q-Bot au mur" width="768" height="960" loading="lazy">
+      <div class="intro__image">
+        <img src="assets/img/qleap-origine.jpg" alt="Deux membres de l'équipe Q-Leap devant un écran dans les bureaux de Q-Leap au Luxembourg, le boîtier Q-Bot posé sur la table et la signalétique Q-Bot au mur" width="1000" height="667" loading="lazy">
       </div>
     </div>
   </div>
@@ -236,8 +236,6 @@
          au-dessus, et une photo ne sert qu'une fois. -->
     <div class="carousel" data-carousel data-carousel-auto="6000" role="region" aria-roledescription="carrousel" aria-label="Photos de l'équipe Q-Leap et de ses bureaux">
       <ul class="carousel__track" role="list" tabindex="0" aria-label="Photos, défilement horizontal">
-        <li class="carousel__slide"><img src="assets/img/qleap-equipe-bureau.jpg" alt="Deux membres de l'équipe Q-Leap dans les bureaux de Q-Leap au Luxembourg" width="768" height="960" loading="lazy"></li>
-        <li class="carousel__slide"><img src="assets/img/qleap-equipe-demo.jpg" alt="Un membre de l'équipe Q-Leap présentant Q-Bot à un visiteur, devant le kakemono Q-Bot" width="768" height="960" loading="lazy"></li>
         <li class="carousel__slide"><img src="assets/img/qleap-equipe-dev.jpg" alt="Deux membres de l'équipe Q-Leap au travail dans les bureaux de Q-Leap, le boîtier Q-Bot posé sur la table" width="768" height="1024" loading="lazy"></li>
         <li class="carousel__slide"><img src="assets/img/qleap-locaux.jpg" alt="Les bureaux de Q-Leap au Luxembourg" width="768" height="1024" loading="lazy"></li>
         <li class="carousel__slide"><img src="assets/img/qleap-equipe-poste.jpg" alt="Un membre de l'équipe Q-Leap à son poste de travail" width="768" height="1024" loading="lazy"></li>
@@ -256,8 +254,6 @@
           <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 2"></button>
           <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 3"></button>
           <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 4"></button>
-          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 5"></button>
-          <button class="carousel__dot" type="button" data-carousel-dot aria-label="Aller à la photo 6"></button>
         </div>
       </div>
     </div>
@@ -296,16 +292,19 @@
     </div>
     <ul class="equipe" role="list">
         <li class="equipe__membre" role="listitem">
+          <img class="equipe__photo" src="assets/img/portrait-sylvain.jpg" alt="Sylvain Perez, CEO de Q-Leap, sur le stand Q-Bot d'un salon professionnel" width="320" height="320" loading="lazy">
           <p class="equipe__nom"><a href="https://www.linkedin.com/in/sylvainperez/" target="_blank" rel="noopener">Sylvain Perez</a></p>
           <p class="equipe__role">CEO de Q-Leap &middot; CTO &amp; Product Manager</p>
           <p class="equipe__bio">Sylvain pilote la vision produit et le développement de <span class="nb">Q-Bot</span> et Q-Guard. Fort de plus de 20 ans d'expérience en architecture de systèmes, il conçoit des solutions répondant aux problématiques concrètes des équipes QA.</p>
         </li>
         <li class="equipe__membre" role="listitem">
+          <img class="equipe__photo" src="assets/img/portrait-nikola.jpg" alt="Nikola Krstic, testeur technique chez Q-Leap, dans les bureaux de Q-Leap" width="320" height="320" loading="lazy">
           <p class="equipe__nom">Nikola Krstic</p>
           <p class="equipe__role">Testeur technique &middot; Q-Leap</p>
           <p class="equipe__bio">Nikola est testeur technique chez Q-Leap et intervient depuis plusieurs années sur des environnements exigeants, notamment dans le secteur bancaire. Son expérience terrain contribue directement à l'évolution de <span class="nb">Q-Bot</span>.</p>
         </li>
         <li class="equipe__membre" role="listitem">
+          <img class="equipe__photo" src="assets/img/portrait-joao.jpg" alt="João Português réglant un boîtier Q-Bot pendant une démonstration" width="320" height="320" loading="lazy">
           <p class="equipe__nom">João Português</p>
           <p class="equipe__role">Testeur technique &middot; POST Luxembourg</p>
           <p class="equipe__bio">Après avoir travaillé chez Q-Leap pendant des années, João a rejoint la Testing Factory de POST Luxembourg. Il continue de contribuer au développement de <span class="nb">Q-Bot</span> en apportant son expertise des environnements de test et de l'automatisation.</p>

@@ -145,6 +145,13 @@ exclude:
   # elle a quitté le carrousel : une photo ne sert qu'une fois sur une page.
   # Le 3/4 d'origine n'est donc plus cité. Master dans Documentations/assets-sources/.
   - assets/img/qleap-equipe-revue.jpg
+  # Les deux vues d'équipe entrées au carrousel le 2026-09-09 à 15 h en sont
+  # sorties à 16 h, sur demande : « mets les 3 photos pour illustrer la team
+  # (...) et enlève les du carrousel ». Elles sont servies recadrées en carré
+  # sous `portrait-nikola.jpg` et `portrait-joao.jpg`. Les cadrages 4/5 ne sont
+  # donc plus cités. Masters dans Documentations/assets-sources/.
+  - assets/img/qleap-equipe-bureau.jpg
+  - assets/img/qleap-equipe-demo.jpg
 
   # ── LES DEUX PAGES « DÉMO » NE SONT PAS PUBLIÉES ────────────────────────────
   # Arbitrage du client, 2026-09-09 : « cette page à masquer ou enlever :
