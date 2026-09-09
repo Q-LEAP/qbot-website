@@ -1488,12 +1488,15 @@
      écart moyen 0,021, contre 0,034 pour une quadratique et 0,036 pour une
      quartique. Une exponentielle sortante, elle, s'en écarte de 0,296.
 
-     TROIS GARDE-FOUS, parce qu'un accrochage qui se bat avec le visiteur est pire
-     que pas d'accrochage :
+     QUATRE GARDE-FOUS, parce qu'un accrochage qui se bat avec le visiteur est
+     pire que pas d'accrochage :
      - il ne part qu'après SNAP_REST sans défilement, donc jamais pendant un geste ;
      - il s'annule au premier signe d'intention (molette, doigt, clavier) et ne
        part pas tant qu'un bouton de souris est enfoncé, sinon il tirerait la page
        sous une barre de défilement qu'on est en train de traîner ;
+     - IL NE S'ARME JAMAIS AU DOIGT. Un écran tactile défile par inertie, donc le
+       doigt qui décolle est le DÉBUT de la course et non sa fin. Cf. le pavé
+       détaillé sur les écouteurs, en bas de ce fichier ;
      - au-delà de SNAP_ZONE de pas, il LÂCHE. C'est ce qui permet de sortir de la
        séquence par le haut comme par le bas : passé cette distance du centre du
        dernier pas, plus rien ne retient. */
@@ -1665,13 +1668,44 @@
      l'entrée, il déplace la cible 110 ms après le dernier cran, donc pendant que
      le glissement est encore en cours : le mouvement reste un seul et même
      mouvement, qui change simplement de destination. */
-  ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+  /* ══ L'ACCROCHAGE NE S'ARME PAS AU DOIGT, ET C'EST UN CORRECTIF ═══════════
+     Signalé le 2026-09-09 : « quand je navigue sur la homepage sur mobile, il y
+     a un pb avec cette animation qui saute et me fait aller en arrière ».
+
+     LA CAUSE EST LE DÉFILEMENT PAR INERTIE. Sur un écran tactile, le doigt qui
+     QUITTE l'écran n'est pas la fin du geste, c'en est le début : la page
+     continue de filer, jusqu'à plus d'une seconde sur iOS. L'accrochage était
+     planifié sur `pointerup` et partait donc 110 ms après le décollage, en
+     pleine course — il lisait une position que le visiteur était en train de
+     dépasser, et le ramenait en arrière. Exactement ce qui est décrit.
+
+     Il ne suffisait pas de rallonger le repos : `kick()` ne replanifie rien, et
+     surtout le visiteur d'un écran tactile n'a pas besoin de cet accrochage. Il
+     existe pour reproduire le « un cran de molette vaut un panneau » de
+     scfo.de, qui est une interaction de SOURIS. Au doigt, le scrub suit la main
+     en continu, ce qui est déjà le bon comportement — et c'était celui de la
+     séquence avant que l'accrochage n'arrive, le 2026-09-03.
+
+     LE TRI SE FAIT PAR ÉVÉNEMENT ET NON PAR REQUÊTE MÉDIA. `(pointer: coarse)`
+     décrit le pointeur PRINCIPAL : sur un portable à écran tactile il répond
+     « fine », donc un doigt y retomberait dans le défaut. `pointerType` dit ce
+     qui vient de servir, donc la molette garde son accrochage et le doigt n'en
+     a jamais, sur la même machine.
+
+     `touchstart` continue d'ANNULER une glissade en cours : un doigt posé doit
+     toujours reprendre la main. Il ne planifie simplement plus rien. */
+  ['wheel', 'keydown'].forEach(function (ev) {
     window.addEventListener(ev, function () { stopGlissade(); planifierAccrochage(); },
                             { passive: true });
   });
+  window.addEventListener('touchstart', stopGlissade, { passive: true });
   window.addEventListener('pointerdown', function () { pointeur = true; stopGlissade(); }, { passive: true });
   ['pointerup', 'pointercancel'].forEach(function (ev) {
-    window.addEventListener(ev, function () { pointeur = false; planifierAccrochage(); }, { passive: true });
+    window.addEventListener(ev, function (e) {
+      pointeur = false;
+      if (e.pointerType === 'touch') return;
+      planifierAccrochage();
+    }, { passive: true });
   });
   /* LES PASTILLES PASSENT PAR LA MÊME GLISSADE, et ce n'est pas cosmétique : le
      client les donne comme référence de la sensation voulue. Laissées en ancres
