@@ -6630,14 +6630,12 @@ label > input[type="checkbox"] {
   text-overflow: ellipsis;
 }
 
-/* Le numéro de version, relevé dans le pied de page de l'application. Il vieillit
-   avec la capture, ce qui est cohérent : les deux disent la même livraison. */
-.appwin__ver {
-  flex: 0 0 auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-}
+/* LE NUMÉRO DE VERSION EST RETIRÉ (2026-09-09, demande du client). Il était
+   relevé dans le pied de page de l'application et affiché à droite du bandeau,
+   sur les deux pages qui portent une fenêtre. La règle `.appwin__ver` part avec
+   les quatre balises : elle ne visait plus rien. Rien à reprendre dans le
+   bandeau, `.appwin__tabs` et `.appwin__nom` sont en `flex: 1 1 auto` et
+   reprennent la place. */
 
 /* ── Le corps ──
    `aspect-ratio` sur le corps et non sur l'image : les trois captures ont
