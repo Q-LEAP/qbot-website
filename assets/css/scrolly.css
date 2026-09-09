@@ -369,10 +369,11 @@
 }
 .scrolly__step.is-active .scrolly__step-inner { opacity: 1; transform: none; }
 
-/* Appel à l'action posé dans la carte du dernier pas. Il ne sert QUE sur
-   téléphone, où le bouton flottant est retiré ; au-dessus de 900 px c'est ce
-   dernier qui accompagne la séquence, et deux boutons feraient doublon. */
-.scrolly__step-cta { display: none; }
+/* `.scrolly__step-cta`, l'appel à l'action posé dans la carte du dernier pas
+   sur téléphone, a été RETIRÉ le 2026-09-09 : « le bouton n'apparaît pas bien,
+   à enlever ». Il partageait sa rangée avec le label Made in Luxembourg, ce qui
+   le comprimait. Le chemin de conversion reste celui de la barre, dont le
+   bouton est revenu à toute largeur le même jour. */
 
 /* Indicateur de chargement du modèle. Posé au centre de la scène, il occupe la
    place de l'affiche : c'est le seul moment où quelque chose doit s'y écrire. */
@@ -480,30 +481,16 @@
   height: auto;
 }
 
-/* SUR TÉLÉPHONE, LE LABEL PARTAGE SA RANGÉE AVEC L'APPEL À L'ACTION, et c'est
-   une contrainte de place, pas un effet : la hauteur de la plus haute des
-   quatre cartes est mesurée par `scrolly.js` et RETIRÉE à la scène 3D. Empilé,
-   le label lui coûtait 70 px, soit une scène de 344 px au lieu de 414 sur un
-   iPhone 14 — la passe mobile du 2026-08-19 s'était justement battue pour ces
-   pixels-là. Côte à côte, la carte est plus courte qu'avant.
+/* LE LABEL EST PLUS PETIT SUR TÉLÉPHONE, ET C'EST UNE CONTRAINTE DE PLACE, PAS
+   UN GOÛT : la hauteur de la plus haute des quatre cartes est mesurée par
+   `scrolly.js` et RETIRÉE à la scène 3D. Tout ce qu'on ajoute dans une carte se
+   paie donc en hauteur d'objet, et le prix ne se voit pas au bureau — la passe
+   mobile du 2026-08-19 s'était battue pour ces pixels-là.
 
-   Sans `:has()`, tout s'empile comme le reste : plus long, jamais cassé. */
+   Il partageait sa rangée avec `.scrolly__step-cta`, retiré le 2026-09-09 ; la
+   grille qui les mettait côte à côte n'avait plus qu'une colonne occupée et
+   part avec lui. */
 @media (max-width: 900px) {
-  .scrolly__step-inner:has(.scrolly__fig--label) {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-  }
-  .scrolly__step-inner:has(.scrolly__fig--label) > * { grid-column: 1 / -1; }
-  .scrolly__step-inner:has(.scrolly__fig--label) > .scrolly__fig--label {
-    grid-column: 1;
-    margin-top: 16px;
-  }
-  .scrolly__step-inner:has(.scrolly__fig--label) > .scrolly__step-cta {
-    grid-column: 2;
-    justify-self: end;
-    margin-top: 16px;
-  }
   .scrolly__fig--label img { width: 52px; }
 }
 
@@ -1171,32 +1158,13 @@ main .section-label::before {
 @media (max-width: 900px) {
   .scrolly__cta { display: none; }
 
-  /* ── Mais le chemin de conversion revient, DANS la carte ─────────────────
-     Le bouton flottant part (il recouvrait le titre du pas), et il ne restait
-     alors plus aucun appel à l'action dans toute la séquence sur téléphone —
-     4,2 écrans de défilement, le moment d'intérêt le plus haut de la page, et
-     rien au bout. Le renvoi à la barre de navigation ne suffit pas : son bouton
-     est le même sur toute la page, il ne dit rien de ce qui vient d'être montré.
-     Il est donc posé dans la carte du DERNIER pas, où il ne peut par construction
-     recouvrir personne, et il reprend mot pour mot le libellé que le bouton
-     flottant affiche à ce pas sur grand écran (`data-cta-last`). */
-  .scrolly__step-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    min-height: 44px;
-    margin-top: 14px;
-    padding: 11px 20px;
-    border-radius: var(--radius-pill, 100px);
-    background: var(--teal);
-    color: #000;
-    font-weight: 700;
-    font-size: 0.9375rem;
-    text-decoration: none;
-  }
-  .scrolly__step-cta svg { flex-shrink: 0; }
+  /* IL Y A EU UN APPEL À L'ACTION DANS LA CARTE DU DERNIER PAS, ET IL EST PARTI
+     LE 2026-09-09 : « le bouton n'apparaît pas bien, à enlever ». Il avait été
+     posé là parce que le bouton flottant est retiré sur téléphone et qu'il ne
+     restait alors rien au bout de 4,2 écrans épinglés. Ce qui a changé le même
+     jour, et qui rend son retrait sans conséquence : le bouton de la barre est
+     revenu à toute largeur, donc le chemin de conversion est visible en
+     permanence pendant la séquence. */
 
   /* ── Le bouton « retour en haut » sort de la séquence ────────────────────
      Mesuré à 390 px : il occupait [322, 772, 44 × 44] et le compteur d'étapes
@@ -1298,7 +1266,6 @@ main .section-label::before {
   }
   body.is-scrolly .scrolly__step-inner { position: static; margin: 0; }
   .scrolly__step > *, .scrolly__step.is-active > * { pointer-events: auto; }
-  .scrolly__step-cta { margin-top: 14px; min-height: 42px; }
   /* Les cotes reviennent : la scène est assez large pour les porter. */
   .hud-lab { display: block; font-size: 9px; }
 }
