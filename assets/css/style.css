@@ -1615,6 +1615,46 @@ p { color: var(--gray); }
 .product-card h3 { margin-bottom: 6px; font-size: 1rem; }
 .product-card p { font-size: 0.875rem; }
 
+/* ══ UN CHAPEAU SUR TOUTE LA LARGEUR, EN DEUX COLONNES (.lead-duo) ════════
+   Posé le 2026-09-09 : « il faut aussi passer le texte sur toute la longueur »
+   sur la section Savoir-faire de la page À propos, dont le chapeau étroit
+   (600 px) précédait un carrousel pleine largeur.
+
+   DEUX COLONNES ET NON UN SEUL BLOC ÉTIRÉ, et ce n'est pas une coquetterie.
+   `.section-subtitle` est à 17 px : étiré aux 1180 px du conteneur, il donne
+   environ 145 caractères par ligne, soit le double du plafond de lecture que
+   cette feuille applique partout ailleurs (74ch). En deux colonnes de 550 px le
+   texte occupe bien toute la longueur ET chaque colonne reste à ~72 caractères,
+   c'est-à-dire dans la mesure. Le contenu s'y prête : deux paragraphes.
+
+   Le plafond de `.section-subtitle` doit être annulé explicitement, et le
+   sélecteur est doublé pour cela : `.section-subtitle` seul pèse (0,1,0), donc
+   `.lead-duo .section-subtitle` (0,2,0) passe devant sans dépendre de l'ordre
+   du fichier. */
+.lead-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 40px;
+}
+.lead-duo .section-subtitle { max-width: none; margin: 0; }
+/* LE RYTHME D'UN CHAPEAU EST 16 px, PAS 32. La règle de voisinage
+   `.section-title + div` (0,1,1) pose 32 px, ce qui est juste pour un BLOC de
+   contenu et faux ici : un titre et son chapeau sont une unité de lecture. Ce
+   sélecteur pèse (0,2,0) et passe donc devant. */
+.section-header .lead-duo { margin-top: 16px; }
+/* EN UNE COLONNE, LE PLAFOND DE LECTURE REVIENT, et c'est ce qui manquait au
+   premier jet : `max-width: none` n'a de sens que TANT QU'IL Y A DEUX COLONNES.
+   Relevé sans cette règle, à 900 px de fenêtre : 110 caractères par ligne en
+   français et 102 en anglais, dans une colonne de 852 px. Sur téléphone la
+   colonne fait 342 px, donc le plafond n'y mord pas et le texte reste bien
+   pleine largeur. Le plafond est en `ch` et non en pixels : il cale une mesure,
+   pas une largeur (leçon de l'audit du 2026-09-09). Même poids (0,2,0) que la
+   règle qu'elle annule, donc c'est l'ordre du fichier qui tranche. */
+@media (max-width: 900px) {
+  .lead-duo { grid-template-columns: 1fr; gap: 12px; }
+  .lead-duo .section-subtitle { max-width: 74ch; }
+}
+
 /* ══ L'ÉQUIPE DERRIÈRE LE PRODUIT (.equipe) ═══════════════════════════════
    Posée le 2026-09-09, puis étoffée le même jour : le client a fourni un
    intitulé ET une biographie pour chacun des trois. Elle portait « un nom, un

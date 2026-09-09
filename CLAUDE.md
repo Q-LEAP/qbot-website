@@ -10089,3 +10089,61 @@ manifeste : ce n'est pas un original.
 navigateur à 1440 / 1024 / 900 / 390 px : un seul `h1`, 0 débordement horizontal,
 0 révélation invisible, 0 `.nb` dans un conteneur flex, 0 cadratin, 0 erreur console,
 0 requête en échec. Empreintes d'actifs repassées (17 pages sur 17, `style.css` ayant changé).
+
+## « Origine » disait deux fois la même chose (2026-09-09, suite)
+
+Trois retours sur la page À propos, tous exacts.
+
+**Le doublon était dans les marques de section, pas dans les titres** : « Origine du produit »
+puis, un écran plus bas, « Origine ». La seconde devient **« Savoir-faire »** (« Craft » côté
+anglais, où le doublon `Where it comes from` / `Origin` était moins frappant mais réel).
+
+**La phrase de nomination disparaît, et c'est le client qui la retire.** Le texte fourni pour
+cette section ne contient plus « Le projet est porté par Sylvain Perez, CEO de Q-Leap, avec
+João Português, Nikola Krstic et l'ensemble des équipes de test de Q-Leap. » C'est la redondance
+qui lui avait été signalée le matin même (les trois noms deux fois à 300 px d'écart) : chaque nom
+n'apparaît plus qu'**une** fois dans `<main>`, et le garde-fou de comptage passe de 2 à 1.
+
+### `.lead-duo` : « le texte sur toute la longueur », mais en deux colonnes
+
+**UN SEUL BLOC ÉTIRÉ AURAIT DONNÉ 145 CARACTÈRES PAR LIGNE.** `.section-subtitle` est à 17 px :
+aux 1180 px du conteneur, c'est le double du plafond de lecture que la feuille applique partout
+ailleurs. En deux colonnes de 546 px le texte occupe bien toute la longueur ET chaque colonne
+reste dans la mesure. Le contenu s'y prête, il fait exactement deux paragraphes.
+
+Trois points à ne pas défaire :
+
+- **le plafond de `.section-subtitle` doit être annulé explicitement**, et le sélecteur est
+  doublé pour cela : `.section-subtitle` seul pèse (0,1,0), donc `.lead-duo .section-subtitle`
+  (0,2,0) passe devant sans dépendre de l'ordre du fichier ;
+- **le rythme est 16 px et non 32.** La règle de voisinage `.section-title + div` (0,1,1) pose
+  32 px, ce qui est juste pour un BLOC de contenu et faux pour un chapeau, qui forme avec son
+  titre une unité de lecture. D'où `.section-header .lead-duo` (0,2,0), qui passe devant ;
+- **EN UNE COLONNE LE PLAFOND REVIENT**, et c'est ce qui manquait au premier jet : `max-width:
+  none` n'a de sens que tant qu'il y a deux colonnes. Mesuré sans cette règle, à 900 px de
+  fenêtre : **110 caractères par ligne** en français dans une colonne de 852 px. Sur téléphone
+  la colonne fait 342 px, donc le plafond n'y mord pas et le texte y reste pleine largeur.
+
+**ET LA SONDE QUI M'A FAIT CROIRE À UN DÉFAUT RESTANT MESURAIT MAL.** Elle divisait la largeur
+de la plus longue ligne par la largeur MOYENNE des fragments de `getClientRects()`, ce qui
+compte les fragments créés par le `<span class="nb">` et gonfle le résultat : elle annonçait
+93 caractères par ligne en anglais à 900 px. La mesure juste est **hauteur du paragraphe divisée
+par son interligne**, qui donne le nombre de lignes RENDUES : le maximum réel est 81 caractères,
+et il tombe sur un paragraphe qui tient sur **une seule ligne**, cas où il n'y a pas de retour
+à la ligne donc pas de problème de mesure (même argument que l'audit du 2026-09-09 pour les
+paragraphes courts des pages Démo). Le second paragraphe est à 68 caractères en français et 51
+en anglais. Rien à corriger, et la sonde à jeter.
+
+### L'équipe se reformule
+
+Titre « L'équipe derrière le produit » → **« L'équipe derrière Q-Bot »**, nouveau chapeau, et
+les biographies de Sylvain Perez et de João Português revues (celle de Nikola Krstic ne change
+pas). Textes du client ; l'anglais rend l'intention.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et à 390 px, `audit-visibilite.py` : **15 pages lues sur 15, 0 constat**.
+75 pages, 643 références internes, **0 cassée**. Les deux pages menées au navigateur à 520 /
+601 / 768 / 860 / 900 / 901 / 1024 / 1440 / 2560 px : **0 débordement horizontal**, 0 révélation
+invisible, un seul `h1`, 0 cadratin, 0 erreur console, écart titre vers chapeau à 16 px partout,
+et le chapeau aligné au pixel sur la gouttière du logo.
