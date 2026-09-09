@@ -3150,13 +3150,24 @@ p { color: var(--gray); }
   color: var(--muted);
 }
 
-/* La case qui porte la solution. L'ENCRE EST LE NOIR DE CHARTE ET JAMAIS DU
-   BLANC : sur le teal, le blanc plafonne à 2,04:1 et le noir tient 8:1. C'est
-   le défaut relevé seize fois par l'audit du 2026-08-11. */
+/* La case qui porte la solution. ELLE N'EST PLUS EN TEAL PLEIN, et c'est un
+   arbitrage du 2026-09-09 : « Q-Bot ici est aussi dans le style du CTA, faut
+   que ce soit visible, mais laissons le teal du logo uniquement pour le CTA ; et
+   ici, faut que ce soit visible mais avec un peu de contraste. »
+
+   Le teal plein est réservé aux boutons. Une pastille teal remplie posée au
+   milieu d'un schéma se lit comme une action à cliquer, et sur cette page il y
+   en avait déjà une dans la barre : deux objets de même allure pour deux
+   fonctions différentes.
+
+   LA GRAMMAIRE EST CELLE DE SA JUMELLE, `--stop`, TRANSPOSÉE EN TEAL : fond
+   translucide, bord franc, texte à pleine couleur. Les deux cases décisives des
+   deux rangées se traitent donc pareil, l'une en blanc, l'autre en teal, et
+   c'est cette symétrie qui fait lire la comparaison position par position. */
 .vsflow__step--go {
-  background: var(--teal);
-  border-color: var(--teal);
-  color: #231F20;
+  background: rgba(0, 203, 190, 0.10);
+  border-color: rgba(0, 203, 190, 0.55);
+  color: var(--teal);
   font-weight: 700;
 }
 
