@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=bc616fef">
+  <link rel="stylesheet" href="../assets/css/style.css?v=786d0e37">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=7c2bbc25">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -282,30 +282,31 @@
       <p class="section-subtitle">When your test reaches the mobile validation, <span class="nb">Q-Bot</span> drives the smartphone automatically, runs the 2FA scenario and lets the test carry on with no human intervention.</p>
     </div>
     <div class="order-process order-process--5" role="list">
+      <p class="order-process__span" aria-hidden="true">Q-Bot acts here</p>
       <div class="order-step" role="listitem">
         <div class="order-step__number">1</div>
-        <h3>The test reaches the 2FA step</h3>
-        <p>Your run arrives at the mobile validation step.</p>
+        <h3>The 2FA step comes up</h3>
+        <p>The test reaches mobile validation.</p>
       </div>
       <div class="order-step" role="listitem">
         <div class="order-step__number">2</div>
         <h3><span class="nb">Q-Bot</span> is triggered</h3>
         <p>One HTTP call starts the scenario.</p>
       </div>
-      <div class="order-step" role="listitem">
+      <div class="order-step order-step--actif" role="listitem">
         <div class="order-step__number">3</div>
         <h3><span class="nb">Q-Bot</span> drives the smartphone</h3>
-        <p>It interacts with the genuine 2FA app.</p>
+        <p>It acts inside the genuine 2FA app.</p>
       </div>
-      <div class="order-step" role="listitem">
+      <div class="order-step order-step--actif" role="listitem">
         <div class="order-step__number">4</div>
         <h3>The approval goes through</h3>
-        <p>A code, a push or a mobile interaction, depending on the scenario.</p>
+        <p>A code, a push or a mobile interaction.</p>
       </div>
       <div class="order-step" role="listitem">
         <div class="order-step__number">5</div>
-        <h3>The test carries on automatically</h3>
-        <p>The run resumes with no human intervention.</p>
+        <h3>The test resumes</h3>
+        <p>The run carries on automatically.</p>
       </div>
     </div>
 

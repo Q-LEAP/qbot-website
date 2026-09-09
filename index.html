@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=bc616fef">
+  <link rel="stylesheet" href="assets/css/style.css?v=786d0e37">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=7c2bbc25">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -308,30 +308,31 @@
       <p class="section-subtitle">Quand votre test atteint la validation mobile, <span class="nb">Q-Bot</span> pilote automatiquement le smartphone, exécute le scénario 2FA et laisse le test continuer sans intervention humaine.</p>
     </div>
     <div class="order-process order-process--5" role="list">
+      <p class="order-process__span" aria-hidden="true">Q-Bot agit ici</p>
       <div class="order-step" role="listitem">
         <div class="order-step__number">1</div>
-        <h3>Le test atteint la 2FA</h3>
-        <p>Votre campagne arrive à l'étape de validation mobile.</p>
+        <h3>La 2FA apparaît</h3>
+        <p>Le test atteint la validation mobile.</p>
       </div>
       <div class="order-step" role="listitem">
         <div class="order-step__number">2</div>
         <h3><span class="nb">Q-Bot</span> est déclenché</h3>
-        <p>Un simple appel HTTP lance le scénario.</p>
+        <p>Un appel HTTP lance le scénario.</p>
       </div>
-      <div class="order-step" role="listitem">
+      <div class="order-step order-step--actif" role="listitem">
         <div class="order-step__number">3</div>
         <h3><span class="nb">Q-Bot</span> pilote le smartphone</h3>
-        <p>Il interagit avec la vraie application 2FA.</p>
+        <p>Il agit dans la vraie application 2FA.</p>
       </div>
-      <div class="order-step" role="listitem">
+      <div class="order-step order-step--actif" role="listitem">
         <div class="order-step__number">4</div>
-        <h3>La validation est effectuée</h3>
-        <p>Code, push ou interaction mobile selon le scénario.</p>
+        <h3>La validation passe</h3>
+        <p>Code, push ou interaction mobile.</p>
       </div>
       <div class="order-step" role="listitem">
         <div class="order-step__number">5</div>
-        <h3>Le test continue automatiquement</h3>
-        <p>La campagne reprend sans intervention humaine.</p>
+        <h3>Le test reprend</h3>
+        <p>La campagne continue automatiquement.</p>
       </div>
     </div>
 

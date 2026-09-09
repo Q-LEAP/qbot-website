@@ -3773,6 +3773,153 @@ a:focus-visible { border-radius: var(--radius-sm); }
    colonnes sur un téléphone. */
 .order-process--5 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  --op-node: 30px;
+}
+
+/* ══ LA FRISE DES CINQ ÉTAPES ══════════════════════════════════════════════
+   « Les 5 étapes sont lisibles, mais elles ressemblent encore à 5 colonnes
+   indépendantes. Il manque un fil visuel qui raconte le mouvement. » Demandé
+   le 2026-09-09, avec trois choses précises : une ligne de progression qui
+   relie les cinq numéros, les numéros dans de petits cercles, et un statut
+   visuel par phase (1-2 préparation, 3-4 Q-Bot agit, 5 reprise), la ligne
+   devenant teal là où Q-Bot prend le relais.
+
+   LES RONDS REVIENNENT, MAIS PETITS. Ils avaient été retirés le 2026-09-08
+   (« ça prend trop la place, juste les numéros ça ira ») : ils faisaient 56 px
+   plus 4 de liseré et 2 de halo, soit 72 px de haut pour un chiffre. Ceux-ci
+   font 30 px, c'est-à-dire la taille d'un noeud de frise et non d'une
+   pastille. Et le trait avait été retiré AVEC eux, pour la raison qui vaut
+   toujours : sans rond, un fil traverserait les chiffres.
+
+   LE TEAL DES NOEUDS ACTIFS EST TRANSLUCIDE, PAS PLEIN. C'est la règle du
+   2026-09-09 sur la case Q-Bot du bloc Problème : le teal plein est réservé
+   aux boutons. Même grammaire que `.vsflow__step--go`, donc les deux schémas
+   de la page marquent leur moment décisif de la même façon.
+
+   Le rond et son état vivent HORS de la requête média : ils sont justes à
+   toute largeur. Seule la frise horizontale (trait et repère de phase) est
+   conditionnée, cf. plus bas. */
+.order-process--5 .order-step__number {
+  display: grid;
+  place-items: center;
+  width: var(--op-node);
+  height: var(--op-node);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--gray);
+  font-size: 0.9375rem;
+  margin: 0 0 14px;
+}
+.order-process--5 .order-step--actif .order-step__number {
+  border-color: rgba(0, 203, 190, 0.55);
+  background: rgba(0, 203, 190, 0.10);
+  color: var(--teal);
+}
+
+/* ---- Le fil, un segment par intervalle ----
+   JAMAIS UN TRAIT CONTINU D'UN BOUT À L'AUTRE : il passerait sous les noeuds,
+   et un fond de noeud translucide le laisserait voir au travers. C'est le
+   défaut corrigé sur la maquette d'interface le 2026-08-25, où le fil semblait
+   traverser les icônes. Un fil d'étapes relie les noeuds, il ne les traverse
+   pas.
+
+   LA GÉOMÉTRIE EST DÉRIVÉE, PAS DEVINÉE. Le segment est posé sur l'étape et
+   part du bord droit de SON noeud pour s'arrêter au bord gauche du suivant.
+   Dans le repère de l'étape, son propre noeud occupe [0, n] et le noeud
+   suivant commence à c + g, où c est la largeur de colonne et g la gouttière.
+   Un pourcentage sur l'étape se résout sur c, donc la longueur vaut
+   c + g − n = 100% + g − n. La dernière étape n'en porte pas, il n'y a rien
+   après elle.
+
+   LES COULEURS SE DÉDUISENT DU VOISINAGE, sans compter les enfants. Un
+   `:nth-child()` serait faux ici : le repère de phase est le premier élément
+   de la grille, donc l'étape 1 est le deuxième enfant et tous les indices sont
+   décalés de un. `:has(+ …)` décrit ce qui compte — « l'étape suivante est-elle
+   active » — et reste vrai si l'ordre du balisage change.
+   Sans `:has()`, les segments des étapes actives gardent leur dégradé et les
+   autres restent neutres : la phase se lit encore par les noeuds. */
+@media (min-width: 1025px) {
+  .order-process--5 {
+    grid-template-rows: auto auto;
+    row-gap: 14px;
+  }
+  .order-process--5 > .order-step { grid-row: 2; }
+
+  .order-process--5 .order-step::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--op-node) / 2);
+    left: var(--op-node);
+    width: calc(100% + var(--op-gap) - var(--op-node));
+    height: 1px;
+    background: var(--border);
+  }
+  .order-process--5 .order-step:last-child::after { content: none; }
+
+  /* Sortie de phase : l'étape 4 rend la main, son segment s'éteint. */
+  .order-process--5 .order-step--actif::after {
+    background: linear-gradient(90deg, var(--teal), var(--border));
+  }
+  /* Entrée de phase : l'étape 2 mène à la première étape active. */
+  .order-process--5 .order-step:has(+ .order-step--actif)::after {
+    background: linear-gradient(90deg, var(--border), var(--teal));
+  }
+  /* Coeur de phase : deux étapes actives de suite. */
+  .order-process--5 .order-step--actif:has(+ .order-step--actif)::after {
+    background: var(--teal);
+  }
+
+  /* ---- Le repère de phase, au-dessus des étapes 3 et 4 ----
+     IL EST DÉCORATIF POUR UN LECTEUR D'ÉCRAN, et c'est délibéré. Un enfant qui
+     n'est pas un `listitem` dans un `role="list"` casse le contrat ARIA de la
+     liste ; `aria-hidden` le retire de l'arbre et la liste reste valide. Rien
+     n'est perdu : le titre de la section dit déjà « Q-Bot prend le relais à
+     l'étape 2FA », donc ce repère répète en image ce que le texte énonce.
+
+     Il couvre les deux colonnes ENTIÈRES et non l'écart entre les deux noeuds :
+     c'est une phase qu'il délimite, pas une cote. */
+  .order-process__span {
+    grid-row: 1;
+    grid-column: 3 / span 2;
+    position: relative;
+    align-self: end;
+    margin: 0 0 6px;
+    padding-bottom: 9px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+  .order-process__span::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: rgba(0, 203, 190, 0.45);
+  }
+  /* Les deux crochets, qui descendent du trait vers les noeuds qu'il groupe. */
+  .order-process__span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 6px;
+    border-left: 1px solid rgba(0, 203, 190, 0.45);
+    border-right: 1px solid rgba(0, 203, 190, 0.45);
+  }
+}
+
+/* Sous 1025 px la grille retombe à deux colonnes : un trait horizontal de cinq
+   noeuds n'a plus de rangée où courir, et un repère « colonnes 3 et 4 » ne
+   désigne plus rien. Les noeuds teal, eux, restent : la phase se lit sur eux. */
+@media (max-width: 1024px) {
+  .order-process__span { display: none; }
 }
 
 .order-step { position: relative; z-index: 1; }

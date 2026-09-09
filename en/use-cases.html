@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=bc616fef">
+  <link rel="stylesheet" href="../assets/css/style.css?v=786d0e37">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -219,6 +219,7 @@
       <p class="section-subtitle">Your test pipeline stays in charge from end to end. <span class="nb">Q-Bot</span> only takes over the two-factor authentication step, then hands control back.</p>
     </div>
     <div class="order-process order-process--5" role="list">
+      <p class="order-process__span" aria-hidden="true">Q-Bot acts here</p>
       <div class="order-step" role="listitem">
         <div class="order-step__number">1</div>
         <h3>The test reaches the 2FA step</h3>
@@ -229,12 +230,12 @@
         <h3><span class="nb">Q-Bot</span> is triggered</h3>
         <p>Your test calls the API, or the companion app detects the notification that just landed on the phone.</p>
       </div>
-      <div class="order-step" role="listitem">
+      <div class="order-step order-step--actif" role="listitem">
         <div class="order-step__number">3</div>
         <h3>The scenario runs on the smartphone</h3>
         <p><span class="nb">Q-Bot</span> replays the saved taps and wait times in the genuine 2FA app, over USB.</p>
       </div>
-      <div class="order-step" role="listitem">
+      <div class="order-step order-step--actif" role="listitem">
         <div class="order-step__number">4</div>
         <h3>The authentication is completed</h3>
         <p>The request is approved on the phone, or the one-time code is retrieved and handed back to your test.</p>
