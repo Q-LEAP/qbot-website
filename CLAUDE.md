@@ -8864,3 +8864,206 @@ cause) et n'est pas repris : le retour porte sur la gauche.
   disposions vient de sa brochure, 156 px de large en pixels réels ;
 - **un fichier de marque pour TestComplete**, à obtenir chez SmartBear : il n'en
   existe aucun de public.
+
+## Les quinze retours du 2026-09-09 : moins de boutons, une frise, un tactile réparé
+
+Lot de retours du client et de sa responsable communication, traité à la
+convention du dépôt : un retour, un commit, un push. Quinze commits. Deux
+d'entre eux ne viennent pas d'un retour mais de défauts trouvés en mesurant.
+
+**LE POSTE DE CETTE SESSION A PYTHON 3.12 ET PLAYWRIGHT**, contrairement à celui
+du 2026-08-28 : tous les `tools/*.py` sont exécutables, les deux audits tournent.
+Le serveur de contrôle doit écouter sur **8137**, en multi-fil (`python -m
+http.server` est mono-fil et s'étrangle sur les pages qui portent le modèle 3D).
+
+### Ce que le lot a changé
+
+- **Bertrange devient Luxembourg** dans tout le texte visible, les métadonnées et
+  les `alt`, 31 remplacements sur dix pages. Ne bougent PAS : l'adresse postale du
+  pied de page (on y reçoit du courrier) et le JSON-LD `addressLocality` /
+  `foundingLocation`, plus `llms.txt` qui est du fait machine au même titre. Une
+  localité fausse dans une adresse est pire que pas de localité.
+- **Le bouton de réservation quitte le tiroir mobile** et revient dans la barre.
+  Il y avait été déplacé le 2026-09-08, sur demande elle aussi : c'est le dernier
+  arbitrage qui vaut, il n'y a rien à « corriger » dans un sens ou dans l'autre.
+- **La vignette du film est le seul déclencheur** : le bouton « Voir la démo » part.
+- **Les DEUX appels à l'action de la séquence 3D partent** : celui de la carte du
+  pas 4 (« il n'apparaît pas bien ») et le bouton flottant en bas à droite
+  (« un bouton s'affiche et le texte du CTA change, ça bug sur mobile, pas
+  utile »). Ce dernier portait trois comportements pour un bouton qui doublait
+  celui de la barre. Retiré en entier : balisage, quatre blocs CSS et trois
+  passages du module.
+- **Le hero n'a plus de bouton, il a un lien** vers le film. Un lien « Réserver une
+  démo » à cent pixels sous le bouton « Réserver une démo » de la barre est
+  exactement la redondance que le retour désigne.
+- **La case Q-Bot du bloc Problème cesse de ressembler à un bouton** : le teal
+  plein est réservé aux CTA. Elle prend la grammaire de sa jumelle `--stop`,
+  transposée en teal.
+- **La capture de l'interface passe de 719 à 508 px** de contenu.
+- **« Quelques » n'occupe plus la place d'un chiffre** : `<b>Rapide</b>` +
+  `<span>validation en quelques secondes</span>`.
+- **TestComplete rejoint la grille**, douze marques sur douze.
+- **La page « Demandez une démo » n'est plus publiée**, et le pied de page ouvre
+  l'agenda.
+- **Les cinq étapes deviennent une frise**, avec la phase où Q-Bot agit.
+- **Le titre du hero abandonne « sans clé secrète »**.
+- **La séquence ne ramène plus la page en arrière au doigt.**
+
+### LE DÉFAUT LE PLUS SÉRIEUX : L'INERTIE TACTILE
+
+« Quand je navigue sur la homepage sur mobile, il y a un pb avec cette animation
+qui saute et me fait aller en arrière. »
+
+**Sur un écran tactile, le doigt qui QUITTE l'écran n'est pas la fin du geste,
+c'en est le début** : la page continue de filer, jusqu'à plus d'une seconde sur
+iOS. L'accrochage de la séquence était planifié sur `pointerup` et partait donc
+110 ms après le décollage, en pleine course : il lisait une position que le
+visiteur était en train de dépasser, et l'y ramenait.
+
+Rallonger le repos n'était pas le correctif. Le visiteur d'un écran tactile n'a
+pas besoin de cet accrochage : il existe pour reproduire le « un cran de molette
+vaut un panneau » de scfo.de, qui est une interaction de SOURIS. Au doigt, le
+scrub suit la main, ce qui est déjà le bon comportement, et c'était celui de la
+séquence avant l'arrivée de l'accrochage le 2026-09-03.
+
+**LE TRI SE FAIT PAR ÉVÉNEMENT ET NON PAR REQUÊTE MÉDIA.** `(pointer: coarse)`
+décrit le pointeur PRINCIPAL : sur un portable à écran tactile il répond
+« fine », donc un doigt y retomberait dans le défaut. `pointerType` dit ce qui
+vient de servir, donc la molette garde son accrochage et le doigt n'en a jamais,
+sur la même machine. `touchstart` continue d'annuler une glissade en cours.
+
+Vérifié dans les deux sens, parce qu'un garde-fou qui ne se déclenche jamais et
+un garde-fou qui se déclenche toujours sont deux défauts : code d'avant au doigt
+**−200 px** (le défaut, reproduit en remettant le fichier d'avant), code d'après
+au doigt **0 px**, code d'après à la souris **−200 px**.
+
+### La frise des cinq étapes
+
+Demandée avec trois choses précises : une ligne qui relie les cinq numéros, les
+numéros dans de petits cercles, un statut par phase (1-2 préparation, 3-4 Q-Bot
+agit, 5 reprise) et la ligne qui devient teal là où Q-Bot prend le relais.
+
+**LES RONDS REVIENNENT, MAIS PETITS** (30 px). Ils avaient été retirés le
+2026-09-08 parce qu'ils faisaient 72 px de haut pour un chiffre ; ceux-ci ont la
+taille d'un noeud de frise. Le trait avait été retiré AVEC eux, pour une raison
+qui vaut toujours : sans rond, un fil traverserait les chiffres.
+
+**JAMAIS UN TRAIT CONTINU D'UN BOUT À L'AUTRE**, un segment par intervalle. Un
+fond de noeud translucide laisserait voir un trait passant dessous, et c'est le
+défaut corrigé sur la maquette d'interface le 2026-08-25.
+
+**LA GÉOMÉTRIE EST DÉRIVÉE.** Dans le repère de l'étape, son noeud occupe `[0, n]`
+et le noeud suivant commence à `c + g` ; un pourcentage se résolvant sur `c`, la
+longueur du segment vaut `100% + g − n`. Relevé : 202,8 px identiques sur les
+quatre segments à 1440 px, tous à `y = 15 px`.
+
+**LES COULEURS SE DÉDUISENT DU VOISINAGE, PAS D'UN `:nth-child()`.** Le repère de
+phase étant le premier élément de la grille, l'étape 1 est le DEUXIÈME enfant et
+tous les indices seraient décalés de un. `:has(+ .order-step--actif)` dit ce qui
+compte et survit à un changement d'ordre.
+
+Le repère « Q-Bot agit ici » est `aria-hidden` : un enfant qui n'est pas un
+`listitem` dans un `role="list"` casse le contrat ARIA de la liste. Rien n'est
+perdu, le titre de la section dit déjà « Q-Bot prend le relais à l'étape 2FA ».
+Sous 1025 px la grille retombe à deux colonnes, le repère disparaît (il n'y a
+plus de colonnes 3 et 4 à désigner) et les noeuds teal portent la phase.
+
+**L'étape 3 garde son titre** au lieu du « Q-Bot agit » proposé : le repère posé
+dix pixels au-dessus dit « Q-Bot agit ici », et deux formules quasi identiques se
+lisent comme une faute et non comme un renfort. `cas-usage` garde sa version
+détaillée des textes, hors du retour, et reçoit seulement la frise.
+
+### Le titre du hero, et ce que le choix coûte
+
+« Sans clé secrète » ne parle qu'à qui connaît le fonctionnement des TOTP. Trois
+candidats mesurés dans la page, parce qu'un titre de hero se mesure :
+
+| | lignes | titre | hero |
+|---|---|---|---|
+| actuel, « passent la double authentification / sans clé secrète » | 5 | 322 px | 818 px |
+| **retenu, « Automatisez la 2FA. Sans la désactiver. Sans la simuler. »** | **3** | **193 px** | **690 px** |
+| même idée en gardant « double authentification » | 5 | 322 px | 818 px |
+| « passent enfin la 2FA » | 3 | 193 px | 690 px |
+
+**CE QUE CE CHOIX COÛTE, pour mémoire** : le titre abandonne « double
+authentification », que la passe du 2026-09-02 avait posée là exprès, le site
+étant fort sur le sigle et faible sur la formule longue que tape quelqu'un qui ne
+connaît pas encore le produit. Il en reste cinq occurrences, dont le chapeau du
+hero juste en dessous. **L'argument de la clé secrète n'est pas perdu** : il est à
+sa place, en question 18 de la FAQ, avec sa réponse complète dans les deux
+langues.
+
+### La page Démo est retirée, pas supprimée
+
+`commandez.html` et `en/order.html` restent dans git avec leur contenu et sortent
+de la publication par `_config.yml`, qui liste au même endroit tout ce qu'il
+faudra refaire dans l'autre sens : les deux URL du plan du site avec leurs paires
+hreflang, les deux entrées de `llms.txt`, et l'entrée du pied de page.
+
+**L'ENTRÉE DU PIED DE PAGE EST TRAITÉE PAR LE SCRIPT, PAS À LA MAIN.**
+`tools/maj-nav-booking.py` a désormais une seconde passe, bornée au pied de page :
+sans elle l'URL de l'agenda serait écrite à DEUX endroits par page, ce que
+`bookings_conf.py` existe précisément pour éviter. La recherche est bornée pour la
+raison qui avait fait borner l'autre à la barre — un motif non borné attrape une
+entrée de menu au même libellé.
+
+### Deux défauts trouvés en mesurant, hors des retours
+
+- **La barre débordait de 4 px entre 769 et 859 px.** « Réserver une démo » y
+  passait sur deux lignes, donc 79 px de haut dans une barre de 72. Le `nowrap`
+  existait sous 768 px, où ce défaut avait été corrigé le 2026-08-11 ; il revenait
+  à l'identique dans la seule autre bande où le libellé n'a pas la place de tenir.
+  Un libellé de bouton se compacte, il ne se plie pas.
+- **`llms.txt` annonçait encore un site en pré-lancement** dont « robots.txt
+  interdit tous les robots » et dont « les 16 pages portent noindex ». C'était vrai
+  jusqu'au 2026-09-08 et faux depuis la migration. C'est le fichier que les IA
+  lisent en premier, il ne peut pas décrire un site fermé quand il est ouvert.
+- **Et `audit-visibilite.py` portait la même erreur**, mais en garde-fou : il
+  exigeait `noindex` partout, donc rendait 14 constats identiques sur un site sain.
+  **Un garde-fou qui crie sur tout n'est plus lu** ; c'est la troisième fois que ce
+  dépôt paie cette leçon. Le contrôle est inversé, avec son exception (`404.html`
+  garde son `noindex`), et éprouvé : 0 constat sur le site, 1 sur une page où l'on
+  injecte un `noindex`.
+
+### Ce qui reste ouvert
+
+- **LE MENU DE LA BARRE SE PLIE ENTRE 769 ET 859 px**, et ce n'est pas corrigé :
+  « Comment ça marche » y tombe à 66 px de large contre 140 à 860 px, et son haut
+  passe à −5 px, donc il déborde la barre par le haut. Le bouton, lui, ne déborde
+  plus. Le correctif est de faire basculer le menu hamburger à **860 px** au lieu
+  de 768, ce qui est une décision de mise en page (le nombre de largeurs où le
+  tiroir apparaît change) et non une correction de défaut. Précédent : la note du
+  2026-08-26 avait déjà mesuré qu'une cinquième entrée de menu demanderait de
+  basculer à 1024 px.
+- **Le label Made in Luxembourg en vectoriel** : le seul exemplaire dont nous
+  disposions vient de la brochure, 156 px de large en pixels réels.
+- **Le contenu de la page Démo**, à revoir avant de la republier.
+
+### Pièges d'outillage rencontrés
+
+- **`node -e` entre guillemets doubles mange les accents graves et les regex.** Un
+  texte contenant du code passe par un FICHIER, jamais par `-e`. Rencontré deux
+  fois dans cette session, dont une fois avec une regex d'échappement qui rendait
+  « Unterminated regexp literal ».
+- **Un décompte de contrôle doit ignorer les commentaires.** Mon assertion « il ne
+  reste qu'un déclencheur de modale » comptait deux, parce que le commentaire que
+  je venais d'écrire cite `data-film-modal` à dessein. Même famille que les
+  contrôles de reste qui doivent viser l'attribut et non le mot.
+- **Un filtre par LIGNE sur une liste dont les entrées sont pliées laisse la ligne
+  de continuation orpheline.** Le retrait d'une entrée de `llms.txt` a laissé
+  « returns the reader's OWN cost… » accrochée à l'entrée précédente. Un retrait
+  d'entrée se contrôle sur l'entrée entière.
+- **Tout défilement de sonde est en `behavior: 'instant'`.** Ma première sonde
+  tactile simulait l'inertie par `scrollBy` successifs : `<html>` portant
+  `scroll-behavior: smooth`, chaque appel interrompait le précédent, elle avançait
+  de 121 px là où elle croyait en demander 720, et concluait à un retour en arrière
+  inexistant.
+- **Le rapport d'un cadre et la découpe d'une image sont deux endroits pour une
+  seule géométrie.** `.appwin__body` porte un `aspect-ratio` et les trois captures
+  portent leur hauteur : l'image étant en `object-fit: cover`, un rapport périmé ne
+  déforme rien mais RECADRE en silence. Après le seul recadrage des fichiers, le
+  cadre gardait 1500 et avalait 210 px de contenu. `tools/recadre-ui.py` porte la
+  chaîne et rappelle la valeur à déclarer.
+- **La sortie console de Python est en cp1252 sur ce poste.** Un `print` de tiret
+  cadratin ou de caractère de dessin lève `UnicodeEncodeError` : une sonde qui
+  affiche du texte doit reconfigurer `sys.stdout` en UTF-8.
