@@ -979,6 +979,64 @@
     return Math.min(1, Math.max(0, f));
   }
 
+  /* ── AU DOIGT, UN PAS EST UN ÉTAT ET NON UNE POSITION ────────────────────
+     « Sur la version mobile il y a toujours un souci au niveau du
+     scrollytelling, on utilise pas de souris sur mobile donc on doit changer de
+     logique/méthode uniquement sur mobile » (2026-09-09).
+
+     LE DÉFAUT ÉTAIT RÉEL ET MESURÉ. À la souris, l'accrochage repose la
+     séquence sur un pas dès que la molette se tait ; au doigt il est désactivé
+     depuis le 2026-09-09 matin, parce que le doigt qui quitte l'écran ne
+     termine pas le geste (l'inertie continue, et l'accrochage lisait alors une
+     position qu'on était en train de dépasser, d'où un retour en arrière).
+     Conséquence non vue alors : sans accrochage, **rien ne repose plus la
+     séquence**, et l'on peut s'arrêter au milieu d'une transition. Relevé à
+     390 x 844 en arrêtant le défilement à des positions quelconques :
+       - à 2,00 pas : clip 0,706 et coque 0,73, c'est-à-dire un boîtier ouvert
+         aux trois quarts et une coque à moitié en verre, POUR TOUJOURS ;
+       - à 2,4 / 2,5 / 2,6 pas : caméra figée à -78 / -97 / -114 degrés alors que
+         les seules poses qui existent sont -42 et -128, et `is-cam-posee` à faux
+         donc le plan coté n'apparaît pas.
+     Trois états que personne n'a dessinés.
+
+     LA LOGIQUE TACTILE EST DONC DISCRÈTE : la cible n'est plus la position
+     continue du défilement mais l'ÉTAT du pas actif. Le défilement reste
+     entièrement natif et libre (on ne lui prend rien, contrairement à un
+     accrochage), et c'est le lissage temporel déjà en place qui joue la
+     transition. Par construction, aucun état intermédiaire ne peut subsister :
+     là où le doigt s'arrête, le modèle rejoint l'état d'un pas.
+
+     LA CIBLE DE LA CAMÉRA N'EST PAS `i`, ET C'EST LE PIÈGE DE CETTE PASSE.
+     `camAt()` lit la tête de lecture continue, où le palier du pas `i` est
+     `[i + HOLD[i][0], i + HOLD[i][1]]` et NON centré sur `i`. Avec
+     `HOLD[1] = [0.18, 0.68]`, passer `u = 1` tombe donc entre le palier du pas 0
+     (qui finit à 0,82) et celui du pas 1 (qui commence à 1,18), c'est-à-dire
+     **au milieu de la transition** : `camAt(1)` renvoie `e = smooth(0.5)`.
+     Mesuré avant correction, arrêt à 0,5 pas sur mobile : caméra figée à 13°
+     alors que les deux poses encadrantes sont 34° et -8°. On vise donc le
+     MILIEU du palier, `i + (HOLD[i][0] + HOLD[i][1]) / 2`, qui retombe dans
+     `[a, b]` pour les quatre pas.
+
+     `jump` CONTINUE DE SE LIRE SUR LA POSITION CONTINUE, et ce n'est pas un
+     détail : calculé sur la valeur discrète, un simple changement de pas
+     donnerait un écart de 1, donc au-delà de TELEPORT, donc `k = 1`, donc une
+     caméra qui SAUTE au lieu de glisser à chaque pas. Seule la CIBLE devient
+     discrète.
+
+     Le tri se fait sur la largeur ET sur le dernier geste vu. La largeur couvre
+     l'arrivée par une ancre ou un rechargement en milieu de page, où aucun
+     geste n'a encore eu lieu ; le geste couvre l'écran tactile large, qu'une
+     requête média ne peut pas voir (`pointer: coarse` décrit le pointeur
+     PRINCIPAL, et un portable tactile y répond « fine » : la leçon du matin).
+     Une molette rebascule en continu, donc reprendre la souris rend le scrub. */
+  var DISCRET_MQ = window.matchMedia('(max-width: 900px)');
+  var gesteTactile = false;
+  /* N'importe où dans le palier ouvert donne le même état (`burstK` et `opaK`
+     valent 1 sur [BURST_FULL, BURST_HOLD]) : on prend le milieu, qui laisse le
+     maximum de marge de part et d'autre. */
+  var F_PALIER = 0.54;
+  function discret() { return gesteTactile || DISCRET_MQ.matches; }
+
   function apply(snap) {
     /* Écart réel depuis l'image précédente. Il sert à normaliser les lissages :
        cf. `parImage()`. `snap` remet la référence à zéro, sinon la première image
@@ -991,7 +1049,8 @@
     var u = head(i);
     var jump = lastU !== null && Math.abs(u - lastU) > TELEPORT;
     lastU = u;
-    var mix = camAt(u);
+    var disc = discret();
+    var mix = camAt(disc ? i + (HOLD[i][0] + HOLD[i][1]) / 2 : u);
     var A = SCENES[mix.a], B = SCENES[mix.b], e = mix.e;
     var g = gTmp;
     g.theta = A.theta + (B.theta - A.theta) * e;
@@ -1017,7 +1076,10 @@
        opacité en est la conséquence, calculée plus bas à partir de la position
        atteinte dans le clip. */
     var scrub = (i === EXPLODE_STEP);
-    var f = scrub ? fraction(i) : 0;
+    /* Au doigt, le pas d'éclatement n'est plus scrubbé : il porte l'état
+       « ouvert et isolé », et le lissage y mène. Cf. le pavé sur la logique
+       discrète, juste au-dessus. */
+    var f = !scrub ? 0 : disc ? F_PALIER : fraction(i);
     var burstK = !scrub                ? 0
                : f <= BURST_FULL       ? f / BURST_FULL
                : f <= BURST_HOLD       ? 1
@@ -1694,16 +1756,27 @@
 
      `touchstart` continue d'ANNULER une glissade en cours : un doigt posé doit
      toujours reprendre la main. Il ne planifie simplement plus rien. */
+  /* La molette rend le scrub ET l'accrochage : reprendre la souris sur une
+     machine hybride redonne exactement le comportement de bureau. */
   ['wheel', 'keydown'].forEach(function (ev) {
-    window.addEventListener(ev, function () { stopGlissade(); planifierAccrochage(); },
-                            { passive: true });
+    window.addEventListener(ev, function () {
+      gesteTactile = false;
+      stopGlissade(); planifierAccrochage();
+    }, { passive: true });
   });
   window.addEventListener('touchstart', stopGlissade, { passive: true });
-  window.addEventListener('pointerdown', function () { pointeur = true; stopGlissade(); }, { passive: true });
+  window.addEventListener('pointerdown', function (e) {
+    pointeur = true;
+    /* UN DOIGT POSÉ FAIT BASCULER LA SÉQUENCE EN LOGIQUE DISCRÈTE, quelle que
+       soit la largeur : c'est le seul signal fiable sur un écran tactile large,
+       où la requête média répond « pointeur fin ». */
+    if (e.pointerType === 'touch') gesteTactile = true;
+    stopGlissade();
+  }, { passive: true });
   ['pointerup', 'pointercancel'].forEach(function (ev) {
     window.addEventListener(ev, function (e) {
       pointeur = false;
-      if (e.pointerType === 'touch') return;
+      if (e.pointerType === 'touch') { kick(); return; }
       planifierAccrochage();
     }, { passive: true });
   });

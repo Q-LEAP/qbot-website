@@ -10283,3 +10283,86 @@ depuis un `<main>` dans chaque langue**.
 
 Le calage vertical propre au bloc du label (`align-items: center`) est retiré : il
 n'existait que parce que ce bloc était deux fois plus haut que ses voisins.
+
+## Au doigt, un pas est un ÉTAT et non une position (2026-09-09, soir)
+
+« Sur la version mobile il y a toujours un souci au niveau du scrollytelling, on utilise
+pas de souris sur mobile donc on doit changer de logique/méthode uniquement sur mobile. »
+
+### LE DÉFAUT ÉTAIT RÉEL, ET C'EST LA CORRECTION DU MATIN QUI L'AVAIT OUVERT
+
+À la souris, l'accrochage repose la séquence sur un pas dès que la molette se tait. Au
+doigt, il a été désactivé le matin même, pour une bonne raison (le doigt qui quitte l'écran
+ne termine pas le geste : l'inertie continue, et l'accrochage lisait une position qu'on
+était en train de dépasser, d'où un retour en arrière). **Conséquence non vue alors : plus
+rien ne reposait la séquence.** Relevé à 390 x 844 en arrêtant le défilement à des
+positions quelconques, ce qu'un doigt fait par nature :
+
+| arrêt | état obtenu, et il ne bougeait plus jamais |
+|---|---|
+| 2,00 pas | clip **0,706**, coque **0,73** : boîtier ouvert aux trois quarts, coque à moitié en verre |
+| 2,4 / 2,5 / 2,6 pas | caméra figée à **-78 / -97 / -114°** alors que les seules poses sont -42 et -128 |
+| 1,3 pas | caméra à -40°, `is-cam-posee` à faux, donc le plan coté n'apparaît pas |
+
+**8 des 13 positions testées laissaient un état que personne n'a dessiné.**
+
+### La logique tactile est DISCRÈTE
+
+La cible n'est plus la position continue du défilement mais l'**état du pas actif**. Le
+défilement reste entièrement natif et libre (on ne lui prend rien, contrairement à un
+accrochage) et c'est le lissage temporel déjà en place qui joue la transition. Par
+construction, aucun état intermédiaire ne peut subsister : là où le doigt s'arrête, le
+modèle rejoint l'état d'un pas. Relevé après : **0 sur 13.**
+
+Trois points à ne pas défaire :
+
+- **LA CIBLE DE LA CAMÉRA N'EST PAS `i`, ET C'EST LE PIÈGE DE LA PASSE.** `camAt()` lit la
+  tête de lecture continue, où le palier du pas `i` est `[i + HOLD[i][0], i + HOLD[i][1]]`
+  et **non centré sur `i`**. Avec `HOLD[1] = [0.18, 0.68]`, passer `u = 1` tombe entre le
+  palier du pas 0 (qui finit à 0,82) et celui du pas 1 (qui commence à 1,18), donc au
+  MILIEU de la transition : `camAt(1)` renvoie `e = smooth(0.5)`. Mesuré, la caméra se
+  figeait alors à 13° entre 34° et -8°, c'est-à-dire un nouvel état intermédiaire à la
+  place de l'ancien. On vise le **milieu du palier**,
+  `i + (HOLD[i][0] + HOLD[i][1]) / 2` ;
+- **`jump` continue de se lire sur la position CONTINUE.** Calculé sur la valeur discrète,
+  un simple changement de pas donnerait un écart de 1, donc au-delà de `TELEPORT`, donc
+  `k = 1`, donc une caméra qui SAUTE à chaque pas au lieu de glisser. Seule la cible
+  devient discrète ;
+- **`f` vaut n'importe où dans le palier ouvert.** `burstK` et `opaK` valent 1 sur
+  `[BURST_FULL, BURST_HOLD]`, donc `F_PALIER = 0.54` (le milieu) laisse le maximum de marge
+  de part et d'autre.
+
+### Le tri : la largeur ET le dernier geste vu
+
+La requête média `(max-width: 900px)` couvre l'arrivée par une ancre ou un rechargement en
+milieu de page, où aucun geste n'a encore eu lieu. Le geste couvre l'**écran tactile
+large**, qu'aucune requête média ne peut voir : `(pointer: coarse)` décrit le pointeur
+PRINCIPAL et un portable tactile y répond « fine », leçon déjà payée le matin. Un
+`pointerdown` de type `touch` fait donc basculer en discret quelle que soit la largeur, et
+une molette rebascule en continu.
+
+Vérifié dans les deux sens à 1440 px, arrêt à 2,4 pas : souris seule **-78° non posée**,
+après un appui du doigt **-128° posée**, et la molette rend le scrub. Et l'accrochage souris
+est intact : un cran = un pas, 0 → 1 → 2 → 3, chaque état propre (clip 0,92 et θ = -42° au
+pas 3).
+
+### DEUX PIÈGES DE SONDE, DONT UN QUI M'A FAIT CROIRE À UN SITE CASSÉ
+
+1. **`Input.synthesizeScrollGesture` en `gestureSourceType: 'touch'` ne défile pas du tout**
+   dans ce Chromium headless. Ma première sonde a donc rapporté `delta 0` après quatre
+   gestes, y compris un flick de 1200 px, sur l'accueil ET sur la FAQ : j'ai cru que le
+   défilement tactile était bloqué sur tout le site. **Le témoin l'a écarté** : le même
+   geste ne défile pas non plus quand le moteur de défilement est absent (mouvement
+   réduit), alors que le même geste en `'mouse'` défile de 500 px et qu'un
+   `Input.dispatchTouchEvent` à la main défile de 485 px. Pour simuler un doigt, c'est
+   `dispatchTouchEvent` — sans inertie, que le compositeur ne synthétise pas ici ;
+2. **lire l'attribut `camera-orbit` ne dit rien** : `scrolly.js` écrit la PROPRIÉTÉ
+   (`viewer.cameraOrbit = …`), donc l'attribut garde éternellement la valeur du HTML
+   statique. C'est `getCameraOrbit()` qu'il faut lire.
+
+### Contrôles
+
+`audit-a11y.py` à 390 px et `audit-visibilite.py` : **15 pages lues sur 15, 0 constat**.
+Les deux accueils balayés en (normal, mouvement réduit) x (390, 1440 px) : 0 débordement,
+0 révélation invisible, un seul `h1`, **0 erreur console**. 13 positions d'arrêt x 2 modes,
+et les 4 poses nominales atteintes au degré près sur mobile.
