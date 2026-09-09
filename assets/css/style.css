@@ -3169,7 +3169,10 @@ p { color: var(--gray); }
 }
 
 .filmband__titre { margin: 6px 0 10px; }
-.filmband__desc { margin: 0 0 22px; }
+/* Plus de marge basse : les 22 px separaient le texte du bouton « Voir la demo »,
+   retire le 2026-09-09. Devenue une marge de fin de colonne, elle decalait le bloc
+   de 11 px vers le haut par rapport au cadre, la rangee etant centree. */
+.filmband__desc { margin: 0; }
 
 /* ---- Le cadre ----
    Traitement du hero (`.hero__film` et `.hero__shot`) : filet teal, ombre

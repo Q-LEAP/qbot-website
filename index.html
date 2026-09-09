@@ -37,7 +37,7 @@
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=16330fd1">
+  <link rel="stylesheet" href="assets/css/style.css?v=0efb4875">
   <link rel="stylesheet" href="assets/css/scrolly.css?v=cb768730">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -373,10 +373,15 @@
 
 <!-- ======= LA DÉMONSTRATION EN VIDÉO =======
      Point 3 du retour du 2026-09-08 : le film redevient une section, avec son
-     titre et son appel à l'action, « davantage présenté comme une démonstration
-     du produit ». Le bouton porte `data-film-modal` comme la vignette : le
-     module 24 vise tous les liens qui le portent, donc les deux ouvrent la même
-     modale, et sans JavaScript les deux restent des liens vers le fichier. -->
+     titre, « davantage présenté comme une démonstration du produit ».
+
+     IL N'Y A QU'UN SEUL DÉCLENCHEUR, LA VIGNETTE. Un bouton « Voir la démo »
+     l'accompagnait ; retiré le 2026-09-09, « il suffit de cliquer sur la
+     vidéo ». C'est juste : la vignette porte l'affiche, une pastille de lecture
+     de 64 px et son propre libellé, donc elle se donne déjà pour cliquable, et
+     deux déclencheurs pour un même film faisaient deux arrêts de tabulation
+     vers la même modale. La vignette garde `data-film-modal`, que le module 24
+     vise, et sans JavaScript elle reste un lien vers le fichier. -->
 <section class="section section--gray" aria-labelledby="film-title">
   <div class="container">
     <div class="filmband">
@@ -384,13 +389,6 @@
         <span class="section-label">La démonstration</span>
         <h2 class="section-title filmband__titre" id="film-title">Voyez <span class="nb">Q-Bot</span> passer une 2FA en 60 secondes</h2>
         <p class="filmband__desc">Un test arrive à l'étape 2FA. <span class="nb">Q-Bot</span> prend le relais sur un vrai smartphone. Le test continue automatiquement.</p>
-        <a class="btn btn--primary" href="assets/video/qbot-demo.mp4?v=301fa999"
-           data-film-modal
-           data-film-titre="Q-Bot en action"
-           data-film-fermer="Fermer la vidéo">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
-          Voir la démo
-        </a>
       </div>
       <a class="filmcard" href="assets/video/qbot-demo.mp4?v=301fa999"
          data-film-modal
