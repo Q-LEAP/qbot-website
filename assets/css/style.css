@@ -5481,9 +5481,19 @@ label > input[type="checkbox"] {
    `aspect-ratio` sur le corps et non sur l'image : les trois captures ont
    exactement la même taille, donc la hauteur ne bouge pas d'un onglet à l'autre
    et il n'y a AUCUN décalage de mise en page au clic. */
+/* CE RAPPORT DOIT SUIVRE LA DÉCOUPE DES TROIS CAPTURES, ET C'EST UN PIÈGE :
+   la géométrie vit à DEUX endroits, ici et dans les fichiers image. Les trois
+   panneaux sont en `position: absolute`, donc le corps n'a aucune hauteur
+   intrinsèque et ce rapport est ce qui la lui donne ; l'image est en
+   `object-fit: cover`, donc un rapport périmé ne déforme rien mais RECADRE en
+   silence. Constaté le 2026-09-09 : les captures étaient passées de 1500 à
+   1060 px de haut et le cadre gardait 1500, donc il rognait le bas des
+   captures au lieu de raccourcir.
+   Voir `tools/recadre-ui.py`, qui produit les trois fichiers et rappelle cette
+   valeur. On change les deux ensemble. */
 .appwin__body {
   position: relative;
-  aspect-ratio: 2360 / 1500;
+  aspect-ratio: 2360 / 1060;
   background: #fff;
 }
 
