@@ -532,6 +532,16 @@ p { color: var(--gray); }
   gap: 12px;
 }
 
+/* LE LIBELLÉ DU BOUTON NE PASSE JAMAIS À LA LIGNE, À AUCUNE LARGEUR. C'est le
+   retour à la ligne, et non la largeur du texte, qui casse la hauteur de la
+   barre : sur deux lignes le bouton fait 79 px dans une barre qui en fait 72,
+   donc il la déborde de 4 px. Le `nowrap` existait déjà sous 768 px, où le
+   défaut avait été corrigé le 2026-08-11 ; relevé le 2026-09-09, il revenait
+   à l'identique de 769 à 859 px, la seule bande où « Réserver une démo » n'a
+   pas la place de tenir sur une ligne. Un libellé de bouton se compacte, il ne
+   se plie pas. */
+.nav__actions .btn { white-space: nowrap; }
+
 /* Un seul lien : la langue vers laquelle on bascule (globe + code), pas les
    deux codes dont un ne servait qu'à indiquer la page où l'on est déjà —
    c'était deux fois la largeur pour la même information, et une pastille
@@ -2398,11 +2408,9 @@ p { color: var(--gray); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; }
 
-  /* Le bouton de réservation, déplacé dans le menu par le module 1 (retour du
-     2026-09-08). Pleine largeur du tiroir : c'est l'action principale, et un
-     tiroir déplié n'a pas de raison de la laisser flotter à mi-largeur. */
-  .nav__menu-cta { width: 100%; margin-top: 4px; }
-  .nav__menu-cta .btn { width: 100%; justify-content: center; }
+  /* `.nav__menu-cta` a été retiré le 2026-09-09 avec le déplacement du bouton
+     dans le tiroir : le client n'en veut pas dans le menu mobile. Le bouton vit
+     dans la barre à toute largeur, où il est compacté plus bas. */
 
   /* 16 px sur tous les champs de saisie, et pas 15. En dessous de 16 px, Safari
      iOS ZOOME la page à la prise de focus pour rendre le texte lisible, puis ne

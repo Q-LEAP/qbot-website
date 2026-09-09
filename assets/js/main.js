@@ -30,61 +30,29 @@ navToggle?.addEventListener('click', () => {
   navToggle.setAttribute('aria-expanded', String(isOpen));
 });
 
-/* ── Le bouton de réservation rejoint le menu sur téléphone ──
-   Demandé le 2026-09-08 : « le bouton du header je le mettrais dans le menu sur
-   mobile », et « le menu mobile est un peu léger avec juste 2 pages ». Les deux
-   se règlent d'un coup, le menu passant de trois entrées à quatre.
+/* ── Le bouton de réservation reste dans la barre, à toute largeur ──
+   IL A ÉTÉ DÉPLACÉ DANS LE TIROIR LE 2026-09-08, PUIS REMIS ICI LE 2026-09-09 :
+   « si possible pas de bouton dans le menu mobile pour réserver une démo ». Le
+   déplacement était lui aussi une demande, il n'y a donc rien à « corriger »
+   dans un sens ou dans l'autre, c'est le dernier arbitrage qui vaut.
 
-   ON DÉPLACE LE NOEUD, ON NE LE DUPLIQUE PAS. Un second bouton donnerait deux
-   arrêts de tabulation et deux fois le même nom accessible ; surtout,
-   `tools/maj-nav-booking.py` compte UN bouton par page dans la SOURCE, et un
-   doublon écrit dans le balisage le tromperait. Déplacé, le noeud garde ses
-   écouteurs : la fenêtre de réservation du module 20 s'ouvre sans une ligne de
-   plus.
+   Il n'est pas MASQUÉ sur téléphone, il y est compacté par le CSS (`nowrap`,
+   9/14 px de remplissage) : c'est le chemin de conversion de la barre, et la
+   même passe demande de rendre celui du hero plus discret. En le masquant,
+   téléphone et bureau n'offriraient plus le même chemin.
 
-   Sans JavaScript, le bouton reste dans la barre. C'est l'état d'avant : il
-   n'est jamais perdu. */
+   Il reste un seul bouton, dans le balisage servi comme dans le DOM : c'est ce
+   que compte `tools/maj-nav-booking.py`, et un doublon le tromperait.
+
+   Ce qui subsiste ici est le seul comportement qui ne peut pas venir du CSS :
+   refermer le tiroir quand on l'active. Sans cela le menu resterait déplié
+   derrière la fenêtre modale, et on le retrouverait ouvert en sortant. */
 {
-  const ctaNav   = document.querySelector('.nav__actions .btn');
-  const actions  = document.querySelector('.nav__actions');
-  const lang     = document.querySelector('.nav__lang');
-  if (ctaNav && navMenu && actions) {
-    let hote = null;
-    /* LA LARGEUR EST RELUE À CHAQUE APPEL, ET LE DÉCLENCHEUR EST `resize`, PAS
-       `change` DE `matchMedia`. Un écouteur `change` ne se réveille qu'au
-       FRANCHISSEMENT du seuil : si la fenêtre était étroite au moment où le
-       script s'exécute puis s'élargit sans repasser par 768 px, le bouton reste
-       coincé dans le tiroir pour toute la vie de la page. Constaté en mesurant
-       dans un cadre en ligne, qui commence sa vie à 300 px avant que sa largeur
-       réelle ne lui soit appliquée : à 1440 px le bouton était dans le menu, et
-       aucun redimensionnement ultérieur ne le ramenait. `place()` ne fait rien
-       quand l'état est déjà le bon, donc l'appeler à chaque redimensionnement ne
-       coûte rien. */
-    const place = () => {
-      if (window.matchMedia('(max-width: 768px)').matches) {
-        if (!hote) {
-          hote = document.createElement('li');
-          hote.className = 'nav__menu-cta';
-          hote.appendChild(ctaNav);
-          navMenu.appendChild(hote);
-        }
-      } else if (hote) {
-        actions.insertBefore(ctaNav, lang);
-        hote.remove();
-        hote = null;
-      }
-    };
-    place();
-    window.addEventListener('load', place);
-    window.addEventListener('resize', place, { passive: true });
-
-    /* Il ouvre une fenêtre modale au lieu de naviguer : sans cela le menu
-       resterait déplié derrière elle, et on le retrouverait ouvert en sortant. */
-    ctaNav.addEventListener('click', () => {
-      navMenu.classList.remove('open');
-      navToggle?.setAttribute('aria-expanded', 'false');
-    });
-  }
+  const ctaNav = document.querySelector('.nav__actions .btn');
+  ctaNav?.addEventListener('click', () => {
+    navMenu?.classList.remove('open');
+    navToggle?.setAttribute('aria-expanded', 'false');
+  });
 }
 
 // Ferme au clic extérieur
