@@ -668,6 +668,41 @@ p { color: var(--gray); }
 
 .hero__actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
+/* ── LE HERO N'A PLUS DE BOUTON, IL A UN LIEN ──
+   « Pas de bouton pour réserver une démo dans le hero. Mets du texte, car on
+   est à peine au début de la page, pas besoin d'avoir 2 boutons si visibles
+   d'emblée. Fais un CTA plus discret » (2026-09-09).
+
+   IL NE MÈNE PLUS À LA RÉSERVATION, ET C'EST LA MOITIÉ DU CORRECTIF. Un lien
+   « Réserver une démo » à cent pixels sous le bouton « Réserver une démo » de
+   la barre est exactement la redondance que le retour désigne. Il mène donc au
+   film, qui est l'étape suivante naturelle en haut d'une page : on montre avant
+   de demander. La réservation reste à un clic, dans la barre, en permanence.
+
+   La grammaire est celle des liens fléchés du site (`.evo-card__link`) : teal,
+   flèche qui avance au survol. Elle n'est pas réutilisée telle quelle parce que
+   ses `margin-top: auto` et `padding-top: 18px` sont faits pour le bas d'une
+   carte en colonne, pas pour une ligne posée sous un paragraphe. */
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  /* 44 px de haut : la cible tactile de WCAG 2.5.8 sans pastille pour la
+     porter. Le remplissage est vertical seulement, sinon le texte ne tomberait
+     plus sur la gouttière comme le titre et le paragraphe au-dessus. */
+  min-height: 44px;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--teal);
+}
+.hero__cta svg { flex-shrink: 0; transition: transform var(--transition); }
+.hero__cta:hover { color: var(--teal-tint); }
+.hero__cta:hover svg { transform: translateX(4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__cta svg { transition: none; }
+}
+
 /* ── Film produit dans le hero ──
    Le film est tourné sur fond gris clair alors que la page est noire. On ne
    peut pas le détourer (le boîtier est noir : il disparaîtrait sur le noir de
