@@ -6173,6 +6173,33 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .specs__dims--2col { grid-template-columns: 1fr 1fr; column-gap: 32px; }
 @media (max-width: 640px) { .specs__dims--2col { grid-template-columns: 1fr; } }
 
+/* Les trois cotes de la section d'ouverture tiennent désormais sur UNE ligne
+   (2026-09-09, texte du client : « Dimensions : 20 × 11 × 15 cm »). Elles
+   étaient une liste de trois items, ce qui est le bon motif pour une fiche mais
+   pas pour trois nombres qui se lisent d'un trait. Même couleur et même corps
+   que les items de la liste, sans la puce : il n'y a plus de liste. */
+/* LIBELLÉ AU-DESSUS, VALEUR EN DESSOUS, et ce n'est pas une coquetterie : le
+   texte du client réduit cette colonne à une seule ligne de 26 px, face à une
+   photo de 316 px. Le calage est pourtant correct (les deux partent du haut de
+   la grille, mesuré), mais une ligne seule face à une image ne tient pas sa
+   moitié. Le motif « libellé discret, valeur mise en avant » est celui des
+   lignes de fiche technique de la même page, et il ne change pas un mot. */
+.specs__dims-ligne { margin: 0; }
+.specs__dims-lab {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.specs__dims-val {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--black);
+}
 .specs__dims li {
   position: relative;
   padding-left: 20px;

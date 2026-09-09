@@ -10451,3 +10451,105 @@ triangles à chaque transition. La chaîne existe déjà dans ce dépôt
 (`tools/render/shoot-interieur.py` produit exactement ce genre de film à partir du GLB), et
 le repli statique de la séquence est déjà en place. C'est un chantier, pas un réglage : à
 arbitrer avec le client.
+
+## Le lot du 2026-09-09 au soir : six retours, six commits
+
+Traité à la convention du dépôt, un retour par commit.
+
+### 1. Quatre photos en tête du carrousel, deux en sortent
+
+Ordre donné par le client. **Les deux HEIC ont demandé `pillow-heif`** (`pip install
+pillow-heif` puis `register_heif_opener()`) : ni Pillow seul ni le navigateur ne décodent
+ce format. Elles sont archivées en JPEG sous un nom ASCII stable, les deux autres dans
+leur format d'origine. Recadrage en 4/5 comme les vues déjà en place, sortie en 768 x 960.
+La 3e et la 4e vue sortent et sont exclues de la publication. Six vues, six pastilles,
+aucun agrandissement au-delà de 1,08.
+
+`ChatGPT Image 9 sept. 2026, 16_57_00.png` porte le même manifeste
+`trainedAlgorithmicMedia` que les autres visuels fournis ; les trois autres sont de vraies
+photos (HEIC de téléphone, JPEG à EXIF d'appareil).
+
+### 2. Le pied de page porte le logo Made in Luxembourg
+
+Le pictogramme de lieu laisse la place au logo, et les deux icônes passent à **16 px** :
+elles étaient à 15 et 13, donc de tailles proches mais différentes, ce qui se voit d'autant
+plus qu'elles sont côte à côte (« même dimension, pas trop grand, mais dimension
+identique »).
+
+**LE FORMAT ICÔNE N'EXISTAIT PAS, IL A FALLU LE FAIRE.** Le seul exemplaire dont nous
+disposons est le cartouche entier découpé de la brochure, 98 x 79 px, où « MADE IN
+LUXEMBOURG » est illisible sous 40 px. C'est donc **la couronne seule**, et le texte n'est
+pas perdu puisqu'il est écrit en clair juste à côté dans la pastille. Le découpage est
+relevé et non deviné : un comptage de l'encre ligne par ligne place la couronne sur
+y 0..53, « MADE IN » sur 54..63 et « LUXEMBOURG » sur 69..78. Elle est ensuite serrée sur
+son encre puis posée dans un carré, pour avoir la même emprise que l'icône LinkedIn.
+Sortie en 64 px pour 16 px d'affichage. **LE LABEL EN VECTORIEL RESTE À DEMANDER.**
+
+### 3. Les trois textes de la page À propos
+
+Hero, section origine et second paragraphe de « Savoir-faire ». La marque « Origine du
+produit » part avec le texte qu'elle coiffait : le client n'en donne pas, et c'est cohérent
+avec sa remarque du matin sur le doublon « Origine ».
+
+Piège rencontré : le `<h1>` contient `<span class="nb">Q-Bot</span>`, donc un remplacement
+par le texte brut ne trouve rien. Et la section origine est un `.intro__grid` à deux
+colonnes : le premier `</div>` ferme la COLONNE DE TEXTE, pas la section. Les paragraphes
+se bornent donc sur `<div class="intro__image`, jamais sur le premier `</div>` venu.
+
+### 4. Rouge sur « Test bloqué », vert sur la case d'arrivée
+
+Deux couleurs d'état de plus, sous la règle posée pour l'ambre : **jamais de marque,
+seulement un état**. L'ambre marque l'INTERRUPTION, le rouge son ABOUTISSEMENT, le vert
+celui de l'autre chaîne, donc trois moments distincts et trois teintes.
+
+**LE ROUGE EST CLAIR (#FF8080) ET NON SATURÉ**, et c'est mesuré : un rouge franc a une
+luminance basse, donc son contraste s'écroule sur un fond noir — c'est exactement ce qui
+l'avait fait écarter au profit de l'ambre le matin même. Relevé **en composite** (les cases
+ont un fond translucide, il faut composer sur le parent) : rouge **6,56:1**, vert
+**8,81:1**, ambre 7,64, teal 7,71.
+
+**Pas de coche sur la case verte** : celle de Q-Bot est juste à côté, et deux coches à la
+suite sont du bruit. Le client ne demandait que la couleur.
+
+Piège de sonde : une sonde de contraste qui lit `backgroundColor` sans composer les couches
+translucides compare la couleur à elle-même et rend **1:1**. C'est l'artefact obtenu ici sur
+les quatre cases colorées, et il ressemble à un défaut grave.
+
+### 5. Le CTA du header s'allège de 11 %
+
+Il héritait de `.btn`, dimensionné pour une page (12/28 px de remplissage, 15 px de texte),
+soit 54 px de haut dans une barre de 72. Il passe à 10/22 et 14 px : **48 px de haut,
+170 px de large**, dans la fourchette de 10 à 15 % demandée. Couleur, contraste et forme
+inchangés.
+
+À savoir : sous 859 px le bouton est DÉPLACÉ dans le tiroir, donc il quitte `.nav__actions`
+et perd cette règle comme il perdait déjà les deux blocs de compactage mobile. Il y reprend
+la taille de `.btn`, ce qui est le bon comportement pour une cible au doigt en pleine
+largeur.
+
+### 6. La section d'ouverture de la fiche technique
+
+Marque « Format compact », titre, chapeau et cotes, au motif de tous les autres titres du
+site. Le `<h3>` qui portait « Q-Bot tient sur un coin de bureau » devient le `<h2>` (il
+disait déjà ce que le titre dit maintenant) et son paragraphe disparaît, puisqu'il redisait
+le chapeau.
+
+**LES TROIS COTES TIENNENT SUR UNE LIGNE, en libellé + valeur**, et ce n'est pas une
+coquetterie : le texte du client réduit cette colonne à 26 px face à une photo de 316. Le
+calage est pourtant correct — mesuré, les deux partent bien du haut de la grille, qui est
+en `align-items: start` — mais une ligne seule face à une image ne tient pas sa moitié. Le
+motif « libellé discret, valeur mise en avant » est celui des lignes de fiche technique de
+la même page, et il ne change pas un mot.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et à 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat** après chaque commit. 75 pages, 668 références internes, **0 cassée**. Contrôle
+des actifs dans les deux sens : 0 référence vers un actif exclu. Carrousel relevé à 1440 /
+900 / 390 px (6 vues, 6 pastilles, boucle des flèches, 0 image cassée). Bouton du header
+mesuré à dix largeurs de 360 à 2560 px, sans débordement. 0 saut de niveau de titre,
+0 débordement horizontal, 0 erreur console.
+
+**Une erreur transitoire de GitHub** (`remote: fatal error in commit_refs`) a rejeté un
+push ; le même push est passé quatre secondes plus tard. Le commit était bien créé en
+local : ne pas le refaire, seulement repousser.
