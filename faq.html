@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=8122cf89">
+  <link rel="stylesheet" href="assets/css/style.css?v=33419e55">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -161,10 +161,50 @@
       },
       {
         "@type": "Question",
+        "name": "Q-Bot peut-il récupérer un code à usage unique (OTP) ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. L'API expose GET /get-luxtrust-otp, qui renvoie le code à usage unique affiché par l'application LuxTrust sur le téléphone relié. Votre test récupère la valeur et la saisit là où il en a besoin. Le code est lu sur la véritable application, il n'est pas recalculé depuis une clé secrète."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Q-Bot peut-il gérer un parcours avec QR code ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. Le boîtier porte un petit écran intégré, et l'API expose POST /display-image pour y afficher une image. Un parcours qui demande de scanner un QR code se déroule donc en entier : votre test envoie l'image, et le téléphone posé dans le socle la scanne."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "Comment utiliser Q-Bot ?",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Une fois que Q-Bot est connecté au réseau de l'entreprise et accessible depuis les machines des testeurs, il est possible de tester immédiatement l'exécution du scénario d'authentification via l'interface Web. Le scénario s'y construit visuellement, sur une capture de l'écran 2FA : des points d'appui numérotés et des temps d'attente, sans une ligne de script à écrire. Dans un second temps, il convient de déclencher l'exécution du scénario d'authentification. Le scénario peut se déclencher tout seul : l'app compagnon, installée sur le mobile, surveille les notifications de l'application 2FA et lance le scénario dès qu'une arrive. Une alternative consiste à déclencher le scénario en appelant l'API de Q-Bot depuis vos scénarios de tests automatisés. Toutes les principales technologies d'automatisation (Selenium, WebdriverIO, Cypress, Appium, Robot Framework, Cucumber, etc.) permettent d'appeler des APIs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment déclencher un scénario Q-Bot ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "De deux façons. Soit votre test appelle GET /scenarios/:id/execute sur le réseau local, soit l'app compagnon installée sur le téléphone surveille les notifications 2FA et déclenche seule le scénario correspondant dès qu'une arrive. Les deux chemins coexistent dans le même environnement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Avec quels frameworks et outils Q-Bot est-il compatible ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Avec Selenium, Cypress, Appium, Playwright, Robot Framework, Katalon, TestComplete, Jenkins CI et GitLab CI, et plus généralement avec toute chaîne capable d'un appel HTTP. Il n'y a ni SDK, ni greffon propriétaire, ni agent à installer : votre test appelle une URL, ce que sait faire n'importe quel outil."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Q-Bot peut-il être utilisé dans une chaîne CI/CD ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui, c'est son usage principal. Un scénario se déclenche par un appel HTTP, donc depuis n'importe quelle étape de Jenkins, de GitLab CI ou d'un autre orchestrateur, sans SDK ni agent à installer. Vos campagnes de nuit franchissent l'étape 2FA sans que personne soit devant l'écran."
         }
       },
       {
@@ -177,6 +217,14 @@
       },
       {
         "@type": "Question",
+        "name": "Comment Q-Bot communique-t-il avec mon environnement de test ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Par une API REST sur HTTP, servie par le boîtier lui-même, sur le réseau où vous l'installez. L'API n'attend aucune clé : le contrôle d'accès est celui de votre réseau. Rien ne transite par un service extérieur, et aucune connexion internet n'est nécessaire pendant les tests."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "Q-Bot nécessite-t-il une connexion internet ?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -185,10 +233,26 @@
       },
       {
         "@type": "Question",
+        "name": "Où sont stockés les scénarios et les captures ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sur le boîtier, dans une base SQLite locale. Les scénarios y sont enregistrés et versionnés, et les captures d'écran qui servent de fond aux étapes ne le quittent jamais. Aucun envoi vers un cloud, aucune donnée hors de votre réseau, y compris pendant l'exécution d'un scénario."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "Quelles sont les données conservées par Q-Bot et pour quel usage ?",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Q-Bot conserve les données relatives à la création des scénarios d'authentification : les captures de l'écran 2FA qui servent de fond aux étapes, les points d'appui et les temps d'attente. Tout cela reste dans le boîtier, sur votre réseau, dans une base locale. Il convient donc d'utiliser des données de test et non de production."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Q-Bot peut-il être utilisé avec des données de production ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Non. Q-Bot doit être utilisé avec des données de test, pas de production. Les scénarios créés et les captures qui les composent restent sur l'appareil, sur votre réseau, mais la règle vaut quand même : c'est un outil de test, et les comptes qu'il pilote doivent être des comptes de test."
         }
       },
       {
@@ -237,6 +301,14 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Vous pouvez prendre rdv avec Sylvain Perez, créateur de Q-Bot et CEO de Q-Leap en suivant le lien ci-dessous. Vous participerez à une démo, poserez toutes les questions que vous voulez, et c'est à cette occasion que nous vous communiquons le tarif, une fois votre besoin cadré. Réserver une démo Vous pouvez également nous contacter par email à l'adresse suivante : bot@q-leap.eu ou nous appeler par téléphone au +352 20 21 17."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment savoir si Q-Bot est adapté à mon environnement ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le plus simple est de nous le demander. La démonstration est gratuite et se fait sur votre cas : vos applications 2FA, vos outils de test, votre réseau. Écrivez à bot@q-leap.eu ou appelez le +352 20 21 17, et nous regardons ensemble si Q-Bot répond à votre besoin."
         }
       }
     ]
@@ -456,6 +528,28 @@
           <p>Non. <span class="nb">Q-Bot</span> n'a pas besoin du secret partagé qui sert à recalculer un code à usage unique, parce qu'il ne recalcule rien&nbsp;: il pilote la véritable application 2FA sur un smartphone relié en USB, comme le ferait un utilisateur. C'est ce qui lui permet de fonctionner avec LuxTrust Mobile ou itsme, dont le secret n'est pas exportable.</p>
         </div>
       </div>
+      <div class="faq-item" id="faq-q21">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b21" aria-controls="faq-a21">
+          <span class="nb">Q-Bot</span> peut-il récupérer un code à usage unique (OTP)&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a21" role="region" aria-labelledby="faq-b21">
+          <p>Oui. L'API expose <code>GET /get-luxtrust-otp</code>, qui renvoie le code à usage unique affiché par l'application LuxTrust sur le téléphone relié. Votre test récupère la valeur et la saisit là où il en a besoin. Le code est lu sur la véritable application, il n'est pas recalculé depuis une clé secrète.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q22">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b22" aria-controls="faq-a22">
+          <span class="nb">Q-Bot</span> peut-il gérer un parcours avec QR code&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a22" role="region" aria-labelledby="faq-b22">
+          <p>Oui. Le boîtier porte un petit écran intégré, et l'API expose <code>POST /display-image</code> pour y afficher une image. Un parcours qui demande de scanner un QR code se déroule donc en entier&nbsp;: votre test envoie l'image, et le téléphone posé dans le socle la scanne.</p>
+        </div>
+      </div>
       </div>
 
       <div class="faq-cat">
@@ -470,6 +564,39 @@
         <div class="faq-item__answer" id="faq-a12" role="region" aria-labelledby="faq-b12">
           <p>Une fois que <span class="nb">Q-Bot</span> est connecté au réseau de l'entreprise et accessible depuis les machines des testeurs, il est possible de tester immédiatement l'exécution du scénario d'authentification via l'interface Web. Le scénario s'y construit visuellement, sur une capture de l'écran 2FA&nbsp;: des points d'appui numérotés et des temps d'attente, sans une ligne de script à écrire.</p>
           <p style="margin-top:12px;">Dans un second temps, il convient de déclencher l'exécution du scénario d'authentification. Le scénario peut se déclencher tout seul&nbsp;: l'app compagnon, installée sur le mobile, surveille les notifications de l'application 2FA et lance le scénario dès qu'une arrive. Une alternative consiste à déclencher le scénario en appelant l'API de <span class="nb">Q-Bot</span> depuis vos scénarios de tests automatisés. Toutes les principales technologies d'automatisation (Selenium, WebdriverIO, Cypress, Appium, Robot Framework, Cucumber, etc.) permettent d'appeler des APIs.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q23">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b23" aria-controls="faq-a23">
+          Comment déclencher un scénario <span class="nb">Q-Bot</span>&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a23" role="region" aria-labelledby="faq-b23">
+          <p>De deux façons. Soit votre test appelle <code>GET /scenarios/:id/execute</code> sur le réseau local, soit l'app compagnon installée sur le téléphone surveille les notifications 2FA et déclenche seule le scénario correspondant dès qu'une arrive. Les deux chemins coexistent dans le même environnement.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q24">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b24" aria-controls="faq-a24">
+          Avec quels frameworks et outils <span class="nb">Q-Bot</span> est-il compatible&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a24" role="region" aria-labelledby="faq-b24">
+          <p>Avec Selenium, Cypress, Appium, Playwright, Robot Framework, Katalon, TestComplete, Jenkins CI et GitLab CI, et plus généralement avec toute chaîne capable d'un appel HTTP. Il n'y a ni SDK, ni greffon propriétaire, ni agent à installer&nbsp;: votre test appelle une URL, ce que sait faire n'importe quel outil.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q25">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b25" aria-controls="faq-a25">
+          <span class="nb">Q-Bot</span> peut-il être utilisé dans une chaîne CI/CD&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a25" role="region" aria-labelledby="faq-b25">
+          <p>Oui, c'est son usage principal. Un scénario se déclenche par un appel HTTP, donc depuis n'importe quelle étape de Jenkins, de GitLab CI ou d'un autre orchestrateur, sans SDK ni agent à installer. Vos campagnes de nuit franchissent l'étape 2FA sans que personne soit devant l'écran.</p>
         </div>
       </div>
       <div class="faq-item" id="faq-q20">
@@ -487,6 +614,17 @@
 
       <div class="faq-cat">
         <h3 class="faq-cat__titre" id="faq-cat-3">Infrastructure, données &amp; sécurité</h3>
+      <div class="faq-item" id="faq-q27">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b27" aria-controls="faq-a27">
+          Comment <span class="nb">Q-Bot</span> communique-t-il avec mon environnement de test&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a27" role="region" aria-labelledby="faq-b27">
+          <p>Par une API REST sur HTTP, servie par le boîtier lui-même, sur le réseau où vous l'installez. L'API n'attend aucune clé&nbsp;: le contrôle d'accès est celui de votre réseau. Rien ne transite par un service extérieur, et aucune connexion internet n'est nécessaire pendant les tests.</p>
+        </div>
+      </div>
       <div class="faq-item" id="faq-q19">
         <button class="faq-item__question" aria-expanded="false" id="faq-b19" aria-controls="faq-a19">
           <span class="nb">Q-Bot</span> nécessite-t-il une connexion internet&nbsp;?
@@ -498,6 +636,17 @@
           <p>Non, pas pendant les tests. Le boîtier est auto-hébergé&nbsp;: il tourne sur votre réseau, l'interface web et l'API y répondent, et les scénarios comme leurs captures restent stockés dessus. Aucun appel vers un service extérieur n'est nécessaire pour exécuter un scénario.</p>
         </div>
       </div>
+      <div class="faq-item" id="faq-q26">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b26" aria-controls="faq-a26">
+          Où sont stockés les scénarios et les captures&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a26" role="region" aria-labelledby="faq-b26">
+          <p>Sur le boîtier, dans une base SQLite locale. Les scénarios y sont enregistrés et versionnés, et les captures d'écran qui servent de fond aux étapes ne le quittent jamais. Aucun envoi vers un cloud, aucune donnée hors de votre réseau, y compris pendant l'exécution d'un scénario.</p>
+        </div>
+      </div>
       <div class="faq-item" id="faq-q14">
         <button class="faq-item__question" aria-expanded="false" id="faq-b14" aria-controls="faq-a14">
           Quelles sont les données conservées par <span class="nb">Q-Bot</span> et pour quel usage&nbsp;?
@@ -507,6 +656,17 @@
         </button>
         <div class="faq-item__answer" id="faq-a14" role="region" aria-labelledby="faq-b14">
           <p><span class="nb">Q-Bot</span> conserve les données relatives à la création des scénarios d'authentification&nbsp;: les captures de l'écran 2FA qui servent de fond aux étapes, les points d'appui et les temps d'attente. Tout cela reste dans le boîtier, sur votre réseau, dans une base locale. Il convient donc d'utiliser des données de test et non de production.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q28">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b28" aria-controls="faq-a28">
+          <span class="nb">Q-Bot</span> peut-il être utilisé avec des données de production&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a28" role="region" aria-labelledby="faq-b28">
+          <p>Non. <span class="nb">Q-Bot</span> doit être utilisé avec des données de test, pas de production. Les scénarios créés et les captures qui les composent restent sur l'appareil, sur votre réseau, mais la règle vaut quand même&nbsp;: c'est un outil de test, et les comptes qu'il pilote doivent être des comptes de test.</p>
         </div>
       </div>
       <div class="faq-item" id="faq-q16">
@@ -582,6 +742,17 @@
             <a href="contact.html" class="btn btn--primary">Réserver une démo</a>
           </div>
           <p style="margin-top:16px;">Vous pouvez également nous contacter par email à l'adresse suivante : <a href="mailto:bot@q-leap.eu" style="color:var(--teal-text);">bot@q-leap.eu</a> ou nous appeler par téléphone au <a href="tel:+352202117" style="color:var(--teal-text);">+352 20 21 17</a>.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q29">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b29" aria-controls="faq-a29">
+          Comment savoir si <span class="nb">Q-Bot</span> est adapté à mon environnement&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a29" role="region" aria-labelledby="faq-b29">
+          <p>Le plus simple est de nous le demander. La démonstration est gratuite et se fait sur votre cas&nbsp;: vos applications 2FA, vos outils de test, votre réseau. Écrivez à <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> ou appelez le <a href="tel:+352202117">+352 20 21 17</a>, et nous regardons ensemble si <span class="nb">Q-Bot</span> répond à votre besoin.</p>
         </div>
       </div>
       </div>

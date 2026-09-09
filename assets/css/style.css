@@ -3757,7 +3757,14 @@ a:focus-visible { border-radius: var(--radius-sm); }
   border-radius: 0 var(--radius) var(--radius) 0;
 }
 .article-body blockquote p { color: var(--dark); font-weight: 500; margin: 0; }
-.article-body code {
+/* LE MÊME CODE EN LIGNE DANS LES RÉPONSES DE FAQ. Trois d'entre elles nomment
+   un point d'entrée de l'API depuis le 2026-09-09 (« GET /scenarios/:id/execute »
+   et ses deux voisins) : une URL au milieu d'une phrase en proportionnelle se
+   lit mal, et surtout on ne voit plus où elle finit. Le sélecteur est groupé
+   avec celui des articles pour qu'il n'y ait QU'UN look de code en ligne sur le
+   site — la variante sombre juste en dessous suit la même règle. */
+.article-body code,
+.faq-item__answer code {
   background: var(--light);
   padding: 2px 7px;
   border-radius: 4px;
@@ -4614,7 +4621,8 @@ a:focus-visible { border-radius: var(--radius-sm); }
 [data-theme="dark"] .article-body h3              { color: #E6E7E8; }
 [data-theme="dark"] .article-body h2              { border-bottom-color: rgba(0,203,190,0.18); }
 [data-theme="dark"] .article-meta strong          { color: #E6E7E8; }
-[data-theme="dark"] .article-body code {
+[data-theme="dark"] .article-body code,
+[data-theme="dark"] .faq-item__answer code {
   background: #1C1C1C;
   border-color: #2B2B2B;
 }

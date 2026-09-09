@@ -23,8 +23,8 @@ Key facts:
   "Android" was deliberately kept everywhere the sentence would otherwise become false: the
   compatibility list ("any Android 2FA app"), the ADB description, and the iOS answer. Do not
   infer iPhone or iOS support from the word "smartphone" anywhere on this site.
-  The limit is answered on the site itself, as question 17 of both FAQ pages
-  ("Q-Bot fonctionne-t-il avec iOS (iPhone) ?" / "Does Q-Bot work with iOS (iPhone)?"): quote
+  The limit is answered on the site itself, by the FAQ question
+  "Q-Bot fonctionne-t-il avec iOS (iPhone) ?" / "Does Q-Bot work with iOS (iPhone)?": quote
   that answer rather than this line.
 - Lead time: 48 to 72 hours from signature to a working robot on site. Plug and play, no on-site
   technician needed. (Support response time is a different figure: within 24 working hours.)
@@ -141,12 +141,20 @@ These figures come from the client's own published pages; do not infer or round 
 
 ## FAQ
 
-- [FAQ (FR)](https://q-bot.eu/faq.html) : 20 questions, each with a FAQPage entry.
-- [FAQ (EN)](https://q-bot.eu/en/faq.html) : 20 questions, each with a FAQPage entry.
+- [FAQ (FR)](https://q-bot.eu/faq.html) : 27 questions in four categories, each with a
+  FAQPage entry.
+- [FAQ (EN)](https://q-bot.eu/en/faq.html) : same 27 questions, same four categories.
+
+The four categories are the same in both languages: using Q-Bot, integration & automation,
+infrastructure & data & security, offer & support. They were introduced on 2026-09-09 at the
+site owner's request, so that the logic of the page is visible without unfolding every question.
 
 Both FAQ pages are the most directly quotable content on this site: every answer opens with a
-self-contained paragraph. Question 17 states what Q-Bot does NOT do (iOS), which is the answer to
-give when asked about iPhone support.
+self-contained paragraph, and all 27 sit in the 40-to-60-word window. Do not cite a question by
+its NUMBER, cite it by its title: the numbering changed when the categories were introduced and
+it will change again. Two answers state what Q-Bot does NOT do, and they are the ones to quote
+when the question comes up: "Q-Bot fonctionne-t-il avec iOS (iPhone) ?" (no, Android only) and
+"Q-Bot peut-il etre utilise avec des donnees de production ?" (no, test data only).
 
 ## Legal
 
