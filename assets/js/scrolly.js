@@ -25,7 +25,13 @@
   var dots     = [].slice.call(root.querySelectorAll('.scrolly__dot'));
   var count    = root.querySelector('.scrolly__count');
   var hint     = root.querySelector('.scrolly__hint');
-  var cta      = document.querySelector('.scrolly__cta');
+  /* Le bouton flottant `.scrolly__cta` a été RETIRÉ le 2026-09-09 : « un bouton
+     s'affiche et le texte du CTA change (...) elle bug notamment sur mobile, et
+     perso pas utile ». Il apparaissait à 4 % de la course, changeait de libellé
+     et de cible au dernier pas, et son cadenas se muait en coche. Trois
+     comportements pour un bouton qui doublait celui de la barre.
+     Le chemin de conversion reste celui de la barre, dont le bouton est revenu à
+     toute largeur le même jour. */
   if (!steps.length) return;
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1297,15 +1303,6 @@
       }
     }
     if (hint) hint.style.opacity = p > 0.02 ? '0' : '';
-    /* Le CTA n'accompagne QUE la séquence. `progress()` étant borné à 1, la
-       condition « p > 0.04 » restait vraie une fois la section franchie : le
-       bouton restait donc épinglé sur tout le reste de la page, où il recouvrait
-       le lien « Proposer une évolution » de la dernière carte d'évolution et, en
-       bas de page, les deux liens légaux du pied de page — tout en faisant doublon
-       avec le « Prendre rendez-vous » de la section finale. Il faut les deux
-       tests : la progression pour ne pas l'afficher au tout premier pixel, et la
-       présence à l'écran pour le retirer à la sortie. */
-    if (cta) cta.classList.toggle('is-visible', onScreen && p > 0.04);
     /* Le CSS ne peut pas savoir seul que la séquence est à l'écran, et deux
        éléments en dépendent sur téléphone : le bouton « retour en haut », qui
        recouvrait le compteur d'étapes (mesuré : boutons en collision sur 35 × 5 px),
@@ -1322,23 +1319,6 @@
        sous 900 px : au-dessus, le texte est à côté de la scène et part avec elle,
        ce qui est le comportement voulu. */
     document.body.classList.toggle('is-scrolly-exit', onScreen && p >= 1);
-    /* CTA contextuel. Le même bouton affichait « Demander une démo » du premier au
-       dernier pas, en doublon de celui de la barre de navigation — les deux
-       étaient visibles en même temps. Il accompagne maintenant le propos : il mène
-       aux caractéristiques pendant qu'on décrit le produit, et ne demande la démo
-       qu'au dernier pas, quand le boîtier s'ouvre, au moment où l'intérêt est le
-       plus haut. */
-    if (cta) {
-      var spec = cta.getAttribute(i === steps.length - 1 ? 'data-cta-last' : 'data-cta-default');
-      if (spec) {
-        var parts = spec.split('|');
-        var label = cta.querySelector('.scrolly__cta-label');
-        if (label && label.textContent !== parts[0]) label.textContent = parts[0];
-        if (cta.getAttribute('href') !== parts[1]) cta.setAttribute('href', parts[1]);
-        cta.classList.toggle('is-unlocked', i === steps.length - 1);
-      }
-    }
-
     var moving = Math.abs(g.theta - cur.theta) > 0.01 || Math.abs(tTarget - cur.t) > 0.001 ||
                  Math.abs(g.zoom - cur.zoom) > 0.001 || Math.abs(g.r - cur.r) > 0.0005 ||
                  /* L'ISOLEMENT DOIT FIGURER ICI, et son absence a été mesurée avant
@@ -1666,7 +1646,6 @@
        on marque tous les pas actifs. Le contenu reste entier. */
     steps.forEach(function (s) { s.classList.add('is-active'); });
     if (dots.length) dots[0].setAttribute('aria-current', 'step');
-    if (cta) cta.classList.add('is-visible');
     if (viewer) viewer.addEventListener('load', function () {
       viewer.pause();
       viewer.cameraOrbit = '-28deg 74deg 0.62m';
