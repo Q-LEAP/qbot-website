@@ -32,6 +32,15 @@ import os
 import re
 import sys
 
+# SANS CETTE LIGNE, CE SCRIPT EST INUTILISABLE SUR WINDOWS. La sortie console y
+# est en cp1252, et le script imprime une flèche « → » : il s'arrêtait sur un
+# UnicodeEncodeError avant d'avoir écrit la moindre page. Relevé le 2026-09-09,
+# le jumeau Node marchant seul depuis, alors que l'en-tête de ce fichier exige que
+# les deux restent d'accord. Un outil qui ne tourne pas sur un des postes n'est
+# pas un jumeau, c'est une divergence en attente.
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Les fichiers versionnés, et le motif qui les cherche dans les pages. Le chemin
@@ -53,6 +62,8 @@ SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
           # POUR LES DEUX LANGUES : l'application est en anglais, il n'y a pas de
           # variante `-en` à tenir.
           'assets/img/qbot-ui-home.webp', 'assets/img/qbot-ui-scenario.webp',
+          # Réécrit sous le même nom par tools/recadre-ui.py, comme ses trois voisins.
+          'assets/img/qbot-ui-editeur.webp',
           'assets/img/qbot-ui-api.webp',
           # `qbot-film-poster.jpg` est sorti de la liste le 2026-09-02 : plus
           # aucune page ne le cite depuis que le film de démonstration a

@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Q-Bot data privacy | Q-Leap</title>
   <meta name="description" content="Privacy policy for Q-Bot and the Q-Bot Mobile app: data collected, purposes, your rights, retention.">
+  <!-- PAS DE `noindex` ICI, ET C'EST UN CORRECTIF (2026-09-09). Ce gabarit
+       portait la balise de pré-lancement ; le site est en ligne depuis le
+       2026-09-08 et `go-live.py` a levé les verrous des 15 autres pages. La
+       première régénération d'aujourd'hui a donc REMIS ces deux pages hors
+       index, et c'est `audit-visibilite.py` qui l'a vu (« noindex resté après la
+       mise en ligne »). Un générateur qui n'a pas tourné depuis une passe
+       sitewide est une régression en attente : c'est la troisième fois que ce
+       fichier le prouve. -->
   <link rel="canonical" href="https://q-bot.eu/en/privacy/">
   <link rel="alternate" hreflang="fr" href="https://q-bot.eu/confidentialite/">
   <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/privacy/">
@@ -18,7 +26,7 @@
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, a smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, an Android smartphone docked in its cradle, the web interface on screen">
   <meta property="og:locale" content="en_GB">
   <meta property="og:site_name" content="Q-Bot">
   <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +52,7 @@
        réelle. NE PAS écrire ici un exemple de chemin versionné : ce script-là
        remplace le paramètre de version PARTOUT dans le fichier, commentaires
        compris, et rendrait cette phrase illisible. -->
-  <link rel="stylesheet" href="../../assets/css/style.css?v=33419e55">
+  <link rel="stylesheet" href="../../assets/css/style.css?v=42400297">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -169,7 +177,8 @@
       <p>This site sets no cookie, uses no tracker and does not measure its audience. There is therefore no consent banner: there is nothing to consent to.</p>
       <p>The site stores one single piece of information in your browser, in session storage: your reading position, for the time of a language switch, so that you are returned to the same place on the page. It is erased as soon as it is read back, it never leaves your browser, and it cannot identify you.</p>
       <h2>Third-party content, loaded only if you ask for it</h2>
-      <p>The site calls no third-party service when a page loads: no script, no pixel, no redirect, no remote font. Two external contents load only after you click, and that click is announced where it happens: the map on the Contact page, provided by Google Maps, and the demonstration booking calendar, provided by Microsoft Bookings. Until you click, your browser contacts neither Google nor Microsoft. Once you do, those providers receive your IP address and may set their own cookies, under their respective policies.</p>
+      <p>The site calls no third-party service when a page loads: no script, no pixel, no redirect, no remote font, no map. There is a single external content, and it loads only after you click: the demonstration booking calendar, provided by Microsoft Bookings. That click is announced where it happens.</p>
+      <p>Until you click, your browser does not contact Microsoft. Once you do, that provider receives your IP address and may set its own cookies, under its policy.</p>
       <h2>Purposes of the processing and legal basis</h2>
       <p>The primary purpose of collecting your personal data is to provide you with a safe, optimal, efficient and personalized experience. To this end, you agree that we may use your personal data to:</p>
       <ul>
@@ -217,10 +226,12 @@
 <!-- ======= CONTACT CTA ======= -->
 <section class="section section--dark" aria-labelledby="cta-legal-title">
   <div class="container cta-block">
-    <h2 class="section-title" id="cta-legal-title" style="color:var(--white); margin-bottom:16px;">See <span class="nb">Q-Bot</span> in action</h2>
-    <div class="cta-block__actions">
-      <a href="../contact.html" class="btn btn--primary btn--lg">Book a demo</a>
-    </div>
+    <span class="section-label" style="color:var(--teal);">Demo</span>
+    <h2 class="section-title" id="cta-legal-title" style="color:var(--white); margin-bottom:16px;">
+      See <span class="nb">Q-Bot</span> in action
+    </h2>
+    <p class="section-subtitle" style="color:rgba(255,255,255,0.72); margin:0 0 32px;">See how <span class="nb">Q-Bot</span> gets through a two-factor authentication step on a genuine smartphone.</p>
+    <a href="../contact.html" class="btn btn--primary btn--lg">Book a demo</a>
   </div>
 </section>
 </main>
@@ -273,7 +284,6 @@
         <ul role="list">
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
-          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
         </ul>
         <p class="footer__address">
           10B rue des Mérovingiens<br>
@@ -293,6 +303,6 @@
 <!-- Chemin nu : « tools/bump-assets » y pose l'empreinte réelle. Une
      empreinte écrite à la main ici se périme et rejoue la panne de cache
      du 2026-08-25. -->
-<script src="../../assets/js/main.js?v=1d543046" defer></script>
+<script src="../../assets/js/main.js?v=231d24e8" defer></script>
 </body>
 </html>

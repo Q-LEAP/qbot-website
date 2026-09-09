@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=33419e55">
+  <link rel="stylesheet" href="assets/css/style.css?v=42400297">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -223,7 +223,7 @@
               </span>
             </label>
           </div>
-          <button type="submit" class="btn btn--primary btn--lg" style="width:100%; justify-content:center;">
+          <button type="submit" class="btn btn--outline btn--lg" style="width:100%; justify-content:center;">
             Envoyer ma demande
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
           </button>
@@ -235,72 +235,39 @@
       </div>
 
       <!-- Informations de contact -->
+      <!-- SIMPLIFIÉE AU MAXIMUM le 2026-09-09, sur retour du client : « moins de CTA,
+           moins de cadres, moins de texte, plus d'espace et une page beaucoup plus
+           légère visuellement ». Trois blocs sont partis d'un coup.
+
+           LA CARTE GOOGLE N'EST PLUS LÀ DU TOUT, et son argument est commercial :
+           « c'est plutôt nous qui nous déplaçons dans le processus de vente ». Elle
+           avait été posée en chargement au clic le 2026-08-25, puis en chargement
+           automatique plus tôt ce jour même. Effet de bord bienvenu : le site
+           n'envoie de nouveau AUCUNE requête vers un tiers au chargement, ce qui
+           était vrai depuis le 2026-08-25 et ce que la page Confidentialité affirme.
+
+           LES TROIS CARTES À ICÔNE SONT DEVENUES UN BLOC DE TEXTE. Elles portaient
+           un cadre, un pictogramme et un titre chacune pour une ligne d'information,
+           et l'adresse y était répétée juste au-dessus de la carte.
+
+           LA BOÎTE « PRENDRE RENDEZ-VOUS » EST PARTIE : « comme Réserver une démo
+           est déjà présent dans le header, inutile de remettre un gros bouton dans
+           la page ». Le bouton de la barre est visible en permanence, y compris
+           ici. -->
       <div>
-        <h2 class="section-title" style="margin-bottom:16px;">Nos coordonnées</h2>
-
-        <div class="contact-info">
-          <div class="contact-info__item">
-            <div class="contact-info__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </div>
-            <div>
-              <h3>Email</h3>
-              <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a>
-            </div>
-          </div>
-
-          <div class="contact-info__item">
-            <div class="contact-info__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            </div>
-            <div>
-              <h3>Téléphone</h3>
-              <a href="tel:+352202117">+352 20 21 17</a>
-            </div>
-          </div>
-
-          <div class="contact-info__item">
-            <div class="contact-info__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <div>
-              <h3>Adresse</h3>
-              <p>10B rue des Mérovingiens<br>L-8070 Bertrange, Luxembourg</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Carte de contact — chargée SEULEMENT au clic -->
-        <div class="contact-map contact-map--inline is-differee" data-map-src="https://maps.google.com/maps?q=10B+rue+des+M%C3%A9rovingiens%2C+L-8070+Bertrange%2C+Luxembourg&amp;output=embed&amp;z=16"
-             data-map-title="Q-Leap sur Google Maps"
-             role="complementary" aria-label="Localisation Q-Leap, 10B rue des Mérovingiens, L-8070 Bertrange">
-          <div class="contact-map__ask">
-            <svg class="contact-map__ask-pin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <p class="contact-map__ask-addr">10B rue des Mérovingiens<br>L-8070 Bertrange, Luxembourg</p>
-            <button type="button" class="contact-map__ask-btn" data-map-load>Afficher la carte</button>
-            <p class="contact-map__ask-note">L'affichage de la carte charge un contenu Google, qui dépose ses propres cookies.</p>
-          </div>
-          <a class="contact-map__open"
-             href="https://maps.google.com/?q=10B+rue+des+M%C3%A9rovingiens+L-8070+Bertrange+Luxembourg"
-             target="_blank" rel="noopener noreferrer"
-             aria-label="Ouvrir l'itinéraire vers Q-Leap dans Google Maps">
-            Voir l'itinéraire
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-
-        <!-- Réservation (Microsoft Bookings) -->
-        <div class="booking-box" style="margin-top:0;">
-          <h2 style="font-size:1.375rem; font-weight:700; margin-bottom:8px;">Prendre rendez-vous</h2>
-          <h3 style="font-size:1rem; font-weight:600; margin-bottom:16px; color:var(--teal-text);">Discutez avec l'un de nos experts</h3>
-          <p>Vous souhaitez en savoir plus et rencontrer un expert de notre équipe&nbsp;? Réservez un créneau dans son agenda.</p>
-          <a href="contact.html" class="btn btn--primary" style="margin-top:16px;">
-            Réserver une démo
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </a>
+        <h2 class="section-title" style="margin-bottom:24px;">Nos coordonnées</h2>
+        <div class="contact-coord">
+          <p class="contact-coord__nom">Q-Leap Luxembourg</p>
+          <p class="contact-coord__adr">10B rue des Mérovingiens<br>L-8070 Bertrange, Luxembourg</p>
+          <p><a class="contact-coord__itin" href="https://maps.google.com/?q=10B+rue+des+M%C3%A9rovingiens+L-8070+Bertrange+Luxembourg"
+                target="_blank" rel="noopener noreferrer"
+                aria-label="Ouvrir l'itinéraire vers Q-Leap dans Google Maps">Voir l'itinéraire<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
+          <p class="contact-coord__joindre">
+            <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a><br>
+            <a href="tel:+352202117">+352 20 21 17</a>
+          </p>
         </div>
       </div>
-
     </div>
   </div>
 </section>
@@ -357,7 +324,6 @@
         <ul role="list">
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
-          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
         </ul>
         <p class="footer__address">
           10B rue des Mérovingiens<br>
@@ -374,6 +340,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=1d543046" defer></script>
+<script src="assets/js/main.js?v=231d24e8" defer></script>
 </body>
 </html>

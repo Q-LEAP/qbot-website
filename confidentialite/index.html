@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Confidentialité des données Q-Bot | Q-Leap</title>
   <meta name="description" content="Politique de confidentialité de Q-Bot et de l'application Q-Bot Mobile : données collectées, finalités, vos droits, conservation.">
+  <!-- PAS DE `noindex` ICI, ET C'EST UN CORRECTIF (2026-09-09). Ce gabarit
+       portait la balise de pré-lancement ; le site est en ligne depuis le
+       2026-09-08 et `go-live.py` a levé les verrous des 15 autres pages. La
+       première régénération d'aujourd'hui a donc REMIS ces deux pages hors
+       index, et c'est `audit-visibilite.py` qui l'a vu (« noindex resté après la
+       mise en ligne »). Un générateur qui n'a pas tourné depuis une passe
+       sitewide est une régression en attente : c'est la troisième fois que ce
+       fichier le prouve. -->
   <link rel="canonical" href="https://q-bot.eu/confidentialite/">
   <link rel="alternate" hreflang="fr" href="https://q-bot.eu/confidentialite/">
   <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/privacy/">
@@ -18,7 +26,7 @@
   <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone inséré dans son socle, l&#39;interface web à l&#39;écran">
+  <meta property="og:image:alt" content="Le boîtier Q-Bot sur un bureau, un smartphone Android inséré dans son socle, l&#39;interface web à l&#39;écran">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:site_name" content="Q-Bot">
   <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +52,7 @@
        réelle. NE PAS écrire ici un exemple de chemin versionné : ce script-là
        remplace le paramètre de version PARTOUT dans le fichier, commentaires
        compris, et rendrait cette phrase illisible. -->
-  <link rel="stylesheet" href="../assets/css/style.css?v=33419e55">
+  <link rel="stylesheet" href="../assets/css/style.css?v=42400297">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -173,7 +181,8 @@
       <p>Ce site ne dépose aucun cookie, n'utilise aucun traceur et ne mesure pas son audience. Il n'y a donc pas de bandeau de consentement&nbsp;: il n'y a rien à consentir.</p>
       <p>Le site enregistre une seule information dans votre navigateur, dans le stockage de session&nbsp;: votre position de lecture, le temps d'un changement de langue, afin de vous ramener au même endroit de la page. Elle est effacée dès qu'elle est relue, elle ne quitte jamais votre navigateur et elle ne permet pas de vous identifier.</p>
       <h2>Contenus tiers, chargés seulement si vous le demandez</h2>
-      <p>Le site n'appelle aucun service tiers au chargement d'une page&nbsp;: ni script, ni pixel, ni redirection, ni police distante. Deux contenus extérieurs ne se chargent qu'après un clic de votre part, et ce clic est annoncé à l'endroit où il se fait&nbsp;: la carte de la page Contact, fournie par Google Maps, et l'agenda de réservation de démonstration, fourni par Microsoft Bookings. Tant que vous ne cliquez pas, votre navigateur ne contacte ni Google ni Microsoft. Dès lors que vous cliquez, ces fournisseurs reçoivent votre adresse IP et peuvent déposer leurs propres cookies, selon leurs politiques respectives.</p>
+      <p>Le site n'appelle aucun service tiers au chargement d'une page&nbsp;: ni script, ni pixel, ni redirection, ni police distante, ni carte. Un seul contenu extérieur existe, et il ne se charge qu'après un clic de votre part&nbsp;: l'agenda de réservation de démonstration, fourni par Microsoft Bookings. Ce clic est annoncé à l'endroit où il se fait.</p>
+      <p>Tant que vous ne cliquez pas, votre navigateur ne contacte pas Microsoft. Dès lors que vous cliquez, ce fournisseur reçoit votre adresse IP et peut déposer ses propres cookies, selon sa politique.</p>
       <h2>Finalités des traitements et base juridique</h2>
       <p>L’objectif principal de la collecte de vos données personnelles est de vous offrir une expérience sûre, optimale, efficace et personnalisée. A cette fin, vous acceptez que nous puissions utiliser vos données personnelles pour:</p>
       <ul>
@@ -225,6 +234,7 @@
     <h2 class="section-title" id="cta-legal-title" style="color:var(--white); margin-bottom:16px;">
       Voir <span class="nb">Q-Bot</span> en action
     </h2>
+    <p class="section-subtitle" style="color:rgba(255,255,255,0.72); margin:0 0 32px;">Découvrez comment <span class="nb">Q-Bot</span> automatise une étape de double authentification sur un véritable smartphone.</p>
     <a href="../contact.html" class="btn btn--primary btn--lg">Réserver une démo</a>
   </div>
 </section>
@@ -278,7 +288,6 @@
         <ul role="list">
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
-          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
         </ul>
         <p class="footer__address">
           10B rue des Mérovingiens<br>
@@ -298,6 +307,6 @@
 <!-- Chemin nu : « tools/bump-assets » y pose l'empreinte réelle. Une
      empreinte écrite à la main ici se périme et rejoue la panne de cache
      du 2026-08-25. -->
-<script src="../assets/js/main.js?v=1d543046" defer></script>
+<script src="../assets/js/main.js?v=231d24e8" defer></script>
 </body>
 </html>

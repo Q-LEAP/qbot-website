@@ -121,7 +121,6 @@ exclude:
   # logo de la carte Q-Bot, que le document du client demande de retirer (« ne pas
   # remettre une carte Q-Bot, le visiteur se trouve déjà sur le site Q-Bot »).
   - assets/img/device-photo.jpg
-  - assets/img/logo-qbot-card.png
   # Le schéma du flux 2FA, construit le 2026-09-01 pour la section « La solution »
   # puis remplacé le même jour par le visuel fourni par le client. Gardé dans git
   # (il se remet en place en changeant un `src`), mais plus servi : la règle du
@@ -140,6 +139,12 @@ exclude:
   # Gardée dans git avec sa chaîne de génération (tools/render/), plus servie.
   - assets/img/qbot-interface.jpg
   - assets/img/qbot-interface-en.jpg
+  # Vue du carrousel « À propos » promue en photo de section le 2026-09-09 (le
+  # client voulait une image « pour rendre la page plus humaine, à droite du
+  # texte »). Elle est servie recadrée en 4/5 sous le nom `qleap-origine.jpg`, et
+  # elle a quitté le carrousel : une photo ne sert qu'une fois sur une page.
+  # Le 3/4 d'origine n'est donc plus cité. Master dans Documentations/assets-sources/.
+  - assets/img/qleap-equipe-revue.jpg
 
   # ── LES DEUX PAGES « DÉMO » NE SONT PAS PUBLIÉES ────────────────────────────
   # Arbitrage du client, 2026-09-09 : « cette page à masquer ou enlever :
@@ -156,3 +161,7 @@ exclude:
   # Contrôlé après coup : plus aucun lien interne du site ne les désigne.
   - commandez.html
   - en/order.html
+  # Et la photo que ces deux pages étaient les SEULES à citer : elle était servie
+  # sans qu'aucune page publiée y renvoie (relevé le 2026-09-09 par le contrôle
+  # des actifs dans les deux sens). À remettre en même temps que les deux pages.
+  - assets/img/qbot-photo-dock.jpg

@@ -44,6 +44,8 @@ const SUIVIS = [
   // avec elle. Un seul jeu pour les deux langues, l'application étant en
   // anglais. Cf. le jumeau Python.
   'assets/img/qbot-ui-home.webp', 'assets/img/qbot-ui-scenario.webp',
+  // Réécrit sous le même nom par tools/recadre-ui.py, comme ses trois voisins.
+  'assets/img/qbot-ui-editeur.webp',
   'assets/img/qbot-ui-api.webp',
   // `qbot-film-poster.jpg` est sorti de la liste le 2026-09-02 : plus aucune
   // page ne le cite depuis que le film de démonstration a remplacé la boucle

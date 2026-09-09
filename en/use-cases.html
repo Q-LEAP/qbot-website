@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=33419e55">
+  <link rel="stylesheet" href="../assets/css/style.css?v=42400297">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -270,14 +270,12 @@
         <h3>From your test pipeline</h3>
         <p>A single HTTP request when the test reaches the 2FA step. Explicit, deterministic, easy to integrate into any pipeline.</p>
         <ul class="api-facts" style="margin-top:16px;"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><code>GET /scenarios/:id/execute</code></span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No API key, no agent to install</span></li></ul>
-              <p style="margin-top:16px;"><a href="use-cases.html#case-login" class="evo-card__link">The full case: a login tested end to end<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
       </article>
       <article class="feature-card">
         <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
         <h3>From the device</h3>
         <p>The <span class="nb">Q-Bot</span> companion app runs right on the device under test and watches for 2FA notifications. The moment one is detected, it triggers the matching scenario automatically.</p>
         <ul class="api-facts" style="margin-top:16px;"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No call from your test runner needed</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Runs on the same device <span class="nb">Q-Bot</span> already controls, nothing extra to pair or manage</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Ideal when 2FA timing is unpredictable or controlled by the app under test</span></li></ul>
-              <p style="margin-top:16px;"><a href="use-cases.html#case-night" class="evo-card__link">The full case: night runs that really are automatic<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
       </article>
     </div>
     <div class="split-2" style="margin-top:28px; align-items:center;">
@@ -331,136 +329,18 @@
     <h2 class="section-title" id="cta-uc-title" style="margin-bottom:32px;">Ready to eliminate your last manual step?</h2>
     <div class="cta-block__actions">
       <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
-      <a href="technical-specs.html" class="btn btn--outline btn--lg">Technical specifications</a>
     </div>
+        <!-- LE SEUL LIEN DU SITE VERS LA FAQ DEPUIS LE CORPS D'UNE PAGE.
+             Relevé le 2026-09-09 : elle ne recevait aucun lien depuis un
+             <main>, seulement depuis le pied de page, depuis qu'elle a quitté
+             la barre de navigation. C'est pourtant la surface la plus citable
+             du site (27 réponses, toutes dans la fenêtre de 40 à 60 mots), et
+             l'endroit où va le visiteur qui n'est pas encore prêt à réserver. -->
+        <p style="margin-top:24px;"><a href="faq.html" class="link-edito"><span>Another question? The FAQ answers it</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
   </div>
 </section>
 
-<!-- ======= API : LE DÉTAIL, APRÈS LE CTA =======
-     « Surtout un CTA avant d'arriver à la documentation » : cette section est
-     donc la dernière, après l'appel à l'action, et c'est tout son intérêt. Le
-     visiteur qui veut réserver n'a pas à traverser du code pour trouver le
-     bouton ; celui qui veut le code le trouve replié, et l'ouvre.
-     LES EXEMPLES SONT EN ACCORDÉON, avec le composant de la FAQ : aucun nouveau
-     composant, et le module 3 apporte l'attribut `hidden`, les `aria-controls`
-     et la mesure de hauteur. La bande qui glissait latéralement (`.ucs-api`)
-     quitte cette page ; son CSS reste, annoté, faute d'autre emploi. -->
-<section class="section section--gray" aria-labelledby="api-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Going further</span>
-      <h2 class="section-title" id="api-title">Call examples, tool by tool</h2>
-      <p class="section-subtitle">The detail for whoever wants it: five call examples, expandable, and the mechanism tool by tool.</p>
-    </div>
-    <div class="faq__list">
-      <div class="faq-item" id="api-ex1">
-        <button class="faq-item__question" aria-expanded="false" id="api-b1" aria-controls="api-a1">
-          Python / Selenium
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a1" role="region" aria-labelledby="api-b1">
-          <div class="code-block"><pre><code># Trigger the 2FA scenario
-import requests
 
-requests.get(
-  &quot;http://q-bot.local:8000&quot;
-  &quot;/scenarios/42/execute&quot;
-)
-
-# The test carries on
-driver.find_element(
-  By.ID, &quot;dashboard&quot;
-).is_displayed()</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex2">
-        <button class="faq-item__question" aria-expanded="false" id="api-b2" aria-controls="api-a2">
-          Cypress
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a2" role="region" aria-labelledby="api-b2">
-          <div class="code-block"><pre><code>// Trigger the 2FA scenario
-cy.request(
-  'GET',
-  'http://q-bot.local:8000'
-  + '/scenarios/42/execute'
-)
-.its('status')
-.should('eq', 200)
-
-cy.get('#dashboard')
-  .should('be.visible')</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex3">
-        <button class="faq-item__question" aria-expanded="false" id="api-b3" aria-controls="api-a3">
-          Shell / CI pipeline
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a3" role="region" aria-labelledby="api-b3">
-          <div class="code-block"><pre><code># Trigger the 2FA scenario
-curl -s \
-  http://q-bot.local:8000 \
-  /scenarios/42/execute
-
-# LuxTrust OTP
-OTP=$(curl -s \
-  http://q-bot.local:8000 \
-  /get-luxtrust-otp \
-  | jq -r '.otp')</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex4">
-        <button class="faq-item__question" aria-expanded="false" id="api-b4" aria-controls="api-a4">
-          Robot Framework
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a4" role="region" aria-labelledby="api-b4">
-          <div class="code-block"><pre><code>*** Settings ***
-Library    RequestsLibrary
-
-*** Test Cases ***
-2FA Login
-    # trigger the scenario
-    ${r}=    GET
-    ...    ${QBOT}/scenarios/42/execute
-    Status Should Be    200    ${r}</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex5">
-        <button class="faq-item__question" aria-expanded="false" id="api-b5" aria-controls="api-a5">
-          JUnit / RestAssured
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a5" role="region" aria-labelledby="api-b5">
-          <div class="code-block"><pre><code>// trigger the 2FA scenario
-given()
-  .baseUri(&quot;http://q-bot.local:8000&quot;)
-.when()
-  .get(&quot;/scenarios/42/execute&quot;)
-.then()
-  .statusCode(200);
-
-// the test carries on
-assertTrue(
-  dashboard.isDisplayed()
-);</code></pre></div>
-        </div>
-      </div>
-    </div>
-    <p class="ucs__note"><span class="nb">Q-Bot</span> is self-hosted: the API answers on the network where you install the device, for as long as it is powered on, with no external dependency. It expects no API key: access control is your network's.</p>
-  </div>
-</section>
 
 </main>
 
@@ -512,7 +392,6 @@ assertTrue(
         <ul role="list">
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
-          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
         </ul>
         <p class="footer__address">
           10B rue des Mérovingiens<br>
@@ -529,6 +408,6 @@ assertTrue(
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=1d543046" defer></script>
+<script src="../assets/js/main.js?v=231d24e8" defer></script>
 </body>
 </html>

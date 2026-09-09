@@ -45,6 +45,23 @@ QUALITE = 88                # WebP : 185 Ko pour les trois, contre 315 en JPEG
 
 PANNEAUX = ('home', 'scenario', 'api')
 
+# ── LA DÉCOUPE CARRÉE DE LA SECTION « L'ÉDITEUR » (accueil) ──
+# Elle ne suit PAS la règle ci-dessus, et c'est voulu : la section a été refondue
+# le 2026-09-09 en deux colonnes (« recadrer pour montrer uniquement ce qui est
+# utile »), donc la fenêtre n'occupe plus la largeur du conteneur mais 600 px, et
+# une découpe de 2 360 px y tomberait au quart de son échelle. Elle est cadrée sur
+# la zone utile — barre de commandes, palette d'outils, écran du téléphone — et le
+# téléphone est coupé net en bas : dans un cadre qui se lit comme une fenêtre, une
+# page qui continue sous le bord est ce qu'on attend.
+# 1 300 px de côté n'est pas un chiffre rond : à 600 px d'affichage, un écran de
+# densité 2 en demande 1 200, donc l'agrandissement vaut 0,92. Les 1,15 relevés à
+# 2 560 px sont la limite du master, qui n'a pas plus de pixels dans cette zone.
+# LES TROIS REPÈRES NUMÉROTÉS SONT DU BALISAGE, pas des pixels : leurs positions
+# en pourcentage vivent dans le HTML des deux accueils. Si ce cadrage change,
+# elles doivent être revérifiées AU RENDU — une position juste sur le papier peut
+# recouvrir l'élément qu'elle désigne.
+CARRE_X0, CARRE_Y0, CARRE_N = 937, 330, 1300
+
 
 def main() -> None:
     for nom in PANNEAUX:
@@ -60,6 +77,16 @@ def main() -> None:
         avant = cible.stat().st_size if cible.exists() else 0
         c.save(cible, 'WEBP', quality=QUALITE, method=6)
         print(f'{nom:>9} {c.size}  {avant // 1024} Ko -> {cible.stat().st_size // 1024} Ko')
+
+    # La découpe carrée de l'accueil, depuis le même master que « scenario ».
+    s = Image.open(SRC / 'qbot-ui-scenario-source.jpeg').convert('RGB')
+    assert s.width >= CARRE_X0 + CARRE_N and s.height >= CARRE_Y0 + CARRE_N, 'master trop petit'
+    c = s.crop((CARRE_X0, CARRE_Y0, CARRE_X0 + CARRE_N, CARRE_Y0 + CARRE_N))
+    assert c.size == (CARRE_N, CARRE_N), f'decoupe carree {c.size}'
+    cible = DST / 'qbot-ui-editeur.webp'
+    avant = cible.stat().st_size if cible.exists() else 0
+    c.save(cible, 'WEBP', quality=QUALITE, method=6)
+    print(f'  editeur {c.size}  {avant // 1024} Ko -> {cible.stat().st_size // 1024} Ko')
 
     largeur = X1 - X0
     print(f'\naspect-ratio a declarer : {largeur} / {HAUTEUR}')

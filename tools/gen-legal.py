@@ -148,19 +148,21 @@ SECTIONS_AMENDEES = {
                        "navigateur et elle ne permet pas de vous identifier."),
              ]),
         dict(de=17, a=18, titre='Données recueillies par des technologies standard',
-             raison="aucun script, pixel ni redirection tiers ; deux contenus extérieurs, "
-                    "chargés seulement après un clic annoncé",
+             raison="aucun script, pixel ni redirection tiers ; un seul contenu "
+                    "extérieur, chargé après un clic annoncé. La carte Google de la page "
+                    "Contact a été retirée le 2026-09-09 (« c'est plutôt nous qui nous "
+                    "déplaçons dans le processus de vente »), donc il n'y a plus qu'un "
+                    "tiers, et il reste au clic.",
              blocs=[
                  ('h2', 'Contenus tiers, chargés seulement si vous le demandez'),
                  ('p', "Le site n'appelle aucun service tiers au chargement d'une page&nbsp;: "
-                       "ni script, ni pixel, ni redirection, ni police distante. Deux contenus "
-                       "extérieurs ne se chargent qu'après un clic de votre part, et ce clic "
-                       "est annoncé à l'endroit où il se fait&nbsp;: la carte de la page "
-                       "Contact, fournie par Google Maps, et l'agenda de réservation de "
-                       "démonstration, fourni par Microsoft Bookings. Tant que vous ne cliquez "
-                       "pas, votre navigateur ne contacte ni Google ni Microsoft. Dès lors que "
-                       "vous cliquez, ces fournisseurs reçoivent votre adresse IP et peuvent "
-                       "déposer leurs propres cookies, selon leurs politiques respectives."),
+                       "ni script, ni pixel, ni redirection, ni police distante, ni carte. Un "
+                       "seul contenu extérieur existe, et il ne se charge qu'après un clic de "
+                       "votre part&nbsp;: l'agenda de réservation de démonstration, fourni par "
+                       "Microsoft Bookings. Ce clic est annoncé à l'endroit où il se fait."),
+                 ('p', "Tant que vous ne cliquez pas, votre navigateur ne contacte pas "
+                       "Microsoft. Dès lors que vous cliquez, ce fournisseur reçoit votre "
+                       "adresse IP et peut déposer ses propres cookies, selon sa politique."),
              ]),
         dict(de=19, a=20, titre='Données fournies par les appareils mobiles',
              raison="section supprimée : elle annonçait un traitement par « nos serveurs et "
@@ -214,13 +216,13 @@ SECTIONS_AMENDEES = {
              blocs=[
                  ('h2', 'Third-party content, loaded only if you ask for it'),
                  ('p', "The site calls no third-party service when a page loads: no script, no "
-                       "pixel, no redirect, no remote font. Two external contents load only "
-                       "after you click, and that click is announced where it happens: the map "
-                       "on the Contact page, provided by Google Maps, and the demonstration "
-                       "booking calendar, provided by Microsoft Bookings. Until you click, "
-                       "your browser contacts neither Google nor Microsoft. Once you do, those "
-                       "providers receive your IP address and may set their own cookies, under "
-                       "their respective policies."),
+                       "pixel, no redirect, no remote font, no map. There is a single external "
+                       "content, and it loads only after you click: the demonstration booking "
+                       "calendar, provided by Microsoft Bookings. That click is announced where "
+                       "it happens."),
+                 ('p', "Until you click, your browser does not contact Microsoft. Once you do, "
+                       "that provider receives your IP address and may set its own cookies, "
+                       "under its policy."),
              ]),
         dict(de=19, a=20, titre='Data from mobile devices',
              raison="see conf-fr",
@@ -525,10 +527,14 @@ for page in PAGES:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{page['titre']}</title>
   <meta name="description" content="{page['desc']}">
-  <!-- PRÉ-LANCEMENT — à retirer le jour de la mise en ligne. Le site entier est
-       hors index le temps de la mise au point ; le pendant de cette balise est le
-       « Disallow: / » de robots.txt. Chercher « PRÉ-LANCEMENT » pour tout retrouver. -->
-  <meta name="robots" content="noindex, nofollow">
+  <!-- PAS DE `noindex` ICI, ET C'EST UN CORRECTIF (2026-09-09). Ce gabarit
+       portait la balise de pré-lancement ; le site est en ligne depuis le
+       2026-09-08 et `go-live.py` a levé les verrous des 15 autres pages. La
+       première régénération d'aujourd'hui a donc REMIS ces deux pages hors
+       index, et c'est `audit-visibilite.py` qui l'a vu (« noindex resté après la
+       mise en ligne »). Un générateur qui n'a pas tourné depuis une passe
+       sitewide est une régression en attente : c'est la troisième fois que ce
+       fichier le prouve. -->
   <link rel="canonical" href="{page['url']}">
   <link rel="alternate" hreflang="fr" href="{hreflang_fr}">
   <link rel="alternate" hreflang="en" href="{hreflang_en}">

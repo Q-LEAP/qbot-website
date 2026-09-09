@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=33419e55">
+  <link rel="stylesheet" href="../assets/css/style.css?v=42400297">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -499,12 +499,133 @@
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Works with any pipeline that can make an HTTP call</span></li>
     </ul>
 
+    <!-- LES EXEMPLES D'APPEL SONT ARRIVÉS ICI LE 2026-09-09, depuis
+         « Comment ça marche » : « cette partie est trop technique pour une page
+         qui doit surtout expliquer le fonctionnement de Q-Bot simplement ».
+         ILS SONT DANS CETTE SECTION ET PAS DANS UNE SECTION À PART, et ce n'est
+         pas un raccourci : les deux sections portaient le MÊME identifiant de
+         titre, donc un déplacement tel quel l'aurait mis deux fois sur cette
+         page, et le `aria-labelledby` de chacune aurait désigné n'importe lequel
+         des deux. (Ce commentaire ne cite pas l'identifiant à dessein : le
+         garde-fou du script compte ses occurrences, et un commentaire qui le
+         nomme le fait échouer.)
+         La fusion est aussi ce que demande « une partie dédiée à l'intégration
+         technique » : un en-tête, les faits, puis le détail dépliable.
+         Le module 3 apporte `hidden`, les `aria-controls` et la mesure de
+         hauteur : aucun script propre à cette page. -->
+    <h3 class="specs-sub">Call examples, tool by tool</h3>
+    <p class="section-subtitle" style="margin-bottom:24px;">The detail for whoever wants to read it: five call examples, expandable, and the mechanism tool by tool.</p>
+    <div class="faq__list">
+      <div class="faq-item" id="api-ex1">
+        <button class="faq-item__question" aria-expanded="false" id="api-b1" aria-controls="api-a1">
+          Python / Selenium
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a1" role="region" aria-labelledby="api-b1">
+          <div class="code-block"><pre><code># Trigger the 2FA scenario
+import requests
 
-    <p style="margin-top:40px;">
-      <a href="use-cases.html" class="btn btn--outline">All use cases
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </p>
+requests.get(
+  &quot;http://q-bot.local:8000&quot;
+  &quot;/scenarios/42/execute&quot;
+)
+
+# The test carries on
+driver.find_element(
+  By.ID, &quot;dashboard&quot;
+).is_displayed()</code></pre></div>
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex2">
+        <button class="faq-item__question" aria-expanded="false" id="api-b2" aria-controls="api-a2">
+          Cypress
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a2" role="region" aria-labelledby="api-b2">
+          <div class="code-block"><pre><code>// Trigger the 2FA scenario
+cy.request(
+  'GET',
+  'http://q-bot.local:8000'
+  + '/scenarios/42/execute'
+)
+.its('status')
+.should('eq', 200)
+
+cy.get('#dashboard')
+  .should('be.visible')</code></pre></div>
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex3">
+        <button class="faq-item__question" aria-expanded="false" id="api-b3" aria-controls="api-a3">
+          Shell / CI pipeline
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a3" role="region" aria-labelledby="api-b3">
+          <div class="code-block"><pre><code># Trigger the 2FA scenario
+curl -s \
+  http://q-bot.local:8000 \
+  /scenarios/42/execute
+
+# LuxTrust OTP
+OTP=$(curl -s \
+  http://q-bot.local:8000 \
+  /get-luxtrust-otp \
+  | jq -r '.otp')</code></pre></div>
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex4">
+        <button class="faq-item__question" aria-expanded="false" id="api-b4" aria-controls="api-a4">
+          Robot Framework
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a4" role="region" aria-labelledby="api-b4">
+          <div class="code-block"><pre><code>*** Settings ***
+Library    RequestsLibrary
+
+*** Test Cases ***
+2FA Login
+    # trigger the scenario
+    ${r}=    GET
+    ...    ${QBOT}/scenarios/42/execute
+    Status Should Be    200    ${r}</code></pre></div>
+        </div>
+      </div>
+      <div class="faq-item" id="api-ex5">
+        <button class="faq-item__question" aria-expanded="false" id="api-b5" aria-controls="api-a5">
+          JUnit / RestAssured
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="api-a5" role="region" aria-labelledby="api-b5">
+          <div class="code-block"><pre><code>// trigger the 2FA scenario
+given()
+  .baseUri(&quot;http://q-bot.local:8000&quot;)
+.when()
+  .get(&quot;/scenarios/42/execute&quot;)
+.then()
+  .statusCode(200);
+
+// the test carries on
+assertTrue(
+  dashboard.isDisplayed()
+);</code></pre></div>
+        </div>
+      </div>
+    </div>
+    <p class="ucs__note"><span class="nb">Q-Bot</span> is self-hosted: the API answers on the network where you install the device, for as long as it is powered on, with no external dependency. It expects no API key: access control is your network's.</p>
+
+
+
+    <p style="margin-top:40px;"><a href="use-cases.html" class="link-edito"><span>All use cases</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
   </div>
 </section>
 
@@ -581,10 +702,18 @@
 
 <section class="section" aria-labelledby="cta-specs-title">
   <div class="container cta-block">
-    <h2 class="section-title" id="cta-specs-title" style="margin-bottom:32px;">See <span class="nb">Q-Bot</span> in action</h2>
+    <h2 class="section-title" id="cta-specs-title">A live demo</h2>
+    <p class="section-subtitle" style="margin-bottom:32px;">Talk to our team and see <span class="nb">Q-Bot</span> at work.</p>
     <div class="cta-block__actions">
       <a href="contact.html" class="btn btn--primary btn--lg">Book a demo</a>
     </div>
+        <!-- LE SEUL LIEN DU SITE VERS LA FAQ DEPUIS LE CORPS D'UNE PAGE.
+             Relevé le 2026-09-09 : elle ne recevait aucun lien depuis un
+             <main>, seulement depuis le pied de page, depuis qu'elle a quitté
+             la barre de navigation. C'est pourtant la surface la plus citable
+             du site (27 réponses, toutes dans la fenêtre de 40 à 60 mots), et
+             l'endroit où va le visiteur qui n'est pas encore prêt à réserver. -->
+        <p style="margin-top:24px;"><a href="faq.html" class="link-edito"><span>Another question? The FAQ answers it</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
   </div>
 </section>
 
@@ -638,7 +767,6 @@
         <ul role="list">
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
-          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
         </ul>
         <p class="footer__address">
           10B rue des Mérovingiens<br>
@@ -655,6 +783,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=1d543046" defer></script>
+<script src="../assets/js/main.js?v=231d24e8" defer></script>
 </body>
 </html>

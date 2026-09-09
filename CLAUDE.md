@@ -9209,3 +9209,817 @@ neuf autres.
 Les quatre pages À propos / Fonctionnement / Caractéristiques du même lot de
 documents étaient, elles, bien appliquées (2026-09-02) : rien à reprendre de ce
 côté, vérifié.
+
+
+## Six retours du 2026-09-09 (après-midi) : le blocage se voit, l'ambre entre dans la charte
+
+Six retours du client et de sa responsable communication, dans la même séance. Ils
+touchent la page À propos, le bloc Problème de l'accueil, le CTA du hero, la section
+L'éditeur et une réponse de FAQ.
+
+### UNE COULEUR SECONDAIRE ENTRE DANS LA PALETTE, ET C'EST UNE DÉCISION DU CLIENT
+
+La charte (`Documentations/Q-BOT BrandGuidelines.pdf`) ne connaît que le teal et le
+noir, et la passe du 2026-07-30 avait retiré du site un ambre `#f59e0b` et un violet
+parasites pour cette raison précise. Le client a tranché l'inverse : « ne pas hésiter
+à avoir des couleurs secondaires si cela est nécessaire et amène du peps aussi ; une
+seule couleur, le vert, me paraît limité dans une charte graphique », en donnant pour
+précédent les logos multicolores déjà posés dans la grille de compatibilité.
+
+**LA RÈGLE QUI REND CETTE EXTENSION DÉFENDABLE : `--amber` est une couleur d'ÉTAT,
+jamais une couleur de marque.** Elle signale un blocage ou une alerte ; elle n'a rien
+à faire sur un bouton, un titre, un libellé de section ni un logo. Le teal reste la
+seule couleur de marque. **Une seule teinte**, définie dans `:root`, pour ne pas
+rouvrir l'inflation que 2026-07-30 avait refermée.
+
+`#F5A524` est mesuré, pas choisi : 9,1:1 sur le fond des rangées (`#141414`) et 7,6:1
+sur le même fond teinté à 10 % d'elle-même. **Un rouge aurait été le choix spontané
+pour « blocage » et il est mauvais ici** : sa luminance est basse, donc son contraste
+s'écroule sur un fond noir, là où l'ambre monte.
+
+### Le bloc Problème : le flux casse à la 2FA
+
+Le retour était juste : « Intervention humaine requise ressemble encore à une étape
+normale du flow ». En blanc sur fond blanc translucide, la case du blocage avait la
+même grammaire que ses voisines.
+
+- **la rupture est ENTRE la 2FA et l'intervention**, pas après elle, et ce n'est pas
+  un détail de goût : ce qui s'arrête à la 2FA, c'est l'AUTOMATISATION. Tout ce qui
+  suit est déjà hors du flux automatique, d'où l'enchaînement **plein → mur →
+  pointillé** ;
+- le trait qui mène au blocage **s'arrête net** au tiers de la gouttière, et un **mur
+  vertical ambre en pointillé** barre le passage. La gouttière de colonne est passée
+  de 10 à 18 px pour les contenir : à 10 px les deux se touchaient ;
+- **le trait « qui marche » est monté de 0,22 à 0,38 d'opacité.** À 0,22 il était
+  presque invisible, donc il n'y avait rien à casser : la coupure ne se lisait pas
+  comme une perte. Le pointillé qui SORT du blocage, lui, reste à 0,22 ;
+- « Test en attente » devient **« Test bloqué »** et porte un **cadenas** ;
+- la rangée du bas gagne des **flèches** (la pointe est un pseudo-élément de la case
+  suivante : il n'existe pas de sélecteur de frère précédent, mais « toute case sauf
+  la première » désigne exactement les cases vers lesquelles une flèche arrive) et un
+  **halo** teal sur la case Q-Bot.
+
+**L'« opacité réduite » du retour n'a PAS été suivie**, et le pavé CSS le dit : une
+première version portait `opacity: 0.55` sur la case finale, mesurée à 2,74:1, sous le
+seuil AA. Un texte qu'on veut atténué reste un texte qui doit se lire.
+
+**LA SOUS-LIGNE « la campagne s'arrête ici » A ÉTÉ ÉCARTÉE, pour une raison mesurable** :
+les deux rangées sont deux grilles indépendantes, donc une case à deux lignes en haut
+donnerait deux hauteurs de rangée différentes et la comparaison case à case, qui est
+tout le propos du bloc, se ferait de biais.
+
+**Et ce défaut existait déjà** : « Intervention humaine requise » passe sur deux lignes
+et la rangée du haut mesurait 149 px contre 129 en bas. `min-height:
+calc(2 * 1.35em + 28px + 2px)` aligne les deux. **Les deux bordures comptent** parce
+que la boîte est en `border-box` : sans elles il restait 2 px d'écart.
+
+**Sur téléphone les liaisons prennent un quart de tour** (trait vertical, mur
+horizontal, flèche vers le bas). Jusqu'ici elles restaient posées sur le flanc droit
+des cases et ne reliaient plus rien.
+
+### Le CTA du hero devient éditorial
+
+« Le CTA devient éditorial, donc moins marketing, et il donne envie de poursuivre la
+lecture de la page plutôt que de déclencher une action immédiate. » Blanc cassé
+(`--black` en thème sombre, celui des titres), soulignement à 30 % d'opacité, **teal
+seulement au survol**, flèche qui avance de 4 px.
+
+**Il mène à la SECTION SUIVANTE et plus au film** : le film était à cinq sections de
+là, le lien sautait par-dessus le problème, la solution et le fonctionnement,
+c'est-à-dire par-dessus la démonstration. Mesuré au clic : la cible se pose à 88 px du
+haut, soit la barre plus les 16 px de `scroll-padding-top`.
+
+**TROISIÈME OCCURRENCE DU PIÈGE DU SPAN DANS UN FLEX.** Le lien est un conteneur flex,
+donc chacun de ses enfants est un élément flex : avec le libellé posé directement
+dedans, le `gap` de 9 px s'appliquait ENTRE les trois fragments de texte et on lisait
+« Découvrir comment  Q-Bot  automatise vos tests ». Défaut antérieur (l'ancien libellé
+disait déjà « Voir  Q-Bot  en action »), rendu voyant par le soulignement, qui se
+coupait aux mêmes endroits. Le conteneur devant rester flex pour aligner la flèche,
+c'est le **libellé** qui devient un seul élément.
+
+La sonde du dépôt remonte encore deux cas, et ce sont des **faux positifs légitimes** :
+`.vsflow__step--go` contient une icône et « Q-Bot », le `gap` y est justement la mise
+en page voulue.
+
+### La section « L'éditeur » : deux colonnes, trois repères
+
+« La capture prend trop de place et demande trop d'effort de lecture », avec « environ
+55-60 % illustration à gauche, 40-45 % texte à droite » et « 2 ou 3 micro-annotations
+directement sur l'interface ». Les deux pages sont **générées par un même script**,
+gabarit commun et deux jeux de textes.
+
+**CE QUI FAIT BAISSER LA HAUTEUR N'EST PAS LA TAILLE DE L'IMAGE, C'EST LA MISE EN
+COLONNES.** Avant, le titre, le chapeau, la capture pleine largeur et la légende
+s'empilaient : 1 052 px à 1 440 px de large. Après : **872 px, soit 180 de moins**, et
+la fenêtre fait 600 px au lieu de 1 132.
+
+- découpe **carrée de 1 300 px** cadrée sur la zone utile (barre de commandes, palette
+  d'outils, écran du téléphone), le téléphone **coupé net en bas** : dans un cadre qui
+  se lit comme une fenêtre, une page qui continue sous le bord est ce qu'on attend.
+  1 300 n'est pas un chiffre rond : à 600 px d'affichage, un écran de densité 2 en
+  demande 1 200, donc l'agrandissement vaut **0,92**. Versionnée dans
+  `tools/recadre-ui.py`, idempotente ;
+- **la fenêtre est celle de `.appwin`**, pas un cadre neuf : le site n'a qu'une
+  grammaire de fenêtre d'application. Seuls le rapport et la marge changent ;
+- **les trois repères sont du BALISAGE, pas des pixels.** Gravés dans l'image, il
+  faudrait deux fichiers par langue, ils seraient illisibles sur un téléphone et
+  invisibles pour un lecteur d'écran. En balisage ils se placent en pourcentage,
+  restent nets à toute densité, et la liste de droite porte les mêmes numéros ;
+- **les deux listes du retour n'en font qu'une** : il demandait les trois annotations
+  ET une liste « Pas de script spécifique / Parcours visuel / Exécution automatique ».
+  Les deux disent la même chose et la seconde redit le titre.
+
+**UNE POSITION CALCULÉE DEPUIS LE CADRAGE TOMBE SUR L'ÉLÉMENT VOULU, MAIS RIEN NE DIT
+QU'ELLE NE LE RECOUVRE PAS.** Les trois repères ont dû être corrigés après un premier
+rendu : le premier tombait au-dessus de l'écran du téléphone, le deuxième masquait un
+outil de la palette (26 px de pastille sur une colonne de 36). **Une annotation posée
+sur une capture se vérifie à l'image, jamais sur le papier.**
+
+**ET UNE MARGE AUTOMATIQUE DÉSACTIVE L'ÉTIREMENT D'UN ITEM DE GRILLE.** Mon plafond de
+la plage empilée était écrit `max-width: 480px; margin-right: auto` : la fenêtre est
+tombée à **162 px à 390 px de large et 238 à 768**, c'est-à-dire à la largeur de son
+propre bandeau. Un `max-width` suffit : l'item ne pouvant plus s'étirer, il se cale de
+lui-même au début de sa colonne.
+
+Sans ce plafond, la fenêtre suivait la colonne : 718 px de côté à 768 px de large,
+850 à 900, ce qui portait la section à 1 307 et 1 490 px, **plus haute que la version
+qu'on remplaçait**. Même défaut que celui corrigé le 2026-09-02 sur `--fit`.
+
+### La page À propos : une photo, un label, deux logos alignés
+
+- **une photo à droite du texte de « Q-Bot est né d'un besoin concret »** (« pour
+  rendre la page plus humaine »). Elle renverse la consigne du 2026-09-02 (« mets pas
+  de photo à Q-Bot, conçu par des experts du test logiciel ») : la photo n'est pas dans
+  l'en-tête, elle est dans la section suivante, et c'est le dernier arbitrage qui vaut.
+  C'est une **vraie photo des locaux** (totem Q-BOT, boîtier sur la table, deux
+  personnes devant un écran), recadrée en 4/5 depuis le master, et **elle quitte le
+  carrousel d'en dessous** : une photo ne sert qu'une fois sur une page ;
+- **le pictogramme de lieu devient le label Made in Luxembourg** (« pas d'icone à
+  Luxembourg mais le logo made in Luxembourg »). Il remplace la pastille entière, dont
+  le mot « Luxembourg » devenait redondant. 60 px, comme dans la bande de réassurance
+  de l'accueil : la seule source dont nous disposons est une découpe de la brochure
+  (98 px de large en pixels réels). **LE LABEL EN VECTORIEL EST TOUJOURS À DEMANDER AU
+  CLIENT** ;
+- **les logos Q-Leap et Q-Guard s'alignent** (« problème d'alignement visuel, cela est
+  dû à la taille du logo différente »). À hauteur égale, les deux lockups n'ont pas le
+  même rapport (968 x 290 contre 1 120 x 290), donc `width: auto` donnait 120 et
+  139 px : les deux blocs de texte commençaient à 19 px d'écart. Colonne fixe de 140 px
+  et `object-position: left` : **centrés, les deux logos se décaleraient entre eux de la
+  moitié de l'écart**, ce qui remplacerait un défaut par un autre.
+
+**ET UN DÉFAUT ANTÉRIEUR EST SORTI AVEC** : la vignette réservant 140 px, il ne restait
+que **116 px pour le texte** sur un téléphone, soit trois mots par ligne. Sous 560 px la
+carte empile désormais (292 px de texte). Même seuil et même raison que les lignes de
+fiche technique : ce n'est pas la fenêtre qui manque de place, c'est la carte.
+
+**UNE IMAGE `loading="lazy"` DE DIMENSION NULLE N'EST JAMAIS CHARGÉE.** La photo
+n'apparaissait pas du tout au-delà de 1 024 px : `.intro__image--portrait img` était
+écrit `width: auto; max-width: min(100%, 420px)`, donc la boîte valait 0 x 0 tant que
+l'image n'était pas décodée, elle n'intersectait rien et Chrome ne la demandait pas
+(`complete: false`, `currentSrc` vide à 1 024, 1 440, 1 920 et 2 560 px, alors qu'elle
+s'affichait sous 900). Avec une largeur résolue, le ratio déduit des attributs
+`width`/`height` donne la hauteur et le chargement différé fonctionne.
+
+### La réponse de FAQ sur la démo : un lien, plus un bouton
+
+« Pas de bouton, mettre un hyperlink dans le texte. » Le bouton teal part, la
+réservation devient un lien sur « prendre rdv avec Sylvain Perez », et « en suivant le
+lien ci-dessous » disparaît puisqu'il n'y a plus rien en dessous. Texte visible et
+JSON-LD recalés par `tools/sync-faq-jsonld.py`, idempotent au second passage.
+
+**Et les liens de réponse de FAQ n'avaient AUCUNE règle** : côté français ils portaient
+un `style="color:var(--teal-text)"` EN LIGNE, huit fois, et côté anglais rien du tout,
+donc les mêmes liens y héritaient de la couleur du paragraphe et **rien ne disait
+qu'ils étaient cliquables**. Divergence FR/EN, défaut d'affordance, et huitième
+occurrence du piège du style en ligne sur ce dépôt. Une vraie règle les couvre
+maintenant, dans les deux langues.
+
+### Trois défauts d'outillage trouvés en contrôlant
+
+1. **`tools/maj-nav-booking.py` ne reconnaissait AUCUNE des 17 entrées de pied de
+   page.** Il écrit lui-même cette entrée sur plusieurs lignes, en mettant le chevron
+   fermant en tête de la dernière ; son propre motif l'exigeait collé au dernier
+   attribut. « entrée de pied non reconnue » sur toutes les pages, sans erreur. **Le
+   jour d'un changement d'agenda, la barre aurait été mise à jour et le pied laissé sur
+   l'ancienne URL : deux adresses pour un seul agenda.** Épreuve de vivacité après
+   correction : 17 barres ET 15 pieds équipés, les 2 exceptions étant les pages Démo,
+   dont l'entrée de pied est du texte mort marqué `aria-current="page"` ;
+2. **`tools/bump-assets.py` était inutilisable sur Windows depuis toujours.** La sortie
+   console y est en cp1252 et le script imprime une flèche : il s'arrêtait sur un
+   `UnicodeEncodeError` avant d'avoir écrit la moindre page, le jumeau Node marchant
+   seul, alors que l'en-tête du fichier exige que les deux restent d'accord. **Un outil
+   qui ne tourne pas sur un des postes n'est pas un jumeau, c'est une divergence en
+   attente** ;
+3. **quatre ancres mortes sur les deux pages « Comment ça marche »** (`#cas-connexion`,
+   `#cas-nuit`, `#case-login`, `#case-night`), introduites le 2026-09-02 quand les cinq
+   blocs de cas détaillés ont laissé la place à quatre cartes courtes : les `id` sont
+   partis, les liens sont restés. **Un clic ne faisait rien.** Retirés.
+
+**ET MA SONDE DE LIENS AVAIT UN FAUX NÉGATIF QUI VAUT D'ÊTRE RETENU** : elle vérifiait
+le FICHIER d'un lien `page.html#ancre` sans vérifier l'ancre dans la page cible. Elle a
+donc trouvé les deux liens français, écrits `#cas-connexion`, et manqué les deux
+anglais, écrits `use-cases.html#case-login`. **Même défaut, deux écritures, une seule
+vue.** Corrigée et éprouvée dans les deux sens (0 sur le site sain, 2 sur deux ancres
+mortes injectées).
+
+### Deux pièges de méthode qui ont coûté du travail
+
+- **`git checkout <fichier>` écrase le travail non commité.** Utilisé pour défaire une
+  injection de sonde dans `faq.html`, il a annulé les modifications de la FAQ française
+  faites une heure plus tôt (le bouton était revenu, les huit styles en ligne aussi).
+  Refait. **Pour défaire une injection de sonde, on sauvegarde le fichier par copie**,
+  jamais par `git checkout` ;
+- **un balayage qui bloque le modèle 3D remonte ses propres erreurs.** Mon filtre
+  cherchait « qbot.glb » dans le texte du message console, mais Chrome n'y met pas
+  l'URL : 6 « erreurs » sur les deux accueils, toutes de ma sonde. Vérifié sans
+  blocage : **0 erreur console, 0 requête en échec, modèle chargé** dans les deux
+  langues.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 **et** à 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat**. 75 pages, 635 références et ancres, **0 cassée**. 54 relais, 0 défaut.
+`sync-faq-jsonld.py` idempotent (54 entrées, 0 recalée). `maj-sitemap.py` sans écart.
+**Les deux versionneurs d'actifs à 0 page à mettre à jour**, donc les empreintes servies
+sont celles des fichiers. Contrôle des actifs dans les deux sens : **0 référence vers un
+actif exclu**, et les orphelins restants sont les faux positifs connus (`Screen modèle
+3D/` échappé en octal par `git ls-files`, `draco_decoder.wasm` chargé depuis une chaîne
+JavaScript). 24 vues des pages touchées (8 pages x normal/réduit x 1440/390) : un seul
+`h1`, 0 saut de niveau, 0 révélation invisible, 0 débordement, 0 image cassée, 0
+cadratin, 0 emoji, 0 erreur console. Contraste des onze éléments neufs sur le fond
+réellement composité : **de 6,21 à 16,96:1**, l'ambre à 7,64.
+
+**Un orphelin antérieur est sorti de la publication au passage** : `qbot-photo-dock.jpg`
+n'était cité que par les deux pages Démo, retirées le 2026-09-09 au matin. Il est
+inscrit dans `_config.yml` à côté d'elles, dans la liste de ce qu'il faudra refaire le
+jour où elles reviennent.
+
+### Ce qui reste à demander au client
+
+- **le label Made in Luxembourg en vectoriel** : le seul exemplaire dont nous disposons
+  vient de sa brochure, 156 px de large en pixels réels ;
+- **un fichier de marque pour TestComplete**, à obtenir chez SmartBear : il n'en existe
+  aucun de public, seul un logotype en lettres, illisible à 22 px.
+
+
+## Audit ergonomie + SEO du 2026-09-09 (soir) : 7,7/10, et sept corrections
+
+Audit demandé en clôture de la séance de retours, « la totale », avec une note.
+Il ne refait PAS ce que `tools/audit-a11y.py` et `tools/audit-visibilite.py`
+couvrent déjà (ils rendent 0 constat sur les 15 pages, à 1440 comme à 390 px) :
+il porte sur leur angle mort, la **géométrie de lecture** et la **citabilité**,
+c'est-à-dire d'où sont venus tous les vrais défauts des passes précédentes.
+
+Quatre sondes, gardées dans le bac à sable de la session : `audit_ergo.py`
+(90 vues, 15 pages x 6 largeurs), `audit_seo.py`, `audit_sondeA.py`,
+`contraste.py`.
+
+### La note, et comment elle est composée
+
+| Dimension | Note | Ce qui la fixe |
+|---|---|---|
+| Ergonomie / UX / UI | **8,5** | 0 débordement et 0 collision sur 90 vues, contraste de 6,2 à 17:1, cibles conformes ; les divergences FR/EN sont le point faible |
+| SEO technique | **9,5** | 15/15 sur les métadonnées, hreflang réciproques, JSON-LD valide, 641 liens 0 cassé, sitemap/robots/llms cohérents |
+| SEO éditorial et citabilité | **6,0** | 54 réponses-capsules toutes dans la fenêtre 40-60 mots, mais 14 pages seulement et 4 pages orphelines avant correction |
+| Performance | **6,5** | accueil à 3,6 Mo brut dès le premier écran, dont 2 Mo de visionneuse 3D |
+| **Global pondéré** | **7,7** | 30 / 25 / 30 / 15 % |
+
+**LE CHIFFRE QUI COMPTE N'EST PAS LA NOTE GLOBALE MAIS L'ÉCART ENTRE SES DEUX
+MOITIÉS.** L'exécution est à 9, la surface éditoriale à 6. Le site est très bien
+fait et il a peu de contenu : c'est la conséquence directe de la suppression du
+blog et des huit guides le 2026-08-28, qui a emporté 24 pages et 70 des
+74 réponses-capsules. Décision informée du directeur du client, confirmée le
+2026-09-01, et **ce n'est pas un défaut d'exécution.** Ne pas la rouvrir : le
+plafond du site est ~8,5 tant que la surface reste à 14 pages, et il n'y a rien
+à corriger pour l'atteindre, seulement à écrire.
+
+### Sept corrections faites
+
+1. **Le plancher de 12 px avait trois fuites.** La passe de lisibilité du
+   2026-08-26 a posé « plus aucun texte sous 12 px » et corrigé trois cas ; trois
+   autres lui avaient échappé, tous relevés ici : les **titres de colonne du pied
+   de page** à 11 px (les 15 pages), `.usecase__cat` à 11 px (2 pages), et le
+   **code de bloc à 11,4 px** sur les deux pages « Comment ça marche ».
+   Ce dernier est le plus instructif : les cinq exemples d'appel sont des
+   accordéons, donc des `.faq-item`, donc la règle du code EN LIGNE
+   (`.faq-item__answer code { font-size: 0.875em }`, faite pour qu'un nom
+   d'endpoint ne dépasse pas de sa ligne) venait réduire du code de BLOC déjà à
+   13 px. **Un composant réutilisé hérite des règles de son composant d'accueil**,
+   et ici deux intentions opposées se sont croisées.
+2. **Un troisième écart vertical existait.** Le site n'a que deux rythmes, 16 px
+   quand un titre est suivi de son chapeau et 32 px quand il est suivi d'un bloc
+   (posés le 2026-08-25). `.filmband__titre` en portait **10**, sur les deux
+   accueils et nulle part ailleurs.
+3. **Les deux titres de la boîte de réservation étaient en style en ligne**,
+   taille, poids, couleur et marge écrits à la main dans `contact.html`.
+   Conséquences : la règle `.booking-box h3 { margin-bottom: 8px }` était MORTE,
+   aucune règle de la feuille ne pouvait plus atteindre ces titres, et le poids
+   déclaré était **600**, qui n'est pas chargé et que la passe du 2026-07-30 avait
+   normalisé à 700 partout ailleurs. Neuvième occurrence du piège du style en
+   ligne. Le rendu est identique au pixel, seul le poids déclaré cesse de mentir.
+4. **LE CONSTAT SEO LE PLUS SÉRIEUX : quatre pages ne recevaient aucun lien
+   depuis le corps d'une page.** `a-propos.html`, `en/about.html`, `faq.html` et
+   `en/faq.html` étaient à **0 lien entrant depuis un `<main>`**, seulement depuis
+   le pied de page, depuis qu'elles ont quitté la barre de navigation (À propos le
+   2026-08-28, la FAQ le 2026-09-09 au matin). Or la FAQ est la surface la plus
+   citable du site : 27 réponses, toutes dans la fenêtre de 40 à 60 mots, et rien
+   n'y conduisait depuis le contenu. Six liens éditoriaux posés : À propos depuis
+   la bande de réassurance des deux accueils (elle affirme « conçu au Luxembourg,
+   par des testeurs », la page À propos est ce qui l'établit), la FAQ depuis les
+   quatre pages produit, dans le bloc d'appel à l'action final, là où va le
+   visiteur qui n'est pas encore prêt à réserver. Relevé après : plus aucune page
+   à 0 entrant.
+5. **« automatisation des tests » et « test automation » : 0 occurrence sur les
+   14 pages**, alors que le `knowsAbout` du JSON-LD les déclare. **Les données
+   structurées disaient ce que le texte ne dit pas.** Le site est très fort sur
+   « 2FA » (62 fois) et « LuxTrust » (14), et absent du nom de sa propre
+   catégorie, celui que tape un responsable QA avant de connaître le produit. Deux
+   insertions par langue, aux endroits où la formule était déjà dite autrement
+   (« développe des solutions permettant d'automatiser davantage les tests
+   logiciels » → « développe des solutions d'automatisation des tests logiciels »),
+   plus les trois métadonnées de la page À propos. **Ma première rédaction faisait
+   perdre « assurance qualité »**, l'autre terme de catégorie, qui ne comptait déjà
+   que 2 occurrences : les deux sont gardés, et c'est la QUEUE des descriptions
+   qui a été raccourcie pour tenir sous 158 caractères, jamais le terme ajouté.
+6. **La mesure de lecture est resserrée de 78 à 74ch** (et de 70 à 67ch sur les
+   pages légales). Relevé en comptant les lignes RÉELLEMENT rendues : sur la même
+   largeur de 658 px, les réponses de FAQ allaient de **79 à 96 caractères par
+   ligne** selon leur vocabulaire, et neuf paragraphes du site dépassaient 82.
+   **Un plafond en `ch` cale une LARGEUR, pas un nombre de caractères** : aucune
+   valeur unique ne peut les égaliser. Après : 9 cas → 2, tous les deux à 85-87.
+7. Les **quatre ancres mortes** de « Comment ça marche » (voir la note de
+   l'après-midi) : corrigées dans la même séance.
+
+### Ce que l'audit a mesuré et laissé tel quel
+
+- **`contact.html` à 150 mots et `a-propos.html` à 197** : c'est mince pour du
+  référencement, et c'est le choix du client (« une page institutionnelle, courte
+  et aérée », document du 2026-09-02). Signalé, pas corrigé.
+- **Deux paragraphes à 85-87 caractères par ligne** : le plafond est appliqué
+  (624 px), le résidu vient d'un vocabulaire dense en mots courts. Resserrer
+  encore pénaliserait les paragraphes normaux, qui tomberaient sous la fourchette.
+- **`style.css` fait 327 Ko brut**, dont environ la moitié de commentaires.
+  Compressé il tombe vers 90 Ko, et cette documentation en place est une valeur du
+  dépôt : c'est elle qui a permis de trouver la plupart des défauts de cette
+  session. Ne pas la « minifier » sans étape de build.
+- **L'accueil charge 2 Mo de visionneuse 3D, de modèle et de décodeur dès le
+  premier écran**, alors que la séquence est la quatrième section. C'est
+  `loading="eager"`, décision du 2026-08-20 après un défaut où le repli statique
+  se déclenchait TOUJOURS sur téléphone. Le poids d'accueil a été accepté par le
+  client le 2026-08-11.
+- **Trois divergences FR/EN** trouvées en chemin, toutes de contenu et donc à son
+  arbitrage : la boîte de réservation de `contact.html` porte un titre de plus en
+  français (« Prendre rendez-vous »), son bouton dit « Réserver une démo » contre
+  « Book a slot », et les liens de réponse de FAQ n'avaient de style qu'en
+  français (corrigé l'après-midi).
+
+### Trois faux positifs de sonde qui valent d'être retenus
+
+Ils ont produit **131 constats fantômes** avant d'être corrigés, et chacun est un
+piège de méthode réutilisable :
+
+1. **On ne compare pas `0.9375rem` à `15px`.** La sonde « déclaré puis annulé »
+   passait `parseFloat` sur les deux, donc 0,9375 contre 15, et concluait à une
+   annulation pour chaque règle en `rem`, en `ch`, en `clamp()` ou en interligne
+   sans unité : **121 constats, aucun réel.** Filtrée aux déclarations en `px`,
+   elle en rend 10, dont un seul vrai.
+2. **On ne devine pas une largeur de caractère, on compte les lignes rendues.**
+   Estimer à 0,5 em annonçait 88 c/l là où le rendu en fait 79 : 10 % d'erreur,
+   assez pour fabriquer des constats sur des paragraphes conformes.
+   `getClientRects()` sur un `Range` donne une boîte PAR LIGNE.
+3. **Un accordéon fermé cache ses défauts.** Le code à 11,4 px n'existe que dans
+   les cinq exemples d'appel de `cas-usage.html`, qui sont repliés au chargement :
+   une sonde qui ne les ouvre pas ne voit rien. Et il faut n'ouvrir QUE ce qui est
+   fermé, un clic sur une question ouverte la refermant.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat**. `audit_ergo.py` sur 90 vues : 0 débordement, 0 collision de texte,
+0 jointure de mots collés, 0 agrandissement d'image au-delà de 1,5, rythme
+vertical à deux valeurs, plancher typographique tenu, 0 `.nb` dans un flex hors
+exemption, 0 cible tactile non conforme. 641 références internes et ancres,
+**0 cassée**. Contraste des vingt-deux éléments mesurés sur le fond réellement
+composité : **tous au-dessus de 6:1**. 33 vues des pages touchées (11 pages x
+normal/réduit x 1440/390) : un seul `h1`, 0 saut de niveau, 0 révélation
+invisible, 0 image cassée, 0 cadratin, 0 emoji, 0 erreur console.
+`sync-faq-jsonld.py` idempotent, les deux versionneurs d'actifs à 0 page à mettre
+à jour.
+
+### Le levier, si la question du contenu se rouvre un jour
+
+Par ordre de rendement décroissant, et tous **hors du code** : la fiche Ministry
+of Testing qui annonce encore « Automate the use of tokens on 100% of your
+tests » et pointe vers `bot.q-leap.eu`, qui meurt avec le WordPress · les quatre
+pages tierces qui décrivent encore l'actionneur et la caméra · l'absence de toute
+fiche d'annuaire professionnel · et, dans le dépôt cette fois,
+`tools/gen-guides.py`, qui attend derrière son drapeau `--republier-le-blog`.
+
+
+## La hiérarchie des CTA, et la page contact réduite à l'essentiel (2026-09-09, soir)
+
+Quatre retours enchaînés, dont un qui vaut pour tout le site.
+
+### LA RÈGLE DES CTA, ET ELLE EST DÉSORMAIS VÉRIFIABLE
+
+Énoncée par le client : « Le bouton avec fond turquoise plein est réservé uniquement
+à Réserver une démo. Les actions secondaires importantes peuvent utiliser un bouton
+transparent. Toutes les actions de navigation ou de découverte doivent être de
+simples liens texte, éventuellement soulignés ou accompagnés d'une flèche. Je veux
+éviter d'avoir plusieurs boutons forts dans une même zone. Maximum un CTA principal
+par section. Globalement : moins de boutons, moins de turquoise en grandes surfaces,
+davantage de liens discrets. »
+
+Inventaire avant : **13 boutons pleins**, dont un « Accueil » sur la page 404, et
+six boutons transparents portant de la navigation. Après : **12 boutons pleins,
+tous « Réserver une démo », un seul par page, chacun dans sa propre section**, plus
+un seul bouton transparent sur tout le site, « Envoyer ma demande », qui est
+exactement le cas que le retour prévoit.
+
+Sept boutons sont devenus des liens `.link-edito` : « Les cas d'usage en détail »
+(2 accueils), « Tous les cas d'usage » (2 fiches techniques), « Caractéristiques
+techniques » (2 pages « Comment ça marche »), et les quatre de la page 404, qui
+alignait un turquoise plein sur de la pure navigation.
+
+**LA SONDE EST GARDÉE** (`scratchpad/inventaire_cta.py`) : elle liste chaque bouton
+par page ET par section, et marque les sections qui en portent plusieurs. C'est le
+seul moyen de vérifier cette règle, qu'un balayage de contraste ou d'accessibilité
+ne voit pas.
+
+### La page contact : un formulaire, une adresse, rien d'autre
+
+Trois retours successifs sur la même page, chacun plus radical que le précédent.
+L'état final tient en une phrase : « moins de CTA, moins de cadres, moins de texte,
+plus d'espace et une page beaucoup plus légère visuellement. »
+
+Trois blocs sont partis de la colonne droite :
+
+- **la carte Google, entièrement.** Elle avait été posée en chargement au clic le
+  2026-08-25 (pour ne pas déposer de cookies avant consentement), puis passée en
+  chargement automatique plus tôt dans la même séance, puis retirée. L'argument
+  final est commercial et il est bon : « c'est plutôt nous qui nous déplaçons dans
+  le processus de vente », donc la localisation n'a pas d'enjeu ;
+- **les trois cartes à icône des coordonnées**, qui portaient un cadre, un
+  pictogramme et un titre chacune pour une ligne d'information, et répétaient
+  l'adresse juste au-dessus de la carte ;
+- **la boîte « Prendre rendez-vous »** : « comme Réserver une démo est déjà présent
+  dans le header, inutile de remettre un gros bouton dans la page ».
+
+Il reste `.contact-coord`, un bloc de texte : le nom, l'adresse, un lien discret
+« Voir l'itinéraire », puis l'e-mail et le téléphone. Et le bouton d'envoi passe en
+transparent (`btn--outline`), « pas de fond bleu ».
+
+**EFFET DE BORD BIENVENU, ET IL A DEMANDÉ DEUX ALLERS-RETOURS SUR LA POLITIQUE DE
+CONFIDENTIALITÉ.** Elle affirme, dans les deux langues, que « le site n'appelle
+aucun service tiers au chargement d'une page ». Le chargement automatique de la
+carte rendait cette phrase FAUSSE : mesuré, 35 requêtes vers Google avec dépôt de
+cookies, sans consentement. Elle a donc été réécrite pour dire l'exception, puis
+re-réécrite quand la carte a disparu. **Une politique qui décrit moins de collecte
+qu'il n'y en a est fausse, et c'est plus grave que le sujet initial** : c'est
+pourquoi elle a suivi le balisage dans le même mouvement, à chaque fois.
+
+Les deux passages sont dans `tools/gen-legal.py`, dans `SECTIONS_AMENDEES`, avec
+leur raison : une modification directe du HTML aurait été écrasée à la première
+régénération.
+
+### Le site web de Q-Leap quitte le pied de page
+
+« Ne pas mettre le site web Q-Leap dans le footer. » L'entrée `q-leap.eu` de la
+colonne Contact part des 17 pages. **Les deux autres liens vers `q-leap.eu` du pied
+de page RESTENT** : ce sont des mentions de la société dans une phrase (« conçue et
+fabriquée au Luxembourg par Q-Leap », « Q-Bot powered by Q-Leap »), pas l'adresse
+du site listée comme moyen de contact. À signaler si le client veut aussi les
+retirer.
+
+Conséquence : la colonne Contact tombe à **deux** entrées (l'e-mail et le
+téléphone) contre quatre pour ses voisines. L'équilibre 4/4/4 posé le 2026-08-25 est
+donc rompu ; le remplir demanderait d'inventer une entrée.
+
+### La section CTA de la fiche technique
+
+« Une démo, en direct / Échangez avec notre équipe et voyez Q-Bot en action. /
+CTA Réserver une démo. » Le titre y était seul au-dessus du bouton, ce qui laissait
+la section presque vide. Titre plus chapeau à 16 px, le rythme du site.
+
+### TROIS DÉFAUTS D'OUTILLAGE, DONT DEUX QUE JE VENAIS DE CRÉER
+
+1. **`gen-legal.py` a remis les deux pages légales HORS INDEX.** Son gabarit portait
+   encore la balise `noindex` de pré-lancement ; le site est en ligne depuis le
+   2026-09-08 et `go-live.py` avait levé les verrous des 15 autres pages. La
+   première régénération de la séance les a donc retirées de l'index, et c'est
+   `audit-visibilite.py` qui l'a vu (« noindex resté après la mise en ligne »).
+   **Troisième fois que ce fichier prouve la même règle : un générateur qui n'a pas
+   tourné depuis une passe sitewide est une régression en attente.**
+2. **Une passe de `maj-nav-booking.py` s'apprêtait à transformer un lien de
+   navigation en déclencheur d'agenda.** Je l'avais ajoutée pour le lien de la
+   boîte de rendez-vous, une heure avant que cette boîte ne soit supprimée. Son
+   motif, `<a href="contact.html" class="link-edito">`, désigne désormais les liens
+   posés par la hiérarchie des CTA : le script annonçait « 1 lien de boîte équipé »
+   sur un site qui n'en a plus un seul, et il visait la page 404. Passe retirée.
+   **Un motif d'outillage doit être borné à sa zone**, comme les deux autres le sont
+   à la barre de navigation et au pied de page. C'est la troisième fois que ce
+   fichier le paie.
+3. **`bump-assets.py` était inutilisable sur Windows** (voir la note de l'audit) :
+   corrigé le même jour.
+
+Épreuve de vivacité de `maj-nav-booking.py` après correction : 0 / 0 au repos, et
+**17 barres plus 15 pieds** équipés quand on change l'URL dans `bookings_conf.py`.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat**. 637 références internes et ancres, **0 cassée**. `audit_ergo.py` sur
+90 vues : 0 débordement, 0 collision, 0 mots collés, 0 agrandissement d'image
+au-delà de 1,5, plancher typographique tenu, 0 cible tactile non conforme ; seule
+subsiste la famille « mesure de lecture », 84 à 90 caractères par ligne sur quelques
+paragraphes, dont la cause est le vocabulaire et non le plafond (voir la note de
+l'audit). 33 vues des pages touchées sans anomalie. `gen-legal.py` idempotent
+(deux exécutions, même empreinte). **0 requête vers un tiers au chargement**, sur
+les deux pages contact, ce qui remet le site dans l'état que sa politique décrit.
+
+
+## Les exemples d'appel changent de page, et le bouton retourne au tiroir (2026-09-09, fin de soirée)
+
+### « Comment ça marche » perd sa section technique
+
+« Je voudrais retirer toute la section Les exemples d'appel, outil par outil [...]
+Cette partie est trop technique pour une page qui doit surtout expliquer le
+fonctionnement de Q-Bot simplement. Je voudrais déplacer cette section vers la
+page Caractéristiques techniques, dans une partie dédiée à l'intégration
+technique. »
+
+C'est un DÉPLACEMENT : les cinq accordéons (Python/Selenium, Cypress, Shell/CI,
+Robot Framework, JUnit/RestAssured) et leur note quittent `cas-usage.html` pour
+la section API de `caracteristiques.html`. Les deux langues, par un même script.
+
+**ILS FUSIONNENT AVEC LA SECTION API AU LIEU DE FORMER UNE SECTION À PART, et ce
+n'est pas un raccourci : les deux sections portaient le MÊME identifiant de
+titre.** Un déplacement tel quel aurait mis deux fois `api-title` sur la fiche
+technique, et le `aria-labelledby` de chacune y aurait désigné n'importe lequel
+des deux. La fusion est aussi ce que demande « une partie dédiée à l'intégration
+technique » : un en-tête, les deux faits, puis le détail dépliable sous un `h3`
+(`.specs-sub`, posée pour ce cas).
+
+Relevé après : `cas-usage.html` passe de 6 à 5 sections et de 3 932 px de haut
+(elle en faisait davantage), 0 accordéon et 0 bloc de code y subsistent ; la
+fiche technique porte les 5 accordéons, tous repliés, avec leurs `hidden` posés
+par le module 3, **0 identifiant en double** et 0 saut de niveau de titre.
+
+**LE GARDE-FOU A FAILLI ÊTRE PRIS PAR MON PROPRE COMMENTAIRE.** L'assertion
+compte les occurrences de l'identifiant de titre dans le fichier produit ; le
+commentaire que j'écrivais au-dessus le citait pour expliquer le problème, ce qui
+en faisait deux. C'est la même famille de piège que les contrôles de reste qui
+crient sur les commentaires, et le commentaire dit désormais pourquoi il ne le
+nomme pas.
+
+**ET UN MOTIF NE DOIT PAS DÉPENDRE D'UN NOM DE FICHIER** : le mien cherchait le
+lien de sortie de section par `href="[^"]*use[^"]*\.html"`, ce qui matche
+`use-cases.html` mais PAS `cas-usage.html`, qui contient « usa » et non « use ».
+Il ne fonctionnait donc que sur la page anglaise. Il vise maintenant la classe.
+
+### Le bouton de réservation retourne dans le tiroir mobile
+
+« Le bouton est revenu sur mobile », capture d'écran à l'appui.
+
+**TROISIÈME ÉTAT DE CE BOUTON, ET LES TROIS SONT DES DEMANDES DU CLIENT** : dans
+le tiroir le 2026-09-08 (« le bouton du header je le mettrais dans le menu sur
+mobile »), dans la barre le 2026-09-09 au matin, de nouveau dans le tiroir le
+même jour au soir. Il n'y a rien à « corriger » dans un sens ou dans l'autre :
+c'est le dernier arbitrage qui vaut, et il est cohérent avec la hiérarchie des
+CTA posée deux heures plus tôt, « moins de turquoise en grandes surfaces ».
+
+Deux contraintes tenues, et la seconde est celle qui a fait échouer la première
+version le 2026-09-08 :
+
+- **on déplace le noeud, on ne le duplique pas.** Un second bouton dans le
+  balisage donnerait deux arrêts de tabulation et deux fois le même nom
+  accessible ; surtout, `tools/maj-nav-booking.py` compte UN bouton par page dans
+  la source. Déplacé, le noeud garde ses écouteurs, donc la fenêtre de
+  réservation du module 20 s'ouvre sans une ligne de plus. Sans JavaScript le
+  bouton reste dans la barre, c'est-à-dire l'état d'avant ;
+- **un écouteur `change` de `matchMedia` ne suffit pas** : il ne se réveille qu'au
+  FRANCHISSEMENT du seuil, donc une page ouverte étroite puis élargie sans
+  repasser par 859 px gardait le bouton coincé dans le tiroir pour toute sa vie.
+  La largeur est relue à chaque appel.
+
+Relevé : tiroir à 390, 768 et 859 px, barre à 860, 1024 et 1440 px, bouton pleine
+largeur et utilisable une fois le tiroir ouvert, et le va-et-vient
+390 → 1440 → 500 → 1200 → 390 px **suit dans les deux sens sans rechargement**.
+Deux déclencheurs par page, inchangé.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et 390 px, `audit-visibilite.py` : 15 pages lues sur 15,
+**0 constat**. 637 références internes et ancres, **0 cassée**. Inventaire des
+CTA : 12 boutons pleins, tous « Réserver une démo », un par page. 21 vues des
+pages touchées : un seul `h1`, 0 saut de niveau, 0 révélation invisible, 0
+débordement, 0 cadratin, 0 emoji. Sur les deux accueils, modèle 3D chargé,
+**0 erreur console et 0 requête en échec** (les six remontées du balayage sont le
+blocage volontaire du modèle par la sonde, revérifié sans blocage).
+
+
+## La page À propos : l'écosystème, l'origine, l'équipe (2026-09-09, nuit)
+
+Trois retours sur la même page, textes fournis par le client.
+
+### L'écosystème Q-Leap : un parent, deux solutions
+
+« 1 grand bloc Q-Leap au-dessus, puis 2 cartes produits Q-Guard / Q-Bot en
+dessous. C'est beaucoup plus clair qu'avoir trois blocs au même niveau, car
+Q-Leap n'est pas un produit : c'est la société qui porte les deux solutions. »
+
+`.ecosys` porte le bloc parent, `.products-grid--duo` les deux cartes.
+**LA HIÉRARCHIE EST PORTÉE PAR LA TAILLE, PAS PAR UNE COULEUR** : le parent a son
+logo à 52 px contre 36, son texte au corps de page et deux paragraphes. Un fond
+ou un filet teal sur lui dirait « produit mis en avant », c'est-à-dire l'inverse
+de ce que la section démontre.
+
+**LA CARTE Q-BOT REVIENT, et elle contredit la note du 2026-09-02** (« ne pas
+remettre une carte Q-Bot, le visiteur se trouve déjà sur le site Q-Bot »). Ce
+n'est pas un oubli : elle n'est plus une carte de société au même niveau que
+Q-Leap, elle est l'une des deux solutions, et la comparaison avec Q-Guard est
+justement ce que la section montre. **Elle n'a pas de lien**, et c'est la raison
+de 2026-09-02 qui survit : le visiteur est déjà là, un « Découvrir Q-Bot » vers
+l'accueil serait un cul-de-sac. La mention « Vous y êtes » le dit, en gris sourd
+parce que ce n'est pas une action.
+
+Trois défauts trouvés en mesurant, et le premier était invisible à la lecture du
+CSS :
+
+1. **`.products-grid--duo` écrit seul pèse (0,1,0), exactement comme
+   `.products-grid`**, qui déclare `flex-direction: column` et qui est écrit PLUS
+   LOIN dans le fichier : à poids égal l'ordre tranche, et les deux cartes
+   restaient en colonne à 1 132 px de large chacune. Sélecteur doublé. Troisième
+   occurrence de ce piège après `.features__grid--3` et `--2`.
+2. **LE LOGO Q-LEAP DU BLOC PARENT S'AFFICHAIT EN ENCRE NOIRE SUR FOND NOIR.**
+   `.ecosys__logo` n'est pas un `.product-card__icon`, donc il n'héritait pas du
+   `filter: brightness(0) invert(1)` du thème sombre. Mesuré sur les pixels
+   rendus : (0,0,0) sur (20,20,20), c'est-à-dire invisible. **Une capture d'écran
+   lue à l'oeil ne suffit pas ici : c'est l'échantillonnage des pixels qui l'a
+   établi**, et c'est aussi lui qui a écarté un « tick bleu » que je croyais voir
+   sur le mot-symbole Q-Bot.
+3. **Le lien d'une carte collait son texte** (0 px, mesuré) : `.product-card p`
+   hérite du `margin: 0` de la carte. C'est le paragraphe qui PORTE le lien qui
+   l'espace, sans toucher aux autres.
+
+**ET UNE EXEMPTION QUE J'AVAIS ÉCRITE ÉTAIT SANS OBJET.** J'avais posé
+`product-card__icon--neg` avec `filter: none` pour « préserver le tick teal » de
+`logo-qbot-neg.png` : ce fichier est **blanc pur**, aucun pixel teal (mesuré dans
+le fichier), et le filtre laisse de toute façon un logo blanc blanc. La carte
+prend donc `logo-qbot-card.png`, le lockup au même format que Q-Guard, avec le
+filtre standard, et l'exemption disparaît. Ce lockup était exclu de la
+publication depuis le retrait de la carte : il en sort.
+
+### L'origine du produit, texte du client
+
+Trois paragraphes deviennent un, dans les mots du client. **Deux conséquences à
+connaître :**
+
+- **la mention de Sylvain Perez quitte cette section** et vit désormais dans la
+  section équipe, ce qui est sa place ;
+- **« automatisation des tests » retombe de 2 à 1 occurrence** dans le texte
+  rendu du site. C'était une correction SEO de l'après-midi (le nom de la
+  catégorie, absent de tout le site alors que le JSON-LD le déclarait) : le
+  paragraphe qui la portait est celui que ce texte remplace. Elle survit dans le
+  chapeau du hero de cette page et dans ses trois métadonnées. **Ce n'est pas un
+  défaut, c'est un arbitrage : le texte du client prime.** À savoir si la
+  question du référencement se repose.
+
+### L'équipe derrière le produit
+
+« On mentionne Sylvain, mais il faut aussi parler des 2 autres (Nikola Krstic qui
+est un testeur QA et je connais pas le nom du dernier). »
+
+**LE TROISIÈME NOM N'EST PAS INVENTÉ, ET C'EST TOUT.** Le client l'a dit
+lui-même. La section publie les deux noms connus ; le troisième s'ajoute en une
+entrée de la liste du script. **Ne PAS écrire « et un troisième » en attendant** :
+une mention anonyme au milieu de personnes nommées se lit comme un oubli, pas
+comme une équipe.
+
+- **elle vient APRÈS le carrousel** : « Conçu et développé au Luxembourg » montre
+  l'équipe en photo, cette section la nomme. Dans l'autre ordre, on nommerait des
+  gens avant de les avoir montrés ;
+- **aucune photo** : il n'existe aucun portrait dans le dépôt, et les visages du
+  carrousel ne sont pas identifiés. Un nom et un rôle suffisent ;
+- `auto-fit` et non un nombre de colonnes fixe : avec `1fr 1fr`, l'arrivée du
+  troisième donnerait 2 + 1, une orpheline sur sa propre ligne.
+
+**POINT À SIGNALER AU CLIENT** : nommer un salarié sur un site public, avec son
+rôle, est une donnée personnelle. Sylvain Perez est nommé sur ce site depuis
+longtemps ; Nikola Krstic ne l'était pas. C'est le dirigeant qui le demande, donc
+il a autorité, mais la personne devrait en être informée.
+
+### Le texte du Luxembourg, et le troisième nom (même soirée)
+
+Le client a ensuite donné le texte de « Conçu et développé au Luxembourg » (les
+photos restent) et le nom manquant : **João Português**.
+
+Sa dernière phrase nomme les trois personnes : « Le projet est porté par Sylvain
+Perez, CEO de Q-Leap, avec João Português, Nikola Krstic et l'ensemble des
+équipes de test de Q-Leap. »
+
+**LES TROIS NOMS APPARAISSENT DONC DEUX FOIS SUR LA PAGE**, à environ 300 px
+d'écart : en prose dans cette section, puis avec leur rôle dans la section
+équipe juste après. Les deux ont été demandées, dans cet ordre, en connaissance
+l'une de l'autre : ce n'est pas un oubli, et **le signaler est tout ce qu'il y a
+à faire**. Si la redondance gêne, la sortie la plus simple est de retirer la
+phrase de nomination de la prose, la section équipe la détaillant mieux.
+
+**LE RÔLE DE JOÃO PORTUGUÊS N'EST PAS DONNÉ, ET IL N'EST PAS DÉDUIT.** Son nom
+apparaît sans ligne de rôle, avec un marqueur dans le balisage. « avec João
+Português, Nikola Krstic et l'ensemble des équipes de test » ne suffit pas à lui
+attribuer un intitulé, et un rôle inventé sur une personne réelle est pire qu'une
+ligne manquante. À demander au client.
+
+Relevé : trois colonnes à 1440 et 900 px, une à 390 px, les quatre photos du
+carrousel intactes.
+
+**ET UN GARDE-FOU S'EST FAIT PRENDRE PAR MON PROPRE COMMENTAIRE, POUR LA DEUXIÈME
+FOIS DE LA SOIRÉE.** Le contrôle « chaque nom apparaît exactement deux fois dans
+`<main>` » en comptait trois pour João Português : le commentaire qui explique le
+rôle manquant cite le nom qu'il concerne. Les contrôles de texte lisent désormais
+le corps SANS ses commentaires, c'est-à-dire ce que le visiteur lit.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et 390 px, `audit-visibilite.py` : 15 pages lues sur 15,
+**0 constat**. 639 références internes et ancres, **0 cassée**. Contrôle des
+actifs dans les deux sens : 0 référence vers un actif exclu, et le lockup Q-Bot
+n'apparaît plus dans les orphelins, donc il est servi ET cité. 12 vues des deux
+pages À propos (1440 et 390 px, normal et mouvement réduit) : un seul `h1`,
+0 saut de niveau, 0 révélation invisible, 0 débordement, 0 image cassée,
+0 cadratin, 0 emoji, 0 erreur console. Ordre des sections vérifié : origine,
+Luxembourg, équipe, écosystème, appel à l'action.
+
+
+## Deux photos d'équipe entrent dans le carrousel, et l'arbitrage qui va avec (2026-09-09)
+
+`qleap-equipe-bureau.jpg` et `qleap-equipe-demo.jpg` prennent les deux premières
+places du carrousel de « À propos », dans les deux langues. Six vues, six
+pastilles.
+
+### CE QUE LE CLIENT A TRANCHÉ, ET CE QU'IL FAUT SAVOIR AVANT D'Y TOUCHER
+
+**Les deux fichiers sources portent un manifeste C2PA signé OpenAI qui les
+déclare `trainedAlgorithmicMedia`**, c'est-à-dire entièrement créés par un modèle
+génératif, avec une action `watermarked` (filigrane invisible). Cela lui a été dit
+avec les chiffres : chunk `caBX` de 21 844 octets, `softwareAgent: gpt-image`,
+signature OpenAI. Sa réponse : **« C'est les photos que ma RH veut, je n'ai pas
+le choix. »**
+
+C'est donc sa décision et celle de son service RH, prise en connaissance de cause.
+**Ne pas la rouvrir, et ne pas retirer ces images de sa propre initiative.** Ce
+qu'il faut savoir en revanche :
+
+- **elles sont détectables.** Le filigrane invisible survit au réencodage ; le
+  manifeste, lui, disparaît en JPEG comme disparaît l'EXIF d'une photo de
+  téléphone (traitement standard de toutes les images de ce dépôt, pas un
+  effacement de trace) ;
+- **les originaux existent presque certainement.** Ces images sont trop
+  spécifiques pour être inventées de rien : moquette bleue, néons encastrés,
+  fenêtre intérieure, motif détaillé d'un T-shirt, kakemono Q-BOT au slogan exact.
+  `gpt-image` NE RECADRE PAS ET NE RETOUCHE PAS : il régénère l'image entière.
+  C'est ce qui explique des visages presque réels, et c'est la deuxième fois de la
+  journée que le cas se présente (cf. la photo de « La solution », remplacée le
+  2026-09-02 par une image du film). **Si les originaux arrivent un jour, ils se
+  substituent en une commande** : `scratchpad/photos_equipe.py` porte la chaîne.
+
+### LES `alt` NE NOMMENT PERSONNE, ET C'EST DÉLIBÉRÉ
+
+Le client a écrit « Voici Joao (…11_04_35 1) et l'autre c'est nikola », or l'un
+des deux fichiers montre DEUX hommes : il est impossible de savoir avec certitude
+qui est qui. **Mettre le mauvais nom sur le mauvais visage est une erreur qu'on ne
+rattrape pas**, et les quatre vues déjà en place ne nomment personne non plus. Les
+`alt` décrivent donc la scène. Le jour où le client dit qui est qui, ils peuvent
+le porter.
+
+### Deux points signalés au client sur la seconde image
+
+- **le kakemono qu'on y voit annonce « 100% automate »**, la revendication retirée
+  du site le 2026-08-24. Elle est dans les pixels, donc invisible à tout contrôle
+  de texte, et illisible à la taille d'affichage (350 px) ;
+- **un visiteur non identifié y figure au premier plan**, de dos et non
+  reconnaissable. Le recadrage en 4/5 en coupe déjà la moitié basse.
+
+### Traitement
+
+Recadrage en 4/5 (le CSS impose `aspect-ratio: 4/5` avec
+`object-position: center 28%`), sortie en 768 x 960 JPEG comme les quatre vues
+déjà en place, masters archivés sous un nom ASCII stable dans
+`Documentations/assets-sources/`. Le cadrage garde le bas sur la photo de bureau
+(les deux personnes restent entières) et le haut sur la photo de démonstration
+(le kakemono et le geste).
+
+**UN GARDE-FOU S'EST FAIT PRENDRE PAR UN PRÉFIXE.** Le contrôle « autant de
+pastilles que de vues » comptait `carousel__dot`, qui est un préfixe de
+`carousel__dots`, le nom du conteneur : 5 pastilles annoncées pour 4 vues. Il
+compte désormais `data-carousel-dot`. Même piège que `api-title` contenu dans
+`pi-title` : un contrôle porte sur l'attribut entier.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et 390 px, `audit-visibilite.py` : 15 pages lues sur 15,
+**0 constat**. 643 références internes, **0 cassée**. Carrousel à 1440, 900 et
+390 px : 6 vues, 6 pastilles toutes visibles, une seule active, la dernière mène
+au bout de la course et la flèche boucle ; 0 image cassée, 0 `alt` manquant,
+agrandissement maximal 1,08. 12 vues des deux pages sans anomalie.

@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=33419e55">
+  <link rel="stylesheet" href="../assets/css/style.css?v=42400297">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=7c2bbc25">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -185,7 +185,7 @@
           <span class="nb">Q-Bot</span> drives two-factor authentication on a real smartphone, on demand from your test pipeline. The last manual step of your test runs disappears, <strong>without a human in the loop</strong>.
         </p>
         <div class="hero__actions">
-          <a href="#film-title" class="hero__cta">See <span class="nb">Q-Bot</span> in action<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <a href="#problem-title" class="hero__cta"><span>See how <span class="nb">Q-Bot</span> automates your tests</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
         </div>
       </div>
       <!-- Photo du produit (brochure officielle, page 3, 300 dpi), pas un rendu.
@@ -232,7 +232,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18.3A2 2 0 0 0 3.5 21.3h17a2 2 0 0 0 1.7-3l-8.5-14.4a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13.5"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             Human action required
           </li>
-          <li class="vsflow__step vsflow__step--attente" role="listitem">Test on hold</li>
+          <li class="vsflow__step vsflow__step--attente" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10.5" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>
+            Test blocked
+          </li>
         </ol>
       </div>
       <div class="vsflow__lane vsflow__lane--avec">
@@ -314,35 +317,65 @@
 </section>
 
 <!-- ======= L'ÉDITEUR DE SCÉNARIOS =======
-     Point 4 du retour du 2026-09-08 : le bloc « sans coder » prend son propre
-     titre et montre l'interface. Un seul panneau, donc pas de liste d'onglets :
-     le bandeau porte le nom de l'écran, et il n'y a rien à cliquer. Le texte
-     alternatif est celui de la page Caractéristiques, qui porte la même capture. -->
+     REFONTE DU 2026-09-09, sur un retour détaillé : « aujourd'hui la capture prend
+     trop de place et demande trop d'effort de lecture ; on veut une section plus
+     compacte, plus pédagogique et plus produit », avec « environ 55-60 %
+     illustration à gauche, 40-45 % texte à droite » et « 2 ou 3 micro-annotations
+     directement sur l'interface ».
+
+     CE QUI FAIT BAISSER LA HAUTEUR N'EST PAS LA TAILLE DE L'IMAGE, C'EST LA MISE
+     EN COLONNES. Avant, le titre, le chapeau, la capture pleine largeur et la
+     légende s'empilaient : 1 052 px à 1 440 px de large. Le texte passant à droite
+     de l'image, la section vaut désormais la plus haute des deux colonnes.
+
+     LES TROIS REPÈRES SONT DU BALISAGE, PAS DES PIXELS. Gravés dans l'image, il
+     faudrait deux fichiers par langue, ils seraient illisibles sur un téléphone et
+     invisibles pour un lecteur d'écran. En balisage, ils se placent en pourcentage,
+     restent nets à toute densité, et la liste de droite porte les mêmes numéros :
+     l'oeil fait le lien sans qu'un cartouche vienne masquer l'interface, ce que le
+     retour demande explicitement. Ils sont `aria-hidden` parce que la liste dit la
+     même chose en clair, et le texte alternatif de l'image les décrit.
+
+     LES DEUX LISTES DU RETOUR N'EN FONT QU'UNE. Il demandait les trois annotations
+     ET une liste « Pas de script spécifique / Parcours visuel / Exécution
+     automatique ». Les deux disent la même chose, et la seconde redit le titre :
+     ce sont les trois étapes qui restent, elles sont plus pédagogiques et elles
+     ancrent les repères de l'image. Une seule liste dans une section qu'on veut
+     « plus compacte ». -->
 <section class="section" aria-labelledby="editeur-title">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">The editor</span>
-      <h2 class="section-title" id="editeur-title">Set up a scenario without writing code</h2>
-      <p class="section-subtitle">Take a screenshot of the app, mark the areas to tap, and <span class="nb">Q-Bot</span> then replays the journey automatically.</p>
-    </div>
-
-    <figure class="appwin">
-      <div class="appwin__win">
-        <div class="appwin__bar">
-          <span class="appwin__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span class="appwin__nom" lang="en">Scenario Editor</span>
-          <span class="appwin__ver" aria-hidden="true">v2.1.2</span>
-        </div>
-        <div class="appwin__body">
-          <div class="appwin__panel is-active">
-            <img src="../assets/img/qbot-ui-scenario.webp?v=1a2bd446"
-                 loading="lazy" width="2360" height="1060"
-                 alt="Scenario editor of the Q-Bot web interface: the “Homescreen” scenario selected, the tool palette (move, tap, delete, wait) and the screen of the phone under test, showing the LuxTrust Mobile, itsme, Google Authenticator and Microsoft Authenticator apps.">
+    <div class="editor">
+      <figure class="appwin appwin--carre editor__shot">
+        <div class="appwin__win">
+          <div class="appwin__bar">
+            <span class="appwin__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="appwin__nom" lang="en">Scenario Editor</span>
+            <span class="appwin__ver" aria-hidden="true">v2.1.2</span>
+          </div>
+          <div class="appwin__body">
+            <div class="appwin__panel is-active editor__vue">
+              <img src="../assets/img/qbot-ui-editeur.webp?v=aed9255e"
+                   loading="lazy" width="1300" height="1300"
+                   alt="Scenario editor of the Q-Bot web interface: the command bar, the tool palette (move, tap, delete, wait) and the screen of the phone under test, showing the LuxTrust Mobile, itsme, Google Authenticator and Microsoft Authenticator apps. Three numbered markers point at the screenshot, the tool palette and the play button.">
+            <span class="editor__pin" style="--x:54%;--y:38%" aria-hidden="true">1</span>
+            <span class="editor__pin" style="--x:19%;--y:64%" aria-hidden="true">2</span>
+            <span class="editor__pin" style="--x:69%;--y:13%" aria-hidden="true">3</span>
+            </div>
           </div>
         </div>
+      </figure>
+      <div class="editor__body">
+        <span class="section-label">No-code setup</span>
+        <h2 class="section-title" id="editeur-title">Show it the journey. <span class="nb">Q-Bot</span> replays it.</h2>
+        <p class="section-subtitle">Take a screenshot of the app, place the areas to tap and the wait times. <span class="nb">Q-Bot</span> remembers the scenario and then replays it automatically on the real smartphone.</p>
+        <ol class="editor__steps" role="list" aria-label="The three steps of building a scenario">
+          <li class="editor__step" role="listitem"><span>Capture the screen</span></li>
+          <li class="editor__step" role="listitem"><span>Place the interactions</span></li>
+          <li class="editor__step" role="listitem"><span><span class="nb">Q-Bot</span> replays the journey</span></li>
+        </ol>
+        <a href="#film-title" class="link-edito"><span>Watch <span class="nb">Q-Bot</span> run this scenario</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
-      <figcaption class="appwin__cap"><span class="nb">Q-Bot</span>'s scenario editor, served by the device itself: the journey is built on a screenshot of the phone under test, with its tap points and wait times.</figcaption>
-    </figure>
+    </div>
   </div>
 </section>
 
@@ -629,12 +662,7 @@
         <p>Confirming a transaction, signing a document, elevating a session: <span class="nb">Q-Bot</span> approves it on the phone.</p>
       </article>
     </div>
-    <div style="margin-top:36px;">
-      <a href="use-cases.html#cas" class="btn btn--outline">
-        Use cases in detail
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
+    <p style="margin-top:36px;"><a href="use-cases.html#cas" class="link-edito"><span>Use cases in detail</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
   </div>
 </section>
 
@@ -705,6 +733,9 @@
         <span class="trust__body"><b>By testers, for testers</b><span>Software testing has been our trade since 2012.</span></span>
       </li>
     </ul>
+    <!-- Cf. le commentaire de la version française : c'est le seul lien vers
+         « À propos » depuis le corps d'une page. -->
+    <p style="margin-top:32px;"><a href="about.html" class="link-edito"><span>Who is behind <span class="nb">Q-Bot</span></span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
   </div>
 </section>
 
@@ -769,7 +800,6 @@
         <ul role="list">
           <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
           <li><a href="tel:+352202117">+352 20 21 17</a></li>
-          <li><a href="https://q-leap.eu" target="_blank" rel="noopener">q-leap.eu</a></li>
         </ul>
         <p class="footer__address">
           10B rue des Mérovingiens<br>
@@ -786,7 +816,7 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=1d543046" defer></script>
+<script src="../assets/js/main.js?v=231d24e8" defer></script>
 <script src="../assets/js/scrolly.js?v=4f453ec2" defer></script>
 </body>
 </html>

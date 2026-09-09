@@ -63,12 +63,32 @@ def pages():
 # JavaScript devient donc la page contact, comme celui du bouton de la barre.
 # Le motif accepte l'ancienne cible ET la nouvelle, sans quoi ce script ne
 # servirait qu'une fois — le défaut du 2026-09-01, à l'identique.
+# `\s*` AVANT LE CHEVRON FERMANT, ET C'EST UN CORRECTIF (2026-09-09) : ce script
+# écrit lui-même l'entrée du pied de page sur plusieurs lignes, en mettant le
+# chevron en tête de la dernière. Son propre motif l'exigeait collé au dernier
+# attribut, si bien qu'il ne reconnaissait plus AUCUNE des 17 pages qu'il venait
+# d'équiper — « entrée de pied non reconnue » partout, sans erreur. Le jour d'un
+# changement d'agenda, la barre aurait été mise à jour et le pied laissé sur
+# l'ancienne URL : deux adresses pour un seul agenda. Un outil doit reconnaître
+# sa propre sortie, et c'est ce que l'épreuve de vivacité vérifie (changer l'URL
+# dans bookings_conf.py, relancer, lire 17 barres ET 17 pieds équipés).
 PIED = re.compile(
     r'<li><a href="((?:\.\./)?)(contact\.html|commandez\.html|order\.html)"'
     r'((?:\s+data-booking-open|\s+data-booking-[a-z]+="[^"]*")*)'
-    r'>(Démo|Demo|Réserver une démo|Book a demo)</a></li>')
+    r'\s*>(Démo|Demo|Réserver une démo|Book a demo)</a></li>')
 
 LIBELLE_PIED = {'fr': 'Réserver une démo', 'en': 'Book a demo'}
+
+# LA BOÎTE DE RENDEZ-VOUS DE LA PAGE CONTACT N'EXISTE PLUS (2026-09-09) : le
+# client a demandé de simplifier cette colonne au maximum. Une troisième passe
+# avait été écrite pour son lien, quelques minutes plus tôt le même jour ; elle
+# est retirée, et pas seulement parce qu'elle est sans objet.
+# SON MOTIF ÉTAIT DANGEREUX : `<a href="contact.html" class="link-edito">`
+# désigne aussi les liens de NAVIGATION posés par la hiérarchie des CTA, et le
+# script s'apprêtait à en transformer un de la page 404 en déclencheur d'agenda
+# (relevé : « 1 lien de boîte équipé » sur un site qui n'en a plus un seul).
+# Un motif doit être borné à sa zone, comme les deux autres passes le sont à la
+# barre de navigation et au pied de page. Si la boîte revient, la borner.
 
 faits, faits_pied, sautes, ko = 0, 0, [], []
 for f in pages():

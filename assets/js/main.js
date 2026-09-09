@@ -30,29 +30,58 @@ navToggle?.addEventListener('click', () => {
   navToggle.setAttribute('aria-expanded', String(isOpen));
 });
 
-/* ── Le bouton de réservation reste dans la barre, à toute largeur ──
-   IL A ÉTÉ DÉPLACÉ DANS LE TIROIR LE 2026-09-08, PUIS REMIS ICI LE 2026-09-09 :
-   « si possible pas de bouton dans le menu mobile pour réserver une démo ». Le
-   déplacement était lui aussi une demande, il n'y a donc rien à « corriger »
-   dans un sens ou dans l'autre, c'est le dernier arbitrage qui vaut.
+/* ── Le bouton de réservation passe dans le tiroir sous 859 px ──
+   TROISIÈME ÉTAT DE CE BOUTON, ET LES TROIS SONT DES DEMANDES DU CLIENT :
+   dans le tiroir le 2026-09-08 (« le bouton du header je le mettrais dans le
+   menu sur mobile »), dans la barre le 2026-09-09 au matin, de nouveau dans le
+   tiroir le même jour au soir (« le bouton est revenu sur mobile », dans la
+   passe « moins de turquoise en grandes surfaces »). Il n'y a rien à
+   « corriger » dans un sens ou dans l'autre : c'est le dernier arbitrage qui
+   vaut, et il est cohérent avec la hiérarchie des CTA posée le même soir.
 
-   Il n'est pas MASQUÉ sur téléphone, il y est compacté par le CSS (`nowrap`,
-   9/14 px de remplissage) : c'est le chemin de conversion de la barre, et la
-   même passe demande de rendre celui du hero plus discret. En le masquant,
-   téléphone et bureau n'offriraient plus le même chemin.
+   ON DÉPLACE LE NOEUD, ON NE LE DUPLIQUE PAS. Un second bouton écrit dans le
+   balisage donnerait deux arrêts de tabulation et deux fois le même nom
+   accessible ; surtout, `tools/maj-nav-booking.py` compte UN bouton par page
+   dans la SOURCE, et un doublon le tromperait. Déplacé, le noeud garde ses
+   écouteurs : la fenêtre de réservation du module 20 s'ouvre sans une ligne de
+   plus. Sans JavaScript, le bouton reste dans la barre, ce qui est l'état
+   d'avant : dégradation gracieuse, jamais de chemin perdu.
 
-   Il reste un seul bouton, dans le balisage servi comme dans le DOM : c'est ce
-   que compte `tools/maj-nav-booking.py`, et un doublon le tromperait.
-
-   Ce qui subsiste ici est le seul comportement qui ne peut pas venir du CSS :
-   refermer le tiroir quand on l'active. Sans cela le menu resterait déplié
-   derrière la fenêtre modale, et on le retrouverait ouvert en sortant. */
+   UN ÉCOUTEUR `change` DE `matchMedia` NE SUFFIT PAS, et c'est la leçon de la
+   première version : il ne se réveille qu'au FRANCHISSEMENT du seuil, donc une
+   page ouverte étroite puis élargie sans repasser par 859 px gardait le bouton
+   coincé dans le tiroir pour toute sa vie. Le cas se reproduit tel quel dans un
+   cadre en ligne, qui commence à 300 px avant que sa largeur ne lui soit
+   appliquée. La largeur est donc RELUE à chaque appel. */
 {
   const ctaNav = document.querySelector('.nav__actions .btn');
-  ctaNav?.addEventListener('click', () => {
-    navMenu?.classList.remove('open');
-    navToggle?.setAttribute('aria-expanded', 'false');
-  });
+  const actions = document.querySelector('.nav__actions');
+  if (ctaNav && actions && navMenu) {
+    const enveloppe = document.createElement('li');
+    enveloppe.className = 'nav__menu-cta';
+
+    const placer = () => {
+      const etroit = window.innerWidth <= 859;
+      if (etroit && ctaNav.parentElement !== enveloppe) {
+        enveloppe.appendChild(ctaNav);
+        navMenu.appendChild(enveloppe);
+      } else if (!etroit && ctaNav.parentElement === enveloppe) {
+        actions.insertBefore(ctaNav, actions.firstChild);
+        enveloppe.remove();
+      }
+    };
+    placer();
+    window.addEventListener('resize', placer, { passive: true });
+    window.addEventListener('load', placer);
+
+    /* Refermer le tiroir quand on active le bouton : sans cela le menu resterait
+       déplié derrière la fenêtre modale, et on le retrouverait ouvert en
+       sortant. */
+    ctaNav.addEventListener('click', () => {
+      navMenu.classList.remove('open');
+      navToggle?.setAttribute('aria-expanded', 'false');
+    });
+  }
 }
 
 // Ferme au clic extérieur
@@ -661,8 +690,14 @@ backToTop.addEventListener('click', () => {
        image de 420 px) — au-delà, un bord vide apparaîtrait dans le cadre. */
     /* Exclut .intro__image--product : ce contre-mouvement est fait pour une
        photo qui remplit son cadre ; sur un rendu détouré, il fait sortir le
-       produit de son halo et le rogne au bord du cadre. */
-    ['.intro__image:not(.intro__image--product):not(.intro__image--fit) img', -14],
+       produit de son halo et le rogne au bord du cadre.
+       Exclut --portrait pour la raison écrite juste au-dessus : ce
+       contre-mouvement n'existe QUE dans un cadre clippé, et cette variante
+       n'en a pas (`overflow: visible`, `--media-scale: 1`, le radius et l'ombre
+       sont portés par l'image elle-même). Sans réserve de sur-dimensionnement,
+       il n'a plus rien à compenser et ne fait plus qu'ajouter une seconde
+       dérive à celle du conteneur. */
+    ['.intro__image:not(.intro__image--product):not(.intro__image--fit):not(.intro__image--portrait) img', -14],
     ['.blog__featured-img img',                        -12],
     /* Titres de section : dérive très légère, juste assez pour que le bloc de
        texte et son image ne défilent pas exactement à la même vitesse. */
