@@ -1616,24 +1616,40 @@ p { color: var(--gray); }
 .product-card p { font-size: 0.875rem; }
 
 /* ══ L'ÉQUIPE DERRIÈRE LE PRODUIT (.equipe) ═══════════════════════════════
-   Posée le 2026-09-09. Un nom, un rôle, et rien d'autre : la passe du même jour
-   demande « moins de cadres, moins de texte, plus d'espace », donc pas de carte,
-   pas de pastille, pas de photo (il n'existe aucun portrait dans le dépôt, et
-   les visages du carrousel ne sont pas identifiés).
+   Posée le 2026-09-09, puis étoffée le même jour : le client a fourni un
+   intitulé ET une biographie pour chacun des trois. Elle portait « un nom, un
+   rôle, et rien d'autre », ce qui n'est plus vrai.
 
-   `auto-fit` et non un nombre de colonnes fixe : la liste compte deux personnes
-   aujourd'hui et le client doit encore fournir le nom d'une troisième. Avec un
-   `1fr 1fr`, l'arrivée du troisième donnerait 2 + 1, c'est-à-dire une orpheline
-   sur sa propre ligne ; avec `auto-fit`, la grille se réorganise seule. */
+   PAS DE CARTE POUR AUTANT, un liseré. La passe du même jour demande « moins de
+   cadres, moins de texte, plus d'espace » : un fond et une bordure sur quatre
+   côtés en feraient trois cartes de plus sur une page qui en compte déjà. Le
+   liseré teal à gauche est le vocabulaire employé partout ailleurs sur ce site
+   (matrice de compatibilité, cartes de la séquence, titres de partie) et il
+   suffit à séparer trois blocs de texte voisins.
+
+   Pas de photo : il n'existe aucun portrait de deux des trois personnes, et une
+   section où un seul visage sur trois est montré déséquilibre plus qu'elle
+   n'humanise. Les visages du carrousel ne sont, eux, pas identifiés.
+
+   `minmax(280px, …)` et non 240 depuis l'arrivée des biographies : à 240 la
+   grille tenait quatre colonnes dans le conteneur, donc trois blocs de texte
+   étroits suivis d'un vide. À 280 elle en tient trois, une par personne, et
+   retombe à deux puis à une quand la fenêtre se resserre. `auto-fit` reste ce
+   qui évite d'écrire un nombre : si une quatrième personne arrive, rien à
+   toucher ici. */
 .equipe {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px 40px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.equipe__membre { margin: 0; }
+.equipe__membre {
+  margin: 0;
+  padding-left: 20px;
+  border-left: 2px solid rgba(0, 203, 190, 0.42);
+}
 .equipe__nom {
   margin: 0 0 4px;
   font-weight: 700;
@@ -1649,7 +1665,24 @@ p { color: var(--gray); }
 }
 .equipe__nom a:hover,
 .equipe__nom a:focus-visible { color: var(--teal); text-decoration-color: currentColor; }
-.equipe__role { margin: 0; font-size: 0.9375rem; color: var(--gray); }
+/* L'INTITULÉ EST EN TEAL, LA BIOGRAPHIE EN GRIS, et ce n'est pas décoratif :
+   les deux étaient au même gris et à la même taille, donc un bloc de six lignes
+   où l'intitulé se noyait. Le teal en ENCRE sur ce fond donne 9,4:1, alors que
+   le même teal en FOND plafonne à 2:1 sous du blanc : c'est la même règle de
+   charte lue dans le bon sens, celle qui a fait passer les numéros d'étape en
+   encre teal le 2026-09-08. */
+.equipe__role {
+  margin: 0 0 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--teal);
+}
+.equipe__bio {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--gray);
+}
 
 /* ══ L'ÉCOSYSTÈME Q-LEAP (.ecosys) ════════════════════════════════════════
    Posé le 2026-09-09 : « 1 grand bloc Q-Leap au-dessus, puis 2 cartes produits

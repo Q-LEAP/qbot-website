@@ -10023,3 +10023,69 @@ compte désormais `data-carousel-dot`. Même piège que `api-title` contenu dans
 390 px : 6 vues, 6 pastilles toutes visibles, une seule active, la dernière mène
 au bout de la course et la flèche boucle ; 0 image cassée, 0 `alt` manquant,
 agrandissement maximal 1,08. 12 vues des deux pages sans anomalie.
+
+## L'équipe est nommée, datée et située (2026-09-09, fin de journée)
+
+Le client a fourni un intitulé ET une biographie pour chacun des trois. La section
+`.equipe`, posée le matin même avec « un nom, un rôle, et rien d'autre », les porte
+maintenant. **Le point ouvert du matin est refermé** : l'intitulé de João Português
+manquait et était signalé en commentaire dans les deux pages, il vaut « Testeur technique
+· POST Luxembourg ».
+
+Ordre suivi : **celui du client**, Sylvain, Nikola, João. La page avait Sylvain, João,
+Nikola, ordre qui venait de la phrase de la section Luxembourg. Aucune ancre ne pointe sur
+ces blocs.
+
+**UN TIERS EST NOMMÉ SUR LE SITE, ET C'EST À SIGNALER.** João Português travaille
+aujourd'hui « au sein de la Testing Factory de POST Luxembourg ». Le site de Q-Leap nomme
+donc une personne AVEC son employeur actuel, qui est une autre société. Le texte est celui
+du client, qui connaît la personne, et c'est sa décision ; mais c'est la première fois
+qu'une société tierce est nommée ici, et la règle du dépôt sur les références clients
+(2026-08-26 : ne nommer personne sans accord) invite à s'assurer que João et POST sont
+d'accord avec cette formulation. À confirmer, pas à défaire.
+
+### Le CSS : un liseré, pas une carte, et la couleur porte la hiérarchie
+
+- **liseré teal à gauche** (2 px) et non un cadre : la passe du même jour demande « moins
+  de cadres », et trois blocs de six lignes côte à côte ont quand même besoin d'être
+  séparés. C'est le vocabulaire employé partout ailleurs (matrice de compatibilité, cartes
+  de la séquence, titres de partie) ;
+- **l'intitulé passe en encre teal**, la biographie reste en gris. Les deux étaient au même
+  gris et à la même taille, donc l'intitulé se noyait dans le bloc. Mesuré sur le fond
+  réellement composité : nom 16:1, intitulé **9,7:1**, biographie 8,4:1. C'est la règle de
+  charte lue dans le bon sens, celle qui a fait passer les numéros d'étape en encre teal le
+  2026-09-08 : le teal en ENCRE sur ce fond est confortable, le même teal en FOND plafonne
+  à 2:1 sous du blanc ;
+- **`minmax(280px, 1fr)` et non 240.** À 240 la grille tenait QUATRE colonnes dans le
+  conteneur, donc trois blocs étroits suivis d'un vide. Relevé après : trois colonnes de
+  351 px à 1440 px (une seule rangée, hauteurs identiques à 209 px), deux à 900, une à 390,
+  et 39 à 48 caractères par ligne selon la largeur.
+
+**Pas de photo dans cette section**, et c'est une décision : il n'existe aucun portrait de
+deux des trois personnes, et un seul visage sur trois déséquilibre plus qu'il n'humanise.
+
+### La photo du salon est archivée, pas publiée
+
+`Documentations/assets-sources/sylvain-perez-salon-source.png`, jointe avec les biographies
+sans consigne d'usage. Deux raisons de ne pas la poser :
+
+1. **elle montre le PREMIER prototype à portique**, pas le produit. La carte « Génération 1 »
+   des accueils a justement été corrigée le 2026-08-26 parce qu'elle présentait le second
+   prototype pour le premier, et le dépôt ne présente pas un prototype comme le produit. La
+   mettre dans le carrousel « Conçu et développé au Luxembourg » montrerait l'ancien
+   portique dans un contexte actuel ;
+2. elle porte **le même manifeste C2PA** que les deux photos d'équipe du matin
+   (`c2pa.created`, `gpt-image`, `trainedAlgorithmicMedia`, `watermarked`).
+
+Elle conviendrait en portrait de Sylvain Perez, mais il faudrait alors les deux autres.
+`PhotoDeProfil.png`, trouvé dans le même dossier, est **le même fichier** que
+« ChatGPT Image 26 mai 2026, 15_11_20.png » (empreinte identique) et porte le même
+manifeste : ce n'est pas un original.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 et à 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat**. 75 pages, 643 références internes, **0 cassée**. Les deux pages menées au
+navigateur à 1440 / 1024 / 900 / 390 px : un seul `h1`, 0 débordement horizontal,
+0 révélation invisible, 0 `.nb` dans un conteneur flex, 0 cadratin, 0 erreur console,
+0 requête en échec. Empreintes d'actifs repassées (17 pages sur 17, `style.css` ayant changé).
