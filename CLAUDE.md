@@ -10246,3 +10246,40 @@ positifs connus. 12 vues des six pages touchées à 1440 et 390 px : un seul `h1
 0 débordement horizontal, 0 image cassée, 0 révélation invisible, 0 erreur console.
 Agrandissements relevés : portraits 0,65, photo de contact 0,92, photo d'origine 1,14 en
 boîte transformée (1,05 au repos).
+
+### La bande de réassurance : trois blocs à la même structure (2026-09-09, 16 h)
+
+« Je ferais la section comme ceci pour harmoniser les trois blocs : supprimer le lien
+"Qui est derrière Q-Bot", uniformiser la taille visuelle du logo Made in Luxembourg avec
+les deux autres icônes, donner exactement la même structure aux 3 éléments : icône ou
+logo, titre, phrase descriptive. »
+
+Le premier bloc n'avait **pas d'intitulé**, au motif que le cachet écrit lui-même « MADE IN
+LUXEMBOURG », et son label pesait 60 px contre 38 pour les deux pastilles voisines. Il
+reçoit son intitulé et l'emprise des autres.
+
+**38 PX EST UNE LARGEUR, PAS UNE HAUTEUR**, et c'est ce qui répond vraiment à la demande :
+c'est elle qui fait démarrer les trois intitulés à la même abscisse. Relevé après : les
+trois vignettes à 38 px d'emprise, les trois intitulés sur la même ligne (y = 200 px à
+1440 px), et la section passe de ~380 à **273 px**.
+
+Conséquence à connaître : le cachet est désormais très petit, et son fichier ne fait que
+98 px de large (recadré au plus près de l'encre, il n'y a rien de plus à en tirer).
+**LE LABEL EN VECTORIEL EST À DEMANDER AU CLIENT**, c'est la seule chose qui le rendrait net.
+
+### LE LIEN VERS « À PROPOS » A CHANGÉ DE FORME, IL N'A PAS DISPARU
+
+Le bloc-lien part comme demandé, mais **c'était le seul lien du site vers cette page depuis
+le corps d'une page** : l'audit du matin même l'avait posé exprès, `a-propos.html` étant à
+0 lien entrant depuis un `<main>` depuis qu'elle a quitté la barre de navigation le
+2026-08-28. Le retirer sec rouvrait le défaut.
+
+Il vit donc **en pleine phrase**, sur le troisième bloc : « Le test logiciel est [notre
+métier depuis 2012] ». Un fragment cliquable ne casse pas la structure « icône, intitulé,
+phrase » que le retour demande, et c'est un motif déjà employé sur le site. Il garde la
+couleur de sa phrase (6,32:1 mesuré) et se signale par un soulignement pointillé teal,
+comme les libellés de fiche technique et les noms de l'équipe. Contrôlé après : **1 lien
+depuis un `<main>` dans chaque langue**.
+
+Le calage vertical propre au bloc du label (`align-items: center`) est retiré : il
+n'existait que parce que ce bloc était deux fois plus haut que ses voisins.

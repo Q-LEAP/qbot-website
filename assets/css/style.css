@@ -3583,27 +3583,59 @@ p { color: var(--gray); }
 }
 
 /* LE LABEL MADE IN LUXEMBOURG À LA PLACE DU PICTOGRAMME (point 8 du retour du
-   2026-09-08). Il porte lui-même les mots « MADE IN LUXEMBOURG », donc il
-   remplace aussi l'intitulé en gras, qui les aurait écrits deux fois côte à
-   côte ; les mots restent annoncés par le texte alternatif de l'image.
+   2026-09-08).
 
    PLUS DE CARTOUCHE BLANC : le label est en encre BLANCHE sur transparence
    (second retour du 2026-09-08, « pas de fond blanc, le mettre en version blanc
    et plus petit »). Le carré blanc de la brochure faisait une tache sur une page
    noire, et il pesait plus lourd que les deux pictogrammes voisins.
 
-   60 PX, ET C'EST LA RÉSOLUTION QUI DÉCIDE : le fichier fait 98 px de large,
-   recadré au plus près de l'encre. Au-delà on n'agrandirait que du vide. Un
-   fichier vectoriel de la marque le rendrait net sur un écran à forte densité,
-   il est à demander. */
+   38 PX, C'EST-À-DIRE L'EMPRISE EXACTE DES DEUX PASTILLES VOISINES (retour du
+   2026-09-09 : « uniformiser la taille visuelle du logo Made in Luxembourg avec
+   les deux autres icônes / donner exactement la même structure aux 3 éléments :
+   icône ou logo, titre, phrase descriptive »). C'est la largeur qui compte et
+   non la hauteur : c'est elle qui fait démarrer les trois intitulés à la même
+   abscisse, et l'alignement est tout le sens de la demande.
+
+   Il portait jusque-là 60 px ET aucun intitulé, au motif que le cachet écrit
+   lui-même « MADE IN LUXEMBOURG ». Le bloc reçoit désormais son intitulé comme
+   ses deux voisins : à cette taille le texte du cachet n'est plus lisible, donc
+   la redondance ne se voit pas et l'intitulé devient au contraire ce qui rend le
+   bloc compréhensible.
+   Conséquence à connaître : le fichier fait 98 px de large (recadré au plus près
+   de l'encre, il n'y a rien de plus à en tirer) et le cachet est désormais très
+   petit. UN FICHIER VECTORIEL DE LA MARQUE EST À DEMANDER AU CLIENT, c'est la
+   seule chose qui le rendrait net. */
 .trust__label {
   flex: none;
-  width: 60px;
+  width: 38px;
   height: auto;
 }
-/* La phrase se cale sur le milieu du label, sinon elle flotte en haut d'un bloc
-   deux fois plus grand que celui des deux autres éléments. */
-.trust__item--label { align-items: center; }
+/* Le calage vertical propre au bloc du label a été RETIRÉ le 2026-09-09 : il
+   existait parce que ce bloc était deux fois plus haut que ses voisins (label de
+   60 px et pas d'intitulé). Les trois éléments ayant désormais la même emprise
+   et la même structure, ils reprennent le `flex-start` de la règle commune, et
+   c'est lui qui aligne les trois intitulés sur la même ligne. */
+
+/* LE LIEN VERS « À PROPOS » VIT DANS LA TROISIÈME PHRASE. Le bloc-lien « Qui est
+   derrière Q-Bot » a été retiré le 2026-09-09 sur demande (« supprimer le lien
+   sous le bloc Made in Luxembourg »), mais c'était le SEUL lien du site vers
+   cette page depuis le corps d'une page : le retirer sec rouvrait le défaut
+   relevé le matin même. Un fragment cliquable dans la phrase ne casse pas la
+   structure « icône, intitulé, phrase » que le retour demande.
+   Il garde la couleur de sa phrase (c'est elle qui porte le contraste) et se
+   signale par un soulignement pointillé teal, exactement comme les libellés de
+   fiche technique et les noms de l'équipe. */
+.trust__body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 203, 190, 0.55);
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+.trust__body a:hover,
+.trust__body a:focus-visible { color: var(--teal); text-decoration-color: currentColor; }
 
 /* La signature « Un produit Q-Leap. » a été retirée le 2026-09-08 à la demande
    du client (point 8 du retour). La classe `.trust__sign` part avec elle :
