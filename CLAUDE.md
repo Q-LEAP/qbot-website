@@ -9067,3 +9067,145 @@ entrée de menu au même libellé.
 - **La sortie console de Python est en cp1252 sur ce poste.** Un `print` de tiret
   cadratin ou de caractère de dessin lève `UnicodeEncodeError` : une sonde qui
   affiche du texte doit reconfigurer `sys.stdout` en UTF-8.
+
+## Le document de correction de la FAQ, enfin appliqué (2026-09-09, seconde passe)
+
+Quatre lots de plus le même jour, après les quinze premiers : le seuil du menu,
+le mot-clé long replacé, et **`Documentations/Correction FAQ.docx`, qui n'avait
+jamais été appliqué**. Il était archivé depuis le 2026-09-08 avec les trois
+autres documents du client, et seuls À propos, Fonctionnement et Caractéristiques
+avaient été traités — la FAQ avait toujours ses 20 questions à plat, dont les
+deux que le document demandait de retirer.
+
+**LEÇON DE MÉTHODE : UN DOCUMENT ARCHIVÉ N'EST PAS UN DOCUMENT TRAITÉ.** Le
+client a dû le redonner (« tu as aussi ses retours là que tu as oublié »), et son
+empreinte MD5 est identique à celle du fichier déjà dans `Documentations/`. Quand
+un lot de documents arrive, il faut noter lequel est fait et lequel ne l'est pas.
+
+### Le menu passe en tiroir à 859 px
+
+Le défaut relevé la veille et laissé au client (« tu es l'ergonome, je te laisse
+choisir »). De 769 à 859 px, le menu horizontal n'avait pas la place de tenir sur
+une ligne : « Comment ça marche » tombait à 66 px de large contre 140 à 860, et
+son bord haut passait à −5 px, donc il **débordait la barre par le haut**. Une
+bande de 90 px sur une taille de fenêtre courante.
+
+**860 est mesuré, pas choisi** : première largeur où les trois entrées tiennent
+sur une ligne. C'est déjà la conclusion de la note du 2026-08-26 sur une
+éventuelle cinquième entrée (« il faut basculer à 1024 px ») ; avec trois
+entrées, 860 suffit.
+
+Trois règles sortent du bloc 768, **le reste y reste** : ce bloc porte aussi le
+COMPACTAGE de la barre (logo à 32 px, gouttières à 8 px, bouton resserré), qui
+répond à un manque de place propre aux petites largeurs. `order: 4` sur le
+hamburger, en revanche, fait partie du tiroir : sans lui l'ordre du balisage le
+colle au logo. **Le seuil vit aussi dans le module 1** (« ferme au resize »), et
+les deux valeurs vont ensemble — resté à 768, le menu se refermait tout seul dès
+769 px alors que le hamburger y est le seul moyen de l'ouvrir.
+
+### Le mot-clé long revient dans un TITRE
+
+Le nouveau `h1` du même jour a abandonné « double authentification ». Le relevé
+montre que c'était pire qu'un décompte ne le laissait croire : **le `h1` était le
+SEUL titre à la porter**. Les six autres occurrences sont trois métadonnées, un
+`alt`, un chapeau de section et le pied de page. Un titre pèse plus qu'un
+paragraphe de pied de page.
+
+Elle revient donc dans le `h2` de la section qui parle exactement de ça,
+« Q-Bot prend le relais à l'étape de double authentification ». **L'anglais avait
+le même trou**, mesuré : son `h1` aussi l'avait perdue et aucun de ses titres ne
+la portait. Coût mesuré sur six largeurs : une ligne de plus dans une bande
+étroite, 27 px.
+
+### La FAQ : quatre catégories, 27 questions
+
+Structure du document, mot pour mot : *Utilisation de Q-Bot* (10), *Intégration &
+automatisation* (5), *Infrastructure, données & sécurité* (6), *Offre & support*
+(6). Les deux questions génériques nommées par le document sont supprimées
+(« Qu'est-ce que l'automatisation des tests ? » et ses bénéfices).
+
+**LES IDENTIFIANTS RESTENT ATTACHÉS À LEUR QUESTION.** On réordonne les blocs, on
+ne renumérote pas : `faq-q13` reste `faq-q13` même s'il se lit en deuxième. C'est
+la discipline du 2026-08-20 (l'échange des questions 6 et 7 avait échangé leur
+CONTENU en laissant les identifiants). Aucune ancre cassée ; le prix est un ordre
+non séquentiel dans la source, et c'est le bon échange.
+
+**L'index passe aux quatre catégories.** Un index de dix-huit entrées au-dessus
+de dix-huit questions repliées était précisément le mur que le document décrit.
+Le module 16 visait `#faq-q` : il ne trouvait plus aucun lien et **se retirait en
+silence**, donc la page perdait le repère de lecture ET l'ouverture au clic sans
+une erreur. Sélecteur élargi à `#faq-`, plus un garde-fou pour ne tenter d'ouvrir
+que ce qui est un accordéon.
+
+Le titre de catégorie est un `h3` et non un `h2` : la page porte déjà un `h1` et
+un `h2` réservé aux lecteurs d'écran. Et la catégorie n'est PAS une boîte — ce
+sont les accordéons qui portent les cadres, et un cadre autour de cadres donne
+une poupée russe.
+
+### Les neuf questions ajoutées, et pourquoi elles étaient écrivables
+
+**AUCUNE PHRASE N'EST INVENTÉE**, et c'est ce qui a permis de les écrire sans rien
+demander : chaque réponse est en regard d'un fait que le site publie déjà, et la
+source est notée à côté d'elle dans le script. Le code à usage unique vient de
+`GET /get-luxtrust-otp`, le QR code de `POST /display-image` et du petit écran
+intégré, les frameworks de la grille de compatibilité, le CI/CD de Jenkins et
+GitLab qui y figurent, le stockage de « Local, sur le boîtier (SQLite) ».
+
+**UNE DES DEUX QUESTIONS QUE JE CROYAIS SANS SOURCE EN AVAIT UNE.** « Q-Bot
+peut-il être utilisé avec des données de production ? » : la fiche technique
+répond déjà, noir sur blanc, « Q-Bot doit être utilisé avec des données de test,
+non de production ». Vérifier avant de déclarer une information manquante.
+
+Les 18 réponses tiennent dans la fenêtre de 40 à 60 mots qui se fait citer : 41 à
+51 mots côté français, 42 à 48 côté anglais.
+
+Trois d'entre elles nomment un point d'entrée de l'API, d'où du **code en ligne
+dans une réponse de FAQ**, ce qui n'existait pas. Le sélecteur est GROUPÉ avec
+celui des articles pour qu'il n'y ait qu'un seul look de code en ligne sur le
+site, et la variante sombre suit la même règle.
+
+### Le piège de l'ordre du JSON-LD
+
+Défaut introduit puis corrigé dans la même passe. Mon insertion posait l'objet de
+« comment Q-Bot communique-t-il » **en tête de `mainEntity`**, alors qu'il
+s'affiche en tête de sa CATÉGORIE, soit au onzième rang. Tout ce qui suit se
+retrouvait décalé d'un cran, et `sync-faq-jsonld.py` annonçait **64 champs à
+recaler pour un seul objet mal placé**.
+
+Corrigé en **relisant l'ordre d'affichage dans le balisage** et en appariant les
+objets par leur `name` : on déplace les objets, on ne réécrit pas le texte des 26
+autres. Lancer `sync-faq-jsonld.py --ecrire` aurait donné le bon résultat en
+réécrivant 64 champs, ce qui est exactement ce contre quoi la note du 2026-08-31
+met en garde (« un outil dont les corrections empirent le fichier mesure autre
+chose que ce qu'on croit »). Le contrôle qui compte est qu'il retombe ensuite à
+**0 recalée**.
+
+Second défaut trouvé par l'assertion au passage : **l'anglais indentait trois de
+ses objets Question à 8 espaces au lieu de 6**, les trois ajoutés après coup. Un
+marqueur littéral n'en trouvait que 17 sur 20. L'indentation est unifiée.
+
+### `llms.txt` ne cite plus un numéro de question
+
+Il renvoyait DEUX fois à « la question 17 » pour la réponse sur iOS. Son
+identifiant est resté `faq-q17` mais son RANG a changé avec la mise en
+catégories. C'est la leçon que la page portait déjà en commentaire (« aucun
+nombre ici, à dessein : la FAQ en a compté 16, puis 17, puis 19, puis 20 ») : on
+cite une question par son TITRE, qui ne périme pas.
+
+### Ce qui reste ouvert sur la FAQ
+
+**Une seule question du document n'est pas écrite : « Plusieurs équipes ou
+projets peuvent-ils utiliser le même Q-Bot ? »** Elle est sans source depuis le
+2026-09-02, et elle l'est toujours. Ce qui est publié permet de dire que le
+boîtier est sur le réseau, que les demandes se traitent l'une après l'autre et
+qu'il pilote un seul téléphone ; ce qui ne l'est pas, et qui est justement ce que
+demande l'acheteur, est l'ISOLATION : y a-t-il des comptes, des espaces par
+projet, une séparation des scénarios ? Les captures de l'interface ne montrent
+aucune authentification. Répondre « oui, plusieurs équipes peuvent le partager »
+sans le savoir serait une affirmation sur un point d'achat. À demander à Sylvain
+Perez ; la réponse tient en une phrase et la question s'écrit ensuite comme les
+neuf autres.
+
+Les quatre pages À propos / Fonctionnement / Caractéristiques du même lot de
+documents étaient, elles, bien appliquées (2026-09-02) : rien à reprendre de ce
+côté, vérifié.
