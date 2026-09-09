@@ -2515,7 +2515,12 @@ p { color: var(--gray); }
   background: rgba(0,203,190,0.12);
   color: var(--teal);
 }
-.footer__social a svg { width: 15px; height: 15px; }
+/* 16 PX, ET LA MÊME VALEUR QUE LE LOGO MADE IN LUXEMBOURG DE LA PASTILLE
+   VOISINE. « Le logo LinkedIn et le logo Made in Luxembourg même dimension, pas
+   trop grand, mais dimension identique » (2026-09-09). Les deux étaient à 15 et
+   13 px, donc de tailles proches mais différentes, ce qui se voit d'autant plus
+   qu'ils sont côte à côte. */
+.footer__social a svg { width: 16px; height: 16px; }
 
 .footer__badge {
   display: inline-flex;
@@ -2526,6 +2531,26 @@ p { color: var(--gray); }
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: 20px;
   padding: 5px 12px;
+}
+/* LE LOGO REMPLACE LE PICTOGRAMME DE LIEU (2026-09-09, « remplace l'icône ping
+   par le logo Made in Luxembourg au format icône, fais le format toi si y en a
+   pas »). Il n'existait pas : le seul exemplaire dont nous disposons est le
+   cartouche entier découpé de la brochure, 98 x 79 px, où le texte « MADE IN
+   LUXEMBOURG » est illisible sous 40 px.
+   C'EST DONC LA COURONNE SEULE, et le texte n'est pas perdu puisqu'il est écrit
+   en clair juste à côté dans la pastille. Le découpage est relevé, pas deviné :
+   un comptage de l'encre ligne par ligne place la couronne sur y 0..53,
+   « MADE IN » sur 54..63 et « LUXEMBOURG » sur 69..78. La couronne est ensuite
+   serrée sur son encre puis posée dans un carré, pour avoir la même emprise que
+   l'icône LinkedIn voisine.
+   Sortie en 64 px pour 16 px d'affichage : une densité 3 est couverte, et
+   au-delà il n'y a rien à tirer d'une source de 98 px. LE LABEL EN VECTORIEL
+   RESTE À DEMANDER AU CLIENT, c'est la seule chose qui le rendrait net. */
+.footer__badge-ico {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.8;
 }
 
 /* 12 PX ET NON 11, ET C'EST LE PLANCHER DU SITE. La passe de lisibilité du
