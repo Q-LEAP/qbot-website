@@ -72,7 +72,18 @@ with sync_playwright() as p:
         elif len(d['desc'])>158: A(f"description {len(d['desc'])} c")
         if d['titre'] in titres: A(f"titre en doublon avec {titres[d['titre']]}")
         else: titres[d['titre']]=path
-        if 'noindex' not in (d['robots'] or ''): A('pas de noindex (pré-lancement)')
+        # LE SENS DE CE CONTRÔLE S'EST INVERSÉ LE 2026-09-08, À LA MISE EN LIGNE.
+        # Il exigeait `noindex` sur toutes les pages, ce qui était juste tant que
+        # le site était en pré-lancement. Depuis la migration, `go-live` a levé
+        # les verrous : la même règle rendait donc 14 constats sur un site sain,
+        # et un garde-fou qui crie sur tout n'est plus lu. Ce qu'il faut vérifier
+        # maintenant est l'inverse, plus une exception : une page d'erreur ne
+        # s'indexe pas.
+        robots = d['robots'] or ''
+        if err404:
+            if 'noindex' not in robots: A('404 sans noindex')
+        elif 'noindex' in robots:
+            A('noindex resté après la mise en ligne')
         if not d['canonical']:
             if not err404: A('canonical absent')
         elif not d['canonical'].startswith('https://q-bot.eu/'): A('canonical non absolu')
