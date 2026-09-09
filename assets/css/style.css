@@ -582,7 +582,26 @@ p { color: var(--gray); }
    à l'identique de 769 à 859 px, la seule bande où « Réserver une démo » n'a
    pas la place de tenir sur une ligne. Un libellé de bouton se compacte, il ne
    se plie pas. */
-.nav__actions .btn { white-space: nowrap; }
+/* LE CTA DU HEADER EST PLUS COMPACT QUE CELUI D'UNE PAGE (2026-09-09) : « il
+   paraît un peu trop imposant par rapport aux liens de navigation et prend
+   beaucoup de poids visuel (…) plus compact et plus élégant, tout en conservant
+   son rôle de CTA principal. Le hero doit rester l'élément qui capte l'attention
+   en premier. Réduction visuelle souhaitée : environ 10 à 15 %. »
+
+   Il héritait de `.btn`, qui est dimensionné pour une page (12/28 px de
+   remplissage, texte à 15 px) : environ 50 px de haut dans une barre de 72.
+   Ici 10/22 px et 14 px de texte, soit **44 px de haut, 12 % de moins**, dans la
+   fourchette demandée. La couleur, le contraste et la forme ne bougent pas, et
+   la cible tactile reste très au-delà des 24 px de la WCAG.
+
+   Les deux blocs de compactage mobile (859 px et 400 px) pèsent le même poids
+   que cette règle et sont écrits plus loin : ils continuent donc de gagner, et
+   le resserrement des petites largeurs est intact. */
+.nav__actions .btn {
+  white-space: nowrap;
+  padding: 10px 22px;
+  font-size: 0.875rem;
+}
 
 /* Un seul lien : la langue vers laquelle on bascule (globe + code), pas les
    deux codes dont un ne servait qu'à indiquer la page où l'on est déjà —
