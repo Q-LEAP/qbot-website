@@ -1550,7 +1550,15 @@ backToTop.addEventListener('click', () => {
 (function () {
   var index = document.querySelector('.faq-index');
   if (!index) return;
-  var liens = [].slice.call(index.querySelectorAll('a[href^="#faq-q"]'));
+  /* `#faq-` ET NON `#faq-q` : depuis le 2026-09-09 l'index ne liste plus les
+     questions une à une mais les quatre catégories (`#faq-cat-1`…), et le
+     document du client demandait justement qu'on voie la logique sans dérouler
+     un mur de questions. Écrit `#faq-q`, ce module ne trouvait plus aucun lien
+     et se retirait en silence : la page perdait le repère de lecture ET
+     l'ouverture au clic, sans une erreur.
+     Le sélecteur large couvre les deux formes, donc il survit aussi bien à un
+     retour de l'index détaillé qu'à l'ajout d'une catégorie. */
+  var liens = [].slice.call(index.querySelectorAll('a[href^="#faq-"]'));
   if (!liens.length) return;
 
   var parId = {};
@@ -1562,6 +1570,12 @@ backToTop.addEventListener('click', () => {
     a.addEventListener('click', function () {
       var item = document.getElementById(a.getAttribute('href').slice(1));
       if (!item) return;
+      /* L'OUVERTURE NE VAUT QUE POUR UN ACCORDÉON. Une entrée d'index qui
+         désigne un titre de catégorie n'a rien à ouvrir : le navigateur y
+         défile, c'est tout. Sans ce garde-fou, la suite chercherait une
+         révélation et un bouton sur un `h3` et le clic ne ferait rien de
+         visible d'anormal, mais on aurait posé `is-visible` sur un titre. */
+      if (!item.classList.contains('faq-item')) return;
 
       /* ON POSE LA RÉVÉLATION AVANT DE LAISSER LE NAVIGATEUR CALER LA PAGE.
          La variante « carte » du module 4 part de `translateY(30px)`, et le

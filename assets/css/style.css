@@ -992,6 +992,47 @@ p { color: var(--gray); }
 /* ---- FAQ ---- */
 .faq__list { max-width: 760px; margin: 0; display: flex; flex-direction: column; gap: 12px; }
 
+/* ══ LES QUATRE CATÉGORIES ═════════════════════════════════════════════════
+   `Documentations/Correction FAQ.docx` : « 4 catégories maximum, chacune avec
+   ses accordéons. Le but est qu'en arrivant sur la page, on voie immédiatement
+   la logique sans dérouler un mur de questions. »
+
+   La catégorie n'est PAS une boîte : pas de cadre, pas de fond. Ce sont les
+   accordéons qui portent les cadres, et un cadre autour de cadres donne une
+   poupée russe. Ce qui sépare est le titre et l'espace, ce qui suffit à un
+   groupe de quatre.
+
+   LE TITRE EST UN `h3` ET NON UN `h2` : la page porte déjà un `h1` (son
+   en-tête) et un `h2` (« Toutes les questions fréquentes », réservé aux
+   lecteurs d'écran). Un `h2` ici sauterait le niveau dans l'autre sens et
+   l'audit d'accessibilité le refuserait, à juste titre.
+
+   `scroll-margin-top` : le titre est la cible des liens de l'index, et il doit
+   se poser sous la barre collante comme n'importe quelle ancre. Le
+   `scroll-padding-top` du document s'en charge déjà, mais un titre de groupe
+   gagne à respirer un peu plus que le minimum. */
+.faq-cat + .faq-cat { margin-top: 44px; }
+.faq-cat__titre {
+  margin: 0 0 18px;
+  scroll-margin-top: calc(var(--nav-h) + 32px);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+/* Le filet reprend celui des marques de section : il pose le titre dans la
+   gouttière, comme les autres repères du site, sans rien ajouter au balisage. */
+.faq-cat__titre::before {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 0.85em;
+  margin-right: 12px;
+  vertical-align: -0.08em;
+  background: var(--teal);
+}
+
 .faq-item {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);

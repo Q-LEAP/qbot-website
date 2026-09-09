@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=9ac3bcf6">
+  <link rel="stylesheet" href="../assets/css/style.css?v=8122cf89">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -104,18 +104,10 @@
       },
       {
         "@type": "Question",
-        "name": "What is Test Automation?",
+        "name": "How does Q-Bot work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Test Automation is the execution of test cases that were previously executed manually, but automatically, without any concrete action by a human. In practice, a script is written once and replayed by a machine as often as you want, without the drop in vigilance that repetition causes a human tester. Automating test cases consists in writing scripts, which will be executed by a machine, using one of the many technologies available on the market (selenium, webdriver.io, cypress, appium, robot framework, cucumber, etc.). Discover Q-Bot and its features: q-bot.eu"
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What are the benefits of test automation?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Test automation allows to gain in productivity because the test cases are no longer executed by a person but by a machine. The test cases can therefore be executed as often as desired. In the case of agile projects, one of the characteristics of which is to deliver often, test automation makes it possible to guarantee a certain level of quality in a minimum of time and to avoid regressions. In addition to offering productivity gains, test automation does not suffer from the lack of vigilance or bias of manual testing. A manual tester is subject to a decrease in vigilance, especially when performing the same tests a large number of times. As for bias, it may be influenced by what it sees and not follow the steps of the test cases it is supposed to run. Discover Q-Bot and its features: q-bot.eu"
+          "text": "Q-Bot works with a mini-computer the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under Linux, coordinates the web interface, the API and scenario execution. It drives, over ADB, the smartphone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app. When Q-Bot starts, its web server starts automatically. The latter is listening. Handling a request always follows the same actions: • Your test scenario calls the Q-Bot API, or the companion app detects the 2FA notification on the device • Q-Bot replays the scenario saved for that step • Every tap is delivered to the device through ADB and lands on its physical screen • The wait times set in the scenario give the app time to respond • The 2FA step resolves in the genuine app, never in a simulator • The test continues from exactly where it left off"
         }
       },
       {
@@ -144,14 +136,6 @@
       },
       {
         "@type": "Question",
-        "name": "How to get a free Q-Bot presentation?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "You can take an appointment with Sylvain Perez, creator of Q-Bot and CEO of Q-Leap by following the link below. You will attend a demo, ask any question you want, and that is also when we give you the rate, once we have scoped your needs. Book a demo You can also contact us by email at bot@q-leap.eu or call us at +352 20 21 17."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "Which 2FA apps does Q-Bot work with?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -160,26 +144,18 @@
       },
       {
         "@type": "Question",
-        "name": "How much does Q-Bot cost?",
+        "name": "Does Q-Bot work with iOS (iPhone)?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot is offered through a monthly rental contract, all inclusive: technical assistance and replacement of the robot in case of failure are included, with no long-term commitment. We give you the rate during the demo, once we have scoped your needs."
+          "text": "No, and that is a deliberate choice. Q-Bot drives a real smartphone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which Q-Bot does not cover today."
         }
       },
       {
         "@type": "Question",
-        "name": "I would like to acquire Q-Bot, how can I do it?",
+        "name": "Do you need a shared secret to automate 2FA?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "It’s very simple, contact us by email at bot@q-leap.eu or call us by phone at +352 20 21 17 and ask for Sylvain Perez. Q-Bot comes as an all-inclusive monthly rental with no long-term commitment, delivered to you and operational within 48 to 72 hours."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I get technical support?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, technical support is included with Q-Bot at no extra cost: it is part of the monthly rental contract, along with replacement of the robot in case of failure. The Q-Leap team answers by email and by phone, with a guaranteed response time within 24 business hours."
+          "text": "No. Q-Bot does not need the shared secret used to recompute a one-time code, because it recomputes nothing: it drives the genuine 2FA app on a smartphone connected over USB, the way a user would. That is what lets it work with LuxTrust Mobile or itsme, whose secret cannot be exported."
         }
       },
       {
@@ -192,10 +168,18 @@
       },
       {
         "@type": "Question",
-        "name": "How does Q-Bot work?",
+        "name": "What happens if several requests arrive at the same time?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Q-Bot works with a mini-computer the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under Linux, coordinates the web interface, the API and scenario execution. It drives, over ADB, the smartphone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app. When Q-Bot starts, its web server starts automatically. The latter is listening. Handling a request always follows the same actions: • Your test scenario calls the Q-Bot API, or the companion app detects the 2FA notification on the device • Q-Bot replays the scenario saved for that step • Every tap is delivered to the device through ADB and lands on its physical screen • The wait times set in the scenario give the app time to respond • The 2FA step resolves in the genuine app, never in a simulator • The test continues from exactly where it left off"
+          "text": "They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Q-Bot need an internet connection?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, not during test runs. The device is self-hosted: it runs on your network, the web interface and the API answer there, and scenarios and their screenshots stay on it. No call to an outside service is needed to run a scenario."
         }
       },
       {
@@ -208,14 +192,6 @@
       },
       {
         "@type": "Question",
-        "name": "What to do in case of Q-Bot malfunction?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Contact Q-Bot support by email: bot@q-leap.eu or call us at +352 20 21 17, with a guaranteed response time within 24 business hours. We first try to repair the robot remotely; if that is not possible, the customer sends it back and we ship a brand new and functional robot."
-        }
-      },
-      {
-        "@type": "Question",
         "name": "How is my personal information handled?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -224,36 +200,44 @@
       },
       {
         "@type": "Question",
-        "name": "Does Q-Bot work with iOS (iPhone)?",
+        "name": "I would like to acquire Q-Bot, how can I do it?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No, and that is a deliberate choice. Q-Bot drives a real smartphone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which Q-Bot does not cover today."
+          "text": "It’s very simple, contact us by email at bot@q-leap.eu or call us by phone at +352 20 21 17 and ask for Sylvain Perez. Q-Bot comes as an all-inclusive monthly rental with no long-term commitment, delivered to you and operational within 48 to 72 hours."
         }
       },
-        {
-          "@type": "Question",
-          "name": "Do you need a shared secret to automate 2FA?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. Q-Bot does not need the shared secret used to recompute a one-time code, because it recomputes nothing: it drives the genuine 2FA app on a smartphone connected over USB, the way a user would. That is what lets it work with LuxTrust Mobile or itsme, whose secret cannot be exported."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does Q-Bot need an internet connection?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No, not during test runs. The device is self-hosted: it runs on your network, the web interface and the API answer there, and scenarios and their screenshots stay on it. No call to an outside service is needed to run a scenario."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What happens if several requests arrive at the same time?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved."
-          }
+      {
+        "@type": "Question",
+        "name": "How much does Q-Bot cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Q-Bot is offered through a monthly rental contract, all inclusive: technical assistance and replacement of the robot in case of failure are included, with no long-term commitment. We give you the rate during the demo, once we have scoped your needs."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I get technical support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, technical support is included with Q-Bot at no extra cost: it is part of the monthly rental contract, along with replacement of the robot in case of failure. The Q-Leap team answers by email and by phone, with a guaranteed response time within 24 business hours."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What to do in case of Q-Bot malfunction?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Contact Q-Bot support by email: bot@q-leap.eu or call us at +352 20 21 17, with a guaranteed response time within 24 business hours. We first try to repair the robot remotely; if that is not possible, the customer sends it back and we ship a brand new and functional robot."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How to get a free Q-Bot presentation?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can take an appointment with Sylvain Perez, creator of Q-Bot and CEO of Q-Leap by following the link below. You will attend a demo, ask any question you want, and that is also when we give you the rate, once we have scoped your needs. Book a demo You can also contact us by email at bot@q-leap.eu or call us at +352 20 21 17."
+        }
+      }
     ]
   }
   </script>
@@ -328,39 +312,29 @@
   <div class="container">
     <h2 class="sr-only" id="faq-full-title">All frequently asked questions</h2>
     <div class="faq-layout">
-    <!-- Index des questions : les libellés sont EXACTEMENT ceux des questions,
-         rien n'est reformulé et aucun thème n'est inventé — la page n'en a pas.
-         Il ne s'affiche qu'au-delà de 1024 px : sur téléphone, autant d'entrées
-         d'index au-dessus d'autant de questions repliées n'aident personne.
-         AUCUN NOMBRE ICI, À DESSEIN : la FAQ en a compté 16, puis 17, puis 19,
-         puis 20, et ce commentaire annonçait encore « dix-sept » le 2026-09-03. -->
+    <!-- Index des QUATRE CATÉGORIES, et non plus des questions une à une
+         (Documentations/Correction FAQ.docx, appliqué le 2026-09-09) : « le but
+         est qu'en arrivant sur la page, on voie immédiatement la logique sans
+         dérouler un mur de questions ». Un index de dix-huit entrées au-dessus
+         de dix-huit questions repliées était précisément ce mur.
+         Les libellés sont EXACTEMENT ceux des titres de catégorie, et les
+         catégories sont celles du document : rien n'est reformulé ni inventé.
+         Aucune question ne perd son ancre pour autant, les identifiants
+         `faq-qN` restent attachés à leur question.
+         Il ne s'affiche qu'au-delà de 1024 px, comme avant. -->
     <nav class="faq-index" aria-label="Question index">
       <span class="faq-index__rail" aria-hidden="true"></span>
       <ol class="faq-index__list">
-        <li><a href="#faq-q1"><span class="faq-index__num" aria-hidden="true">01</span><span class="faq-index__txt">What is <span class="nb">Q-Bot</span>?</span></a></li>
-        <li><a href="#faq-q2"><span class="faq-index__num" aria-hidden="true">02</span><span class="faq-index__txt">What is Test Automation?</span></a></li>
-        <li><a href="#faq-q3"><span class="faq-index__num" aria-hidden="true">03</span><span class="faq-index__txt">What are the benefits of test automation?</span></a></li>
-        <li><a href="#faq-q4"><span class="faq-index__num" aria-hidden="true">04</span><span class="faq-index__txt">What problem does <span class="nb">Q-Bot</span> answer?</span></a></li>
-        <li><a href="#faq-q5"><span class="faq-index__num" aria-hidden="true">05</span><span class="faq-index__txt">Why <span class="nb">Q-Bot</span> is the perfect ally for testers?</span></a></li>
-        <li><a href="#faq-q6"><span class="faq-index__num" aria-hidden="true">06</span><span class="faq-index__txt">Who is this automated authentication device for?</span></a></li>
-        <li><a href="#faq-q7"><span class="faq-index__num" aria-hidden="true">07</span><span class="faq-index__txt">How to get a free <span class="nb">Q-Bot</span> presentation?</span></a></li>
-        <li><a href="#faq-q8"><span class="faq-index__num" aria-hidden="true">08</span><span class="faq-index__txt">Which 2FA apps does <span class="nb">Q-Bot</span> work with?</span></a></li>
-        <li><a href="#faq-q9"><span class="faq-index__num" aria-hidden="true">09</span><span class="faq-index__txt">How much does <span class="nb">Q-Bot</span> cost?</span></a></li>
-        <li><a href="#faq-q10"><span class="faq-index__num" aria-hidden="true">10</span><span class="faq-index__txt">I would like to acquire <span class="nb">Q-Bot</span>, how can I do it?</span></a></li>
-        <li><a href="#faq-q11"><span class="faq-index__num" aria-hidden="true">11</span><span class="faq-index__txt">Can I get technical support?</span></a></li>
-        <li><a href="#faq-q12"><span class="faq-index__num" aria-hidden="true">12</span><span class="faq-index__txt">How do I use <span class="nb">Q-Bot</span>?</span></a></li>
-        <li><a href="#faq-q13"><span class="faq-index__num" aria-hidden="true">13</span><span class="faq-index__txt">How does <span class="nb">Q-Bot</span> work?</span></a></li>
-        <li><a href="#faq-q14"><span class="faq-index__num" aria-hidden="true">14</span><span class="faq-index__txt">What data is kept by <span class="nb">Q-Bot</span> and for what purpose?</span></a></li>
-        <li><a href="#faq-q15"><span class="faq-index__num" aria-hidden="true">15</span><span class="faq-index__txt">What to do in case of <span class="nb">Q-Bot</span> malfunction?</span></a></li>
-        <li><a href="#faq-q16"><span class="faq-index__num" aria-hidden="true">16</span><span class="faq-index__txt">How is my personal information handled?</span></a></li>
-        <li><a href="#faq-q17"><span class="faq-index__num" aria-hidden="true">17</span><span class="faq-index__txt">Does <span class="nb">Q-Bot</span> work with iOS (iPhone)?</span></a></li>
-        <li><a href="#faq-q18"><span class="faq-index__num" aria-hidden="true">18</span><span class="faq-index__txt">Do you need a shared secret to automate 2FA?</span></a></li>
-        <li><a href="#faq-q19"><span class="faq-index__num" aria-hidden="true">19</span><span class="faq-index__txt">Does <span class="nb">Q-Bot</span> need an internet connection?</span></a></li>
-        <li><a href="#faq-q20"><span class="faq-index__num" aria-hidden="true">20</span><span class="faq-index__txt">What happens if several requests arrive at the same time?</span></a></li>
+        <li><a href="#faq-cat-1"><span class="faq-index__num" aria-hidden="true">01</span><span class="faq-index__txt">Using <span class="nb">Q-Bot</span></span></a></li>
+        <li><a href="#faq-cat-2"><span class="faq-index__num" aria-hidden="true">02</span><span class="faq-index__txt">Integration &amp; automation</span></a></li>
+        <li><a href="#faq-cat-3"><span class="faq-index__num" aria-hidden="true">03</span><span class="faq-index__txt">Infrastructure, data &amp; security</span></a></li>
+        <li><a href="#faq-cat-4"><span class="faq-index__num" aria-hidden="true">04</span><span class="faq-index__txt">Offer &amp; support</span></a></li>
       </ol>
     </nav>
     <div class="faq__list">
 
+      <div class="faq-cat">
+        <h3 class="faq-cat__titre" id="faq-cat-1">Using <span class="nb">Q-Bot</span></h3>
       <div class="faq-item" id="faq-q1">
         <button class="faq-item__question" aria-expanded="false" id="faq-b1" aria-controls="faq-a1">What is <span class="nb">Q-Bot</span>?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a1" role="region" aria-labelledby="faq-b1">
@@ -370,26 +344,22 @@
           <p>Discover <span class="nb">Q-Bot</span> and its features: <a href="./">q-bot.eu</a></p>
         </div>
       </div>
-
-      <div class="faq-item" id="faq-q2">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b2" aria-controls="faq-a2">What is Test Automation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a2" role="region" aria-labelledby="faq-b2">
-          <p>Test <em>Automation</em> is the execution of test cases that were previously executed manually, but automatically, without any concrete action by a human. In practice, a script is written once and replayed by a machine as often as you want, without the drop in vigilance that repetition causes a human tester.</p>
-          <p>Automating test cases consists in writing scripts, which will be executed by a machine, using one of the many technologies available on the market (selenium, webdriver.io, cypress, appium, robot framework, cucumber, etc.).</p>
-          <p><strong>Discover <span class="nb">Q-Bot</span> and its features:</strong> <a href="./">q-bot.eu</a></p>
+      <div class="faq-item" id="faq-q13">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b13" aria-controls="faq-a13">How does <span class="nb">Q-Bot</span> work?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a13" role="region" aria-labelledby="faq-b13">
+          <p><span class="nb">Q-Bot</span> works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates the web interface, the API and scenario execution</strong>. It drives, over ADB, the smartphone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app.</p>
+          <p>When <span class="nb">Q-Bot</span> starts, its web server starts automatically. The latter is listening.</p>
+          <p><strong>Handling a request always follows the same actions</strong>:</p>
+          <ol>
+          <li>Your test scenario calls the <span class="nb">Q-Bot</span> API, or the companion app detects the 2FA notification on the device</li>
+          <li><span class="nb">Q-Bot</span> replays the scenario saved for that step</li>
+          <li>Every tap is delivered to the device through ADB and lands on its physical screen</li>
+          <li>The wait times set in the scenario give the app time to respond</li>
+          <li>The 2FA step resolves in the genuine app, never in a simulator</li>
+          <li>The test continues from exactly where it left off</li>
+          </ol>
         </div>
       </div>
-
-      <div class="faq-item" id="faq-q3">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b3" aria-controls="faq-a3">What are the benefits of test automation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a3" role="region" aria-labelledby="faq-b3">
-          <p>Test automation allows to gain in productivity because the test cases are no longer executed by a person but by a machine. The test cases can therefore be executed as often as desired. In the case of agile projects, one of the characteristics of which is to deliver often, test automation makes it possible to guarantee a certain level of quality in a minimum of time and to avoid regressions.</p>
-          <p>In addition to offering productivity gains, test automation does not suffer from the lack of vigilance or bias of manual testing.</p>
-          <p>A manual tester is subject to a decrease in vigilance, especially when performing the same tests a large number of times. As for bias, it may be influenced by what it sees and not follow the steps of the test cases it is supposed to run.</p>
-          <p><strong>Discover <span class="nb">Q-Bot</span> and its features:</strong> <a href="./">q-bot.eu</a></p>
-        </div>
-      </div>
-
       <div class="faq-item" id="faq-q4">
         <button class="faq-item__question" aria-expanded="false" id="faq-b4" aria-controls="faq-a4">What problem does <span class="nb">Q-Bot</span> answer?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a4" role="region" aria-labelledby="faq-b4">
@@ -398,7 +368,6 @@
           <p>Discover the main components of <span class="nb">Q-Bot</span>: <a href="technical-specs.html">the technical specifications</a></p>
         </div>
       </div>
-
       <div class="faq-item" id="faq-q5">
         <button class="faq-item__question" aria-expanded="false" id="faq-b5" aria-controls="faq-a5">Why <span class="nb">Q-Bot</span> is the perfect ally for testers?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a5" role="region" aria-labelledby="faq-b5">
@@ -416,7 +385,6 @@
           <p><strong>Discover <span class="nb">Q-Bot</span> and its features:</strong> <a href="./">q-bot.eu</a></p>
         </div>
       </div>
-
       <div class="faq-item" id="faq-q6">
         <button class="faq-item__question" aria-expanded="false" id="faq-b6" aria-controls="faq-a6">Who is this automated authentication device for?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a6" role="region" aria-labelledby="faq-b6">
@@ -424,19 +392,6 @@
           <p>With <span class="nb">Q-Bot</span>, they won’t have to spend hours continually testing critical functionality by hand and can focus on higher value-added quality control activities.</p>
         </div>
       </div>
-
-      <div class="faq-item" id="faq-q7">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b7" aria-controls="faq-a7">How to get a free <span class="nb">Q-Bot</span> presentation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a7" role="region" aria-labelledby="faq-b7">
-          <p>You can take an appointment with Sylvain Perez, creator of <span class="nb">Q-Bot</span> and CEO of Q-Leap by following the link below. You will attend a demo, ask any question you want, and that is also when we give you the rate, once we have scoped your needs.</p>
-          <!-- Ce lien était nu : hérité d'aucun style, 19 px de haut, collé entre deux
-               paragraphes. C'est le seul appel à l'action d'une réponse de FAQ du site,
-               il prend donc le bouton du site. -->
-          <p><a href="contact.html" class="btn btn--outline">Book a demo</a></p>
-          <p>You can also contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us at <a href="tel:+352202117">+352 20 21 17</a>.</p>
-        </div>
-      </div>
-
       <div class="faq-item" id="faq-q8">
         <button class="faq-item__question" aria-expanded="false" id="faq-b8" aria-controls="faq-a8">Which 2FA apps does <span class="nb">Q-Bot</span> work with?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a8" role="region" aria-labelledby="faq-b8">
@@ -444,82 +399,12 @@
           <p>If you want to know whether your own app works with <span class="nb">Q-Bot</span>, do not hesitate to contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or by phone at <a href="tel:+352202117">+352 20 21 17</a>.</p>
           </div>
       </div>
-
-      <div class="faq-item" id="faq-q9">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b9" aria-controls="faq-a9">How much does <span class="nb">Q-Bot</span> cost?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a9" role="region" aria-labelledby="faq-b9">
-          <p><strong><span class="nb">Q-Bot</span></strong> is offered through a <strong>monthly rental contract</strong>, all inclusive: <strong>technical assistance</strong> and <strong>replacement of the robot in case of failure</strong> are included, with no long-term commitment. We give you the rate during the demo, once we have scoped your needs.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q10">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b10" aria-controls="faq-a10">I would like to acquire <span class="nb">Q-Bot</span>, how can I do it?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a10" role="region" aria-labelledby="faq-b10">
-          <p>It’s very simple, contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us by phone at <a href="tel:+352202117">+352 20 21 17 </a>and ask for <strong>Sylvain Perez</strong>. <span class="nb">Q-Bot</span> comes as an all-inclusive monthly rental with no long-term commitment, delivered to you and operational within 48 to 72 hours.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q11">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b11" aria-controls="faq-a11">Can I get technical support?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a11" role="region" aria-labelledby="faq-b11">
-          <p>Yes, technical support is included with <span class="nb">Q-Bot</span> at no extra cost: it is part of the monthly rental contract, along with replacement of the robot in case of failure. The Q-Leap team answers by email and by phone, with a guaranteed response time within 24 business hours.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q12">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b12" aria-controls="faq-a12">How do I use <span class="nb">Q-Bot</span>?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a12" role="region" aria-labelledby="faq-b12">
-          <p>Once <span class="nb">Q-Bot</span> is connected to the corporate network and reachable from the testers’ machines, you can run an authentication scenario straight away from the web interface. The scenario itself is built visually, on a screenshot of the 2FA screen: numbered tap points and wait times, with no script to write.</p>
-          <p>In use, a scenario is triggered in one of two ways: automatically, when the companion app installed on the device under test detects a 2FA notification, or by calling the <span class="nb">Q-Bot</span> API from your automated tests. All the main automation technologies (Selenium, WebdriverIO, Cypress, Appium, Robot Framework, Cucumber and others) can call an API.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q13">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b13" aria-controls="faq-a13">How does <span class="nb">Q-Bot</span> work?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a13" role="region" aria-labelledby="faq-b13">
-          <p><span class="nb">Q-Bot</span> works with <strong>a mini-computer</strong> the size of a credit card from the Raspberry Pi brand. This mini-computer, which runs under <strong>Linux, coordinates the web interface, the API and scenario execution</strong>. It drives, over ADB, the smartphone wired to it over USB: every tap in the scenario lands on its physical screen, in the genuine app.</p>
-          <p>When <span class="nb">Q-Bot</span> starts, its web server starts automatically. The latter is listening.</p>
-          <p><strong>Handling a request always follows the same actions</strong>:</p>
-          <ol>
-          <li>Your test scenario calls the <span class="nb">Q-Bot</span> API, or the companion app detects the 2FA notification on the device</li>
-          <li><span class="nb">Q-Bot</span> replays the scenario saved for that step</li>
-          <li>Every tap is delivered to the device through ADB and lands on its physical screen</li>
-          <li>The wait times set in the scenario give the app time to respond</li>
-          <li>The 2FA step resolves in the genuine app, never in a simulator</li>
-          <li>The test continues from exactly where it left off</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q14">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b14" aria-controls="faq-a14">What data is kept by <span class="nb">Q-Bot</span> and for what purpose?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a14" role="region" aria-labelledby="faq-b14">
-          <p><span class="nb">Q-Bot</span> requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. The scenarios and their step images stay on the <span class="nb">Q-Bot</span> device: nothing is uploaded to a cloud, and no data leaves your environment.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q15">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b15" aria-controls="faq-a15">What to do in case of <span class="nb">Q-Bot</span> malfunction?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a15" role="region" aria-labelledby="faq-b15">
-          <p>Contact <span class="nb">Q-Bot</span> support by email: <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us at <a href="tel:+352202117">+352 20 21 17</a>, with a guaranteed response time within 24 business hours. We first try to repair the robot remotely; if that is not possible, the customer sends it back and we ship a brand new and functional robot.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" id="faq-q16">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b16" aria-controls="faq-a16">How is my personal information handled?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
-        <div class="faq-item__answer" id="faq-a16" role="region" aria-labelledby="faq-b16">
-          <p>As a person interested in <span class="nb">Q-Bot</span>, we keep your <strong>email address, name and surname in our database for</strong> <strong>future</strong> <strong>business contacts</strong>. That data is kept within Q-Leap, is never given away or sold, and you may on request retrieve it, correct it or ask us to delete it.</p>
-          <p>As a <span class="nb">Q-Bot</span> customer, your personal information is used <strong>only for our billing process</strong>.</p>
-        </div>
-      </div>
-
       <div class="faq-item" id="faq-q17">
         <button class="faq-item__question" aria-expanded="false" id="faq-b17" aria-controls="faq-a17">Does <span class="nb">Q-Bot</span> work with iOS (iPhone)?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
         <div class="faq-item__answer" id="faq-a17" role="region" aria-labelledby="faq-b17">
           <p>No, and that is a deliberate choice. <span class="nb">Q-Bot</span> drives a real smartphone connected over USB, using ADB, so it works with any 2FA app running on Android: LuxTrust Mobile, itsme, Microsoft Authenticator, Google Authenticator. Automating an iOS device relies on different mechanisms, which <span class="nb">Q-Bot</span> does not cover today.</p>
         </div>
       </div>
-
       <div class="faq-item" id="faq-q18">
         <button class="faq-item__question" aria-expanded="false" id="faq-b18" aria-controls="faq-a18">
           Do you need a shared secret to automate 2FA?
@@ -531,7 +416,32 @@
           <p>No. <span class="nb">Q-Bot</span> does not need the shared secret used to recompute a one-time code, because it recomputes nothing: it drives the genuine 2FA app on a smartphone connected over USB, the way a user would. That is what lets it work with LuxTrust Mobile or itsme, whose secret cannot be exported.</p>
         </div>
       </div>
+      </div>
 
+      <div class="faq-cat">
+        <h3 class="faq-cat__titre" id="faq-cat-2">Integration &amp; automation</h3>
+      <div class="faq-item" id="faq-q12">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b12" aria-controls="faq-a12">How do I use <span class="nb">Q-Bot</span>?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a12" role="region" aria-labelledby="faq-b12">
+          <p>Once <span class="nb">Q-Bot</span> is connected to the corporate network and reachable from the testers’ machines, you can run an authentication scenario straight away from the web interface. The scenario itself is built visually, on a screenshot of the 2FA screen: numbered tap points and wait times, with no script to write.</p>
+          <p>In use, a scenario is triggered in one of two ways: automatically, when the companion app installed on the device under test detects a 2FA notification, or by calling the <span class="nb">Q-Bot</span> API from your automated tests. All the main automation technologies (Selenium, WebdriverIO, Cypress, Appium, Robot Framework, Cucumber and others) can call an API.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q20">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b20" aria-controls="faq-a20">
+          What happens if several requests arrive at the same time?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a20" role="region" aria-labelledby="faq-b20">
+          <p>They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved.</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="faq-cat">
+        <h3 class="faq-cat__titre" id="faq-cat-3">Infrastructure, data &amp; security</h3>
       <div class="faq-item" id="faq-q19">
         <button class="faq-item__question" aria-expanded="false" id="faq-b19" aria-controls="faq-a19">
           Does <span class="nb">Q-Bot</span> need an internet connection?
@@ -543,17 +453,58 @@
           <p>No, not during test runs. The device is self-hosted: it runs on your network, the web interface and the API answer there, and scenarios and their screenshots stay on it. No call to an outside service is needed to run a scenario.</p>
         </div>
       </div>
-
-      <div class="faq-item" id="faq-q20">
-        <button class="faq-item__question" aria-expanded="false" id="faq-b20" aria-controls="faq-a20">
-          What happens if several requests arrive at the same time?
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="faq-a20" role="region" aria-labelledby="faq-b20">
-          <p>They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved.</p>
+      <div class="faq-item" id="faq-q14">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b14" aria-controls="faq-a14">What data is kept by <span class="nb">Q-Bot</span> and for what purpose?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a14" role="region" aria-labelledby="faq-b14">
+          <p><span class="nb">Q-Bot</span> requires a connection to the corporate network to be accessible by automated test cases. However, it does not need an internet connection because all operations are performed locally on the robot. The scenarios and their step images stay on the <span class="nb">Q-Bot</span> device: nothing is uploaded to a cloud, and no data leaves your environment.</p>
         </div>
+      </div>
+      <div class="faq-item" id="faq-q16">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b16" aria-controls="faq-a16">How is my personal information handled?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a16" role="region" aria-labelledby="faq-b16">
+          <p>As a person interested in <span class="nb">Q-Bot</span>, we keep your <strong>email address, name and surname in our database for</strong> <strong>future</strong> <strong>business contacts</strong>. That data is kept within Q-Leap, is never given away or sold, and you may on request retrieve it, correct it or ask us to delete it.</p>
+          <p>As a <span class="nb">Q-Bot</span> customer, your personal information is used <strong>only for our billing process</strong>.</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="faq-cat">
+        <h3 class="faq-cat__titre" id="faq-cat-4">Offer &amp; support</h3>
+      <div class="faq-item" id="faq-q10">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b10" aria-controls="faq-a10">I would like to acquire <span class="nb">Q-Bot</span>, how can I do it?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a10" role="region" aria-labelledby="faq-b10">
+          <p>It’s very simple, contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us by phone at <a href="tel:+352202117">+352 20 21 17 </a>and ask for <strong>Sylvain Perez</strong>. <span class="nb">Q-Bot</span> comes as an all-inclusive monthly rental with no long-term commitment, delivered to you and operational within 48 to 72 hours.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q9">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b9" aria-controls="faq-a9">How much does <span class="nb">Q-Bot</span> cost?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a9" role="region" aria-labelledby="faq-b9">
+          <p><strong><span class="nb">Q-Bot</span></strong> is offered through a <strong>monthly rental contract</strong>, all inclusive: <strong>technical assistance</strong> and <strong>replacement of the robot in case of failure</strong> are included, with no long-term commitment. We give you the rate during the demo, once we have scoped your needs.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q11">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b11" aria-controls="faq-a11">Can I get technical support?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a11" role="region" aria-labelledby="faq-b11">
+          <p>Yes, technical support is included with <span class="nb">Q-Bot</span> at no extra cost: it is part of the monthly rental contract, along with replacement of the robot in case of failure. The Q-Leap team answers by email and by phone, with a guaranteed response time within 24 business hours.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q15">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b15" aria-controls="faq-a15">What to do in case of <span class="nb">Q-Bot</span> malfunction?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a15" role="region" aria-labelledby="faq-b15">
+          <p>Contact <span class="nb">Q-Bot</span> support by email: <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us at <a href="tel:+352202117">+352 20 21 17</a>, with a guaranteed response time within 24 business hours. We first try to repair the robot remotely; if that is not possible, the customer sends it back and we ship a brand new and functional robot.</p>
+        </div>
+      </div>
+      <div class="faq-item" id="faq-q7">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b7" aria-controls="faq-a7">How to get a free <span class="nb">Q-Bot</span> presentation?<span class="faq-item__icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <div class="faq-item__answer" id="faq-a7" role="region" aria-labelledby="faq-b7">
+          <p>You can take an appointment with Sylvain Perez, creator of <span class="nb">Q-Bot</span> and CEO of Q-Leap by following the link below. You will attend a demo, ask any question you want, and that is also when we give you the rate, once we have scoped your needs.</p>
+          <!-- Ce lien était nu : hérité d'aucun style, 19 px de haut, collé entre deux
+               paragraphes. C'est le seul appel à l'action d'une réponse de FAQ du site,
+               il prend donc le bouton du site. -->
+          <p><a href="contact.html" class="btn btn--outline">Book a demo</a></p>
+          <p>You can also contact us by email at <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a> or call us at <a href="tel:+352202117">+352 20 21 17</a>.</p>
+        </div>
+      </div>
       </div>
 
     </div>
@@ -636,6 +587,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=ca95d34f" defer></script>
+<script src="../assets/js/main.js?v=1d543046" defer></script>
 </body>
 </html>
