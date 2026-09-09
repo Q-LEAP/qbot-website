@@ -84,15 +84,22 @@ const MARQUES = {
   'Playwright': { slug: 'playwright', hex: '#2EAD33' },
   'Robot Framework': { slug: 'robotframework', hex: '#000000' },
   'Katalon': { slug: 'katalon', hex: null },  // symbole officiel bicolore, katalon.info
-  /* TESTCOMPLETE N'A PAS DE SYMBOLE, ET CE N'EST PAS UN OUBLI. Cherché le
-     2026-09-08 sur toutes les propriétés de SmartBear : la page produit, le
-     portail de documentation et le CDN de marque. Le seul fichier qui existe
-     est le LOGOTYPE en lettres, `viewBox` 554 x 108, soit un rapport de 5:1 ;
-     réduit à 22 px il est illisible et il redit le nom écrit juste à côté. Un
-     logotype n'est pas une icône, c'est le même arbitrage que pour LuxTrust,
-     dont l'icône d'application a fini par servir. TestComplete n'étant pas une
-     application mobile, il n'y a pas d'icône équivalente à aller chercher. */
-  'TestComplete': null,
+  /* LE SYMBOLE TESTCOMPLETE A ÉTÉ FOURNI PAR LE CLIENT LE 2026-09-09, « il
+     manque le logo TestComplete ». Je ne l'avais pas trouvé la veille sur les
+     propriétés de SmartBear (page produit, portail de documentation, CDN de
+     marque), qui ne publient que le LOGOTYPE en lettres, illisible à 22 px.
+     Celui-ci est le symbole seul, et il vient du client : la question de
+     l'accord d'usage se règle donc chez lui, comme pour les onze autres.
+     Master archivé dans `Documentations/assets-sources/testcomplete-source.png`.
+     Le fond blanc du fichier fourni a été retiré, et l'ALPHA EST DÉDUIT DE
+     L'ENCRE, pas seuillé : pour du bleu antialiasé sur du blanc un pixel vaut
+     `bleu*a + blanc*(1-a)`, donc `a = (255 - R) / (255 - 20)` sur le canal où
+     l'écart au blanc est le plus grand. Un seuil binaire donnerait un contour
+     crénelé à 28 px. C'est la méthode de l'extraction du label Made in
+     Luxembourg (2026-09-08) : l'opacité vient de l'encre, la couleur est posée.
+     Il ne remplit donc PAS la pastille, contrairement aux trois icônes
+     d'application, qui portent leur propre fond. */
+  'TestComplete': { image: 'testcomplete.png' },
   'Jenkins CI': { slug: 'jenkins', hex: '#D24939' },
   'GitLab CI': { slug: 'gitlab', hex: '#FC6D26' },
   'API REST': null,                 // pas une marque
