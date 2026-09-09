@@ -152,6 +152,10 @@ exclude:
   # donc plus cités. Masters dans Documentations/assets-sources/.
   - assets/img/qleap-equipe-bureau.jpg
   - assets/img/qleap-equipe-demo.jpg
+  # La 3e et la 4e vue du carrousel sont sorties le 2026-09-09 au soir, sur
+  # demande, en même temps que quatre nouvelles photos entraient en tête.
+  - assets/img/qleap-equipe-poste.jpg
+  - assets/img/qleap-equipe-duo.jpg
 
   # ── LES DEUX PAGES « DÉMO » NE SONT PAS PUBLIÉES ────────────────────────────
   # Arbitrage du client, 2026-09-09 : « cette page à masquer ou enlever :
