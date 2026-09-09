@@ -65,7 +65,12 @@ document.addEventListener('click', (e) => {
 
 // Ferme au resize
 window.addEventListener('resize', () => {
-  if (window.innerWidth > 768) {
+  /* 859 et non 768 : c'est le seuil où le menu passe en tiroir depuis le
+     2026-09-09 (cf. le pavé « LE MENU PASSE EN TIROIR À 859 px » de la feuille
+     de style). Resté à 768, le menu se refermait tout seul dès 769 px alors que
+     le hamburger y est le seul moyen de l'ouvrir. Les deux valeurs vont
+     ensemble. */
+  if (window.innerWidth > 859) {
     navMenu?.classList.remove('open');
     navToggle?.setAttribute('aria-expanded', 'false');
   }

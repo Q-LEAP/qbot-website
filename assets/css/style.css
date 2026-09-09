@@ -2436,12 +2436,52 @@ p { color: var(--gray); }
   .footer__grid { grid-template-columns: 1fr 1fr; }
 }
 
+/* ══ LE MENU PASSE EN TIROIR À 859 px, ET PAS À 768 ════════════════════════
+   Défaut mesuré le 2026-09-09 : de 769 à 859 px, le menu horizontal n'avait
+   pas la place de tenir sur une ligne. Relevé à 769 px, « Comment ça marche »
+   tombait à 66 px de large contre 140 à 860, et son bord haut passait à −5 px :
+   il débordait la barre PAR LE HAUT. Une bande de 90 px de large où la barre
+   est cassée, sur une taille de fenêtre courante (tablette en portrait, moitié
+   d'écran).
+
+   860 EST MESURÉ, PAS CHOISI : c'est la première largeur où les trois entrées
+   tiennent sur une ligne, relevée entrée par entrée. En dessous, aucun réglage
+   ne crée de la place, et c'est déjà la conclusion de la note du 2026-08-26 sur
+   une éventuelle cinquième entrée (« il faut faire basculer le menu hamburger à
+   1024 px »). Ici il n'y a que trois entrées, donc 860 suffit.
+
+   CES TROIS RÈGLES SONT SORTIES DU BLOC 768, LE RESTE Y EST RESTÉ. Ce bloc
+   contient aussi le COMPACTAGE de la barre (logo à 32 px, gouttières à 8 px,
+   bouton resserré), qui répond à un manque de place réel sous 768 px et qui
+   n'a rien à faire entre 769 et 859, où la place existe.
+   `order: 4` sur le hamburger fait partie du tiroir et non du compactage : sans
+   lui, l'ordre du balisage le collerait au logo au lieu de le poser au bord
+   droit — le défaut relevé le 2026-08-11.
+
+   Le seuil vit aussi dans le module 1 de main.js (« ferme au resize »), sinon
+   le menu se refermerait tout seul à 800 px alors que le hamburger est le seul
+   moyen de l'ouvrir. */
+@media (max-width: 859px) {
+  .nav__menu {
+    display: none;
+    position: absolute;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    background: var(--dark);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 24px 24px;
+    gap: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  .nav__menu.open { display: flex; }
+  .nav__toggle { display: flex; order: 4; }
+}
+
 @media (max-width: 768px) {
   :root { --section-py: 64px; }
-
-  .nav__menu { display: none; position: absolute; top: var(--nav-h); left: 0; right: 0; background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); flex-direction: column; align-items: flex-start; padding: 16px 24px 24px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-  .nav__menu.open { display: flex; }
-  .nav__toggle { display: flex; }
 
   /* `.nav__menu-cta` a été retiré le 2026-09-09 avec le déplacement du bouton
      dans le tiroir : le client n'en veut pas dans le menu mobile. Le bouton vit
@@ -2478,7 +2518,9 @@ p { color: var(--gray); }
     font-size: 0.8125rem;
     white-space: nowrap;
   }
-  .nav__toggle { order: 4; }
+  /* `order: 4` sur le hamburger est monté dans le bloc 859, avec le tiroir : il
+     en fait partie, alors que le compactage ci-dessus répond à un manque de
+     place propre aux petites largeurs. */
 
   /* Sous 400 px il n'y a plus la place pour les quatre éléments : le logo passe à
      28 px, le bouton se resserre, et le sélecteur de langue ne garde que son
