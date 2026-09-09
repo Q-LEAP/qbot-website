@@ -3159,10 +3159,15 @@ p { color: var(--gray); }
      le texte part de la gouttière. */
   .hero__inner { grid-template-columns: 1fr; gap: 48px; }
   .hero__desc { margin: 0 0 40px; }
-  .hero__image { order: -1; }
+  /* LE VISUEL DU HERO PASSE SOUS SON TEXTE (2026-09-09, demande du client :
+     « les images doivent être en dessous et non au dessus du texte dans la
+     version mobile »). Les trois classes portaient `order: -1`, qui remontait
+     le visuel avant le titre : le premier écran d'un téléphone s'ouvrait donc
+     sur une photo, et il fallait défiler pour lire ce que fait le produit.
+     C'est la règle déjà écrite plus bas pour `.intro__image`, appliquée à la
+     dernière grille qui y échappait. `.hero__image` et `.hero__film` ne sont
+     plus employés par aucune page ; leurs règles restent, comme `.timeline`. */
   .hero__image img { max-height: 300px; }
-  .hero__film { order: -1; }
-  .hero__shot { order: -1; }
 
   .intro__grid,
   .specs__grid,
@@ -6497,10 +6502,16 @@ label > input[type="checkbox"] {
   box-shadow: 0 0 0 3px rgba(0, 203, 190, 0.24), 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
-/* En une colonne, le texte passe SOUS l'image : c'est l'ordre texte → image de
-   toutes les autres grilles du site qui ne s'applique pas ici, parce que
-   l'illustration EST le sujet et que les trois étapes la commentent. Le seuil est
-   celui des grilles à deux colonnes du site. */
+/* EN UNE COLONNE, L'IMAGE PASSE SOUS SON TEXTE, comme partout ailleurs sur le
+   site. Cette grille était l'exception : l'illustration étant la colonne de
+   gauche, elle est PREMIÈRE dans le balisage et se retrouvait donc au-dessus des
+   trois étapes qui la commentent. Arbitré le 2026-09-09 par le client (« les
+   images doivent être en dessous et non au dessus du texte dans la version
+   mobile ») : le visiteur lit d'abord ce qu'on lui montre, puis le voit. Les
+   repères numérotés posés sur la capture n'y perdent rien, ils portent les mêmes
+   numéros que les étapes. Le seuil est celui des grilles à deux colonnes du site.
+   `order` et non un changement de balisage : sur deux colonnes, l'illustration
+   doit rester à gauche. */
 @media (max-width: 900px) {
   .editor { grid-template-columns: 1fr; gap: 32px; }
   /* PLAFOND DE LA PLAGE EMPILÉE, et il est calculé, pas choisi. Sans lui la
@@ -6518,7 +6529,7 @@ label > input[type="checkbox"] {
      tombait à 162 px à 390 px de large et à 238 px à 768, c'est-à-dire à la
      largeur de son propre bandeau. Un `max-width` suffit : l'item ne pouvant
      plus s'étirer, il se cale de lui-même au début de sa colonne. */
-  .editor__shot { width: 100%; max-width: 480px; }
+  .editor__shot { order: 2; width: 100%; max-width: 480px; }
 }
 
 .appwin__win {
