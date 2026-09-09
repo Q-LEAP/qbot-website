@@ -117,6 +117,24 @@
   --amber:       #F5A524;
   --amber-line:  rgba(245, 165, 36, 0.62);
   --amber-fill:  rgba(245, 165, 36, 0.10);
+  /* Le rouge et le vert suivent la même règle que l'ambre : COULEURS D'ÉTAT,
+     jamais de marque. Demandés le 2026-09-09 pour le schéma de l'accueil,
+     « une couleur rouge sur test bloqué » et « vert en dessous suite
+     automatique » : l'ambre y signale l'interruption, le rouge son aboutissement
+     et le vert celui de l'autre chaîne.
+     LES DEUX VALEURS SONT MESURÉES. Le rouge est CLAIR (#FF8080) et pas saturé :
+     un rouge franc a une luminance basse, donc son contraste s'écroule sur un
+     fond noir — c'est ce qui l'avait fait écarter au profit de l'ambre. Relevé :
+     7,6:1 sur le fond des rangées, 6,5:1 sur ce même fond teinté à 10 %. Le vert
+     donne 10,6 et 8,8, et il est franchement distinct du teal de marque (jaune-
+     vert contre cyan), ce qui compte puisqu'ils se retrouvent dans la même
+     rangée. */
+  --rouge:       #FF8080;
+  --rouge-line:  rgba(255, 128, 128, 0.58);
+  --rouge-fill:  rgba(255, 128, 128, 0.10);
+  --vert:        #4ADE80;
+  --vert-line:   rgba(74, 222, 128, 0.52);
+  --vert-fill:   rgba(74, 222, 128, 0.10);
 
   /* ── Typographie (charte p. 4-5) ── */
   --font:         'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -3869,10 +3887,25 @@ p { color: var(--gray); }
    n'a PAS été suivie : un texte que l'on veut atténué reste un texte qui doit se
    lire, et ce sont le pointillé, l'absence de fond, le cadenas et la liaison
    rompue qui disent que le flux s'arrête. */
+/* ELLE PASSE EN ROUGE (2026-09-09, « mettre une couleur rouge sur test bloqué »).
+   Le pointillé reste : c'est lui qui dit que cette case est hors du flux
+   automatique, la couleur dit ce qui s'y passe. L'ambre marque l'INTERRUPTION
+   deux cases plus tôt, le rouge son ABOUTISSEMENT — deux moments distincts d'une
+   même chaîne, d'où deux teintes et non une. */
 .vsflow__step--attente {
   border-style: dashed;
-  border-color: rgba(255, 255, 255, 0.20);
-  color: var(--muted);
+  border-color: var(--rouge-line);
+  background: var(--rouge-fill);
+  color: var(--rouge);
+}
+
+/* Et la case d'arrivée de l'autre chaîne passe en vert : c'est le pendant exact
+   du rouge, sur le même rang. Trait plein, sans pointillé : ce flux-là n'est pas
+   rompu. */
+.vsflow__step--fin {
+  border-color: var(--vert-line);
+  background: var(--vert-fill);
+  color: var(--vert);
 }
 
 /* La case qui porte la solution. ELLE N'EST PLUS EN TEAL PLEIN, et c'est un
