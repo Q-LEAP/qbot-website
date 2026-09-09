@@ -3055,26 +3055,35 @@ p { color: var(--gray); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; order: 4; }
 
-  /* LE BOUTON DE RÉSERVATION, DÉPLACÉ ICI PAR LE MODULE 1 (2026-09-09, soir).
-     Il prend toute la largeur du tiroir : c'est la seule action de ce menu, et
-     une pastille de la largeur de son texte au milieu d'une colonne de liens se
-     lirait comme un lien de plus. Le trait fin au-dessus le sépare des entrées
-     de navigation, sans quoi il se lit comme la cinquième. */
-  .nav__menu-cta {
-    width: 100%;
-    margin-top: 4px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .nav__menu-cta .btn { width: 100%; justify-content: center; }
+  /* PAS DE BOUTON DE RÉSERVATION DANS LA NAVIGATION MOBILE (2026-09-09, soir,
+     demande du client : « il faudrait qu'il n'y ait pas de bouton Réserver une
+     démo sur la version mobile dans le menu »), et il ne remonte PAS dans la
+     barre : arbitré le même jour, il ne doit être ni dans le tiroir ni dans le
+     header sous ce seuil. La barre n'y porte donc que le logo, la langue et le
+     hamburger, et le tiroir ses trois liens.
+
+     QUATRIÈME ÉTAT DE CE BOUTON, ET LES QUATRE SONT DES DEMANDES DU CLIENT :
+     tiroir (2026-09-08), barre (2026-09-09 matin), tiroir (2026-09-09 soir),
+     masqué (ce jour). C'est toujours le dernier arbitrage qui vaut ; il n'y a
+     rien à « corriger » dans un sens ou dans l'autre.
+
+     LE CHEMIN DE RÉSERVATION N'EST PAS PERDU, et c'est ce qui rend la décision
+     tenable : l'entrée « Réserver une démo » du pied de page ouvre le même
+     agenda sur les 17 pages, et chaque page porte son bloc d'appel à l'action.
+
+     `display: none` ET NON UN RETRAIT DU BALISAGE : `tools/maj-nav-booking.py`
+     compte UN bouton par page dans la SOURCE et y écrit l'URL de l'agenda, qui
+     est à source unique dans `tools/bookings_conf.py`. Le retirer du HTML
+     casserait cette source unique. Masqué, il sort aussi de l'ordre de
+     tabulation, donc il n'y a pas de commande invisible mais atteignable.
+
+     C'est le CSS qui masque, et pas le module 1 : la règle vaut donc aussi sans
+     JavaScript, où le bouton reste dans la barre du balisage. */
+  .nav__actions .btn { display: none; }
 }
 
 @media (max-width: 768px) {
   :root { --section-py: 64px; }
-
-  /* `.nav__menu-cta` a été retiré le 2026-09-09 avec le déplacement du bouton
-     dans le tiroir : le client n'en veut pas dans le menu mobile. Le bouton vit
-     dans la barre à toute largeur, où il est compacté plus bas. */
 
   /* 16 px sur tous les champs de saisie, et pas 15. En dessous de 16 px, Safari
      iOS ZOOME la page à la prise de focus pour rendre le texte lisible, puis ne
@@ -3096,17 +3105,14 @@ p { color: var(--gray); }
      enfants en `space-between`, le bouton large poussant celui du milieu) ; et le
      logo à 38 px ne laissait pas la place au reste.
      Correctif : on ordonne — logo à gauche, actions puis hamburger à droite — et
-     on compacte le bouton (`nowrap` : c'est le retour à la ligne qui cassait la
-     hauteur de la barre, pas la largeur du texte). Le CTA n'est PAS masqué : il
-     est le chemin de conversion, et il tient une fois compacté. */
+     on compacte ce qui reste.
+     LE COMPACTAGE DU CTA A ÉTÉ RETIRÉ, PAS OUBLIÉ : depuis ce jour le bouton est
+     masqué sous 859 px (cf. le bloc du tiroir ci-dessus), donc ses trois
+     déclarations de taille ne visaient plus rien. `.nav__actions` garde les
+     siennes : elle porte encore le sélecteur de langue. */
   .nav__inner { gap: 8px; }
   .nav__logo { --logo-h: 32px; }
   .nav__actions { margin-left: auto; gap: 4px; }
-  .nav__actions .btn {
-    padding: 9px 14px;
-    font-size: 0.8125rem;
-    white-space: nowrap;
-  }
   /* `order: 4` sur le hamburger est monté dans le bloc 859, avec le tiroir : il
      en fait partie, alors que le compactage ci-dessus répond à un manque de
      place propre aux petites largeurs. */
@@ -3148,7 +3154,7 @@ p { color: var(--gray); }
 
 @media (max-width: 400px) {
     .nav__logo { --logo-h: 28px; }
-    .nav__actions .btn { padding: 8px 11px; font-size: 0.75rem; }
+    /* Le resserrage du CTA est parti avec lui : il est masqué sous 859 px. */
     /* Le padding porte la cible tactile : sans le code de langue, le lien se
        réduisait au globe de 14 px et tombait à 22 px de large, sous le minimum
        de 24 px de la WCAG 2.5.8. */

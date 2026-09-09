@@ -30,59 +30,30 @@ navToggle?.addEventListener('click', () => {
   navToggle.setAttribute('aria-expanded', String(isOpen));
 });
 
-/* ── Le bouton de réservation passe dans le tiroir sous 859 px ──
-   TROISIÈME ÉTAT DE CE BOUTON, ET LES TROIS SONT DES DEMANDES DU CLIENT :
+/* ── Le bouton de réservation n'existe plus dans la navigation mobile ──
+   QUATRIÈME ÉTAT DE CE BOUTON, ET LES QUATRE SONT DES DEMANDES DU CLIENT :
    dans le tiroir le 2026-09-08 (« le bouton du header je le mettrais dans le
    menu sur mobile »), dans la barre le 2026-09-09 au matin, de nouveau dans le
-   tiroir le même jour au soir (« le bouton est revenu sur mobile », dans la
-   passe « moins de turquoise en grandes surfaces »). Il n'y a rien à
-   « corriger » dans un sens ou dans l'autre : c'est le dernier arbitrage qui
-   vaut, et il est cohérent avec la hiérarchie des CTA posée le même soir.
+   tiroir le même jour au soir, et masqué depuis (« il faudrait qu'il n'y ait
+   pas de bouton Réserver une démo sur la version mobile dans le menu », avec
+   l'arbitrage explicite qu'il ne remonte pas dans la barre pour autant). Il n'y
+   a rien à « corriger » dans un sens ou dans l'autre : c'est le dernier
+   arbitrage qui vaut.
 
-   ON DÉPLACE LE NOEUD, ON NE LE DUPLIQUE PAS. Un second bouton écrit dans le
-   balisage donnerait deux arrêts de tabulation et deux fois le même nom
-   accessible ; surtout, `tools/maj-nav-booking.py` compte UN bouton par page
-   dans la SOURCE, et un doublon le tromperait. Déplacé, le noeud garde ses
-   écouteurs : la fenêtre de réservation du module 20 s'ouvre sans une ligne de
-   plus. Sans JavaScript, le bouton reste dans la barre, ce qui est l'état
-   d'avant : dégradation gracieuse, jamais de chemin perdu.
+   IL N'Y A DONC PLUS RIEN À FAIRE EN JAVASCRIPT, et c'est mieux ainsi : le
+   déplacement du noeud vivait ici, le masquage vit dans la feuille de style
+   (`.nav__actions .btn { display: none }` sous 859 px), donc il s'applique
+   aussi sans JavaScript. Le bloc qui déplaçait le noeud est supprimé, et avec
+   lui l'enveloppe `.nav__menu-cta` et l'écouteur qui refermait le tiroir.
 
-   UN ÉCOUTEUR `change` DE `matchMedia` NE SUFFIT PAS, et c'est la leçon de la
-   première version : il ne se réveille qu'au FRANCHISSEMENT du seuil, donc une
-   page ouverte étroite puis élargie sans repasser par 859 px gardait le bouton
-   coincé dans le tiroir pour toute sa vie. Le cas se reproduit tel quel dans un
-   cadre en ligne, qui commence à 300 px avant que sa largeur ne lui soit
-   appliquée. La largeur est donc RELUE à chaque appel. */
-{
-  const ctaNav = document.querySelector('.nav__actions .btn');
-  const actions = document.querySelector('.nav__actions');
-  if (ctaNav && actions && navMenu) {
-    const enveloppe = document.createElement('li');
-    enveloppe.className = 'nav__menu-cta';
-
-    const placer = () => {
-      const etroit = window.innerWidth <= 859;
-      if (etroit && ctaNav.parentElement !== enveloppe) {
-        enveloppe.appendChild(ctaNav);
-        navMenu.appendChild(enveloppe);
-      } else if (!etroit && ctaNav.parentElement === enveloppe) {
-        actions.insertBefore(ctaNav, actions.firstChild);
-        enveloppe.remove();
-      }
-    };
-    placer();
-    window.addEventListener('resize', placer, { passive: true });
-    window.addEventListener('load', placer);
-
-    /* Refermer le tiroir quand on active le bouton : sans cela le menu resterait
-       déplié derrière la fenêtre modale, et on le retrouverait ouvert en
-       sortant. */
-    ctaNav.addEventListener('click', () => {
-      navMenu.classList.remove('open');
-      navToggle?.setAttribute('aria-expanded', 'false');
-    });
-  }
-}
+   DEUX LEÇONS DE CE BLOC RESTENT VRAIES SI LE BOUTON DEVAIT REVENIR DANS LE
+   TIROIR : on DÉPLACE le noeud, on ne le duplique pas (un second bouton dans le
+   balisage donnerait deux arrêts de tabulation, et `tools/maj-nav-booking.py`
+   compte UN bouton par page dans la source) ; et un écouteur `change` de
+   `matchMedia` ne suffit pas, il ne se réveille qu'au FRANCHISSEMENT du seuil,
+   donc une page ouverte étroite puis élargie sans repasser par 859 px gardait
+   le bouton coincé dans le tiroir pour toute sa vie — la largeur doit être
+   RELUE à chaque appel. */
 
 // Ferme au clic extérieur
 document.addEventListener('click', (e) => {
