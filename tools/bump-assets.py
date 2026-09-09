@@ -69,6 +69,12 @@ SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
           # aucune page ne le cite depuis que le film de démonstration a
           # remplacé la boucle décorative des accueils.
           'assets/img/qbot-og.jpg',
+          # LE LABEL MADE IN LUXEMBOURG, DEPUIS LE 2026-09-09. Il portait un `?v=`
+          # écrit À LA MAIN, hors de cette liste : juste au moment où il a été
+          # posé, et périmé au premier redécoupage. Il est produit par script
+          # depuis la brochure, donc réécrit sous le même nom, et il est
+          # désormais cité par les 17 pieds de page en plus des deux accueils.
+          'assets/img/made-in-luxembourg-blanc.png',
           # LE FILM AUSSI, DEPUIS LE 2026-09-02 : il a été réencodé plus léger sous
           # le même nom, donc un visiteur déjà venu se serait fait servir les
           # 4,95 Mo de sa version en cache. Un média de 2 Mo est le pire candidat

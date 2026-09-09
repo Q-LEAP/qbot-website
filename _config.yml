@@ -85,6 +85,10 @@ exclude:
   # petit », sans fond : c'est `made-in-luxembourg-blanc.png` qui est servi.
   # Celui-ci reste dans git, il est la SOURCE dont l'autre est tiré.
   - assets/img/made-in-luxembourg.png
+  # La couronne seule, recadrée le 2026-09-09 pour la pastille du pied de page.
+  # Écartée le jour même : le client veut le label ENTIER, celui qu'on a déjà,
+  # simplement dimensionné en icône. Plus aucune page ne la cite.
+  - assets/img/made-in-luxembourg-icone.png
   # La boucle décorative de 8,7 s et son affiche : le film de démonstration a
   # pris sa place dans les deux accueils le 2026-09-02.
   - assets/video/qbot-home.mp4

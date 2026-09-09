@@ -51,6 +51,10 @@ const SUIVIS = [
   // page ne le cite depuis que le film de démonstration a remplacé la boucle
   // décorative des accueils.
   'assets/img/qbot-og.jpg',
+  // LE LABEL MADE IN LUXEMBOURG, DEPUIS LE 2026-09-09 : il portait un `?v=`
+  // écrit à la main, hors de cette liste, donc périmé au premier redécoupage.
+  // Cf. le pavé du jumeau Python.
+  'assets/img/made-in-luxembourg-blanc.png',
   // Le film aussi depuis le 2026-09-02 : réencodé plus léger sous le même nom,
   // donc un visiteur déjà venu se serait fait servir les 4,95 Mo de sa version
   // en cache. Cf. la note du jumeau Python.

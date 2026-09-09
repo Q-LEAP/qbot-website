@@ -2569,24 +2569,31 @@ p { color: var(--gray); }
   border-radius: 20px;
   padding: 5px 12px;
 }
-/* LE LOGO REMPLACE LE PICTOGRAMME DE LIEU (2026-09-09, « remplace l'icône ping
-   par le logo Made in Luxembourg au format icône, fais le format toi si y en a
-   pas »). Il n'existait pas : le seul exemplaire dont nous disposons est le
-   cartouche entier découpé de la brochure, 98 x 79 px, où le texte « MADE IN
-   LUXEMBOURG » est illisible sous 40 px.
-   C'EST DONC LA COURONNE SEULE, et le texte n'est pas perdu puisqu'il est écrit
-   en clair juste à côté dans la pastille. Le découpage est relevé, pas deviné :
-   un comptage de l'encre ligne par ligne place la couronne sur y 0..53,
-   « MADE IN » sur 54..63 et « LUXEMBOURG » sur 69..78. La couronne est ensuite
-   serrée sur son encre puis posée dans un carré, pour avoir la même emprise que
-   l'icône LinkedIn voisine.
-   Sortie en 64 px pour 16 px d'affichage : une densité 3 est couverte, et
-   au-delà il n'y a rien à tirer d'une source de 98 px. LE LABEL EN VECTORIEL
-   RESTE À DEMANDER AU CLIENT, c'est la seule chose qui le rendrait net. */
+/* LE LOGO REMPLACE LE PICTOGRAMME DE LIEU (2026-09-09), ET C'EST LE LABEL
+   ENTIER, PAS UN DÉCOUPAGE. Une première version n'en gardait que la couronne,
+   recadrée exprès pour le pied de page, au motif que le texte « MADE IN
+   LUXEMBOURG » du cartouche est illisible sous 40 px. Le client a tranché :
+   « reprends le logo Made in Luxembourg qu'on a déjà, ne refais pas un logo
+   from scratch pour le footer, juste prends le logo et dimensionne-le à celui
+   d'un icône. » C'est donc `made-in-luxembourg-blanc.png`, le MÊME fichier que
+   la bande de réassurance et la séquence 3D des accueils : un seul exemplaire
+   du label sur tout le site, aucune variante à tenir à jour.
+
+   ON CALE LA HAUTEUR, PAS LA LARGEUR. Le label n'est pas carré (98 x 79), donc
+   un cadre de 16 x 16 le rendrait plus petit que l'icône LinkedIn voisine, alors
+   que la consigne du même jour est « même dimension ». À 16 px de haut il occupe
+   20 px de large, et les deux marques ont la même hauteur optique.
+
+   Son propre texte n'est plus lisible à cette taille, et ce n'est pas un
+   problème : la pastille l'écrit en clair juste à côté. Ce qui reste lisible est
+   la couronne, c'est-à-dire ce qui fait reconnaître le label.
+
+   Source 98 px pour 20 px d'affichage : une densité 4 est couverte, et au-delà
+   il n'y a rien à tirer d'un découpage de brochure. LE LABEL EN VECTORIEL RESTE
+   À DEMANDER AU CLIENT, c'est la seule chose qui le rendrait net. */
 .footer__badge-ico {
-  width: 16px;
   height: 16px;
-  object-fit: contain;
+  width: auto;
   opacity: 0.8;
 }
 
