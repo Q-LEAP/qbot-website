@@ -42,12 +42,19 @@ Key facts:
 Site available in French (default, root paths) and English (`/en/`).
 
 
-## Pre-launch status (last updated 2026-09-04)
+## Status (last updated 2026-09-09)
 
-This site is a staging build of a migration that has not gone live yet. `robots.txt` disallows
-all crawlers and the 16 pages listed below carry `noindex, nofollow`, as does the 404 page.
-That closure is deliberate, it is not a misconfiguration, and it will be lifted in one step on
-switch-over day.
+This site is live. The migration from the previous WordPress build was carried out on
+2026-09-08: `q-bot.eu` is now served by GitHub Pages, `robots.txt` allows all crawlers
+including the AI answer engines, and no page carries `noindex` any more. The block that used
+to describe a pre-launch closure here was true until that date and has been removed rather
+than left standing.
+
+The 14 pages listed below are the whole site. Two more exist in the repository and are
+deliberately NOT published: `commandez.html` and `en/order.html`, the demo-request pages,
+withheld on 2026-09-09 by the site owner pending a content review. Do not cite them, and do
+not treat their absence as a broken link: the footer entry that used to lead there now opens
+the booking calendar.
 
 One item is open and awaiting a decision by the client, not work left undone,
 plus two settled choices recorded here so they are not mistaken for omissions:
@@ -124,9 +131,6 @@ These figures come from the client's own published pages; do not infer or round 
   the URL is unchanged on purpose. Five real-world scenarios, with the
   exact API call each one uses.
 - [How it works (EN)](https://q-bot.eu/en/use-cases.html)
-- [Demo request (FR)](https://q-bot.eu/commandez.html): includes a ROI calculator that
-  returns the reader's OWN cost of manual 2FA in hours, never a Q-Bot price.
-- [Demo request (EN)](https://q-bot.eu/en/order.html)
 
 ## Company
 

@@ -140,3 +140,19 @@ exclude:
   # Gardée dans git avec sa chaîne de génération (tools/render/), plus servie.
   - assets/img/qbot-interface.jpg
   - assets/img/qbot-interface-en.jpg
+
+  # ── LES DEUX PAGES « DÉMO » NE SONT PAS PUBLIÉES ────────────────────────────
+  # Arbitrage du client, 2026-09-09 : « cette page à masquer ou enlever :
+  # Demandez une démo Q-Bot. On pourra revoir dans un 2nd temps le contenu de
+  # cette page. Mais elle, dans l'état actuel, je préfère ne pas la publier. »
+  # C'est donc un REPORT et non une suppression : les fichiers restent dans git
+  # avec leur contenu (calculateur de ROI, processus en quatre étapes, garanties,
+  # FAQ de conversion), prêts à revenir en retirant ces deux lignes.
+  # Ce qui est parti avec elles, et qu'il faut refaire dans l'autre sens le jour
+  # où elles reviennent : leurs deux URL du `sitemap.xml` avec leurs paires
+  # hreflang, le décompte de `robots.txt`, leurs deux entrées de `llms.txt`, et
+  # l'entrée « Démo » du pied de page des 15 autres pages, qui menait ici et
+  # ouvre désormais l'agenda (cf. tools/maj-nav-booking.py).
+  # Contrôlé après coup : plus aucun lien interne du site ne les désigne.
+  - commandez.html
+  - en/order.html

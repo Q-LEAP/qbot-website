@@ -31,13 +31,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/cas-usage.html"/>
   </url>
   <url>
-    <loc>https://q-bot.eu/commandez.html</loc>
-    <lastmod>2026-09-07</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/commandez.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/order.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/commandez.html"/>
-  </url>
-  <url>
     <loc>https://q-bot.eu/faq.html</loc>
     <lastmod>2026-09-07</lastmod>
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/faq.html"/>
@@ -79,13 +72,6 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/cas-usage.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/use-cases.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/cas-usage.html"/>
-  </url>
-  <url>
-    <loc>https://q-bot.eu/en/order.html</loc>
-    <lastmod>2026-09-07</lastmod>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/commandez.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/order.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/commandez.html"/>
   </url>
   <url>
     <loc>https://q-bot.eu/en/faq.html</loc>
