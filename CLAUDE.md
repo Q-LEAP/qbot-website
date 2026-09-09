@@ -10366,3 +10366,88 @@ pas 3).
 Les deux accueils balayés en (normal, mouvement réduit) x (390, 1440 px) : 0 débordement,
 0 révélation invisible, un seul `h1`, **0 erreur console**. 13 positions d'arrêt x 2 modes,
 et les 4 poses nominales atteintes au degré près sur mobile.
+
+## « C'est pas smooth » : le défilement redevient natif (2026-09-09, soir)
+
+Cinq sites donnés en référence, à analyser « visuellement et le script ». Quatre ont pu
+l'être dans le navigateur du client (`ownthepatch.co.uk` refuse l'automatisation).
+
+### CE QUE LES RÉFÉRENCES FONT, ET C'EST UNANIME
+
+| site | défilement | moteur JS | scrub d'un rendu temps réel |
+|---|---|---|---|
+| linearity.io | natif, `scroll-behavior: smooth` en CSS | **aucun** | non : 529 éléments animés par des TRANSITIONS CSS déclenchées à l'entrée en vue |
+| insta360 (Luna Ultra) | natif brut (`auto`) | **aucun** | non : 52 000 px, 8 blocs `sticky`, **37 vidéos**, 0 canvas |
+| brand.squarespace.com | natif brut | GSAP ScrollTrigger, qui **écoute** sans détourner | non : 19 vidéos |
+| mesh3d.gallery | natif brut | **aucun** | non |
+
+**AUCUNE N'INTERCEPTE LA MOLETTE. AUCUNE NE SCRUBBE UN RENDU TEMPS RÉEL.** insta360, qui
+est la référence du scrollytelling produit, n'a pas un seul canvas : ses séquences sont des
+vidéos, et elles sont **JOUÉES et non scrubbées** (mesuré : 0 sur 37 en scrub). La courbe
+dominante de linearity.io est une transition CSS de 0,65 s en
+`cubic-bezier(.785, .135, .15, .86)`, sur 60 éléments.
+
+### LE DÉFAUT N'ÉTAIT PAS LA CADENCE MAIS LA LATENCE
+
+Mesuré sur le vrai GPU, en fenêtré, douze crans de molette dans la séquence 3D :
+
+| | médiane | p95 | retard de la page sur la molette |
+|---|---|---|---|
+| avec le moteur de défilement | 8,7 ms | 15,1 ms | **91 px** |
+| sans | 8,4 ms | 17,0 ms | 17 px |
+| après ce lot | 2,8 ms | 13,8 ms | **0 px** |
+
+La cadence était bonne dans tous les cas : c'est un **empilement de retards** qui se voyait.
+Le moteur traînait de 91 px derrière la molette, le scrub traînait derrière le défilement,
+et le lissage de caméra derrière le scrub. **Trois inerties en série sur un même geste**, et
+aucun réglage de courbe ne les supprime puisque c'est le principe d'une approche vers une
+cible.
+
+### Les trois changements
+
+1. **le module 22 de `main.js` ne s'installe plus** (`return` en tête, tout le corps
+   conservé et annoté). Le défilement redevient natif, donc composité, donc instantané.
+   `scroll-behavior: smooth` du CSS reste pour les ancres, exactement comme linearity.io ;
+2. **l'accrochage de `scrolly.js` ne se déclenche plus** (`ACCROCHAGE = false`). Il
+   déplaçait la page APRÈS le geste, ce qu'aucune référence ne fait, et **il n'a plus
+   d'utilité fonctionnelle** : la logique discrète garantit désormais qu'on ne reste jamais
+   dans un état intermédiaire. Sans le module 22 il retomberait de surcroît sur sa propre
+   glissade rAF, réintroduisant le retard qu'on vient de supprimer ;
+3. **la logique discrète devient la règle pour tous** (`TOUJOURS_DISCRET = true`), et non
+   plus le tactile seul. C'est le modèle insta360/squarespace : un bloc épinglé, et du
+   contenu qui s'ANIME par états quand il arrive. Effet mesurable au-delà de la latence : la
+   médiane par image tombe à **2,8 ms**, parce que le modèle n'est plus redessiné qu'aux
+   transitions au lieu de l'être à chaque image.
+
+**LES TROIS CHEMINS RESTENT ENTIERS**, chacun derrière une ligne : `return` dans le module
+22, `ACCROCHAGE`, `TOUJOURS_DISCRET`. Leurs constantes mesurées sur scfo.de et leurs pièges
+documentés sont conservés, comme `.timeline` et les bandes d'outils. Ce n'est pas du code
+mort par négligence, c'est un chemin éteint sur arbitrage.
+
+### Contrôles
+
+Retard **0 px** à 1440 et à 412 px, état au repos propre (`step=2`, `t=0.92`, θ = -42° au
+degré, `is-cam-posee`). **Les pastilles fonctionnent toujours** : les quatre atteignent leur
+pas avec l'état exact, et elles gardent leur glissade parce qu'un clic est un mouvement
+DEMANDÉ et non subi. La molette au-dessus de l'index de la FAQ défile la page nativement,
+la sortie de séquence retire bien `is-scrolly`, 0 erreur console.
+Les trois audits : **15 pages lues sur 15, 0 constat** à 1440 comme à 390 px. 12 vues des
+trois pages touchées en (normal, mouvement réduit) x (390, 1440 px) : 0 débordement,
+0 révélation invisible, un seul `h1`. 647 références internes, 0 cassée.
+
+### Observation antérieure, laissée telle quelle
+
+Les quatre ancres de catégorie de la FAQ se posent à **192 px** du haut et non aux 88 px que
+`scroll-padding-top` prévoit. Vérifié **contre le site en ligne, qui porte la version
+d'avant ce lot : 192 px là aussi.** Ce n'est donc pas une régression, le titre reste
+lisible, et corriger cela n'entre pas dans une passe de fluidité.
+
+### Ce qui reste possible si ce n'est toujours pas assez fluide
+
+La dernière marche est celle qu'insta360 a franchie : **remplacer le rendu 3D temps réel par
+une vidéo** dans les blocs épinglés. Une vidéo est décodée par le matériel et composée par
+le GPU sans toucher au fil principal, là où notre `<model-viewer>` redessine 224 400
+triangles à chaque transition. La chaîne existe déjà dans ce dépôt
+(`tools/render/shoot-interieur.py` produit exactement ce genre de film à partir du GLB), et
+le repli statique de la séquence est déjà en place. C'est un chantier, pas un réglage : à
+arbitrer avec le client.

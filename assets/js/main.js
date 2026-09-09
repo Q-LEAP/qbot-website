@@ -2329,6 +2329,45 @@ backToTop.addEventListener('click', () => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!('requestAnimationFrame' in window)) return;
 
+  /* ══ CE MODULE NE S'INSTALLE PLUS, ET C'EST UNE MESURE QUI L'A DÉCIDÉ ══════
+     « C'est pas smooth. Vois comment linearity.io, brand.squarespace.com,
+     insta360.com, ownthepatch.co.uk, mesh3d.gallery » (2026-09-09).
+
+     LES QUATRE SITES ANALYSABLES ONT UN DÉFILEMENT NATIF. Aucun n'intercepte la
+     molette, aucun n'anime `scrollTop` :
+
+       linearity.io        aucune bibliothèque, `scroll-behavior: smooth` en CSS
+                           et rien d'autre. 529 éléments animés, tous par des
+                           TRANSITIONS CSS déclenchées à l'entrée en vue
+                           (dominante : 0,65 s en cubic-bezier(.785,.135,.15,.86))
+       insta360 (Luna)     52 000 px, 8 blocs `position: sticky`, 37 vidéos,
+                           `scroll-behavior: auto`. ZÉRO canvas, et les vidéos
+                           sont JOUÉES, pas scrubbées (mesuré : 0 scrubbée)
+       brand.squarespace   GSAP ScrollTrigger, qui ÉCOUTE le défilement natif
+                           sans le détourner. 19 vidéos, `behavior: auto`
+       mesh3d.gallery      `behavior: auto`, aucune bibliothèque
+
+     Et la mesure chez nous dit la même chose autrement : le défaut n'est pas la
+     cadence mais la LATENCE. Sur le vrai GPU, dix crans de molette dans la
+     séquence 3D donnent une médiane de 8,7 ms par image (donc au-delà de
+     100 im/s) avec ce module comme sans lui — mais **91 px de retard de la page
+     sur la molette au dernier cran avec, contre 17 px sans**. Presque un
+     dixième d'écran de décalage entre le geste et l'image : c'est cela qui se
+     perçoit comme de la lourdeur, et aucun réglage de courbe ne le supprime
+     puisque c'est le principe même d'une approche vers une cible.
+
+     Il avait été écrit le 2026-09-03 sur la référence de scfo.de, dont la
+     molette n'est pas un défilement mais un déclencheur de pagination : leur
+     modèle ne se transpose pas à une page qu'on parcourt librement, et surtout
+     pas à une page qui rend une scène WebGL sur le même fil.
+
+     LE CODE RESTE, ANNOTÉ, comme `.timeline` et les bandes d'outils : c'est le
+     chemin d'un défilement glissé, avec ses constantes mesurées et ses pièges
+     documentés. Une seule ligne à retirer pour le rallumer. Ce qui le remplace
+     est ce que font les références : le `scroll-behavior: smooth` du CSS pour
+     les ancres, et des états qui s'animent à l'entrée en vue. */
+  return;
+
   /* LES DEUX CONSTANTES SONT CALÉES SUR LA RÉFÉRENCE, PAS CHOISIES. Leur
      transition se termine à 459 ms, et TOUJOURS en 459 ms, parce que c'est un
      fondu à durée fixe sur une course fixe d'un panneau. Une approche

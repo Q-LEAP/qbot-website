@@ -1029,13 +1029,39 @@
      requête média ne peut pas voir (`pointer: coarse` décrit le pointeur
      PRINCIPAL, et un portable tactile y répond « fine » : la leçon du matin).
      Une molette rebascule en continu, donc reprendre la souris rend le scrub. */
+  /* ══ LA LOGIQUE DISCRÈTE EST DEVENUE LA RÈGLE, POUR TOUT LE MONDE ═════════
+     Elle avait été posée pour le tactile seul le 2026-09-09 ; le même jour,
+     « c'est pas smooth » et l'analyse des cinq sites de référence du client ont
+     montré qu'elle est aussi la bonne réponse sur PC.
+
+     CE QUE FONT LES RÉFÉRENCES, mesuré (le détail est dans le module 22 de
+     main.js) : aucune ne scrubbe un rendu temps réel au défilement. insta360,
+     qui est LA référence du scrollytelling produit, aligne 52 000 px, 8 blocs
+     `position: sticky` et 37 vidéos — et **ces vidéos sont JOUÉES, pas
+     scrubbées** (0 sur 37 mesurée en scrub). Squarespace fait de même avec 19
+     vidéos et GSAP ScrollTrigger, qui écoute le défilement sans le détourner.
+     Le modèle commun est donc : un bloc épinglé, et du contenu qui s'ANIME par
+     états quand il arrive, jamais une tête de lecture collée au doigt.
+
+     POURQUOI CE MODÈLE EST PLUS FLUIDE, et ce n'est pas une question de cadence.
+     Relevé sur le vrai GPU : la médiane est de 8,7 ms par image dans tous les
+     cas. Ce qui se voyait, c'est l'EMPILEMENT DES RETARDS — le moteur de
+     défilement traînait de 91 px derrière la molette, le scrub traînait derrière
+     le défilement, et le lissage de caméra derrière le scrub. Trois inerties en
+     série sur un même geste. En discret il n'en reste qu'une, celle de la
+     transition entre deux états, et le défilement lui-même est natif donc
+     composité.
+
+     Le chemin scrubbé reste entier : `TOUJOURS_DISCRET` à `false` le rallume,
+     avec son tri par largeur et par geste. */
+  var TOUJOURS_DISCRET = true;
   var DISCRET_MQ = window.matchMedia('(max-width: 900px)');
   var gesteTactile = false;
   /* N'importe où dans le palier ouvert donne le même état (`burstK` et `opaK`
      valent 1 sur [BURST_FULL, BURST_HOLD]) : on prend le milieu, qui laisse le
      maximum de marge de part et d'autre. */
   var F_PALIER = 0.54;
-  function discret() { return gesteTactile || DISCRET_MQ.matches; }
+  function discret() { return TOUJOURS_DISCRET || gesteTactile || DISCRET_MQ.matches; }
 
   function apply(snap) {
     /* Écart réel depuis l'image précédente. Il sert à normaliser les lissages :
@@ -1562,6 +1588,10 @@
      - au-delà de SNAP_ZONE de pas, il LÂCHE. C'est ce qui permet de sortir de la
        séquence par le haut comme par le bas : passé cette distance du centre du
        dernier pas, plus rien ne retient. */
+  /* Voir le pavé de `planifierAccrochage()` : à `true`, un cran de molette vaut
+     un pas, comme sur scfo.de. Éteint depuis le 2026-09-09 au soir. Les
+     pastilles gardent leur glissade, elles. */
+  var ACCROCHAGE = false;
   var SNAP_MS    = 450;    // durée de la glissade, relevée sur scfo.de
   var SNAP_REST  = 110;    // repos sans défilement avant de partir
   var SNAP_SEUIL = 0.12;   // part de pas au-delà de laquelle le geste ENGAGE
@@ -1663,6 +1693,27 @@
   }
 
   function planifierAccrochage() {
+    /* ══ L'ACCROCHAGE NE SE DÉCLENCHE PLUS, ET C'EST LE MÊME ARBITRAGE ════════
+       Il déplaçait la page APRÈS le geste, ce qu'aucune des cinq références du
+       client ne fait : elles laissent toutes le défilement natif et libre
+       (`scroll-behavior: auto` chez trois d'entre elles, et `smooth` en CSS pur
+       chez la quatrième). Un mouvement de page qui survient alors que la main ne
+       bouge plus se lit comme un mouvement parasite, pas comme de la fluidité.
+
+       ET IL N'A PLUS D'UTILITÉ FONCTIONNELLE. Il existait pour garantir qu'on ne
+       reste jamais dans un état intermédiaire — boîtier à moitié ouvert, caméra
+       entre deux poses. La logique discrète le garantit désormais par
+       construction, quelle que soit la position d'arrêt (relevé : 0 état
+       intermédiaire sur 13 positions).
+
+       Sans le module 22, il retomberait de surcroît sur sa propre glissade rAF,
+       c'est-à-dire qu'il réintroduirait exactement le retard qu'on vient de
+       supprimer.
+
+       LE CODE RESTE ENTIER derrière ce garde : `ACCROCHAGE` à `true` le rallume,
+       avec ses constantes mesurées sur scfo.de. Les pastilles, elles, continuent
+       de passer par `versPas()`, qui est un mouvement DEMANDÉ et non subi. */
+    if (!ACCROCHAGE) return;
     if (snapT !== null) clearTimeout(snapT);
     snapT = setTimeout(function () {
       snapT = null;
