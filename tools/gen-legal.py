@@ -363,6 +363,34 @@ def est_titre(bloc):
     return bool(m)
 
 
+def sans_taille_en_ligne(html):
+    """Retire les « <span style="font-size: 16.0016px"> » d'Elementor.
+
+    RELEVÉ LE 2026-09-10, dix occurrences (cinq par politique) : une taille de
+    police EN PIXELS, écrite en ligne, donc hors d'atteinte de la feuille de
+    style. Deux raisons de la retirer plutôt que de la laisser passer :
+      — elle vaut 16,0016 px pour un parent à 16 px, donc elle ne change rien à
+        l'écran MAIS elle fige ces cinq paragraphes : un visiteur qui augmente
+        la taille de police par défaut de son navigateur voit toute la page
+        grandir sauf eux ;
+      — c'est la famille de défaut qui a déjà coûté sept correctifs à ce dépôt
+        (cf. les centrages de « commandez », les vignettes de blog, les fonds
+        clairs de « .spec-item », les deux listes de FAQ, les titres de la boîte
+        de réservation) : un style en ligne qu'aucune règle ne peut atteindre.
+
+    Le span ne portait QUE cette taille : une fois retirée il n'a plus d'objet,
+    donc c'est le span entier qui part. Vérifié sur les dix blocs : aucun span
+    imbriqué, chacun enveloppe son bloc en entier. L'assertion garde ce fait —
+    si un relevé futur imbrique quoi que ce soit, on s'arrête ici.
+    """
+    motif = re.compile(r'<span style="font-size: ?[\d.]+px;?">(.*?)</span>', re.S)
+    def un(m):
+        assert '<span' not in m.group(1), \
+            'span imbriqué dans une taille en ligne : ' + m.group(1)[:60]
+        return m.group(1)
+    return motif.sub(un, html)
+
+
 def insecable(html):
     """Entoure « Q-Bot » de la classe qui l'empêche de se couper en fin de ligne.
 
@@ -443,7 +471,7 @@ def corps(page):
             out.append('      <p>' + html.replace('\n', '<br>') + '</p>')
     if liste:
         out.append('      <ul>\n' + '\n'.join(liste) + '\n      </ul>')
-    html = '\n'.join(out)
+    html = sans_taille_en_ligne('\n'.join(out))
 
     for ancien, neuf, attendu, _raison in RETOUCHES.get(cle, []):
         n = html.count(ancien)
