@@ -10553,3 +10553,112 @@ mesuré à dix largeurs de 360 à 2560 px, sans débordement. 0 saut de niveau d
 **Une erreur transitoire de GitHub** (`remote: fatal error in commit_refs`) a rejeté un
 push ; le même push est passé quatre secondes plus tard. Le commit était bien créé en
 local : ne pas le refaire, seulement repousser.
+
+## Les deux ouvertures de la fiche technique, et une passe complète (2026-09-10)
+
+Texte du client pour les deux sections qui ouvrent `caracteristiques` /
+`en/technical-specs`, avec une maquette pour la première.
+
+- **« Format compact »** : le chapeau passe à deux phrases, et la cote devient une
+  CARTE (`.dim-card`) au liseré teal — pictogramme, séparateur, `DIMENSIONS`, la
+  valeur, une phrase en italique. Elle remplace `.specs__dims-ligne / -lab / -val`,
+  posées la veille pour le même emplacement et qui ne servaient qu'ici : elles sont
+  retirées plutôt que gardées mortes.
+- **« Fiche technique »** : titre « L'architecture de Q-Bot », chapeau qui annonce
+  les six catégories, et le sous-titre « Un nano-ordinateur de la taille d'une carte
+  de crédit » part avec le texte qu'il coiffait, le nouveau paragraphe le disant.
+
+**LE PICTOGRAMME EST UN DESSIN AU TRAIT, PAS UNE PHOTO** : la carte dit une mesure,
+et une seconde photo du produit à 30 cm de celle d'à côté n'aurait rien ajouté. Il est
+`aria-hidden`, la carte se lit sans lui. Premier jet corrigé après rendu : dessiné en
+`viewBox 64x48` il lisait comme une **dalle à plat** ; il est redessiné plus haut que
+large (`2 2 40 46`), ce qui est la seule façon de dire un objet de 15 cm de haut. Un
+pictogramme se juge au rendu, jamais sur ses coordonnées.
+
+**LE LISERÉ TEAL EST PORTÉ PAR LA CARTE ELLE-MÊME**, avec son fond : l'inscrire dans
+la liste des surfaces de verre (`[data-theme="dark"] .x`, 0,2,0) écraserait la
+bordure. Piège déjà payé sur `.booking-modal__box` et `.booking-box`.
+
+Trois valeurs calculées et non choisies : le plafond de **460 px** (au-delà, la carte
+s'étire sur sa colonne — 546 px à 1440, 656 à 2560 — et ses trois lignes se perdent) ;
+le seuil de **560 px** où elle s'empile, où ce n'est pas la fenêtre qui manque de
+place mais la CARTE (72 px de dessin plus 44 de gouttière laissent 226 px pour une
+valeur de 173) ; et `.section-subtitle + .section-subtitle { margin-top: 16px }`,
+sans quoi le reset global (`margin: 0`) colle les deux chapeaux.
+
+Une graphie harmonisée : **« connexion internet » en minuscule**, comme la ligne de
+fiche technique du même écran. Le texte du client écrivait « Internet ».
+
+### Le défaut trouvé par la passe : la taille de police d'Elementor
+
+Dix `<span style="font-size: 16.0016px">`, cinq par politique de confidentialité,
+hérités du WordPress. À l'écran cela ne change rien (le parent est à 16 px), mais
+c'est une taille en PIXELS : un visiteur qui augmente la police par défaut de son
+navigateur voit toute la page grandir sauf ces cinq paragraphes. Et c'est la famille
+qui a déjà coûté sept correctifs ici, le style en ligne qu'aucune règle ne peut
+atteindre. Corrigé dans `gen-legal.py` (`sans_taille_en_ligne`) et non dans les pages,
+sinon la prochaine régénération le remettait ; l'assertion garde le fait qui autorise
+le retrait, à savoir qu'aucun de ces dix spans n'en imbrique un autre.
+
+**Rappel qui a resservi** : `gen-legal.py` n'écrit PAS les empreintes d'actifs, il faut
+enchaîner `bump-assets` derrière lui, et comparer le fichier régénéré à celui d'avant
+en n'acceptant que les écarts qu'on sait nommer.
+
+### QUATRE FAUX POSITIFS DE SONDE, ET ILS SE REPRODUIRONT
+
+Le balayage a d'abord rendu 32 constats, tous faux. Les exemptions sont à câbler dans
+toute sonde de ce genre :
+
+1. **`.nb` dans un conteneur flex** : `.vsflow__step--go` en contient un à dessein
+   (icône plus « Q-Bot », le `gap` EST la mise en page) ;
+2. **un frère `.visually-hidden`** : il ne rend rien, il ne peut pas se coller au
+   texte visible. Cinq constats sur l'accueil ;
+3. **un élément en `display: none`** : ses rectangles valent zéro, donc « écart 0 » et
+   « même ligne » sont vrais pour n'importe quelle paire. C'est ce qui faisait annoncer
+   « 01Utilisation de Q-Bot » sur la FAQ, dont l'index est masqué sous 1200 px (écart
+   réel : 8 px là où il s'affiche) ;
+4. **une image non rendue** : `img.width` renvoie alors la largeur INTRINSÈQUE, donc le
+   rapport vaut exactement le DPR et la sonde annonce « x2 ». C'étaient les deux
+   captures d'interface des onglets fermés. Filtrer sur `getBoundingClientRect().width`.
+
+**ET LE CONTRÔLE DE VIVACITÉ N'AVAIT PAS MORDU, parce qu'il était mal écrit** : la page
+cassée injectait `<p>mot<span>colle</span></p>`, or la sonde n'itère que sur des
+ÉLÉMENTS et « mot » est un nœud de texte. Une sonde qui rend zéro sur une page cassée ne
+prouve rien. Reprise avec `<b>0</b><span>intervention humaine</span>` — les deux formes
+historiques — plus un texte à 9 px et une image agrandie six fois : **0 sur la page
+saine, 4 sur la page cassée, un par défaut injecté.**
+
+### Relevé de la passe
+
+Les deux audits du dépôt à 1440 **et** à 390 px : **15 pages lues sur 15, 0 constat**.
+Balayage navigateur sur 15 pages + `404.html` x (390, 768, 1440) x (normal, mouvement
+réduit), soit **90 vues** : 0 débordement, 0 révélation invisible, 0 erreur console,
+0 requête en échec, un seul `h1`, 0 saut de niveau, 0 image cassée, 0 `alt` manquant,
+0 cadratin, 0 emoji. Ergonomie et contraste sur les 16 pages, accordéons ouverts :
+**0 mot collé, 0 texte sous 12 px, 0 interligne sous 1,29, 0 agrandissement au-delà de
+1,5, 0 défaut de contraste** (calculé sur le fond réellement composité).
+54 redirections 0 défaut · 584 références internes et ancres 0 cassée · 35 blocs JSON-LD
+0 invalide, 0 `offers` · `sync-faq-jsonld` 54 entrées 0 recalée · `maj-nav-booking`
+0 à équiper · les **deux** versionneurs d'actifs d'accord à 0 page · `gen-legal`
+idempotent · actifs dans les deux sens : **0 orphelin, 0 référence vers un actif exclu**.
+En ligne : les cinq chemins de travail répondent 404, `robots.txt` ouvert, les 14 URL du
+plan présentes dans `llms.txt`, `noindex` sur la seule `404.html`.
+
+**Faux positif d'outillage à connaître** : un parseur de `_config.yml` doit couper les
+commentaires en fin de ligne (`- Documentations/   # …`). Sans cela l'exclusion ne
+correspond à rien et le contrôle des actifs annonce 68 orphelins au lieu de 0.
+
+### Deux observations laissées telles quelles
+
+- **`font-weight: 600` rend désormais pour de vrai**, et la note du 2026-07-30 est
+  périmée sur ce point : elle dit que 600 et 800 « ne sont jamais chargés » et se
+  résolvent à 700. Depuis que Roboto est auto-hébergée en police VARIABLE
+  (`font-weight: 100 900`, 2026-08-25), 600 est une graisse réelle. Il en reste deux
+  sur le site publié — `.nav__link.active` et un style en ligne de `404.html` — plus
+  deux dans `.roi__*`, qui vit sur les pages Démo non publiées. C'est une dérive de
+  charte (le document ne connaît que Light / Regular / Italic / Bold), pas un défaut
+  de rendu : à arbitrer, pas à corriger au passage.
+- **La colonne de gauche de « Fiche technique » ne porte plus qu'un paragraphe** face à
+  un film de 401 px. C'est le comportement voulu depuis le passage en `align-items:
+  start` (2026-09-04) et c'est ce que le texte du client dicte ; si le vide gêne, c'est
+  du contenu à ajouter, pas un calage à corriger.
