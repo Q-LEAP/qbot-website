@@ -6191,33 +6191,94 @@ a:focus-visible { border-radius: var(--radius-sm); }
 .specs__dims--2col { grid-template-columns: 1fr 1fr; column-gap: 32px; }
 @media (max-width: 640px) { .specs__dims--2col { grid-template-columns: 1fr; } }
 
-/* Les trois cotes de la section d'ouverture tiennent désormais sur UNE ligne
-   (2026-09-09, texte du client : « Dimensions : 20 × 11 × 15 cm »). Elles
-   étaient une liste de trois items, ce qui est le bon motif pour une fiche mais
-   pas pour trois nombres qui se lisent d'un trait. Même couleur et même corps
-   que les items de la liste, sans la puce : il n'y a plus de liste. */
-/* LIBELLÉ AU-DESSUS, VALEUR EN DESSOUS, et ce n'est pas une coquetterie : le
-   texte du client réduit cette colonne à une seule ligne de 26 px, face à une
-   photo de 316 px. Le calage est pourtant correct (les deux partent du haut de
-   la grille, mesuré), mais une ligne seule face à une image ne tient pas sa
-   moitié. Le motif « libellé discret, valeur mise en avant » est celui des
-   lignes de fiche technique de la même page, et il ne change pas un mot. */
-.specs__dims-ligne { margin: 0; }
-.specs__dims-lab {
+/* ══ LA COTE DU BOÎTIER, EN CARTE ══════════════════════════════════════════
+   Maquette du client, 2026-09-10. Elle remplace `.specs__dims-ligne / -lab /
+   -val`, posées la veille pour le même emplacement : le motif « libellé
+   discret au-dessus, valeur en dessous » réglait bien le problème d'alors (une
+   ligne de 26 px seule face à une photo de 316), mais il ne tenait toujours pas
+   sa moitié de grille. Les trois classes ne servaient qu'ici et sont retirées
+   plutôt que gardées mortes.
+
+   POURQUOI UN LISERÉ TEAL ET NON UNE SURFACE DE VERRE. Le bloc `[data-theme=
+   "dark"] .x` des cartes pèse (0,2,0) et écraserait la bordure : c'est le piège
+   déjà payé sur `.booking-modal__box` et `.booking-box`. La carte porte donc
+   elle-même son fond ET son filet, comme elles.
+
+   LE PLAFOND DE 460 px n'est pas un choix de goût : au-delà, la carte s'étire
+   sur toute sa colonne (546 px à 1440, 656 à 2560) et ses trois lignes de texte
+   se perdent dans la largeur. Elle reste calée sur la gouttière, jamais
+   centrée dans sa colonne (règle du dépôt).
+
+   LE PICTOGRAMME EST FIXE (`flex: none`) : sans cela, la colonne de texte le
+   comprime avant de passer à la ligne, et le dessin devient illisible bien
+   avant que le texte ne gêne. */
+.dim-card {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  max-width: 460px;
+  padding: 20px 24px;
+  border: 1px solid rgba(0, 203, 190, 0.22);
+  border-radius: var(--radius-lg);
+  background: rgba(0, 203, 190, 0.035);
+}
+.dim-card__pic {
+  flex: none;
+  width: 78px;
+  color: var(--teal);
+}
+.dim-card__pic svg { display: block; width: 100%; height: auto; }
+/* Le trait qui sépare le dessin du texte : il appartient au TEXTE et non au
+   dessin, sinon il disparaît avec lui quand la carte passe en colonne. */
+.dim-card__body {
+  border-left: 1px solid rgba(255, 255, 255, 0.10);
+  padding-left: 22px;
+}
+.dim-card__lab {
   display: block;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
-.specs__dims-val {
+.dim-card__val {
   display: block;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  line-height: 1.2;
   color: var(--black);
 }
+.dim-card__note {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--gray);
+}
+/* Sous 560 px, ce n'est pas la fenêtre qui manque de place mais la CARTE : à
+   72 px de dessin plus 44 px de gouttière, il reste 226 px pour une valeur de
+   173 px et une phrase de deux lignes. Le dessin passe donc au-dessus, et le
+   filet vertical devient horizontal. Même seuil et même raison que les lignes
+   de fiche technique de cette page. */
+@media (max-width: 560px) {
+  .dim-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .dim-card__pic { width: 64px; }
+  .dim-card__body {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    padding-left: 0;
+    padding-top: 16px;
+    width: 100%;
+  }
+}
+
+/* Deux chapeaux qui se suivent dans un en-tête de section : le reset global
+   pose `margin: 0`, donc sans cette règle les deux paragraphes se touchent.
+   16 px, l'écart d'une unité de lecture, comme `.section-header .lead-duo`. */
+.section-subtitle + .section-subtitle { margin-top: 16px; }
 .specs__dims li {
   position: relative;
   padding-left: 20px;
