@@ -10560,7 +10560,7 @@ Texte du client pour les deux sections qui ouvrent `caracteristiques` /
 `en/technical-specs`, avec une maquette pour la première.
 
 - **« Format compact »** : le chapeau passe à deux phrases, et la cote devient une
-  CARTE (`.dim-card`) au liseré teal — pictogramme, séparateur, `DIMENSIONS`, la
+  CARTE (`.dim-card`) au liseré teal : pictogramme, séparateur, `DIMENSIONS`, la
   valeur, une phrase en italique. Elle remplace `.specs__dims-ligne / -lab / -val`,
   posées la veille pour le même emplacement et qui ne servaient qu'ici : elles sont
   retirées plutôt que gardées mortes.
@@ -10580,7 +10580,7 @@ la liste des surfaces de verre (`[data-theme="dark"] .x`, 0,2,0) écraserait la
 bordure. Piège déjà payé sur `.booking-modal__box` et `.booking-box`.
 
 Trois valeurs calculées et non choisies : le plafond de **460 px** (au-delà, la carte
-s'étire sur sa colonne — 546 px à 1440, 656 à 2560 — et ses trois lignes se perdent) ;
+s'étire sur sa colonne, 546 px à 1440 et 656 à 2560, et ses trois lignes se perdent) ;
 le seuil de **560 px** où elle s'empile, où ce n'est pas la fenêtre qui manque de
 place mais la CARTE (72 px de dessin plus 44 de gouttière laissent 226 px pour une
 valeur de 173) ; et `.section-subtitle + .section-subtitle { margin-top: 16px }`,
@@ -10624,8 +10624,8 @@ toute sonde de ce genre :
 **ET LE CONTRÔLE DE VIVACITÉ N'AVAIT PAS MORDU, parce qu'il était mal écrit** : la page
 cassée injectait `<p>mot<span>colle</span></p>`, or la sonde n'itère que sur des
 ÉLÉMENTS et « mot » est un nœud de texte. Une sonde qui rend zéro sur une page cassée ne
-prouve rien. Reprise avec `<b>0</b><span>intervention humaine</span>` — les deux formes
-historiques — plus un texte à 9 px et une image agrandie six fois : **0 sur la page
+prouve rien. Reprise avec `<b>0</b><span>intervention humaine</span>`, les deux formes
+historiques, plus un texte à 9 px et une image agrandie six fois : **0 sur la page
 saine, 4 sur la page cassée, un par défaut injecté.**
 
 ### Relevé de la passe
@@ -10654,7 +10654,7 @@ correspond à rien et le contrôle des actifs annonce 68 orphelins au lieu de 0.
   périmée sur ce point : elle dit que 600 et 800 « ne sont jamais chargés » et se
   résolvent à 700. Depuis que Roboto est auto-hébergée en police VARIABLE
   (`font-weight: 100 900`, 2026-08-25), 600 est une graisse réelle. Il en reste deux
-  sur le site publié — `.nav__link.active` et un style en ligne de `404.html` — plus
+  sur le site publié (`.nav__link.active` et un style en ligne de `404.html`), plus
   deux dans `.roi__*`, qui vit sur les pages Démo non publiées. C'est une dérive de
   charte (le document ne connaît que Light / Regular / Italic / Bold), pas un défaut
   de rendu : à arbitrer, pas à corriger au passage.
