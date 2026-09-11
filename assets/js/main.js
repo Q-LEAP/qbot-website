@@ -24,10 +24,58 @@ window.addEventListener('scroll', () => {
    Elle garde son ombre au défilement (au-dessus) et sa position collante,
    qui vient du CSS. La classe .nav--hidden n'a plus d'utilisateur. */
 
+/* ── Ouverture du tiroir mobile — UN SEUL CHEMIN ──
+   Il y avait cinq endroits qui écrivaient `open` et `aria-expanded` à la main
+   (le hamburger, le clic extérieur, le redimensionnement, la touche Échap, le
+   CTA). Depuis que l'ouverture pose AUSSI un voile et verrouille le défilement
+   de la page, un seul oubli laisserait le site voilé ou bloqué, sans menu
+   visible. Tout passe donc par `poseMenu()`.
+
+   LE VOILE EST INJECTÉ ICI ET JAMAIS ÉCRIT DANS LES PAGES : il n'existe que
+   quand le tiroir s'ouvre, or sans JavaScript le tiroir ne s'ouvre pas (le
+   hamburger en a besoin). C'est la discipline de `hidden` sur les accordéons
+   de la FAQ, appliquée à un calque : le balisage servi ne porte rien de
+   masquant. Il est frère de `.nav` dans le corps du document, ce qui suffit à
+   le rendre cliquable pour fermer — le « ferme au clic extérieur » ci-dessous
+   teste `!nav.contains(e.target)` et le couvre déjà.
+
+   `aria-hidden` parce qu'il ne dit rien : la sortie annoncée est le hamburger
+   devenu croix, qui garde son `aria-expanded`, plus la touche Échap.
+
+   LE DÉFILEMENT DE LA PAGE EST VERROUILLÉ le temps de l'ouverture, comme le
+   fait déjà la fenêtre de réservation (module 20). Sans lui, le contenu
+   glisse derrière un voile figé : le tiroir cesse d'être un plan au-dessus de
+   la page et redevient un bloc posé dedans, ce qui est exactement le défaut
+   qu'on corrige. La valeur d'origine est relue à chaque ouverture et restaurée
+   à la fermeture — jamais écrite en dur, une autre règle pouvant la porter. */
+const navVoile = document.createElement('div');
+navVoile.className = 'nav__voile';
+navVoile.setAttribute('aria-hidden', 'true');
+document.body.appendChild(navVoile);
+
+let navDefilDeb = '';
+
+function poseMenu(ouvert) {
+  /* Sortie si l'état ne change pas : deux ouvertures d'affilée mémoriseraient
+     « hidden » comme valeur d'origine du défilement, qui ne reviendrait donc
+     jamais. */
+  if (!navMenu || navMenu.classList.contains('open') === ouvert) return;
+
+  navMenu.classList.toggle('open', ouvert);
+  navVoile.classList.toggle('is-on', ouvert);
+  navToggle?.setAttribute('aria-expanded', String(ouvert));
+
+  if (ouvert) {
+    navDefilDeb = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+  } else {
+    document.documentElement.style.overflow = navDefilDeb;
+  }
+}
+
 // ── Toggle mobile ──
 navToggle?.addEventListener('click', () => {
-  const isOpen = navMenu.classList.toggle('open');
-  navToggle.setAttribute('aria-expanded', String(isOpen));
+  poseMenu(!navMenu.classList.contains('open'));
 });
 
 /* ── Le CTA descend dans le tiroir, en ENTRÉE DE MENU et non en bouton ──
@@ -85,17 +133,32 @@ navToggle?.addEventListener('click', () => {
      s'affiche par-dessus un menu resté ouvert, qu'on retrouve à sa fermeture.
      Le « ferme au clic extérieur » ci-dessous ne peut pas s'en charger, le clic
      ayant lieu DANS la barre. */
-  navCta.addEventListener('click', () => {
-    navMenu.classList.remove('open');
-    navToggle?.setAttribute('aria-expanded', 'false');
-  });
+  navCta.addEventListener('click', () => poseMenu(false));
 })();
 
-// Ferme au clic extérieur
+// Ferme au clic extérieur (le voile en fait partie : il est frère de .nav)
 document.addEventListener('click', (e) => {
   if (navMenu?.classList.contains('open') && !nav?.contains(e.target)) {
-    navMenu.classList.remove('open');
-    navToggle?.setAttribute('aria-expanded', 'false');
+    poseMenu(false);
+  }
+});
+
+/* Ferme quand le focus sort du tiroir — le pendant clavier de la règle
+   ci-dessus, et il est devenu nécessaire le jour où le tiroir a reçu son voile
+   (2026-09-11). Auparavant, tabuler au-delà de la dernière entrée posait le
+   focus sur un lien de la page, visible et atteignable : rien à signaler.
+   Depuis, ce lien est flouté sous le voile ET la page ne défile plus, donc le
+   focus ne peut même pas être amené à l'écran — il devient introuvable
+   (WCAG 2.4.11). Refermer le menu rend la page à qui la parcourt.
+
+   CE N'EST PAS UN PIÈGE DE FOCUS, et c'est délibéré : la tabulation continue
+   normalement dans la page, elle ne tourne pas en rond dans le tiroir. Le
+   dépôt a audité ce point le 2026-08-26 et conclu qu'un menu déroulant ne doit
+   pas piéger le focus, n'étant pas une fenêtre modale. Il n'en devient pas une
+   parce qu'il assombrit ce qu'il recouvre. */
+document.addEventListener('focusin', (e) => {
+  if (navMenu?.classList.contains('open') && !nav?.contains(e.target)) {
+    poseMenu(false);
   }
 });
 
@@ -106,17 +169,13 @@ window.addEventListener('resize', () => {
      de style). Resté à 768, le menu se refermait tout seul dès 769 px alors que
      le hamburger y est le seul moyen de l'ouvrir. Les deux valeurs vont
      ensemble. */
-  if (window.innerWidth > 859) {
-    navMenu?.classList.remove('open');
-    navToggle?.setAttribute('aria-expanded', 'false');
-  }
+  if (window.innerWidth > 859) poseMenu(false);
 }, { passive: true });
 
 // Touche Escape
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && navMenu?.classList.contains('open')) {
-    navMenu.classList.remove('open');
-    navToggle?.setAttribute('aria-expanded', 'false');
+    poseMenu(false);
     navToggle?.focus();
   }
 });

@@ -642,6 +642,80 @@ p { color: var(--gray); }
   transition: var(--transition);
 }
 
+/* LE VOILE DU TIROIR MOBILE — retour client du 2026-09-11 : « quand le menu
+   s'ouvre, c'est pas hyper lisible qu'on est dans le menu (…) j'ai un souci
+   dans la lecture et différenciation du contenu du site et du menu ».
+
+   LA CAUSE EST MESURABLE ET ELLE EST DANS LES COULEURS : le tiroir était à
+   #050505 et la page est à #0A0A0A. Cinq points d'écart sur 255, c'est-à-dire
+   rien. Deux surfaces noires bord à bord, sans ombre portée visible sur du
+   noir, ne se séparent pas. Le tiroir ne se lisait donc pas comme un plan
+   posé DEVANT la page mais comme une rallonge de la barre, et le contenu qui
+   reprenait 200 px plus bas avait exactement le même fond que lui.
+
+   Le remède tient en deux gestes complémentaires, et il en faut DEUX :
+   le tiroir monte en surface (#141414, la couleur de carte du site, donc plus
+   CLAIR que la page — cf. le bloc du tiroir en bas de cette feuille), et tout
+   ce qui est en dessous recule derrière ce voile. Éclaircir le seul tiroir ne
+   suffisait pas : le contenu restait net, donc au même plan de lecture.
+
+   LE FLOU EST CE QUI FAIT LE PLAN, pas l'assombrissement. C'est la leçon déjà
+   écrite pour le verre des cartes (« sans lui on verrait le halo net derrière
+   un voile, ce qui ressemble à une erreur d'opacité ») : un texte net sous un
+   voile sombre reste lisible, donc reste candidat à la lecture ; un texte flou
+   sort du champ d'attention immédiatement. D'où un voile MOINS opaque quand le
+   flou est disponible (0,42 contre 0,60) : le site reste reconnaissable
+   derrière, on ne l'a pas remplacé par un rideau.
+
+   IL DÉMARRE SOUS LA BARRE (`inset: var(--nav-h) 0 0 0`) et jamais en plein
+   écran : la barre porte le hamburger devenu croix, c'est-à-dire le moyen de
+   sortir. La flouter reviendrait à cacher la sortie.
+
+   Le clic dessus ferme le menu sans une ligne de plus : le voile est un frère
+   de `.nav` dans le corps du document, donc le « ferme au clic extérieur » du
+   module 1 (`!nav.contains(e.target)`) le couvre déjà. Il capte bien ce clic
+   (pas de `pointer-events: none`), sinon un doigt posé pour fermer activerait
+   un lien du contenu masqué.
+
+   L'état masqué passe par `visibility` et non par `display` : une transition
+   ne part pas d'un `display: none`. Le délai sur `visibility` la retient le
+   temps du fondu de sortie, et il tombe à 0 à l'ouverture. */
+.nav__voile {
+  position: fixed;
+  inset: var(--nav-h) 0 0 0;
+  /* SOUS LA BARRE (100) ET AU-DESSUS DE TOUT LE RESTE, `.back-to-top` COMPRIS,
+     QUI EST À 90. À z-index égal c'est l'ordre du DOM qui tranche, et ce
+     bouton est injecté par le module 6, donc après le voile : il restait NET
+     et cliquable par-dessus, seul objet du site à ne pas reculer avec la page
+     (relevé en capture le 2026-09-11). 95 le fait passer derrière sans toucher
+     à sa règle. Au-dessus du voile il ne doit rester que la barre — et le lien
+     d'évitement (99999), qui doit primer sur tout par définition. */
+  z-index: 95;
+  background: rgba(0, 0, 0, 0.60);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+.nav__voile.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.28s ease, visibility 0s;
+}
+@supports (backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px)) {
+  .nav__voile {
+    background: rgba(0, 0, 0, 0.42);
+    -webkit-backdrop-filter: blur(7px) saturate(80%);
+    backdrop-filter: blur(7px) saturate(80%);
+  }
+}
+/* Au-dessus du seuil du tiroir il n'y a plus de tiroir : le voile n'a aucune
+   raison d'exister, et le laisser vivre coûterait une couche de composition
+   fixe sur toute la page. Le seuil est celui du tiroir (859 px) : les deux
+   valeurs vont ensemble. */
+@media (min-width: 860px) {
+  .nav__voile { display: none; }
+}
+
 /* ---- Hero ---- */
 .hero {
   background: var(--dark);
@@ -3061,21 +3135,71 @@ p { color: var(--gray); }
    le menu se refermerait tout seul à 800 px alors que le hamburger est le seul
    moyen de l'ouvrir. */
 @media (max-width: 859px) {
+  /* LE TIROIR EST UN PANNEAU POSÉ SUR LA PAGE, PAS UNE RALLONGE DE LA BARRE
+     (2026-09-11). Voir le pavé de `.nav__voile` plus haut pour la cause : à
+     #050505 sur une page à #0A0A0A, rien ne séparait les deux. Quatre choses
+     le posent maintenant en surface, et elles se tiennent :
+
+     1. UN FOND PLUS CLAIR QUE LA PAGE. C'est contre-intuitif sur un site noir,
+        et c'est pourtant le seul sens qui marche : une surface qui s'approche
+        de l'oeil s'éclaircit. #141414 est la valeur de carte du dépôt, donc
+        rien de neuf dans la palette.
+     2. DES COINS BAS ARRONDIS. C'est ce qui donne une FIN au panneau : sans
+        eux, un bord droit qui traverse l'écran se lit comme une limite de
+        section de plus, et le site en a beaucoup.
+     3. UNE OMBRE QUI PORTE VRAIMENT. Une ombre noire sur du noir ne se voit
+        pas ; posée sur le voile, qui est plus clair que le noir pur, elle
+        redevient visible et détache le bord bas.
+     4. UN FILET TEAL EN BAS, qui répond à celui que `.nav::after` pose déjà en
+        haut du tiroir. Le menu est ainsi encadré, et c'est le seul endroit de
+        la page qui l'est.
+
+     CHAQUE ENTRÉE EST UNE LIGNE, séparée de sa voisine. Un empilement de
+     textes espacés de 20 px est une liste de liens ; des lignes séparées sont
+     un menu, et c'est ce que le retour demande de rendre évident. Le gain est
+     aussi tactile : la cible passe de la hauteur du texte (environ 20 px) à
+     48 px de haut sur toute la largeur du panneau. */
   .nav__menu {
     display: none;
     position: absolute;
     top: var(--nav-h);
     left: 0;
     right: 0;
-    background: var(--dark);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: #141414;
+    border-bottom: 1px solid rgba(0, 203, 190, 0.28);
+    border-radius: 0 0 var(--radius) var(--radius);
     flex-direction: column;
-    align-items: flex-start;
-    padding: 16px 24px 24px;
-    gap: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    /* `stretch` et non `flex-start` : les séparateurs et les cibles tactiles
+       prennent toute la largeur du panneau. */
+    align-items: stretch;
+    padding: 4px 24px 20px;
+    gap: 0;
+    box-shadow: 0 26px 50px -14px rgba(0, 0, 0, 0.8);
   }
   .nav__menu.open { display: flex; }
+  .nav__menu > li + li { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+  .nav__menu > li > a { display: block; padding: 14px 2px; }
+  /* LE TEXTE MONTE DE 65 À 80 % DE BLANC DANS LE TIROIR, et seulement là. Dans
+     la barre, un lien de navigation est un élément secondaire posé à côté du
+     contenu : son gris dit qu'il n'est pas ce qu'on vient lire. Le tiroir
+     ouvert, lui, ne contient QUE ces quatre lignes, et le retour du 2026-09-11
+     porte justement sur la lisibilité. Mesuré sur le nouveau fond (#141414) :
+     8,2:1 à 65 %, 12,1:1 à 80 %.
+     L'entrée courante reste repérable : elle se distingue par sa TEINTE (le
+     teal) et non par sa clarté, donc éclaircir ses voisines ne l'efface pas. */
+  .nav__menu .nav__link { color: rgba(255, 255, 255, 0.80); }
+  /* Le survol doit être REDIT ici : `.nav__link:hover` pèse (0,2,0), soit le
+     même poids que la règle ci-dessus, qui est écrite plus loin dans la
+     feuille et gagnerait donc aussi sur l'état survolé. */
+  .nav__menu .nav__link:hover { color: var(--white); }
+  .nav__menu .nav__link.active { color: var(--teal); }
+  /* Le trait de survol de `.nav__link` est calibré pour un lien en ligne dans
+     une barre : sur un lien devenu bloc, il barrerait toute la largeur du
+     panneau, 18 px sous son propre texte (le remplissage vertical s'ajoute à
+     son `bottom: -3px`). L'entrée courante reste parfaitement repérable sans
+     lui — elle est la seule en teal, la règle est écrite avec `.nav__link`. */
+  .nav__menu .nav__link::after { display: none; }
+
   .nav__toggle { display: flex; order: 4; }
 
   /* LE CTA DE RÉSERVATION EST UNE ENTRÉE DE MENU DANS LE TIROIR, PAS UN BOUTON
@@ -3107,8 +3231,13 @@ p { color: var(--gray); }
   .nav__menu-cta { width: 100%; }
   .nav__menu-cta .btn,
   .nav__menu-cta .btn:hover {
-    display: inline;
-    padding: 0;
+    /* Bloc et non `inline` depuis que les entrées sont des lignes séparées
+       (2026-09-11) : sans cela le CTA serait la seule entrée du tiroir dont la
+       cible fait la largeur de son texte, et sa ligne serait plus basse que
+       les trois autres. Le remplissage est celui de `.nav__menu > li > a`,
+       qu'il faut redire ici : ce sélecteur pèse (0,2,0) contre (0,1,1). */
+    display: block;
+    padding: 14px 2px;
     background: none;
     border: 0;
     box-shadow: none;
@@ -3116,7 +3245,7 @@ p { color: var(--gray); }
     border-radius: 0;
     font-size: 0.9375rem;   /* identique à .nav__link */
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(255, 255, 255, 0.80);   /* comme les autres entrées du tiroir */
     transition: color var(--transition);
   }
   .nav__menu-cta .btn:hover { color: var(--white); }
@@ -3356,8 +3485,14 @@ p { color: var(--gray); }
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ── Mobile menu — animation slide-down ── */
-@media (max-width: 768px) {
+/* ── Mobile menu — animation slide-down ──
+   859 ET NON 768 : c'est le seuil du tiroir depuis le 2026-09-09, et cette
+   requête était restée en arrière. De 769 à 859 px le panneau apparaissait
+   donc d'un coup, sans glisser — sur une bande de 90 px de large où il est
+   pourtant le seul menu disponible. Relevé le 2026-09-11 en refondant le
+   tiroir. Le troisième bloc de la même famille (le fond du thème sombre) est
+   plus bas dans cette feuille. */
+@media (max-width: 859px) {
   .nav__menu.open {
     animation: menuSlideDown 0.28s cubic-bezier(0.16,1,0.3,1) both;
   }
@@ -5314,13 +5449,15 @@ a:focus-visible { border-radius: var(--radius-sm); }
   background: linear-gradient(90deg, transparent 0%, rgba(0,203,190,0.12) 25%, rgba(0,203,190,0.25) 50%, rgba(0,203,190,0.12) 75%, transparent 100%);
 }
 
-@media (max-width: 768px) {
-  [data-theme="dark"] .nav__menu {
-    background: #050505;
-    border-bottom-color: rgba(255,255,255,0.06);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  }
-}
+/* Le tiroir mobile NE S'ASSOMBRIT PLUS EN THÈME SOMBRE (2026-09-11). Cette
+   règle le ramenait à #050505, c'est-à-dire à cinq points de la page (#0A0A0A)
+   et donc invisible contre elle : c'est la cause exacte du retour client
+   « on ne voit pas qu'on est dans le menu ». Le sens est désormais inversé, le
+   panneau est plus CLAIR que la page, et sa valeur unique vit dans le bloc du
+   tiroir (859 px) — il n'y a plus rien à surcharger ici.
+   Cette requête était au passage restée à 768 px alors que le tiroir bascule à
+   859 px depuis le 2026-09-09 : entre les deux, la surcharge ne s'appliquait
+   même pas. Deux raisons de la retirer plutôt que de la corriger. */
 
 /* ── Surfaces blanches → sombres ── */
 [data-theme="dark"] .feature-card,

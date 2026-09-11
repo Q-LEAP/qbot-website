@@ -10727,3 +10727,111 @@ Contrôles : `audit-a11y.py` à 1440 **et** à 390 px, `audit-visibilite.py` : 1
 lues sur 15, **0 constat**. Balayage de 60 vues (15 pages × 390/1440 px ×
 normal/mouvement réduit) : 0 débordement horizontal, 0 erreur console. Les deux
 versionneurs d'actifs d'accord (17 pages, puis 0 à mettre à jour).
+
+## Le tiroir mobile devient un plan à part (2026-09-11)
+
+Retour du client : « quand le menu s'ouvre, c'est pas hyper lisible qu'on est dans le
+menu (…) j'ai un souci dans la lecture et différenciation du contenu du site et du menu »,
+avec deux pistes proposées (un menu plein écran, ou plus de marge en bas) et une
+contrainte : que ça reste beau et dans la DA, mais que les personnes qui ont du mal y
+arrivent.
+
+### LA CAUSE ÉTAIT MESURABLE, ET C'ÉTAIT LA COULEUR
+
+Le tiroir était à `#050505` et la page est à `#0A0A0A` : **cinq points sur 255**, soit un
+rapport de 1,03:1. Deux surfaces noires bord à bord, et une ombre portée noire qui ne se
+voit pas sur du noir. Le panneau ne se lisait donc pas comme posé DEVANT la page mais
+comme une rallonge de la barre, et le contenu qui reprenait 240 px plus bas avait
+exactement le même fond que lui. Ce n'était pas une impression.
+
+**Ni le plein écran ni la marge n'auraient réglé ça** : un menu plein écran sur quatre
+entrées laisse les trois quarts de l'écran vides et coûte une animation de plus ; et de
+la marge entre deux surfaces identiques ne crée toujours aucune frontière.
+
+### Ce qui est en place, et pourquoi il faut les deux moitiés
+
+1. **Le panneau monte en surface** : `#141414` (la couleur de carte du dépôt), donc plus
+   CLAIR que la page. Contre-intuitif sur un site noir, et pourtant le seul sens qui
+   marche : une surface qui s'approche de l'oeil s'éclaircit. Plus des coins bas arrondis
+   (ils donnent une FIN au panneau, là où un bord droit se lit comme une limite de
+   section de plus), un filet teal en bas qui répond à celui que `.nav::after` pose déjà
+   en haut, et une ombre qui redevient visible parce qu'elle est posée sur le voile.
+2. **Tout le reste recule** derrière `.nav__voile`, injecté par le module 1.
+
+**ÉCLAIRCIR LE SEUL PANNEAU NE SUFFISAIT PAS** : le contenu restait net, donc au même plan
+de lecture. Et **c'est le FLOU qui fait le plan, pas l'assombrissement** — la leçon déjà
+écrite pour le verre des cartes. Un texte net sous un voile sombre reste lisible, donc
+reste candidat à la lecture ; flou, il sort du champ d'attention immédiatement. D'où un
+voile MOINS opaque quand le flou est disponible (0,42 contre 0,60 en repli `@supports`) :
+le site reste reconnaissable derrière, on ne l'a pas remplacé par un rideau.
+
+**Le voile démarre SOUS la barre** (`inset: var(--nav-h) 0 0 0`) et jamais en plein écran :
+la barre porte le hamburger devenu croix, c'est-à-dire la sortie. La flouter reviendrait à
+cacher la sortie.
+
+**Chaque entrée est une ligne**, séparée par un filet. Un empilement de textes espacés de
+20 px est une liste de liens ; des lignes séparées sont un menu, et c'est ce que le retour
+demande de rendre évident. Gain tactile au passage : la cible passe de la hauteur du texte
+(~20 px) à **54 px sur toute la largeur du panneau**. Et le texte des entrées monte de 65 à
+80 % de blanc — dans la barre, un lien est un élément secondaire posé à côté du contenu ;
+dans le tiroir ouvert il n'y a que ces quatre lignes à lire. Mesuré sur le nouveau fond :
+8,2:1 à 65 %, **12,1:1 à 80 %**. L'entrée courante se distingue par sa TEINTE (le teal) et
+non par sa clarté, donc éclaircir ses voisines ne l'efface pas.
+
+### Trois pièges, tous rencontrés
+
+- **`.back-to-top` est à `z-index: 90`, comme le voile l'était.** À poids égal c'est
+  l'ordre du DOM qui tranche, et ce bouton est injecté par le module 6, donc APRÈS le
+  voile : il restait net et cliquable par-dessus, seul objet du site à ne pas reculer avec
+  la page. Vu en capture, pas en mesure. Le voile passe à 95. Au-dessus de lui il ne doit
+  rester que la barre et le lien d'évitement (99999), qui prime par définition ;
+- **le défilement de la page est verrouillé** le temps de l'ouverture, comme le fait déjà
+  la fenêtre de réservation. Sans lui, le contenu glisse derrière un voile figé : le
+  tiroir cesse d'être un plan au-dessus de la page et redevient un bloc dedans, c'est-à-dire
+  le défaut qu'on corrige. La valeur d'origine est relue à chaque ouverture et restaurée à
+  la fermeture, jamais écrite en dur. **Et l'ordre avec la fenêtre Bookings est correct par
+  construction** : le module 1 attache son écouteur au CTA bien avant le module 20, donc
+  `poseMenu(false)` rend le défilement avant que la modale ne mémorise sa valeur ;
+- **au clavier, la tabulation sortait vers un contenu voilé et non défilable**, donc vers
+  un focus que rien ne pouvait amener à l'écran (WCAG 2.4.11). Le menu se referme désormais
+  quand le focus en sort, pendant exact du « ferme au clic extérieur ». **Ce n'est PAS un
+  piège de focus** : la tabulation continue normalement dans la page. Le dépôt a conclu le
+  2026-08-26 qu'un menu déroulant ne doit pas piéger le focus, et il n'en devient pas une
+  fenêtre modale parce qu'il assombrit ce qu'il recouvre.
+
+### UN SEUL CHEMIN POUR OUVRIR ET FERMER
+
+Cinq endroits écrivaient `open` et `aria-expanded` à la main (hamburger, clic extérieur,
+redimensionnement, Échap, CTA). Depuis que l'ouverture pose AUSSI un voile et verrouille le
+défilement, un seul oubli laisserait le site voilé ou bloqué sans menu visible. Tout passe
+par `poseMenu()`, qui **sort si l'état ne change pas** : deux ouvertures d'affilée
+mémoriseraient sinon « hidden » comme valeur d'origine du défilement, qui ne reviendrait
+jamais.
+
+Le voile est **injecté par le script et jamais écrit dans les pages** : sans JavaScript le
+tiroir ne s'ouvre pas (le hamburger en a besoin), donc le balisage servi ne porte aucun
+calque masquant. C'est la discipline du `hidden` des accordéons, appliquée à un calque.
+
+### Deux blocs étaient restés bornés à 768 px
+
+Le tiroir bascule à 859 px depuis le 2026-09-09 et deux requêtes ne l'avaient pas suivi :
+l'**animation d'ouverture** (de 769 à 859 px le panneau apparaissait d'un coup, sans
+glisser, sur la bande où il est pourtant le seul menu disponible) et le **fond du thème
+sombre**, qui ne s'appliquait donc même pas dans cette bande. La première est corrigée, la
+seconde **retirée** : elle assombrissait le tiroir, c'est-à-dire exactement l'inverse de ce
+qu'il faut, et sa valeur unique vit désormais dans le bloc du tiroir.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 **et** à 390 px, `audit-visibilite.py` : **15 pages lues sur 15,
+0 constat**. Menu ouvert sur 7 pages (dont les deux langues et une page légale, donc les
+deux profondeurs) : 4 entrées, panneau à 242 px, voile actif, défilement verrouillé,
+0 débordement, **0 erreur console**. Les quatre chemins de fermeture rendent le défilement
+à sa valeur d'origine (`''`), y compris après trois bascules d'affilée, et Échap redonne le
+focus au hamburger. Au-dessus de 860 px, le voile est en `display: none` et la barre
+retrouve son état d'origine. Les deux versionneurs d'actifs d'accord (17 pages, puis 0).
+
+**Rappel de méthode retrouvé au passage** : une capture Playwright avec `clip` ne rend pas
+`backdrop-filter` sur un élément `fixed` — elle montrait le contenu net et m'a fait croire
+à une régression que `elementFromPoint` démentait. Une capture pleine fenêtre, elle, est
+fiable.
