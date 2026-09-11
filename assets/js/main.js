@@ -30,30 +30,66 @@ navToggle?.addEventListener('click', () => {
   navToggle.setAttribute('aria-expanded', String(isOpen));
 });
 
-/* ── Le bouton de réservation n'existe plus dans la navigation mobile ──
-   QUATRIÈME ÉTAT DE CE BOUTON, ET LES QUATRE SONT DES DEMANDES DU CLIENT :
-   dans le tiroir le 2026-09-08 (« le bouton du header je le mettrais dans le
-   menu sur mobile »), dans la barre le 2026-09-09 au matin, de nouveau dans le
-   tiroir le même jour au soir, et masqué depuis (« il faudrait qu'il n'y ait
-   pas de bouton Réserver une démo sur la version mobile dans le menu », avec
-   l'arbitrage explicite qu'il ne remonte pas dans la barre pour autant). Il n'y
-   a rien à « corriger » dans un sens ou dans l'autre : c'est le dernier
-   arbitrage qui vaut.
+/* ── Le CTA descend dans le tiroir, en ENTRÉE DE MENU et non en bouton ──
+   CINQUIÈME ÉTAT DE CE BOUTON, ET LES CINQ SONT DES DEMANDES DU CLIENT : dans
+   le tiroir le 2026-09-08, dans la barre le 2026-09-09 au matin, dans le tiroir
+   le même jour au soir, masqué le 2026-09-09 tard, et de nouveau dans le tiroir
+   ce jour — mais cette fois SANS la pastille : « je ne souhaitais pas le
+   retirer, juste ne pas avoir un gros bouton à l'ouverture, mais le mettre au
+   même niveau que les autres titres du menu » (2026-09-11). C'est donc le
+   masquage complet qui était la sur-interprétation : ce que le client refusait
+   était la FORME (une pastille teal pleine largeur en tête de tiroir), pas la
+   présence de l'entrée. Il n'y a rien à « corriger » dans un sens ou dans
+   l'autre : c'est toujours le dernier arbitrage qui vaut.
 
-   IL N'Y A DONC PLUS RIEN À FAIRE EN JAVASCRIPT, et c'est mieux ainsi : le
-   déplacement du noeud vivait ici, le masquage vit dans la feuille de style
-   (`.nav__actions .btn { display: none }` sous 859 px), donc il s'applique
-   aussi sans JavaScript. Le bloc qui déplaçait le noeud est supprimé, et avec
-   lui l'enveloppe `.nav__menu-cta` et l'écouteur qui refermait le tiroir.
+   ON DÉPLACE LE NOEUD, ON NE LE DUPLIQUE PAS. Un second bouton écrit dans le
+   balisage donnerait deux arrêts de tabulation et deux fois le même nom
+   accessible ; surtout, `tools/maj-nav-booking.py` compte UN bouton par page
+   dans la SOURCE et y écrit l'URL de l'agenda, qui est à source unique dans
+   `tools/bookings_conf.py`. Déplacé, le noeud garde ses écouteurs, donc la
+   fenêtre de réservation du module 20 s'ouvre sans une ligne de plus.
 
-   DEUX LEÇONS DE CE BLOC RESTENT VRAIES SI LE BOUTON DEVAIT REVENIR DANS LE
-   TIROIR : on DÉPLACE le noeud, on ne le duplique pas (un second bouton dans le
-   balisage donnerait deux arrêts de tabulation, et `tools/maj-nav-booking.py`
-   compte UN bouton par page dans la source) ; et un écouteur `change` de
-   `matchMedia` ne suffit pas, il ne se réveille qu'au FRANCHISSEMENT du seuil,
-   donc une page ouverte étroite puis élargie sans repasser par 859 px gardait
-   le bouton coincé dans le tiroir pour toute sa vie — la largeur doit être
-   RELUE à chaque appel. */
+   UN ÉCOUTEUR `change` DE `matchMedia` NE SUFFIT PAS : il ne se réveille qu'au
+   FRANCHISSEMENT du seuil, donc une page ouverte étroite puis élargie sans
+   repasser par 859 px garderait le bouton coincé dans le tiroir pour toute sa
+   vie (mesuré le 2026-09-08, et le cas se reproduit tel quel dans un cadre en
+   ligne, qui naît à 300 px). La largeur est donc RELUE à chaque appel.
+
+   L'apparence d'entrée de menu est du CSS (`.nav__menu-cta`, bloc 859 px de la
+   feuille de style) : le noeud garde ses classes `btn btn--primary`, qui
+   redeviennent vraies dès qu'il remonte dans la barre. */
+(function () {
+  const navActions = document.querySelector('.nav__actions');
+  const navCta     = navActions?.querySelector('.btn');
+  if (!navCta || !navMenu || !navActions) return;
+
+  const hote = document.createElement('li');
+  hote.className = 'nav__menu-cta';
+
+  function place() {
+    const tiroir = window.innerWidth <= 859;   // même seuil que le CSS
+    if (tiroir && navCta.parentElement !== hote) {
+      hote.appendChild(navCta);
+      navMenu.appendChild(hote);
+    } else if (!tiroir && navCta.parentElement === hote) {
+      /* Devant le sélecteur de langue, sa place d'origine dans le balisage. */
+      navActions.insertBefore(navCta, navActions.firstChild);
+      hote.remove();
+    }
+  }
+
+  place();
+  window.addEventListener('resize', place, { passive: true });
+
+  /* Le tiroir se referme quand on ouvre l'agenda : sinon la fenêtre modale
+     s'affiche par-dessus un menu resté ouvert, qu'on retrouve à sa fermeture.
+     Le « ferme au clic extérieur » ci-dessous ne peut pas s'en charger, le clic
+     ayant lieu DANS la barre. */
+  navCta.addEventListener('click', () => {
+    navMenu.classList.remove('open');
+    navToggle?.setAttribute('aria-expanded', 'false');
+  });
+})();
 
 // Ferme au clic extérieur
 document.addEventListener('click', (e) => {

@@ -10662,3 +10662,68 @@ correspond à rien et le contrôle des actifs annonce 68 orphelins au lieu de 0.
   un film de 401 px. C'est le comportement voulu depuis le passage en `align-items:
   start` (2026-09-04) et c'est ce que le texte du client dicte ; si le vide gêne, c'est
   du contenu à ajouter, pas un calage à corriger.
+
+## Le CTA de réservation : entrée de menu, et une seule taille (2026-09-11)
+
+Deux retours du client, capture à l'appui.
+
+### CINQUIÈME ÉTAT DU BOUTON DE RÉSERVATION, ET LE MASQUAGE ÉTAIT UNE SUR-INTERPRÉTATION
+
+« Tu as vu que le menu mobile n'a plus Réserver une démo ? Je ne souhaitais pas le
+retirer, juste ne pas avoir un gros bouton à l'ouverture mais le mettre au même niveau
+que les autres titres du menu. » Ce que le retour du 2026-09-09 au soir refusait était
+donc la **forme** — une pastille teal en tête de tiroir — et non la présence de
+l'entrée, que le masquage complet avait emportée avec elle.
+
+Le module 1 **déplace** de nouveau le noeud dans le tiroir sous 859 px, et le bloc
+859 px de la feuille de style le dépastille : plus de fond, de bordure, de
+remplissage, d'ombre ni de translation au survol, et la taille et la graisse d'un
+`.nav__link` (15 px, 500). Relevé à 390 / 768 / 859 px : le libellé part **au même x
+que les trois liens du menu (24 px)**, dans la même taille.
+
+Les deux leçons que la note précédente avait laissées en dépôt ont resservi telles
+quelles, et elles restent vraies :
+
+- **on déplace le noeud, on ne le duplique pas.** Un second bouton dans le balisage
+  donnerait deux arrêts de tabulation et deux fois le même nom accessible, et
+  `tools/maj-nav-booking.py` compte UN bouton par page dans la SOURCE, l'URL de
+  l'agenda étant à source unique dans `tools/bookings_conf.py` ;
+- **un écouteur `change` de `matchMedia` ne suffit pas** : il ne se réveille qu'au
+  franchissement du seuil, donc une page ouverte étroite puis élargie sans repasser
+  par 859 px garderait le bouton coincé dans le tiroir pour toute sa vie. La largeur
+  est relue à chaque appel. Vérifié : 390 → 1440 → 500 → 1200 → 390 px **suit dans les
+  deux sens sans rechargement**.
+
+`.nav__actions .btn { display: none }` **reste** sous 859 px : c'est l'état sans
+JavaScript, où le noeud n'a pas été déplacé et où le tiroir ne s'ouvre de toute façon
+pas (le hamburger a besoin du script). Le noeud garde ses classes `btn btn--primary`,
+qui redeviennent vraies dès qu'il remonte dans la barre.
+
+Le tiroir se referme au clic sur l'entrée : le « ferme au clic extérieur » ne peut pas
+s'en charger, le clic ayant lieu DANS la barre, et la fenêtre modale s'afficherait
+sinon par-dessus un menu resté ouvert.
+
+### Le CTA de bas de page prend la taille de celui de la barre
+
+« La taille du bouton et police à mettre la même taille dans la section CTA que dans
+l'Header. » Les deux portent le même libellé et la même action à un écran de distance :
+deux tailles pour une seule action se lisent comme deux actions différentes.
+
+`.cta-block .btn` reprend **les valeurs de `.nav__actions .btn`** (10/22 px, texte à
+14 px) plutôt que des valeurs recopiées à l'oeil, et c'est écrit des deux côtés : si
+l'une bouge, l'autre doit suivre. Relevé : **170 × 48 px de part et d'autre**, à toutes
+les largeurs. `btn--lg` reste sur le balisage des 12 pages concernées — le retirer
+demanderait de toucher chaque page pour un rendu identique, et il redeviendrait juste
+si la décision changeait.
+
+**ET LE RABATTEMENT MOBILE DEVENAIT UN AGRANDISSEMENT.** Les deux lignes `.cta-block`
+du bloc 520 px (`padding: 12px 26px; font-size: 0.9375rem`) pèsent le même poids que la
+nouvelle règle et sont écrites plus loin : elles gagnaient, donc le bouton
+**regrossissait sur téléphone**, c'est-à-dire exactement là où on le voulait le plus
+compact. Elles sont retirées ; celles du hero restent. Règle générale : **un rabattement
+mobile n'a de sens que tant que la taille de base est plus grande que lui.**
+
+Contrôles : `audit-a11y.py` à 1440 **et** à 390 px, `audit-visibilite.py` : 15 pages
+lues sur 15, **0 constat**. Balayage de 60 vues (15 pages × 390/1440 px ×
+normal/mouvement réduit) : 0 débordement horizontal, 0 erreur console. Les deux
+versionneurs d'actifs d'accord (17 pages, puis 0 à mettre à jour).

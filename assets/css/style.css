@@ -1446,6 +1446,22 @@ p { color: var(--gray); }
    du site partagent maintenant cette classe — libellé, titre, sous-titre et
    boutons partent du même bord que le logo. */
 .cta-block .section-subtitle { margin-left: 0; margin-right: 0; }
+
+/* LE CTA DE BAS DE PAGE A EXACTEMENT LA TAILLE DE CELUI DE LA BARRE (2026-09-11,
+   capture à l'appui : « la taille du bouton et police à mettre la même taille
+   dans la section CTA que dans l'Header »). Les deux portent le même libellé et
+   la même action, à un écran de distance : deux tailles pour une seule action se
+   lisent comme deux actions différentes.
+
+   Les valeurs ne sont pas recopiées à la main mais reprises telles quelles de
+   `.nav__actions .btn` (10/22 px, texte à 14 px) : si l'une bouge, l'autre doit
+   suivre, et c'est écrit des deux côtés.
+
+   Ce sélecteur (0,2,0) passe devant `btn--lg` (0,1,0), qui reste sur le balisage
+   des 12 pages concernées : le retirer demanderait de toucher chaque page pour
+   un rendu identique, et il redeviendrait juste si la décision changeait. */
+.cta-block .btn,
+.cta-block__actions .btn { padding: 10px 22px; font-size: 0.875rem; }
 .cta-block__actions {
   display: flex;
   gap: 16px;
@@ -3062,31 +3078,48 @@ p { color: var(--gray); }
   .nav__menu.open { display: flex; }
   .nav__toggle { display: flex; order: 4; }
 
-  /* PAS DE BOUTON DE RÉSERVATION DANS LA NAVIGATION MOBILE (2026-09-09, soir,
-     demande du client : « il faudrait qu'il n'y ait pas de bouton Réserver une
-     démo sur la version mobile dans le menu »), et il ne remonte PAS dans la
-     barre : arbitré le même jour, il ne doit être ni dans le tiroir ni dans le
-     header sous ce seuil. La barre n'y porte donc que le logo, la langue et le
-     hamburger, et le tiroir ses trois liens.
+  /* LE CTA DE RÉSERVATION EST UNE ENTRÉE DE MENU DANS LE TIROIR, PAS UN BOUTON
+     (2026-09-11) : « je ne souhaitais pas le retirer, juste ne pas avoir un
+     gros bouton à l'ouverture mais le mettre au même niveau que les autres
+     titres du menu ». Ce que le client refusait était donc la FORME — une
+     pastille teal en tête de tiroir — et non la présence de l'entrée, que le
+     masquage complet de la veille avait emportée avec elle.
 
-     QUATRIÈME ÉTAT DE CE BOUTON, ET LES QUATRE SONT DES DEMANDES DU CLIENT :
-     tiroir (2026-09-08), barre (2026-09-09 matin), tiroir (2026-09-09 soir),
-     masqué (ce jour). C'est toujours le dernier arbitrage qui vaut ; il n'y a
-     rien à « corriger » dans un sens ou dans l'autre.
+     LE NOEUD EST DÉPLACÉ PAR LE MODULE 1, IL N'EST PAS DUPLIQUÉ : il garde ses
+     classes `btn btn--primary`, qui redeviennent vraies dès qu'il remonte dans
+     la barre au-dessus de 859 px, et `tools/maj-nav-booking.py` continue de
+     compter UN bouton par page dans la source. C'est donc ici qu'on neutralise
+     la pastille, et il faut neutraliser TOUT ce que `.btn` et `.btn--primary`
+     posent — fond, bordure, remplissage, graisse, ombre et translation au
+     survol — sans quoi il reste un fantôme de bouton (une bordure teal de 2 px
+     ou un texte en gras au milieu de liens à 500).
 
-     LE CHEMIN DE RÉSERVATION N'EST PAS PERDU, et c'est ce qui rend la décision
-     tenable : l'entrée « Réserver une démo » du pied de page ouvre le même
-     agenda sur les 17 pages, et chaque page porte son bloc d'appel à l'action.
+     `.nav__actions .btn` reste masqué : c'est l'état SANS JavaScript, où le
+     noeud n'a pas été déplacé et où le tiroir ne s'ouvre de toute façon pas
+     (le hamburger a besoin du script). Le chemin de réservation y reste servi
+     par l'entrée du pied de page et par le bloc d'appel à l'action de la page.
 
-     `display: none` ET NON UN RETRAIT DU BALISAGE : `tools/maj-nav-booking.py`
-     compte UN bouton par page dans la SOURCE et y écrit l'URL de l'agenda, qui
-     est à source unique dans `tools/bookings_conf.py`. Le retirer du HTML
-     casserait cette source unique. Masqué, il sort aussi de l'ordre de
-     tabulation, donc il n'y a pas de commande invisible mais atteignable.
-
-     C'est le CSS qui masque, et pas le module 1 : la règle vaut donc aussi sans
-     JavaScript, où le bouton reste dans la barre du balisage. */
+     La couleur de l'entrée est celle d'un lien de menu et non le teal : le teal
+     est réservé à l'entrée COURANTE (`.nav__link.active`), et deux teals dans
+     un tiroir de quatre lignes rendraient ce repère illisible. */
   .nav__actions .btn { display: none; }
+
+  .nav__menu-cta { width: 100%; }
+  .nav__menu-cta .btn,
+  .nav__menu-cta .btn:hover {
+    display: inline;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    transform: none;
+    border-radius: 0;
+    font-size: 0.9375rem;   /* identique à .nav__link */
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    transition: color var(--transition);
+  }
+  .nav__menu-cta .btn:hover { color: var(--white); }
 }
 
 @media (max-width: 768px) {
@@ -3152,11 +3185,15 @@ p { color: var(--gray); }
       justify-content: center;
     }
     /* Et la grande taille redescend : `btn--lg` est dimensionné pour un écran
-       large, il donne une pastille de 52 px de haut sur un téléphone. */
+       large, il donne une pastille de 52 px de haut sur un téléphone.
+       LES DEUX LIGNES `.cta-block` SONT PARTIES LE 2026-09-11, ET IL LE FALLAIT :
+       depuis que le CTA de bas de page a la taille de celui de la barre (10/22 px,
+       texte à 14 px), cette règle — même poids, écrite plus loin, donc gagnante —
+       le RAGRANDISSAIT à 12/26 px sur téléphone, c'est-à-dire exactement là où on
+       le voulait le plus compact. Un rabattement mobile n'a de sens que tant que
+       la taille de base est plus grande que lui. */
     .hero__actions .btn--lg,
-    .order-hero__actions .btn--lg,
-    .cta-block > .btn--lg,
-    .cta-block__actions .btn--lg { padding: 12px 26px; font-size: 0.9375rem; }
+    .order-hero__actions .btn--lg { padding: 12px 26px; font-size: 0.9375rem; }
   }
 
 @media (max-width: 400px) {
