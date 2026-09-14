@@ -1519,7 +1519,13 @@ p { color: var(--gray); }
    sur le conteneur, donc hors d'atteinte de toute feuille de style. Les dix blocs
    du site partagent maintenant cette classe — libellé, titre, sous-titre et
    boutons partent du même bord que le logo. */
-.cta-block .section-subtitle { margin-left: 0; margin-right: 0; }
+/* Le chapeau du CTA unifié. Sa marge basse vient ICI et non d'un style en
+   ligne : le bloc est identique sur les 12 pages qui le portent, et une
+   valeur recopiée douze fois est une valeur qui finit par diverger — le
+   piège relevé six fois sur ce dépôt. Les couleurs, elles, n'ont besoin de
+   rien : `.section--dark` donne le blanc au titre par héritage et
+   `.section--dark p` le gris clair au chapeau. */
+.cta-block .section-subtitle { margin: 0 0 32px; }
 
 /* LE CTA DE BAS DE PAGE A EXACTEMENT LA TAILLE DE CELUI DE LA BARRE (2026-09-11,
    capture à l'appui : « la taille du bouton et police à mettre la même taille
