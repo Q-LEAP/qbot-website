@@ -743,102 +743,77 @@ p { color: var(--gray); }
   align-items: center;
 }
 
-/* ══ LA PASTILLE DU HERO EST EN VERRE, PLUS EN TEAL ════════════════════════
-   « Le bouton fait trop IA selon les feedbacks » (client, 2026-09-14), avec une
-   recette de glassmorphisme à appliquer « dans la DA Q-Bot ».
+/* ══ L'ÉTIQUETTE DU HERO : FINE, MATE, UN RECTANGLE ARRONDI ════════════════
+   Trois retours successifs du client (2026-09-14), et le dernier tranche la
+   forme : « le bouton fait trop IA », puis « trouve une idée plus originale »,
+   puis le retour Gemini — un badge ultra-fin sur anthracite MAT, bordure et
+   lueur très légères, typographie plus espacée, « et fais un rectangle à bord
+   arrondi plutôt qu'un cylindre où tu as coupé le bord ».
 
-   CE QUI FAISAIT CLICHÉ N'ÉTAIT PAS LA FORME, C'ÉTAIT LE TEAL SUR TEAL. Fond
-   teal à 15 %, filet teal à 35 %, texte teal : la pastille lumineuse monochrome
-   est la signature des hero engendrés par un modèle. Le verre casse cela en
-   rendant la SURFACE neutre ; le teal ne reste que là où il dit quelque chose,
-   sur le texte et le pictogramme.
+   CE QUI FAISAIT CLICHÉ ÉTAIT LE TEAL SUR TEAL. L'état d'origine posait un fond
+   teal à 15 %, un filet teal à 35 % et un texte teal : la pastille lumineuse
+   monochrome est la signature des hero engendrés par un modèle. La surface est
+   donc neutre, et le teal ne reste que là où il dit quelque chose, sur le texte
+   et le pictogramme.
 
-   LE BLANC EST À 10 % ET NON À 20 %, ET C'EST MESURÉ. La recette d'origine
-   (blanc 20 %, filet blanc 30 %) a été rendue puis comparée : sur le hero, la
-   pastille n'a RIEN derrière elle — le fond composité y vaut (0,0,0) — donc le
-   flou ne floute rien et il ne reste que le voile. À 20 % cela donne un
-   rectangle gris à (51,51,51), qui se lit comme du plastique et non comme du
-   verre, et le teal y tombe à 6,19:1. À 10 % le fond vaut (26,26,26), la
-   surface reste une matière et le teal tient 8,52:1. Le verre ne se voit que
-   s'il a quelque chose à réfracter : ici il n'a que de la profondeur à donner.
+   IL N'Y A PLUS DE `backdrop-filter`, ET C'EST UNE MESURE QUI LE DIT. L'étape
+   précédente posait du verre ici. Relevé en masquant l'étiquette et en
+   échantillonnant CE QU'IL Y A DERRIÈRE, sur huit phases des 24 s d'animation
+   des orbes du hero : (0,0,0) à chaque fois, médiane comme maximum. Le flou ne
+   floutait donc rien — il coûtait une couche de composition pour aucun effet
+   visible. Un aplat mat donne le même rendu, en moins cher, et c'est exactement
+   ce que « mat » demande.
 
-   LE LISERÉ DE LUMIÈRE D'UN PIXEL EN HAUT est la signature du verre de ce site
-   (cf. le bloc VERRE en fin de fichier) : c'est lui qui donne l'arête, donc
-   l'épaisseur. Sans lui, un fond translucide n'est qu'un aplat plus clair.
+   LA RECETTE DE GLASSMORPHISME PROPOSÉE (blanc 20 %, filet blanc 30 %) AVAIT ÉTÉ
+   RENDUE PUIS ÉCARTÉE pour la même raison : sans rien derrière, elle donnait un
+   rectangle gris à (51,51,51) qui se lit comme du plastique, et le teal y
+   tombait à 6,19:1. Le fond retenu, `#141414`, est une surface déjà employée par
+   le site (cf. `.filmband`) : le teal y tient 9,02:1, mesuré sur les pixels
+   rendus.
 
-   LE RAYON PASSE DE 100 PX À 16, valeur donnée par le client. Une pastille à
-   rayon total est l'autre moitié du cliché ; à 16 px sur une hauteur de 34, la
-   forme reste douce mais redevient une étiquette.
+   LE RAYON RÉUTILISE `--radius-sm`. Trois valeurs ont été rendues à DPR 3
+   (6, 8 et 10 px) : sur une étiquette de 29 px de haut elles sont
+   indiscernables, donc on prend le jeton existant plutôt qu'un nombre de plus.
 
-   REPLI SANS `backdrop-filter` : fond opaque, même discipline que le bloc VERRE
-   — une surface translucide sans flou est moins lisible qu'une surface pleine. */
+   LA GRAISSE NE BOUGE PAS, L'ESPACEMENT SI. Le retour demande une typographie
+   « plus espacée », pas plus fine : 0,12 em → 0,16 em. Passer à 500 a été rendu
+   et écarté — `.section-label` est à 700, et l'étiquette du hero est le PREMIER
+   libellé de la page : plus fine que les libellés de section qui la suivent,
+   elle se serait lue comme la plus faible de la famille.
+
+   DEUX FORMES ÉCARTÉES, pour qu'on ne les retente pas :
+   — le demi-rond asymétrique (bord gauche vif à liseré teal, bord droit rond),
+     posé la veille et refusé ici nommément ;
+   — le coin coupé à 45°, qui était la meilleure idée sur le papier, la diagonale
+     étant la queue du Q du logo, donc le seul geste géométrique de la marque.
+     Un `clip-path` supprime le filet sur la diagonale, et le lui faire suivre
+     demande un pseudo-élément portant à la fois `backdrop-filter`, `clip-path`
+     et quatre `drop-shadow` — la combinaison exacte où les moteurs divergent,
+     pour un détail de 12 px au coin d'une étiquette de 29. Rendu, comparé,
+     abandonné. */
 .hero__label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-left: 2px solid var(--teal);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
-          backdrop-filter: blur(12px) saturate(160%);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* La « lueur très légère » du retour : un liseré de lumière d'un pixel en
+     haut, et rien d'autre. Sur une surface mate c'est lui qui donne l'arête ;
+     une ombre portée ne se verrait pas sur du noir, et un halo teal ramènerait
+     précisément le fluo qu'on retire. */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
   color: var(--teal);
-  /* MÊME TYPOGRAPHIE QUE .section-label, demandé le 2026-08-28 : les deux
-     libellés sont le même objet, une accroche de section en capitales, et rien
-     ne justifiait qu'ils n'aient pas le même espacement.
-     Le 0,06 em d'origine venait d'un libellé français de 58 caractères
-     (« Authentification à deux facteurs (2FA) plus simple que jamais ! ») qui
-     dépassait la colonne du hero et passait sur deux lignes dans une pastille à
-     rayon 100 px. Le libellé actuel en fait 44 : mesuré à 0,12 em, il tient sur
-     une ligne à partir de 1024 px, et en dessous il se replie proprement, d'où
-     la hauteur de ligne et le padding vertical un peu plus généreux.
-     La pastille, elle, reste : c'est la signature du hero, pas de la
-     typographie. */
+  /* MÊME TYPOGRAPHIE QUE .section-label, à l'espacement près (voir plus haut) :
+     les deux libellés sont le même objet, une accroche en capitales. */
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   line-height: 1.4;
   text-transform: uppercase;
-  /* 14 ET NON 15 À GAUCHE : le filet y est passé de 1 à 2 px, donc le retrait
-     total reste de 16 px et le texte ne se décale pas. */
-  padding: 7px 15px 7px 14px;
-  /* ══ LA FORME EST ASYMÉTRIQUE, ET C'EST L'IDÉE ══════════════════════════
-     « Change le border radius, trouve une idée plus originale, tout en restant
-     dans la DA » (client, 2026-09-14).
-
-     LE BORD GAUCHE EST VIF ET PORTE UN LISERÉ TEAL, LE BORD DROIT EST
-     ENTIÈREMENT ROND. La pastille symétrique à rayon total est la moitié du
-     cliché « IA » ; coupée d'un côté, la forme devient un marque-page, une
-     étiquette posée sur la marge, et l'asymétrie se lit comme un choix.
-
-     LE GESTE N'EST PAS INVENTÉ ICI : le liseré teal sur le bord gauche est la
-     signature de ce site depuis le 2026-08-20. Il tient la matrice de
-     compatibilité, les cartes de la séquence 3D, les membres de l'équipe et les
-     titres de partie. Le hero était le seul endroit à ne pas le porter ; il
-     rejoint le reste au lieu d'inventer une forme de plus.
-
-     LE RAYON RÉUTILISE `--radius-pill`, le jeton déjà défini, plutôt qu'un
-     nombre de plus : la forme est la MÊME que la pastille d'avant, coupée d'un
-     côté. Trois profils droits ont été rendus et comparés (4 px, 14 px,
-     demi-rond) : à 4 px la forme redevient un rectangle banal, à 14 px elle
-     reste indécise, le demi-rond est le seul qui affirme la coupe.
-
-     LE COIN COUPÉ À 45° A ÉTÉ ESSAYÉ ET ÉCARTÉ, et la raison vaut d'être
-     gardée : c'était la meilleure idée sur le papier, la diagonale étant la
-     queue du Q du logo, donc le seul geste géométrique de la marque. Mais un
-     `clip-path` supprime le filet sur la diagonale, et le lui faire suivre
-     demande un pseudo-élément portant à la fois `backdrop-filter`, `clip-path`
-     et quatre `drop-shadow` — la combinaison exacte où les moteurs divergent,
-     pour un détail de 12 px au coin d'une étiquette de 34. Rendu, comparé,
-     abandonné. */
-  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
   margin-bottom: 24px;
   max-width: 100%;
-}
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .hero__label { background: #1B1B1B; }
 }
 /* Le pictogramme ne se comprime pas et reste sur la première ligne quand le
    libellé se replie : centré verticalement sur deux lignes, il flottait au
