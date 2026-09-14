@@ -85,7 +85,18 @@ SCN_SRC = 'qbot-ui-scenario-v3-source.png'
 # — elle est déjà dessinée par le balisage de `.appwin`, la garder ferait deux
 # bandeaux — et s'arrête sous le champ OTP.
 SCN_X0, SCN_LARG = 307, 1180
-SCN_Y0 = 100
+# Y0 EST PASSÉ DE 100 À 186 LE 2026-09-14 (« recadre l'image, la centrer »). À
+# 100, la découpe commençait sous la barre de l'application et mangeait donc le
+# TITRE « Scenario Editor », qui occupait le tiers haut du cadre, et elle
+# s'arrêtait à 630 alors que le téléphone descend jusqu'à 889 : il était coupé au
+# milieu de son QR code. À 186 la fenêtre montre ce qui compte et rien d'autre —
+# la barre de commandes, le champ « Scenario », la palette d'outils, et le
+# téléphone avec son QR entier et le champ OTP. Quatre valeurs ont été rendues à
+# la taille réelle du cadre (176, 186, 196, 206) : à 176 la barre de commandes
+# est collée au bord, à 206 elle est rognée.
+# Le contenu est centré horizontalement par construction : x 307..1487 a pour
+# milieu 897, qui est le centre du contenu du master comme celui de l'image.
+SCN_Y0 = 186
 
 # ── LA DÉCOUPE CARRÉE DE LA SECTION « L'ÉDITEUR » (accueil) ──
 # Elle ne suit PAS la règle ci-dessus, et c'est voulu : la section a été refondue
