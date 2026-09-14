@@ -1996,7 +1996,7 @@ backToTop.addEventListener('click', () => {
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   /* Deux sortes de déclencheurs : le cadre de la page de réservation, et le bouton
-     « Réserver une démo » de la barre de navigation, présent sur toutes les pages.
+     « Demander une démo » de la barre de navigation, présent sur toutes les pages.
      Le second reste un LIEN vers la page de réservation : on n'intercepte son clic
      que si la fenêtre peut réellement s'ouvrir. */
   var cadres = document.querySelectorAll('.booking-frame[data-booking-src]');

@@ -159,7 +159,7 @@ CTA_FR = dict(cta_h2="Vous voulez le voir sur votre propre parcours&nbsp;?",
               cta_h3="Réservez une démo", cta_btn="Prendre rendez-vous",
               cta_href='../contact.html')
 CTA_EN = dict(cta_h2="Want to see it on your own login flow?",
-              cta_h3="Book a demo", cta_btn="Make an appointment",
+              cta_h3="Request a demo", cta_btn="Make an appointment",
               cta_href='../contact.html')
 # LA SIGNATURE, VISIBLE ET STRUCTURÉE. Les 16 guides étaient attribués à
 # l'entreprise là où les quatre articles de 2023 le sont à une personne nommée et
@@ -262,7 +262,7 @@ LUX_EN = dict(
     label='Guide', h1="Automating a LuxTrust authentication in your tests",
     lead="A LuxTrust authentication is not computed, it is approved on the user's phone. No library can stand in for it, because there is no shared secret left to recompute. This guide sets out where Selenium and Cypress stop, and how to clear that step on a real Android device.",
     cta_h2="Want to see it on your own login flow?",
-    cta_h3="Book a demo", cta_btn="Make an appointment", cta_href='../contact.html',
+    cta_h3="Request a demo", cta_btn="Make an appointment", cta_href='../contact.html',
     sections=[
         dict(id='pourquoi-title', label='The starting point',
              titre="Why can a LuxTrust authentication not be automated like an Authenticator code?",

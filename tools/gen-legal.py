@@ -533,10 +533,6 @@ for page in PAGES:
     T = dict(skip='Aller au contenu principal' if fr else 'Skip to main content',
              fil_accueil='Accueil' if fr else 'Home',
              fil_label="Fil d'Ariane" if fr else 'Breadcrumb',
-             cta_label="Démonstration" if fr else 'Demonstration',
-             cta_h2='Vous souhaitez en savoir plus&nbsp;?' if fr else 'Would you like to know more?',
-             cta_h3='Réservez une démo' if fr else 'Book a demo',
-             cta_btn='Prendre rendez-vous' if fr else 'Make an appointment',
              maj='Migré depuis' if fr else 'Migrated from')
 
     # L'ACCUEIL DU FIL EST CELUI DE LA LANGUE, PAS LA RACINE. Les quatre pages

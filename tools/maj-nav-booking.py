@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Pose les attributs qui font ouvrir l'agenda dans une fenêtre, sur les DEUX
-déclencheurs de chaque page : le bouton « Réserver une démo » de la barre de
-navigation, et l'entrée « Réserver une démo » du pied de page.
+déclencheurs de chaque page : le bouton « Demander une démo » de la barre de
+navigation, et l'entrée « Demander une démo » du pied de page.
 
     python3 tools/maj-nav-booking.py            # simulation
     python3 tools/maj-nav-booking.py --ecrire
@@ -48,7 +48,13 @@ BOUTON = re.compile(
     # sans JavaScript du bouton est désormais la page contact ; la fenêtre
     # Bookings, elle, vit dans les attributs et n'a pas bougé.
     r'((?:\s+data-booking-open|\s+data-booking-[a-z]+="[^"]*")*)'
-    r'\s+class="btn btn--primary">(Réserver une démo|Book a demo)</a>')
+    r'\s+class="btn btn--primary">'
+    # LE LIBELLÉ SERT DE REPÈRE ET DE TEST DE LANGUE, donc l'alternance garde les
+    # anciens : « commandez.html » et « en/order.html », hors publication depuis
+    # le 2026-09-02, les portent encore, et sans eux ce script les déclarerait
+    # « bouton non reconnu ». Le 2026-09-14, « Réserver une démo » est devenu
+    # « Demander une démo » pour s'aligner sur le bloc d'appel à l'action.
+    r'(Demander une démo|Request a demo|Réserver une démo|Book a demo)</a>')
 
 def pages():
     vus = set()
@@ -75,9 +81,9 @@ def pages():
 PIED = re.compile(
     r'<li><a href="((?:\.\./)?)(contact\.html|commandez\.html|order\.html)"'
     r'((?:\s+data-booking-open|\s+data-booking-[a-z]+="[^"]*")*)'
-    r'\s*>(Démo|Demo|Réserver une démo|Book a demo)</a></li>')
+    r'\s*>(Démo|Demo|Demander une démo|Request a demo|Réserver une démo|Book a demo)</a></li>')
 
-LIBELLE_PIED = {'fr': 'Réserver une démo', 'en': 'Book a demo'}
+LIBELLE_PIED = {'fr': 'Demander une démo', 'en': 'Request a demo'}
 
 # LA BOÎTE DE RENDEZ-VOUS DE LA PAGE CONTACT N'EXISTE PLUS (2026-09-09) : le
 # client a demandé de simplifier cette colonne au maximum. Une troisième passe
@@ -106,7 +112,7 @@ for f in pages():
     if not m:
         sautes.append(rel + ' (bouton de barre non reconnu)')
         continue
-    langue = 'en' if m.group(4) == 'Book a demo' else 'fr'
+    langue = 'en' if m.group(4) in ('Request a demo', 'Book a demo') else 'fr'
     attrs = ''.join('\n       %s="%s"' % (k, v.replace('"', '&quot;'))
                     for k, v in conf.attributs(langue))
     neuf = ('<a href="%s%s" data-booking-open%s\n       class="btn btn--primary">%s</a>'

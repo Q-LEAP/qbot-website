@@ -84,7 +84,7 @@ since removed). They are excluded from the build and now return 404.
 
 - The site sets no cookie, runs no analytics, shows no consent banner and calls no third-party
   service when a page loads. Two external contents load only after an explicit click: the Google
-  map on the contact page, and the Microsoft Bookings calendar behind the "Book a demo" button.
+  map on the contact page, and the Microsoft Bookings calendar behind the "Request a demo" button.
   Fonts, the 3D viewer and its Draco decoder are all served from this domain.
 
 - No client, customer or reference is named anywhere on this site, and that is deliberate:
