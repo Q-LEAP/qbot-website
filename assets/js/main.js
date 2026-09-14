@@ -432,9 +432,20 @@ if ('IntersectionObserver' in window) {
   const revealEls = [];
   const seen = new Set();
 
+  /* RIEN NE SE RÉVÈLE À L'INTÉRIEUR D'UN ACCORDÉON REPLIÉ. Un élément en
+     `display: none` n'intersecte jamais rien : l'observateur ne le voit pas, il
+     garde `opacity: 0`, et il RESTE invisible quand le visiteur déplie — c'est
+     l'accordéon qui vient de le montrer, pas le défilement.
+     Relevé le 2026-09-14 en descendant la fiche technique en accordéons : 23
+     lignes invisibles au chargement, et 5 sur 9 encore invisibles APRÈS
+     ouverture. L'accordéon est déjà une arrivée ; il n'en faut pas deux.
+     Le test porte sur l'ancêtre et non sur une classe, donc il couvre aussi
+     tout contenu qu'on mettrait demain dans un accordéon. */
+  const replie = el => el.closest('.faq-item__answer') !== null;
+
   REVEAL_MAP.forEach(([variant, selectors]) => {
     document.querySelectorAll(selectors.join(',')).forEach(el => {
-      if (seen.has(el)) return;      // un élément ne prend qu'une variante
+      if (seen.has(el) || replie(el)) return;   // un élément ne prend qu'une variante
       seen.add(el);
       el.dataset.mxVariant = variant;
       revealEls.push(el);
@@ -446,7 +457,7 @@ if ('IntersectionObserver' in window) {
      haut — y appliquer un filter coûterait une passe de flou sur toute la
      surface pour un effet invisible à cette échelle. */
   preMarked.forEach(el => {
-    if (seen.has(el)) return;
+    if (seen.has(el) || replie(el)) return;
     seen.add(el);
     el.dataset.mxVariant = 'plain';
     revealEls.push(el);

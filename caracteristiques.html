@@ -172,7 +172,6 @@
   </div>
 </section>
 
-<!-- ======= DESCRIPTIF (texte du site live) ======= -->
 <section class="section" aria-labelledby="compact-title">
   <div class="container">
     <div class="section-header">
@@ -226,251 +225,11 @@
   </div>
 </section>
 
-<!-- ======= FICHE TECHNIQUE =======
-     Section demandée à la review (points 16 et 17) : la page était un enchaînement
-     de blocs de prose avec une petite fiche au milieu, alors qu'elle doit se
-     scanner en trente secondes par un CTO, un architecte, un automaticien ou un
-     responsable sécurité.
-     ELLE REMPLACE LA SECTION « UN NANO-ORDINATEUR… », dont la prose et les huit
-     lignes de fiche sont absorbées ici, catégorie par catégorie.
-     AUCUNE VALEUR N'EST INVENTÉE : tout vient de la page elle-même ou des
-     documents fournis par le client. Ce qui n'y figure pas (authentification de
-     l'API, ACL, isolation réseau) n'est pas écrit ; la ligne « contrôle d'accès »
-     dit ce qui est vrai et renvoie la question là où elle se décide.
-     Trois composants réutilisés, aucun créé : `.tools__grid`, `.compat__head` et
-     `.specs__list`. La photo du boîtier réel garde sa place, en tête de section. -->
-<section class="section section--gray" aria-labelledby="fiche-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Fiche technique</span>
-      <h2 class="section-title" id="fiche-title">L'architecture de <span class="nb">Q-Bot</span></h2>
-      <p class="section-subtitle">Toutes les informations techniques essentielles sur <span class="nb">Q-Bot</span>, regroupées en six catégories pour comprendre son fonctionnement et son intégration dans votre environnement de test.</p>
-    </div>
-    <div class="specs__grid specs__grid--intro">
-      <!-- LE SOUS-TITRE « Un nano-ordinateur de la taille d'une carte de crédit »
-           A ÉTÉ RETIRÉ avec le texte du client (2026-09-10) : le nouveau
-           paragraphe dit la même chose, et le titre de section a pris le relais.
-           Même mouvement que la section d'ouverture le 2026-09-09. -->
-      <div>
-        <p><span class="nb">Q-Bot</span> fonctionne comme un ordinateur complet sur votre réseau local, pilote le smartphone en USB et exécute les tests sans dépendre d'une connexion internet.</p>
-      </div>
-      <!-- LE FILM REMPLACE UNE PHOTO QUI N'EXISTE PAS. La section parle de ce
-           qu'il y a DANS le boîtier et montrait le boîtier fermé : aucune photo de
-           son intérieur n'existe, et le film de démonstration ne l'ouvre jamais.
-           Le client a tranché le 2026-09-03 : reprendre le bout de l'animation 3D
-           qui montre la carte et la figer là. Le boîtier tourne, son enveloppe
-           devient translucide, la carte reste solide, et le film s'arrête dessus.
-           Ni `loop` ni `controls` : ce n'est pas un média qu'on pilote, c'est une
-           image qui arrive. Le `src` est dans `data-film`, donc rien n'est
-           téléchargé avant que la section approche (module 18 de main.js), et
-           l'affiche est la DERNIÈRE image du film : sans JavaScript, en mouvement
-           réduit ou sur connexion lente, on voit donc déjà la carte. -->
-      <div class="specs__image">
-        <video class="video__player specs__film" data-film="assets/video/qbot-interieur.mp4?v=32356238"
-               poster="assets/img/qbot-interieur-poster.jpg?v=6fa4a80c"
-               width="1280" height="1000" muted playsinline preload="none"
-               aria-label="Le boîtier tourne, puis son enveloppe devient translucide : apparaît le nano-ordinateur Raspberry Pi 5, posé au fond du bac, à l'avant du boîtier"></video>
-      </div>
-    </div>
-    <div class="tools__grid" style="gap:40px 48px;">
-      <div>
-        <h3 class="compat__head">Matériel</h3>
-        <div class="specs__list" role="list" aria-label="Matériel">
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Ordinateur</span>
-          <span class="spec-item__value">Raspberry Pi 5</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Processeur</span>
-          <span class="spec-item__value">Cortex-A76</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Mémoire</span>
-          <span class="spec-item__value">4 Go</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Réseau</span>
-          <span class="spec-item__value">Ethernet Gigabit, Wi-Fi 5 (IEEE 802.11ac), Bluetooth</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Connexion téléphone</span>
-          <span class="spec-item__value">USB</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Système</span>
-          <span class="spec-item__value">Raspberry Pi OS Lite</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Écran</span>
-          <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Dimensions</span>
-          <span class="spec-item__value">20 cm × 11 cm × 15 cm</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Fabrication</span>
-          <span class="spec-item__value">Made in Luxembourg, dans les locaux de Q-Leap</span>
-        </div>
-        </div>
-      </div>
-      <div>
-        <h3 class="compat__head">Smartphone</h3>
-        <div class="specs__list" role="list" aria-label="Smartphone">
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Système</span>
-          <span class="spec-item__value">Android</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Pilotage</span>
-          <span class="spec-item__value"><a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, par le câble USB</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Appareil</span>
-          <span class="spec-item__value">Physique, ni émulateur ni simulateur</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Applications</span>
-          <span class="spec-item__value">La véritable application 2FA, installée sur le téléphone</span>
-        </div>
-        </div>
-      </div>
-      <div>
-        <h3 class="compat__head">Interface</h3>
-        <div class="specs__list" role="list" aria-label="Interface">
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Accès</span>
-          <span class="spec-item__value">Interface web, sur le réseau local</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Scénarios</span>
-          <span class="spec-item__value">Éditeur visuel, construit sur les captures d'écran de l'application testée</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Stockage</span>
-          <span class="spec-item__value">Local, sur le boîtier (SQLite)</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Déclenchement</span>
-          <span class="spec-item__value">Appel de l'API REST, ou app compagnon installée sur le téléphone</span>
-        </div>
-        </div>
-      </div>
-      <div>
-        <h3 class="compat__head">API</h3>
-        <div class="specs__list" role="list" aria-label="API">
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Type</span>
-          <span class="spec-item__value">REST, sur HTTP</span>
-        </div>
-        <div class="spec-item spec-item--api" role="listitem">
-          <span class="spec-item__label">GET /scenarios/:id/execute</span>
-          <span class="spec-item__value">Exécute un scénario enregistré sur le téléphone relié.</span>
-        </div>
-        <div class="spec-item spec-item--api" role="listitem">
-          <span class="spec-item__label">GET /get-luxtrust-otp</span>
-          <span class="spec-item__value">Renvoie le code à usage unique affiché par l'app LuxTrust.</span>
-        </div>
-        <div class="spec-item spec-item--api" role="listitem">
-          <span class="spec-item__label">POST /display-image</span>
-          <span class="spec-item__value">Affiche un QR code sur l'écran du boîtier.</span>
-        </div>
-        </div>
-      </div>
-      <div>
-        <h3 class="compat__head">Données et réseau</h3>
-        <div class="specs__list" role="list" aria-label="Données et réseau">
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Fonctionnement</span>
-          <span class="spec-item__value">Local, sur le réseau où vous installez le boîtier</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Captures</span>
-          <span class="spec-item__value">Stockées sur le boîtier</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Cloud</span>
-          <span class="spec-item__value">Aucune dépendance pendant l'exécution</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Connexion internet</span>
-          <span class="spec-item__value">Aucune pendant les tests</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Données</span>
-          <span class="spec-item__value">De test uniquement</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Contrôle d'accès</span>
-          <span class="spec-item__value">L'API n'attend aucune clé : l'accès est celui de votre réseau</span>
-        </div>
-        </div>
-      </div>
-      <div>
-        <h3 class="compat__head">Déploiement</h3>
-        <div class="specs__list" role="list" aria-label="Déploiement">
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Installation</span>
-          <span class="spec-item__value">Conteneurs Docker, lancés par une seule commande Docker Compose</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Mise en service</span>
-          <span class="spec-item__value">48 à 72 heures après la commande</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Support</span>
-          <span class="spec-item__value">Inclus, réponse sous 24 h ouvrées</span>
-        </div>
-        <div class="spec-item" role="listitem">
-          <span class="spec-item__label">Remplacement</span>
-          <span class="spec-item__value">Boîtier neuf en cas de panne</span>
-        </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ======= SPECS PRINCIPALES ======= -->
-
-
-<!-- ======= ÉDITEUR DE SCÉNARIOS ======= -->
-<!-- Sans visuel, à dessein : la maquette de l'éditeur est déjà l'illustration de
-     la section suivante, qui zoome dedans. La montrer deux fois de suite, une fois
-     fixe et une fois épinglée, ne dirait rien de plus. -->
-<section class="section" aria-labelledby="editor-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Éditeur de scénarios</span>
-      <h2 class="section-title" id="editor-title">Construire une automatisation sans écrire une ligne de code</h2>
-      <p class="section-subtitle">L'interface web de <span class="nb">Q-Bot</span> permet à n'importe quel testeur de créer un scénario d'authentification à deux facteurs en quelques minutes. Aucun script, aucun sélecteur XPath, aucun identifiant d'élément fragile à maintenir.</p>
-    </div>
-    <ul class="api-facts api-facts--deux">
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui numérotés en cliquant sur la capture</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous réglez chaque temps d'attente à la milliseconde près</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Les scénarios sont enregistrés et versionnés dans le boîtier</span></li>
-        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Les captures restent sur le boîtier, sans aucun envoi vers un cloud</span></li>
-    </ul>
-    <p style="margin-top:26px; font-size:0.9375rem;">Le résultat est un scénario nommé et réutilisable&nbsp;: une carte visuelle de ce qu'il faut toucher et quand, prête à être déclenchée depuis n'importe quelle chaîne de tests.</p>
-  </div>
-</section>
-
-<!-- ======= INTERFACE & API ======= -->
-<!-- L'ACTE ÉPINGLÉ A ÉTÉ RETIRÉ LE 2026-09-07, avec la maquette qu'il annotait.
-     Ses trois zones de projecteur étaient MESURÉES sur l'ancienne maquette (la
-     liste des étapes, le pied de page, l'étape « notification ») : aucune de ces
-     régions n'existe dans les captures de l'interface réelle, et un projecteur ne
-     se recale pas sur une autre image. Le rail épinglé est gardé et annoté dans la
-     feuille de style, comme la frise datée. Ce qui le remplace est la fenêtre
-     ci-dessous : bandeau en balisage, corps en captures, bascule au clic
-     (module 23 de main.js). -->
 <section class="section section--gray" aria-labelledby="interface-title">
   <div class="container">
     <div class="section-header">
-      <span class="section-label">Interface &amp; API</span>
-      <h2 class="section-title" id="interface-title">Une interface web et une API REST</h2>
+      <span class="section-label">Intégration</span>
+      <h2 class="section-title" id="interface-title">Comment <span class="nb">Q-Bot</span> s'intègre dans votre environnement</h2>
       <p class="section-subtitle"><span class="nb">Q-Bot</span> se pilote depuis son interface web, ou par un appel HTTP depuis votre chaîne de tests. Les captures ci-dessous sont l'interface livrée avec le boîtier, telle qu'elle est aujourd'hui.</p>
     </div>
 
@@ -488,6 +247,13 @@
           <span class="spec-item__value">Installée sur le téléphone sous test, elle surveille les notifications 2FA et déclenche le scénario dès qu'une arrive. Aucun appel depuis votre chaîne de tests.</span>
         </div>
     </div>
+
+    <ul class="api-facts api-facts--deux">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Compatible avec toute chaîne capable d'un appel HTTP</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Se déclenche depuis votre intégration continue</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Aucun SDK, aucun agent à installer</span></li>
+    </ul>
+    <p style="margin-top:24px;"><a class="link-edito" href="documentation.html#doc-appel"><span>Les exemples d'appel, outil par outil</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
 
     <figure class="appwin" data-appwin>
       <div class="appwin__win">
@@ -528,185 +294,25 @@
   </div>
 </section>
 
-<!-- ======= API REST ======= -->
-<section class="section" aria-labelledby="api-title">
+<section class="section" aria-labelledby="editor-title">
   <div class="container">
     <div class="section-header">
-      <span class="section-label">API REST</span>
-      <h2 class="section-title" id="api-title">Un appel HTTP, et n'importe quelle chaîne de tests</h2>
-      <p class="section-subtitle">Chaque scénario enregistré dans <span class="nb">Q-Bot</span> est accessible par une API REST. Aucun SDK, aucun greffon propriétaire, aucun agent à installer dans votre intégration continue.</p>
+      <span class="section-label">Éditeur de scénarios</span>
+      <h2 class="section-title" id="editor-title">Construire une automatisation sans écrire une ligne de code</h2>
+      <p class="section-subtitle">L'interface web de <span class="nb">Q-Bot</span> permet à n'importe quel testeur de créer un scénario d'authentification à deux facteurs en quelques minutes. Aucun script, aucun sélecteur XPath, aucun identifiant d'élément fragile à maintenir.</p>
     </div>
-
     <ul class="api-facts api-facts--deux">
-      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Auto-hébergé&nbsp;: tout reste sur votre réseau local</span></li>
-      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Compatible avec toute chaîne capable d'un appel HTTP</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous versez une capture de l'écran, qui sert de fond à l'étape</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous posez les points d'appui numérotés en cliquant sur la capture</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous réglez chaque temps d'attente à la milliseconde près</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Vous ajoutez, réordonnez ou supprimez une étape à tout moment</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Les scénarios sont enregistrés et versionnés dans le boîtier</span></li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Les captures restent sur le boîtier, sans aucun envoi vers un cloud</span></li>
     </ul>
-
-    <!-- LES EXEMPLES D'APPEL SONT ARRIVÉS ICI LE 2026-09-09, depuis
-         « Comment ça marche » : « cette partie est trop technique pour une page
-         qui doit surtout expliquer le fonctionnement de Q-Bot simplement ».
-         ILS SONT DANS CETTE SECTION ET PAS DANS UNE SECTION À PART, et ce n'est
-         pas un raccourci : les deux sections portaient le MÊME identifiant de
-         titre, donc un déplacement tel quel l'aurait mis deux fois sur cette
-         page, et le `aria-labelledby` de chacune aurait désigné n'importe lequel
-         des deux. (Ce commentaire ne cite pas l'identifiant à dessein : le
-         garde-fou du script compte ses occurrences, et un commentaire qui le
-         nomme le fait échouer.)
-         La fusion est aussi ce que demande « une partie dédiée à l'intégration
-         technique » : un en-tête, les faits, puis le détail dépliable.
-         Le module 3 apporte `hidden`, les `aria-controls` et la mesure de
-         hauteur : aucun script propre à cette page. -->
-    <h3 class="specs-sub">Les exemples d'appel, outil par outil</h3>
-    <p class="section-subtitle" style="margin-bottom:24px;">Le détail pour qui veut le lire&nbsp;: cinq exemples d'appel, dépliables, et le mécanisme outil par outil.</p>
-    <div class="faq__list">
-      <div class="faq-item" id="api-ex1">
-        <button class="faq-item__question" aria-expanded="false" id="api-b1" aria-controls="api-a1">
-          Python / Selenium
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a1" role="region" aria-labelledby="api-b1">
-          <div class="code-block"><pre><code># On déclenche le scénario 2FA
-import requests
-
-requests.get(
-  &quot;http://q-bot.local:8000&quot;
-  &quot;/scenarios/42/execute&quot;
-)
-
-# Le test reprend son cours
-driver.find_element(
-  By.ID, &quot;dashboard&quot;
-).is_displayed()</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex2">
-        <button class="faq-item__question" aria-expanded="false" id="api-b2" aria-controls="api-a2">
-          Cypress
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a2" role="region" aria-labelledby="api-b2">
-          <div class="code-block"><pre><code>// On déclenche le scénario 2FA
-cy.request(
-  'GET',
-  'http://q-bot.local:8000'
-  + '/scenarios/42/execute'
-)
-.its('status')
-.should('eq', 200)
-
-cy.get('#dashboard')
-  .should('be.visible')</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex3">
-        <button class="faq-item__question" aria-expanded="false" id="api-b3" aria-controls="api-a3">
-          Shell / chaîne CI
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a3" role="region" aria-labelledby="api-b3">
-          <div class="code-block"><pre><code># On déclenche le scénario 2FA
-curl -s \
-  http://q-bot.local:8000 \
-  /scenarios/42/execute
-
-# Le code LuxTrust
-OTP=$(curl -s \
-  http://q-bot.local:8000 \
-  /get-luxtrust-otp \
-  | jq -r '.otp')</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex4">
-        <button class="faq-item__question" aria-expanded="false" id="api-b4" aria-controls="api-a4">
-          Robot Framework
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a4" role="region" aria-labelledby="api-b4">
-          <div class="code-block"><pre><code>*** Settings ***
-Library    RequestsLibrary
-
-*** Test Cases ***
-Connexion 2FA
-    # on déclenche le scénario
-    ${r}=    GET
-    ...    ${QBOT}/scenarios/42/execute
-    Status Should Be    200    ${r}</code></pre></div>
-        </div>
-      </div>
-      <div class="faq-item" id="api-ex5">
-        <button class="faq-item__question" aria-expanded="false" id="api-b5" aria-controls="api-a5">
-          JUnit / RestAssured
-          <span class="faq-item__icon" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </span>
-        </button>
-        <div class="faq-item__answer" id="api-a5" role="region" aria-labelledby="api-b5">
-          <div class="code-block"><pre><code>// on déclenche le scénario 2FA
-given()
-  .baseUri(&quot;http://q-bot.local:8000&quot;)
-.when()
-  .get(&quot;/scenarios/42/execute&quot;)
-.then()
-  .statusCode(200);
-
-// le test reprend son cours
-assertTrue(
-  dashboard.isDisplayed()
-);</code></pre></div>
-        </div>
-      </div>
-    </div>
-    <p class="ucs__note"><span class="nb">Q-Bot</span> est auto-hébergé&nbsp;: l'API répond sur le réseau où vous installez le boîtier, tant qu'il est allumé, sans dépendance extérieure. Elle n'attend aucune clé d'API&nbsp;: le contrôle d'accès est celui de votre réseau.</p>
-
-
-
-    <p style="margin-top:40px;"><a href="cas-usage.html" class="link-edito"><span>Tous les cas d'usage</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
+    <p style="margin-top:26px; font-size:0.9375rem;">Le résultat est un scénario nommé et réutilisable&nbsp;: une carte visuelle de ce qu'il faut toucher et quand, prête à être déclenchée depuis n'importe quelle chaîne de tests.</p>
   </div>
 </section>
 
-<!-- ======= CONFIDENTIALITÉ ======= -->
-<section class="section" aria-labelledby="privacy-title">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-label">Confidentialité</span>
-      <h2 class="section-title" id="privacy-title">Données et confidentialité</h2>
-      <p class="section-subtitle"><span class="nb">Q-Bot</span> est conçu pour respecter la confidentialité et la sécurité de vos données de test.</p>
-    </div>
-    <div class="features__grid">
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <h3>Rien ne quitte votre réseau</h3>
-        <p>Les scénarios et leurs captures restent sur le boîtier. Aucun envoi vers un cloud, aucune donnée hors de chez vous.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-        <h3>Données de test uniquement</h3>
-        <p><span class="nb">Q-Bot</span> doit être utilisé avec des données de test, non de production. Les scénarios créés restent sur l'appareil.</p>
-      </article>
-      <article class="feature-card">
-        <div class="feature-card__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-        </div>
-        <h3>Réseau local</h3>
-        <p><span class="nb">Q-Bot</span> fonctionne sur votre réseau interne. La communication entre <span class="nb">Q-Bot</span> et vos outils de test reste locale.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ======= COMPATIBILITÉ ======= -->
 <section class="section section--gray" aria-labelledby="compat-title">
   <div class="container">
     <div class="section-header">
@@ -744,7 +350,257 @@ assertTrue(
   </div>
 </section>
 
-<!-- ======= CTA ======= -->
+<section class="section" aria-labelledby="privacy-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Confidentialité</span>
+      <h2 class="section-title" id="privacy-title">Données et environnement</h2>
+      <p class="section-subtitle"><span class="nb">Q-Bot</span> est conçu pour respecter la confidentialité et la sécurité de vos données de test.</p>
+    </div>
+    <div class="features__grid">
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Rien ne quitte votre réseau</h3>
+        <p>Les scénarios et leurs captures restent sur le boîtier. Aucun envoi vers un cloud, aucune donnée hors de chez vous.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>Données de test uniquement</h3>
+        <p><span class="nb">Q-Bot</span> doit être utilisé avec des données de test, non de production. Les scénarios créés restent sur l'appareil.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        </div>
+        <h3>Réseau local</h3>
+        <p><span class="nb">Q-Bot</span> fonctionne sur votre réseau interne. La communication entre <span class="nb">Q-Bot</span> et vos outils de test reste locale.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======= DÉPLOIEMENT ET SUPPORT =======
+     Créée le 2026-09-14 avec les quatre lignes de la catégorie Déploiement de
+     l'ancienne fiche. Elles NE sont donc pas reprises en accordéon : le plan du
+     client les mettait aux deux endroits, et les écrire deux fois est la
+     duplication qu'il demande justement de supprimer. -->
+<section class="section" aria-labelledby="deploy-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Déploiement</span>
+      <h2 class="section-title" id="deploy-title">Déploiement et support</h2>
+      <p class="section-subtitle">Le boîtier est loué, installé et maintenu par Q-Leap. Ce qui suit est inclus.</p>
+    </div>
+<div class="specs__list" role="list" aria-label="Déploiement">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Installation</span>
+          <span class="spec-item__value">Conteneurs Docker, lancés par une seule commande Docker Compose</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Mise en service</span>
+          <span class="spec-item__value">48 à 72 heures après la commande</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Support</span>
+          <span class="spec-item__value">Inclus, réponse sous 24 h ouvrées</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Remplacement</span>
+          <span class="spec-item__value">Boîtier neuf en cas de panne</span>
+        </div>
+        </div>
+  </div>
+</section>
+
+<!-- ======= DÉTAILS TECHNIQUES =======
+     L'ancienne fiche « L'architecture », descendue en bas de page et repliée
+     (2026-09-14). Elle faisait 2 541 px en troisième position ; le client :
+     « excellente comme source d'information, mais trop dense aussi haut ».
+     Aucun script propre à la page : le module 3 apporte `hidden`, les
+     `aria-controls` et la mesure de hauteur, comme pour la FAQ. -->
+<section class="section section--gray" aria-labelledby="tech-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Fiche technique</span>
+      <h2 class="section-title" id="tech-title">Détails techniques</h2>
+      <p class="section-subtitle">Le détail pour qui veut regarder sous le capot. Dépliez la catégorie qui vous concerne.</p>
+    </div>
+<div class="specs__grid specs__grid--intro">
+      <!-- LE SOUS-TITRE « Un nano-ordinateur de la taille d'une carte de crédit »
+           A ÉTÉ RETIRÉ avec le texte du client (2026-09-10) : le nouveau
+           paragraphe dit la même chose, et le titre de section a pris le relais.
+           Même mouvement que la section d'ouverture le 2026-09-09. -->
+      <div>
+        <p><span class="nb">Q-Bot</span> fonctionne comme un ordinateur complet sur votre réseau local, pilote le smartphone en USB et exécute les tests sans dépendre d'une connexion internet.</p>
+      </div>
+      <!-- LE FILM REMPLACE UNE PHOTO QUI N'EXISTE PAS. La section parle de ce
+           qu'il y a DANS le boîtier et montrait le boîtier fermé : aucune photo de
+           son intérieur n'existe, et le film de démonstration ne l'ouvre jamais.
+           Le client a tranché le 2026-09-03 : reprendre le bout de l'animation 3D
+           qui montre la carte et la figer là. Le boîtier tourne, son enveloppe
+           devient translucide, la carte reste solide, et le film s'arrête dessus.
+           Ni `loop` ni `controls` : ce n'est pas un média qu'on pilote, c'est une
+           image qui arrive. Le `src` est dans `data-film`, donc rien n'est
+           téléchargé avant que la section approche (module 18 de main.js), et
+           l'affiche est la DERNIÈRE image du film : sans JavaScript, en mouvement
+           réduit ou sur connexion lente, on voit donc déjà la carte. -->
+      <div class="specs__image">
+        <video class="video__player specs__film" data-film="assets/video/qbot-interieur.mp4?v=32356238"
+               poster="assets/img/qbot-interieur-poster.jpg?v=6fa4a80c"
+               width="1280" height="1000" muted playsinline preload="none"
+               aria-label="Le boîtier tourne, puis son enveloppe devient translucide : apparaît le nano-ordinateur Raspberry Pi 5, posé au fond du bac, à l'avant du boîtier"></video>
+      </div>
+    </div>
+    <div class="faq__list">
+      <div class="faq-item" id="spec-acc1">
+        <button class="faq-item__question" aria-expanded="false" id="spec-b1" aria-controls="spec-a1">
+          Matériel et système
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="spec-a1" role="region" aria-labelledby="spec-b1">
+<div class="specs__list" role="list" aria-label="Matériel">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Ordinateur</span>
+          <span class="spec-item__value">Raspberry Pi 5</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Processeur</span>
+          <span class="spec-item__value">Cortex-A76</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Mémoire</span>
+          <span class="spec-item__value">4 Go</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Réseau</span>
+          <span class="spec-item__value">Ethernet Gigabit, Wi-Fi 5 (IEEE 802.11ac), Bluetooth</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Connexion téléphone</span>
+          <span class="spec-item__value">USB</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Système</span>
+          <span class="spec-item__value">Raspberry Pi OS Lite</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Écran</span>
+          <span class="spec-item__value">Petit écran intégré, pour afficher un QR code que le téléphone vient scanner</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Dimensions</span>
+          <span class="spec-item__value">20 cm × 11 cm × 15 cm</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Fabrication</span>
+          <span class="spec-item__value">Made in Luxembourg, dans les locaux de Q-Leap</span>
+        </div>
+        </div>
+        </div>
+      </div>
+      <div class="faq-item" id="spec-acc2">
+        <button class="faq-item__question" aria-expanded="false" id="spec-b2" aria-controls="spec-a2">
+          Smartphone et communication
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="spec-a2" role="region" aria-labelledby="spec-b2">
+<div class="specs__list" role="list" aria-label="Smartphone">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Système</span>
+          <span class="spec-item__value">Android</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Pilotage</span>
+          <span class="spec-item__value"><a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, par le câble USB</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Appareil</span>
+          <span class="spec-item__value">Physique, ni émulateur ni simulateur</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Applications</span>
+          <span class="spec-item__value">La véritable application 2FA, installée sur le téléphone</span>
+        </div>
+        </div>
+        </div>
+      </div>
+      <div class="faq-item" id="spec-acc3">
+        <button class="faq-item__question" aria-expanded="false" id="spec-b3" aria-controls="spec-a3">
+          Interface et stockage
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="spec-a3" role="region" aria-labelledby="spec-b3">
+<div class="specs__list" role="list" aria-label="Interface">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Accès</span>
+          <span class="spec-item__value">Interface web, sur le réseau local</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Scénarios</span>
+          <span class="spec-item__value">Éditeur visuel, construit sur les captures d'écran de l'application testée</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Stockage</span>
+          <span class="spec-item__value">Local, sur le boîtier (SQLite)</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Déclenchement</span>
+          <span class="spec-item__value">Appel de l'API REST, ou app compagnon installée sur le téléphone</span>
+        </div>
+        </div>
+        </div>
+      </div>
+      <div class="faq-item" id="spec-acc4">
+        <button class="faq-item__question" aria-expanded="false" id="spec-b4" aria-controls="spec-a4">
+          Réseau
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="spec-a4" role="region" aria-labelledby="spec-b4">
+<div class="specs__list" role="list" aria-label="Données et réseau">
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Fonctionnement</span>
+          <span class="spec-item__value">Local, sur le réseau où vous installez le boîtier</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Captures</span>
+          <span class="spec-item__value">Stockées sur le boîtier</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Cloud</span>
+          <span class="spec-item__value">Aucune dépendance pendant l'exécution</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Connexion internet</span>
+          <span class="spec-item__value">Aucune pendant les tests</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Données</span>
+          <span class="spec-item__value">De test uniquement</span>
+        </div>
+        <div class="spec-item" role="listitem">
+          <span class="spec-item__label">Contrôle d'accès</span>
+          <span class="spec-item__value">L'API n'attend aucune clé : l'accès est celui de votre réseau</span>
+        </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:32px;"><a href="documentation.html" class="btn btn--outline">Consulter la documentation technique</a></p>
+  </div>
+</section>
+
 <section class="section section--dark" aria-labelledby="cta-title">
   <div class="container cta-block">
     <h2 class="section-title" id="cta-title">Prêt à automatiser la dernière étape manuelle&nbsp;?</h2>
@@ -820,6 +676,6 @@ assertTrue(
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=634ca98d" defer></script>
+<script src="assets/js/main.js?v=6950df33" defer></script>
 </body>
 </html>
