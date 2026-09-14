@@ -4326,6 +4326,40 @@ p { color: var(--gray); }
 .filmcard:hover .filmcard__play { transform: scale(1.07); }
 .filmcard__play svg { width: 26px; height: 26px; margin-left: 3px; }
 
+/* ---- Le cadre en BOUCLE, sans aucune commande ----
+   Le 2026-09-14 le client retire le geste : « pas besoin de mettre de player
+   vidéo, lance la vidéo et fais la boucler automatiquement, pas de mise en plein
+   écran etc ». Le cadre garde son filet teal, son halo et sa vignette
+   intérieure — c'est le même objet — mais il n'est plus un lien.
+
+   `pointer-events: none` EST LA MOITIÉ DU TRAVAIL, ET LA MOINS ÉVIDENTE. Sans
+   `controls`, un navigateur n'affiche rien au survol ; mais un CLIC DROIT sur un
+   `<video>` ouvre son menu contextuel, avec « plein écran », « télécharger » et
+   « boucle ». Ce serait une interface, précisément ce qui n'est plus voulu.
+   Même règle que les boucles de « comment ça marche », posée le 2026-08-25.
+
+   LE SURVOL EST NEUTRALISÉ AUSSI : les deux règles `:hover` du cadre lient sa
+   couleur de filet au pointeur, ce qui n'a de sens que sur un objet cliquable.
+   Sur une boucle qui ne répond pas au clic, un cadre qui s'allume au passage
+   PROMET une action qui n'existe pas. La spécificité est la même que
+   `.filmcard:hover` (0,2,0), et cette règle est écrite après : elle gagne. */
+.filmcard--loop { pointer-events: none; }
+.filmcard--loop:hover {
+  border-color: rgba(0, 203, 190, 0.22);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(0, 203, 190, 0.10);
+}
+/* Mêmes dimensions que l'affiche qu'il remplace, pour que la rangée ne bouge pas
+   entre l'état sans JavaScript (l'affiche, via `poster`) et l'état en lecture. */
+.filmcard__video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 /* La durée est INCRUSTÉE et non posée dans un bandeau sous l'image : un bandeau
    ajoute une barre de plus au cadre, une incrustation ne coûte rien. Fond noir
    à 66 %, le même que la mention de durée retirée le 2026-08-24, qui donnait

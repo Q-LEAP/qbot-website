@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=ac9036ac">
+  <link rel="stylesheet" href="../assets/css/style.css?v=7770394b">
   <link rel="stylesheet" href="../assets/css/scrolly.css?v=7d9a9c47">
   <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
        pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
@@ -385,13 +385,13 @@
      Point 3 du retour du 2026-09-08 : le film redevient une section, avec son
      titre, « davantage présenté comme une démonstration du produit ».
 
-     IL N'Y A QU'UN SEUL DÉCLENCHEUR, LA VIGNETTE. Un bouton « Voir la démo »
-     l'accompagnait ; retiré le 2026-09-09, « il suffit de cliquer sur la
-     vidéo ». C'est juste : la vignette porte l'affiche, une pastille de lecture
-     de 64 px et son propre libellé, donc elle se donne déjà pour cliquable, et
-     deux déclencheurs pour un même film faisaient deux arrêts de tabulation
-     vers la même modale. La vignette garde `data-film-modal`, que le module 24
-     vise, et sans JavaScript elle reste un lien vers le fichier. -->
+     IL N'Y A PLUS RIEN À DÉCLENCHER, LE FILM TOURNE. Il a d'abord été une
+     vignette cliquable ouvrant une modale, puis le bouton « Voir la démo » qui
+     l'accompagnait a été retiré le 2026-09-09 (« il suffit de cliquer sur la
+     vidéo »). Le 2026-09-14 le client retire le geste lui-même : le film se
+     lance seul et boucle, sans commandes et sans plein écran. Il n'y a donc
+     plus ni vignette, ni pastille de lecture, ni modale sur cette page.
+     Le détail du pourquoi est sur le cadre, plus bas. -->
 <section class="section section--gray" aria-labelledby="film-title">
   <div class="container">
     <div class="filmband">
@@ -400,15 +400,41 @@
         <h2 class="section-title filmband__titre" id="film-title">Watch <span class="nb">Q-Bot</span> clear a 2FA in 60 seconds</h2>
         <p class="filmband__desc">A test reaches the 2FA step. <span class="nb">Q-Bot</span> takes over on a real smartphone. The test carries on automatically.</p>
       </div>
-      <a class="filmcard" href="../assets/video/qbot-demo.mp4?v=301fa999"
-         data-film-modal
-         data-film-titre="Q-Bot in action"
-         data-film-fermer="Close the video">
-        <img class="filmcard__poster" src="../assets/img/qbot-demo-poster.jpg?v=1e26aaa5" alt="" width="1280" height="720" loading="lazy" decoding="async">
-        <span class="filmcard__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span>
-        <span class="filmcard__titre">Play the film, <span class="nb">Q-Bot</span> in action</span>
-        <span class="filmcard__meta">1 min, no sound</span>
-      </a>
+      <!-- LE FILM TOURNE TOUT SEUL, EN BOUCLE, SANS AUCUNE COMMANDE.
+           Demandé par le client le 2026-09-14 : « pas besoin de mettre de player
+           vidéo, lance la vidéo et fais la boucler automatiquement, pas de mise
+           en plein écran etc, tu la laisses telle quelle dans le navigateur et
+           ça boucle. »
+
+           PAS DE `controls`, ET LE CADRE COUPE SES `pointer-events`. Sans
+           commandes, un navigateur n'affiche rien au survol — mais un CLIC DROIT
+           ouvre son menu contextuel, avec « plein écran », « télécharger » et
+           « boucle ». Ce serait une interface, et c'est justement ce qui n'est
+           plus voulu. La règle est celle des boucles de « comment ça marche »,
+           posée le 2026-08-25.
+
+           `muted` EST CE QUI REND LA LECTURE AUTOMATIQUE LÉGALE : aucun moteur
+           ne démarre un média sonore sans geste du visiteur. Le film n'a de
+           toute façon pas de piste audio, elle a été retirée du fichier
+           (ffmpeg `-an`).
+
+           LE FICHIER EST DANS `data-film` ET NON DANS `src` : le module 18 ne le
+           demande que quand la section approche, avec 200 px d'avance, et remet
+           la boucle en pause hors champ. Le premier écran ne paie donc pas les
+           2 Mo du film. Sans JavaScript, en mouvement réduit, en économiseur de
+           données ou sur connexion lente, il reste l'affiche — une vraie image
+           du film.
+
+           `aria-hidden` + `tabindex="-1"` : une boucle muette que le visiteur ne
+           peut ni lancer ni arrêter n'a rien à annoncer à un lecteur d'écran, et
+           ce qu'elle montre est dit par le titre et le paragraphe d'à côté. -->
+        <div class="filmcard filmcard--loop">
+          <video class="video__player filmcard__video"
+                 data-film="../assets/video/qbot-demo.mp4?v=301fa999"
+                 poster="../assets/img/qbot-demo-poster.jpg?v=1e26aaa5"
+                 width="1280" height="720"
+                 muted loop playsinline aria-hidden="true" tabindex="-1"></video>
+        </div>
     </div>
   </div>
 </section>
