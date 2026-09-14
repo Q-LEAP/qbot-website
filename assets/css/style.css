@@ -778,6 +778,7 @@ p { color: var(--gray); }
   gap: 8px;
   background: rgba(255, 255, 255, 0.10);
   border: 1px solid rgba(255, 255, 255, 0.18);
+  border-left: 2px solid var(--teal);
   -webkit-backdrop-filter: blur(12px) saturate(160%);
           backdrop-filter: blur(12px) saturate(160%);
   box-shadow:
@@ -800,8 +801,39 @@ p { color: var(--gray); }
   letter-spacing: 0.12em;
   line-height: 1.4;
   text-transform: uppercase;
-  padding: 7px 15px;
-  border-radius: 16px;
+  /* 14 ET NON 15 À GAUCHE : le filet y est passé de 1 à 2 px, donc le retrait
+     total reste de 16 px et le texte ne se décale pas. */
+  padding: 7px 15px 7px 14px;
+  /* ══ LA FORME EST ASYMÉTRIQUE, ET C'EST L'IDÉE ══════════════════════════
+     « Change le border radius, trouve une idée plus originale, tout en restant
+     dans la DA » (client, 2026-09-14).
+
+     LE BORD GAUCHE EST VIF ET PORTE UN LISERÉ TEAL, LE BORD DROIT EST
+     ENTIÈREMENT ROND. La pastille symétrique à rayon total est la moitié du
+     cliché « IA » ; coupée d'un côté, la forme devient un marque-page, une
+     étiquette posée sur la marge, et l'asymétrie se lit comme un choix.
+
+     LE GESTE N'EST PAS INVENTÉ ICI : le liseré teal sur le bord gauche est la
+     signature de ce site depuis le 2026-08-20. Il tient la matrice de
+     compatibilité, les cartes de la séquence 3D, les membres de l'équipe et les
+     titres de partie. Le hero était le seul endroit à ne pas le porter ; il
+     rejoint le reste au lieu d'inventer une forme de plus.
+
+     LE RAYON RÉUTILISE `--radius-pill`, le jeton déjà défini, plutôt qu'un
+     nombre de plus : la forme est la MÊME que la pastille d'avant, coupée d'un
+     côté. Trois profils droits ont été rendus et comparés (4 px, 14 px,
+     demi-rond) : à 4 px la forme redevient un rectangle banal, à 14 px elle
+     reste indécise, le demi-rond est le seul qui affirme la coupe.
+
+     LE COIN COUPÉ À 45° A ÉTÉ ESSAYÉ ET ÉCARTÉ, et la raison vaut d'être
+     gardée : c'était la meilleure idée sur le papier, la diagonale étant la
+     queue du Q du logo, donc le seul geste géométrique de la marque. Mais un
+     `clip-path` supprime le filet sur la diagonale, et le lui faire suivre
+     demande un pseudo-élément portant à la fois `backdrop-filter`, `clip-path`
+     et quatre `drop-shadow` — la combinaison exacte où les moteurs divergent,
+     pour un détail de 12 px au coin d'une étiquette de 34. Rendu, comparé,
+     abandonné. */
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
   margin-bottom: 24px;
   max-width: 100%;
 }
