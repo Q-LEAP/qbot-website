@@ -407,16 +407,35 @@ p { color: var(--gray); }
    portaient plutôt que gardée en mentant sur son nom. */
 
 /* ---- Boutons ---- */
+/* ══ LES BOUTONS SUIVENT L'ÉTIQUETTE DU HERO ═══════════════════════════════
+   « Adapte les autres au même style, pareil pour Demander une démo »
+   (client, 2026-09-14), dans la suite du retour Gemini : fin, mat, rectangle à
+   bord arrondi, bordures et lueur très légères.
+
+   MÊME RAYON QUE L'ÉTIQUETTE, `--radius-sm`. La pastille à rayon total était la
+   moitié du cliché relevé sur le hero ; elle l'est autant sur un bouton, et le
+   site n'a aucune raison d'avoir deux langages de forme.
+
+   LE FILET PASSE DE 2 À 1 PX. C'est la « bordure très légère » du retour, et
+   cela concerne surtout les variantes à filet (`--outline`, `--outline-white`),
+   dont le trait de 2 px était le plus lourd de la page. Tous les boutons
+   perdent 2 px de haut et de large ensemble, donc le bouton de la barre et
+   celui du bloc d'appel à l'action restent identiques entre eux, ce qui est la
+   contrainte posée le 2026-09-11.
+
+   LES RETRAITS NE BOUGENT PAS : ils ont été réglés par le client le 2026-09-09
+   (barre) puis le 2026-09-11 (bloc d'appel), et ce lot porte sur la matière,
+   pas sur les proportions. */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 12px 28px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   font-size: 0.9375rem;
   font-weight: 700;
   transition: var(--transition);
-  border: 2px solid transparent;
+  border: 1px solid transparent;
 }
 
 .btn--primary {
@@ -432,11 +451,21 @@ p { color: var(--gray); }
   color: #231F20;
   border-color: var(--teal);
 }
+/* LE HALO TEAL DU SURVOL EST RETIRÉ. C'était la dernière « lueur fluo » de la
+   page : une ombre teal à 35 % sur 20 px de flou, sous un aplat déjà teal. Le
+   survol garde ce qui le signale sans l'éclairer — le teal foncé et le pixel de
+   lévitation.
+   LE FOND TEAL PLEIN, LUI, RESTE, et c'est délibéré. C'est le seul signal de
+   conversion du site, et la règle du client du 2026-09-09 le réserve justement
+   à la demande de démo (« le bouton avec fond turquoise plein est réservé
+   uniquement à Réserver une démo, maximum un CTA principal par section »). Une
+   variante fantôme — fond mat anthracite, filet et texte teal — a été rendue et
+   proposée : elle colle mieux au retour « fin et mat », au prix du seul repère
+   de conversion de la page. À basculer sur demande explicite, pas de soi-même. */
 .btn--primary:hover {
   background: var(--teal-dark);
   border-color: var(--teal-dark);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0,203,190,0.35);
 }
 
 .btn--outline {
@@ -2716,14 +2745,17 @@ p { color: var(--gray); }
    qu'ils sont côte à côte. */
 .footer__social a svg { width: 16px; height: 16px; }
 
+/* Le badge du pied de page suit l'étiquette du hero : même rayon, même filet
+   très léger. Il garde son fond transparent — le pied de page est déjà une
+   surface sombre, y poser un second aplat créerait un cadre dans un cadre. */
 .footer__badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 0.75rem;
   color: rgba(255,255,255,0.68);
-  border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm);
   padding: 5px 12px;
 }
 /* LE LOGO REMPLACE LE PICTOGRAMME DE LIEU (2026-09-09), ET C'EST LE LABEL
@@ -5609,10 +5641,19 @@ a:focus-visible { border-radius: var(--radius-sm); }
   color: #E6E7E8;
 }
 
-/* ── Bouton outline ── */
+/* ── Bouton outline ──
+   LE CONTOUR MONTE EN CLARTÉ PARCE QU'IL A MAIGRI. Le filet des boutons est
+   passé de 2 à 1 px le 2026-09-14 (« bordures très légères »), et ce bouton est
+   le SEUL à filet du site : c'est celui qui envoie le formulaire de contact.
+   Mesuré sur le fond réellement composité, son `#2B2B2B` ne donnait que 1,30:1,
+   très en dessous des 3:1 que WCAG 1.4.11 demande pour la bordure d'un
+   composant. Le défaut est ANTÉRIEUR — la couleur n'a pas changé, seule
+   l'épaisseur — mais l'affiner l'aggravait, donc il se corrige ici : blanc à
+   36 % donne 3,36:1. Un trait fin et net est plus lisible qu'un trait épais et
+   noyé, et c'est bien ce que « bordure légère » veut dire. */
 [data-theme="dark"] .btn--outline {
   color: #E6E7E8;
-  border-color: #2B2B2B;
+  border-color: rgba(255, 255, 255, 0.36);
 }
 
 /* ── Timeline ── */
