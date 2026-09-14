@@ -185,12 +185,14 @@ SECTIONS_AMENDEES = {
                        "(GitHub,&nbsp;Inc., groupe Microsoft), dont le réseau de diffusion "
                        "sert les pages depuis des serveurs situés dans plusieurs pays, "
                        "y compris hors de l'Union européenne."),
-                 ('p', "Les demandes envoyées depuis le formulaire de contact ne transitent "
-                       "pas par le site&nbsp;: elles ouvrent votre propre logiciel de "
-                       "courrier avec le message prérempli, et ne partent que si vous les "
-                       "envoyez vous-même. Les inscriptions à la lettre d'information sont "
-                       "transmises à Brevo (anciennement Sendinblue), notre sous-traitant "
-                       "pour l'envoi des lettres d'information."),
+                 ('p', "Les demandes envoyées depuis le formulaire de contact sont "
+                       "acheminées par FormSubmit (Devro&nbsp;LABS), notre sous-traitant pour "
+                       "la transmission des formulaires, qui nous les fait parvenir par "
+                       "courrier électronique sans les conserver&nbsp;; elles peuvent à ce "
+                       "titre être traitées en dehors de l'Union européenne. Si cet "
+                       "acheminement échoue, le site compose le message dans votre propre "
+                       "logiciel de courrier, et il ne part que si vous l'envoyez vous-même. "
+                       "Le site n'héberge aucune lettre d'information."),
                  ('p', "<a href=\"https://q-leap.eu\">Q-LEAP SA</a> s\u2019engage à vous "
                        "informer immédiatement, dans la mesure où nous y sommes légalement "
                        "autorisés, en cas de requête provenant d\u2019une autorité "
@@ -237,11 +239,12 @@ SECTIONS_AMENDEES = {
                        "hosted on GitHub&nbsp;Pages (GitHub,&nbsp;Inc., a Microsoft company), "
                        "whose delivery network serves the pages from servers located in "
                        "several countries, including outside the European Union."),
-                 ('p', "Requests sent from the contact form do not travel through the site: "
-                       "they open your own mail application with the message prefilled, and "
-                       "are sent only if you send them yourself. Newsletter sign-ups are "
-                       "passed to Brevo (formerly Sendinblue), our processor for sending "
-                       "newsletters."),
+                 ('p', "Requests sent from the contact form are routed by FormSubmit "
+                       "(Devro&nbsp;LABS), our processor for form delivery, which forwards them "
+                       "to us by email without retaining them; they may therefore be processed "
+                       "outside the European Union. If that delivery fails, the site composes "
+                       "the message in your own mail application, and it is sent only if you "
+                       "send it yourself. The site hosts no newsletter."),
                  ('p', "<a href=\"https://q-leap.eu\">Q-LEAP SA</a> undertakes to inform you "
                        "immediately, insofar as we are legally entitled to do so, in the event "
                        "of a request from an administrative or judicial authority relating to "

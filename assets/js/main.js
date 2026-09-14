@@ -1432,11 +1432,34 @@ backToTop.addEventListener('click', () => {
      Les deux valeurs restent des en-têtes autorisés sans pré-vol CORS, ce qui
      est ce qui permet de lire la réponse (mesuré : `type: 'cors'`, 200,
      `{"success":true}`). */
+  /* FormSubmit (2026-09-14) : le service qui reçoit les deux formulaires de
+     contact. Il n'impose aucun nom de champ — il renvoie tout ce qu'on lui donne —
+     donc `noms` est vide ; ce qu'il attend, ce sont ses champs réservés en `_`,
+     écrits dans le HTML (`_captcha`, `_template`, `_honey`). Deux choses se font
+     ici parce qu'elles ne peuvent pas s'écrire dans le balisage :
+
+     • LE SUJET DE LA LISTE PART EN CLAIR, PAS EN CODE. Le `<select>` porte des
+       valeurs techniques (`demo`, `pricing`) : sans ça le destinataire lirait
+       « sujet : pricing » là où le visiteur a lu « Questions tarifaires ».
+       C'est la correction déjà faite le 2026-08-26 sur le repli courrier, qui
+       vaut tout autant pour l'envoi direct ;
+     • `_subject` REPREND CE MÊME LIBELLÉ, donc la demande se trie sans ouvrir
+       le message.
+
+     `urlencode` évite le multipart : `fetch` déduit seul le bon Content-Type, et
+     `application/x-www-form-urlencoded` reste un en-tête autorisé sans pré-vol
+     CORS — ce qui est ce qui permet de LIRE la réponse (mesuré : `allow-origin: *`,
+     `allow-methods: GET, POST, PUT, OPTIONS`). */
   var PROFILS = {
     brevo: {
       noms:    { email: 'EMAIL', consent: 'OPT_IN' },
       valeurs: { OPT_IN: '1' },
       urlencode: true
+    },
+    formsubmit: {
+      urlencode: true,
+      libelles: ['subject', 'consent'],
+      sujet: '_subject'
     }
   };
 
@@ -1447,11 +1470,42 @@ backToTop.addEventListener('click', () => {
     var prof = PROFILS[form.getAttribute('data-endpoint-kind')];
     if (!prof || !prof.urlencode) return fd;
 
+    /* LE LIBELLÉ LU PAR LE VISITEUR, PAS LA VALEUR TECHNIQUE. Deux cas :
+       • une liste déroulante rend le texte de l'option choisie — sans quoi le
+         destinataire lit « sujet : pricing » là où le visiteur a lu
+         « Questions tarifaires » ;
+       • une case à cocher rend LA PHRASE ACCEPTÉE et non « on ». Pour une trace
+         de consentement, c'est la phrase qui a de la valeur, pas le mot : c'est
+         la leçon du 2026-08-26, et elle vaut pour l'envoi direct comme pour le
+         repli courrier.
+       `el.labels` et non `label[for=…]` construit à la main : les mentions de
+       consentement de ce site ont un libellé qui ENVELOPPE son champ, et la
+       forme construite ne les trouve pas. */
+    function lisible(champ) {
+      var el = form.querySelector('[name="' + champ + '"]');
+      if (!el) return null;
+      if (el.tagName === 'SELECT') {
+        if (!el.value || el.selectedIndex < 0) return null;
+        return el.options[el.selectedIndex].text.trim();
+      }
+      if (el.type === 'checkbox') {
+        var lab = el.labels && el.labels[0];
+        return lab ? lab.textContent.replace(/\s+/g, ' ').trim() : null;
+      }
+      return null;
+    }
+
     var p = new URLSearchParams();
     fd.forEach(function (v, k) {
       var nom = (prof.noms && prof.noms[k]) || k;
-      p.append(nom, (prof.valeurs && prof.valeurs[nom] !== undefined) ? prof.valeurs[nom] : v);
+      var clair = (prof.libelles && prof.libelles.indexOf(k) !== -1) ? lisible(k) : null;
+      p.append(nom, (prof.valeurs && prof.valeurs[nom] !== undefined) ? prof.valeurs[nom]
+                                                                     : (clair || v));
     });
+    if (prof.sujet && !p.has(prof.sujet)) {
+      var motif = lisible('subject');   // la liste, jamais la case
+      p.append(prof.sujet, T.sujetC + (motif ? ' : ' + motif : ''));
+    }
     var loc = form.getAttribute('data-locale');
     if (loc && !p.has('locale')) p.append('locale', loc);
     return p;
@@ -1631,9 +1685,29 @@ backToTop.addEventListener('click', () => {
       dire(form, T.envoi, 'info');
       var bouton = form.querySelector('[type="submit"]');
       if (bouton) bouton.disabled = true;
+      /* UN 200 NE PROUVE PAS L'ENVOI, ET CE N'EST PAS UNE PRÉCAUTION THÉORIQUE.
+         Mesuré le 2026-09-14 : tant que l'adresse n'est pas confirmée, FormSubmit
+         répond HTTP **200** avec `{"success":"false","message":"This form needs
+         Activation…"}`. Le code seul, le formulaire aurait annoncé « message
+         envoyé » alors que rien ne partait — un succès silencieux, qui est le pire
+         des états : le visiteur repart en croyant avoir écrit.
+         Même famille que le `{"success":true}` de Brevo obtenu pot de miel rempli,
+         le 2026-08-26 : on lit le CORPS, pas seulement l'enveloppe.
+         Le corps n'est pas toujours du JSON — un autre service peut renvoyer du
+         texte — donc on n'échoue QUE sur un `success` explicitement faux. */
       fetch(url, { method: 'POST', body: charge(form), headers: { Accept: 'application/json' } })
         .then(function (r) {
           if (!r.ok) throw new Error(r.status);
+          return r.text().then(function (corps) {
+            var d = null;
+            try { d = JSON.parse(corps); } catch (e) { /* pas du JSON : on s'en tient au 200 */ }
+            if (d && typeof d.success !== 'undefined'
+                && (d.success === false || d.success === 'false')) {
+              throw new Error(d.message || 'refus');
+            }
+          });
+        })
+        .then(function () {
           form.reset();
           dire(form, news ? T.okNews : T.ok, 'ok');
         })

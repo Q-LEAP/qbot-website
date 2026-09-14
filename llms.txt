@@ -59,12 +59,13 @@ the booking calendar.
 One item is open and awaiting a decision by the client, not work left undone,
 plus two settled choices recorded here so they are not mistaken for omissions:
 
-- Forms. The two contact forms are sent by the visitor's own mail application, by an explicit
-  decision of the site owner on 2026-08-26: no third-party relay for contact requests. This is
-  a settled choice, not an unfinished item. A static site cannot send mail itself, so any direct
-  submission would route personal data through an external processor, which the owner declined.
-  The page says so above the button, the message is composed field by field, and it is also
-  shown on screen with a copy button for devices where a mailto: link does nothing.
+- Forms. The two contact forms POST to FormSubmit (Devro LABS), which forwards the message to
+  contact@q-leap.eu by email. Wired on 2026-09-14, reversing the 2026-08-26 decision to use a
+  mailto: link only — the site owner asked for a direct send. The visitor's own mail application
+  is now the FALLBACK: if the relay refuses or fails, the site composes the message field by
+  field, opens the mail client and also shows the text on screen with a copy button, so a
+  failed send is never a dead end. The privacy policy names FormSubmit as the processor.
+  Do not describe the contact form as opening an email client as its normal behaviour.
   There is no newsletter form left on the site. The band that carried one on each home page was
   removed on 2026-09-02 at the owner's request: an email programme is not a current priority,
   and the footer now carries one sentence and a link that opens a subscription email. Do not

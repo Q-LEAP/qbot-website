@@ -22,12 +22,11 @@ CE QU'IL FAIT
   2. remplace robots.txt par son contenu d'ouverture ;
   3. si `--endpoint` est fourni, renseigne `data-endpoint` sur les formulaires
      qui n'en ont pas encore. IL N'Y EN A PLUS AUCUN À BRANCHER : les deux
-     formulaires de CONTACT partent volontairement par le logiciel de courrier du
-     visiteur, sur décision du client du 2026-08-26 (pas de sous-traitant tiers
-     pour le contact), et les bandes newsletter n'existent plus depuis le
-     2026-09-02 (la newsletter tient en une ligne du pied de page, qui ouvre un
-     courrier). L'option reste en place au cas où cette décision change, mais ce
-     n'est plus une tâche du jour J.
+     formulaires de CONTACT sont branchés sur FormSubmit depuis le 2026-09-14
+     (le client a rouvert la décision du 2026-08-26 et demandé un envoi direct),
+     et les bandes newsletter n'existent plus depuis le 2026-09-02. L'option
+     reste en place pour un changement de prestataire, mais ce n'est plus une
+     tâche du jour J.
 
 CE QU'IL NE FAIT PAS, ET QUI RESTE MANUEL : le DNS, HTTPS, la Search Console, et
 la suppression du WordPress. Il les rappelle en fin d'exécution.

@@ -159,7 +159,7 @@
              decision of 2026-08-26: no third-party relay for contact. `data-endpoint`
              stays empty on purpose and this is NOT a pending item. Cf. contact.html for
              the full note. -->
-        <form class="contact-form" data-form="contact" data-endpoint="" data-mailto="contact@q-leap.eu" method="post" novalidate>
+        <form class="contact-form" data-form="contact" data-endpoint="https://formsubmit.co/ajax/contact@q-leap.eu" data-endpoint-kind="formsubmit" data-mailto="contact@q-leap.eu" method="post" novalidate>
           <div class="form-row">
             <div class="form-group"><label for="firstname">First name <span>*</span></label><input type="text" id="firstname" name="firstname" required autocomplete="given-name" placeholder="John"></div>
             <div class="form-group"><label for="lastname">Last name <span>*</span></label><input type="text" id="lastname" name="lastname" required autocomplete="family-name" placeholder="Smith"></div>
@@ -185,11 +185,23 @@
               <span style="font-size:.875rem; color:var(--gray);">I agree that Q-Leap may retain my data to process my request. <a href="privacy/" style="color:var(--teal-text);">Privacy policy.</a></span>
             </label>
           </div>
+          <!-- LES CHAMPS RÉSERVÉS DE FORMSUBMIT. `_captcha=false` retire leur page
+               de captcha, qui n'a pas de sens sur un envoi en arrière-plan (le
+               visiteur ne la verrait jamais et l'envoi échouerait) ; `_template`
+               met en forme le courrier reçu ; `_honey` est leur pot de miel, il
+               doit partir VIDE. Il est en `display: none` et non en classe de
+               lecteur d'écran : la seconde laisserait le champ dans l'ordre de
+               tabulation et dans l'arbre d'accessibilité, où il n'a rien à faire.
+               Un champ en `display:none` EST bien envoyé ; seul `disabled` l'en
+               exclurait. -->
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="text" name="_honey" class="form-honeypot" tabindex="-1" autocomplete="off">
           <button type="submit" class="btn btn--outline btn--lg" style="width:100%; justify-content:center;">
             Send my request
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
           </button>
-          <p class="form-hint">On sending, your mail application opens with the message prefilled: all that is left is to hit send.</p>
+          <p class="form-hint">Your message is sent to us straight from this page.</p>
               <p class="form-status" role="status" aria-live="polite" hidden></p>
       <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript is disabled. Write to us directly at <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>.</p></noscript>
     </form>
@@ -292,6 +304,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=6950df33" defer></script>
+<script src="../assets/js/main.js?v=e7075075" defer></script>
 </body>
 </html>
