@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q-Bot technical documentation | LuxTrust 2FA robot</title>
+  <meta name="description" content="Install Q-Bot on your network, connect an Android phone, build a scenario and trigger it over the REST API from your test suite.">
+  <link rel="canonical" href="https://q-bot.eu/en/documentation.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/documentation.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/documentation.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/documentation.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Q-Bot technical documentation | LuxTrust 2FA robot">
+  <meta property="og:description" content="Install Q-Bot on your network, connect an Android phone, build a scenario and trigger it over the REST API from your test suite.">
+  <meta property="og:url" content="https://q-bot.eu/en/documentation.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Q-Bot enclosure on a desk, a smartphone docked in its cradle, the web interface on screen">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Q-Bot">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Q-Bot technical documentation | LuxTrust 2FA robot">
+  <meta name="twitter:description" content="Install Q-Bot on your network, connect an Android phone, build a scenario and trigger it over the REST API from your test suite.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d">
+  <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="../assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../assets/css/style.css?v=093c2ddf">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012-04-05",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-qbot.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://q-bot.eu/en/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Technical documentation",
+      "item": "https://q-bot.eu/en/documentation.html"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Q-Bot technical documentation",
+    "description": "Install Q-Bot on your network, connect an Android phone, build a scenario and trigger it over the REST API from your test suite.",
+    "url": "https://q-bot.eu/en/documentation.html",
+    "inLanguage": "en",
+    "datePublished": "2026-09-14",
+    "dateModified": "2026-09-14",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=e4b5f19d",
+    "author": { "@id": "https://q-bot.eu/#organization" },
+    "isPartOf": { "@type": "WebSite", "name": "Q-Bot", "url": "https://q-bot.eu/" },
+    "about": { "@type": "Product", "name": "Q-Bot" },
+    "publisher": { "@id": "https://q-bot.eu/#organization" }
+  }
+  </script>
+</head>
+<body>
+
+<a href="#main" class="skip-nav">Skip to main content</a>
+
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Main navigation">
+      <a href="./" class="nav__logo"><img src="../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84"></a>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-menu"><span></span><span></span><span></span></button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="./" class="nav__link">Home</a></li>
+        <li><a href="technical-specs.html" class="nav__link">Technical Specs</a></li>
+        <li><a href="use-cases.html" class="nav__link">How it works</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="contact.html" data-booking-open
+       data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
+       data-booking-title="Q-Bot booking calendar"
+       data-booking-attente="Loading the calendar"
+       data-booking-lent="The calendar is slow to respond. Open it in a new tab."
+       data-booking-fermer="Close the calendar"
+       class="btn btn--primary">Request a demo</a>
+                <div class="nav__lang">
+          <a href="../caracteristiques.html" hreflang="fr" aria-label="This page is in English. Switch to the French version." title="This page is in English. Switch to the French version."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> EN</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Documentation</span>
+    <h1 id="page-title">Technical documentation</h1>
+    <p>How to install <span class="nb">Q-Bot</span> on your network, connect a phone, build a scenario and trigger it from your test suite. This page is for whoever actually integrates <span class="nb">Q-Bot</span>; to find out what it does and whether it fits your environment, see the <a href="technical-specs.html">technical specifications</a>.</p>
+    <nav class="doc-somm" aria-label="Contents">
+      <ol class="doc-somm__list">
+        <li><a class="link-edito" href="#doc-archi"><span>How <span class="nb">Q-Bot</span> is built</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-install"><span>Installation and network</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-telephone"><span>Connecting the phone</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-scenarios"><span>Building scenarios</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-api"><span>The REST API</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-appel"><span>Triggering from your test suite</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-compagnon"><span>The companion app</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-qr"><span>The QR code on the device screen</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-donnees"><span>Data storage</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-securite"><span>Security</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-support"><span>Support and replacement</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="doc-archi">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Architecture</span>
+      <h2 class="section-title" id="doc-archi">How <span class="nb">Q-Bot</span> is built</h2>
+      <p class="section-subtitle">A complete computer sitting on your local network, an Android phone connected over USB, and a web interface served by the device itself.</p>
+    </div>
+    <p class="section-subtitle">The device is a small computer that runs on its own, on the network where you install it. It calls no external service while tests run, and needs no internet connection to run them.</p>
+    <p class="section-subtitle">The phone under test is connected to it with a USB cable. <span class="nb">Q-Bot</span> drives it over ADB, the standard Android tool: every tap lands on the physical screen, inside the genuine authentication app.</p>
+    <ul class="api-facts api-facts--deux">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Your test suite calls <span class="nb">Q-Bot</span> over HTTP</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><span class="nb">Q-Bot</span> replays the scenario on the phone, over ADB</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The second factor is approved in the real app</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Your test carries on</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="doc-install">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Installation</span>
+      <h2 class="section-title" id="doc-install">Installation and network</h2>
+      <p class="section-subtitle">The device arrives ready. What matters is where you plug it in and what it expects from your network.</p>
+    </div>
+    <div class="specs__list" role="list">
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">System</span>
+        <span class="spec-item__value">Raspberry Pi OS Lite</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Deployment</span>
+        <span class="spec-item__value">Docker containers, started with a single Docker Compose command</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Network</span>
+        <span class="spec-item__value">Gigabit Ethernet, Wi-Fi 5 (IEEE 802.11ac), Bluetooth</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Access</span>
+        <span class="spec-item__value">Web interface, served by the device on your local network</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Internet connection</span>
+        <span class="spec-item__value">None is needed while tests run</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Lead time</span>
+        <span class="spec-item__value">48 to 72 hours after ordering</span>
+      </div>
+    </div>
+    <p class="section-subtitle">Put the device on the same network as the machine that runs your tests: that network, and only that network, is what gives access to the interface and the API.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="doc-telephone">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Smartphone</span>
+      <h2 class="section-title" id="doc-telephone">Connecting the phone</h2>
+      <p class="section-subtitle">A physical Android phone, connected over USB, driven by ADB. No emulator, no simulator, no stub app.</p>
+    </div>
+    <div class="specs__list" role="list">
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">System</span>
+        <span class="spec-item__value">Android</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Device</span>
+        <span class="spec-item__value">Physical, neither emulator nor simulator</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Link</span>
+        <span class="spec-item__value">USB cable between the device and the phone</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Driving</span>
+        <span class="spec-item__value"><a href="https://developer.android.com/tools/adb" target="_blank" rel="noopener">ADB</a>, the standard Android tool</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Apps</span>
+        <span class="spec-item__value">The genuine 2FA app, installed on the phone</span>
+      </div>
+    </div>
+    <p class="section-subtitle">One device drives one phone at a time, and requests are handled one after another, in the order they arrive.</p>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="doc-scenarios">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Scenarios</span>
+      <h2 class="section-title" id="doc-scenarios">Building scenarios</h2>
+      <p class="section-subtitle">A scenario is built on screen, on a screenshot of the app under test. There is no scripting language to learn.</p>
+    </div>
+    <ul class="api-facts api-facts--deux">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>A screenshot of the app is the background of each step</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Tap points are placed with a click, and numbered</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Waits are set to the millisecond</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Steps can be reordered</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Scenarios are versioned on the device</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Screenshots stay stored locally</span></li>
+    </ul>
+    <p class="section-subtitle">Each scenario carries a numeric id: that is what your test suite will call.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="doc-api">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">REST API</span>
+      <h2 class="section-title" id="doc-api">The REST API</h2>
+      <p class="section-subtitle">Three endpoints, over HTTP, on the local network. No SDK, no proprietary plugin, no agent to install in your continuous integration.</p>
+    </div>
+    <div class="specs__list" role="list">
+      <div class="spec-item spec-item--api" role="listitem">
+        <span class="spec-item__label">GET /scenarios/:id/execute</span>
+        <span class="spec-item__value">Runs a saved scenario on the connected phone.</span>
+      </div>
+      <div class="spec-item spec-item--api" role="listitem">
+        <span class="spec-item__label">GET /get-luxtrust-otp</span>
+        <span class="spec-item__value">Returns the one-time code shown by the LuxTrust app.</span>
+      </div>
+      <div class="spec-item spec-item--api" role="listitem">
+        <span class="spec-item__label">POST /display-image</span>
+        <span class="spec-item__value">Shows a QR code on the device screen.</span>
+      </div>
+    </div>
+    <ul class="api-facts api-facts--deux">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Self-hosted: everything stays on your local network</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Works with any test suite that can make an HTTP call</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>The API expects no key: access control is your network's</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="doc-appel">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Integration</span>
+      <h2 class="section-title" id="doc-appel">Triggering from your test suite</h2>
+      <p class="section-subtitle">The same HTTP call, in five tools. Open the one you need.</p>
+    </div>
+  <div class="faq__list">
+        <div class="faq-item" id="api-ex1">
+          <button class="faq-item__question" aria-expanded="false" id="api-b1" aria-controls="api-a1">
+            Python / Selenium
+            <span class="faq-item__icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+          </button>
+          <div class="faq-item__answer" id="api-a1" role="region" aria-labelledby="api-b1">
+            <div class="code-block"><pre><code># Trigger the 2FA scenario
+  import requests
+
+  requests.get(
+    &quot;http://q-bot.local:8000&quot;
+    &quot;/scenarios/42/execute&quot;
+  )
+
+  # The test carries on
+  driver.find_element(
+    By.ID, &quot;dashboard&quot;
+  ).is_displayed()</code></pre></div>
+          </div>
+        </div>
+        <div class="faq-item" id="api-ex2">
+          <button class="faq-item__question" aria-expanded="false" id="api-b2" aria-controls="api-a2">
+            Cypress
+            <span class="faq-item__icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+          </button>
+          <div class="faq-item__answer" id="api-a2" role="region" aria-labelledby="api-b2">
+            <div class="code-block"><pre><code>// Trigger the 2FA scenario
+  cy.request(
+    'GET',
+    'http://q-bot.local:8000'
+    + '/scenarios/42/execute'
+  )
+  .its('status')
+  .should('eq', 200)
+
+  cy.get('#dashboard')
+    .should('be.visible')</code></pre></div>
+          </div>
+        </div>
+        <div class="faq-item" id="api-ex3">
+          <button class="faq-item__question" aria-expanded="false" id="api-b3" aria-controls="api-a3">
+            Shell / CI pipeline
+            <span class="faq-item__icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+          </button>
+          <div class="faq-item__answer" id="api-a3" role="region" aria-labelledby="api-b3">
+            <div class="code-block"><pre><code># Trigger the 2FA scenario
+  curl -s \
+    http://q-bot.local:8000 \
+    /scenarios/42/execute
+
+  # LuxTrust OTP
+  OTP=$(curl -s \
+    http://q-bot.local:8000 \
+    /get-luxtrust-otp \
+    | jq -r '.otp')</code></pre></div>
+          </div>
+        </div>
+        <div class="faq-item" id="api-ex4">
+          <button class="faq-item__question" aria-expanded="false" id="api-b4" aria-controls="api-a4">
+            Robot Framework
+            <span class="faq-item__icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+          </button>
+          <div class="faq-item__answer" id="api-a4" role="region" aria-labelledby="api-b4">
+            <div class="code-block"><pre><code>*** Settings ***
+  Library    RequestsLibrary
+
+  *** Test Cases ***
+  2FA Login
+      # trigger the scenario
+      ${r}=    GET
+      ...    ${QBOT}/scenarios/42/execute
+      Status Should Be    200    ${r}</code></pre></div>
+          </div>
+        </div>
+        <div class="faq-item" id="api-ex5">
+          <button class="faq-item__question" aria-expanded="false" id="api-b5" aria-controls="api-a5">
+            JUnit / RestAssured
+            <span class="faq-item__icon" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </span>
+          </button>
+          <div class="faq-item__answer" id="api-a5" role="region" aria-labelledby="api-b5">
+            <div class="code-block"><pre><code>// trigger the 2FA scenario
+  given()
+    .baseUri(&quot;http://q-bot.local:8000&quot;)
+  .when()
+    .get(&quot;/scenarios/42/execute&quot;)
+  .then()
+    .statusCode(200);
+
+  // the test carries on
+  assertTrue(
+    dashboard.isDisplayed()
+  );</code></pre></div>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="doc-compagnon">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Companion app</span>
+      <h2 class="section-title" id="doc-compagnon">The companion app</h2>
+      <p class="section-subtitle">The second way to trigger a run: the app is installed on the phone under test and starts on its own as soon as a 2FA notification arrives.</p>
+    </div>
+    <p class="section-subtitle">Installed on the phone under test, it watches the notifications of the authentication apps and triggers the matching scenario as soon as one arrives. No call from your test suite is needed.</p>
+    <p class="section-subtitle">Both trigger paths live side by side in the same environment: the HTTP call when your test decides, the companion app when the app under test asks for the second factor.</p>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="doc-qr">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">QR code</span>
+      <h2 class="section-title" id="doc-qr">The QR code on the device screen</h2>
+      <p class="section-subtitle">The device has a small built-in screen. <code>POST /display-image</code> shows a QR code on it for the phone to scan.</p>
+    </div>
+    <p class="section-subtitle">Some authentication flows ask you to scan an image rather than type a code. The device screen then acts as the display: your test sends the image, the phone scans it, the flow carries on.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="doc-donnees">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Data</span>
+      <h2 class="section-title" id="doc-donnees">Data storage</h2>
+      <p class="section-subtitle">Scenarios and their screenshots stay on the device. Nothing is sent to an external service.</p>
+    </div>
+    <div class="specs__list" role="list">
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Database</span>
+        <span class="spec-item__value">SQLite, on the device</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Screenshots</span>
+        <span class="spec-item__value">Stored on the device</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Cloud</span>
+        <span class="spec-item__value">No dependency while tests run</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Data</span>
+        <span class="spec-item__value">Test data only</span>
+      </div>
+    </div>
+    <p class="section-subtitle"><span class="nb">Q-Bot</span> is built for test data. The accounts used in your scenarios should be test accounts.</p>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="doc-securite">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Security</span>
+      <h2 class="section-title" id="doc-securite">Security</h2>
+      <p class="section-subtitle">What the product guarantees today, and what it leaves to your infrastructure. Stated as it stands, with no promise beyond.</p>
+    </div>
+    <ul class="api-facts api-facts--deux">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Self-hosted: the device lives on your network, not in a cloud</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No call to an external service while tests run</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>No internet connection is needed to run a scenario</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Scenarios and screenshots do not leave the device</span></li>
+    </ul>
+    <p class="section-subtitle"><strong>The API expects no authentication key.</strong> Access control is therefore your network's: put the device on a segment whose access is already controlled, as you would for any test equipment. For any compliance question specific to your environment, <a href="contact.html">write to us</a>.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="doc-support">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Support</span>
+      <h2 class="section-title" id="doc-support">Support and replacement</h2>
+      <p class="section-subtitle">What the rental includes, and what happens if the device fails.</p>
+    </div>
+    <div class="specs__list" role="list">
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Support</span>
+        <span class="spec-item__value">Included, answer within 24 working hours</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Failure</span>
+        <span class="spec-item__value">Remote repair first</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Replacement</span>
+        <span class="spec-item__value">A new device if the repair does not succeed</span>
+      </div>
+      <div class="spec-item" role="listitem">
+        <span class="spec-item__label">Lead time</span>
+        <span class="spec-item__value">48 to 72 hours after ordering</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--dark" aria-labelledby="cta-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-title">Ready to automate your last manual step?</h2>
+    <p class="section-subtitle">Talk to our team and see <span class="nb">Q-Bot</span> in action.</p>
+    <a href="contact.html" class="btn btn--primary btn--lg">Request a demo</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="../assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
+        </div>
+        <p class="footer__desc">
+          The only solution for automating 2FA, designed and manufactured in Luxembourg by <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a>.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Social media">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><img class="footer__badge-ico" src="../assets/img/made-in-luxembourg-blanc.png?v=9dae4b43" width="98" height="79" alt="" aria-hidden="true"> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3><span class="nb">Q-Bot</span></h3>
+        <ul role="list">
+          <li><a href="./">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Product</h3>
+        <ul role="list">
+          <li><span aria-current="page">Technical Specs</span></li>
+          <li><a href="use-cases.html">How it works</a></li>
+          <li><a href="use-cases.html#cas">Use cases</a></li>
+          <li><a href="contact.html" data-booking-open
+              data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
+              data-booking-title="Q-Bot booking calendar"
+              data-booking-attente="Loading the calendar"
+              data-booking-lent="The calendar is slow to respond. Open it in a new tab."
+              data-booking-fermer="Close the calendar"
+              >Request a demo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contact</h3>
+        <ul role="list">
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a></p>
+      <nav class="footer__legal" aria-label="Legal links">
+        <a href="privacy/">Privacy</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js?v=634ca98d" defer></script>
+</body>
+</html>

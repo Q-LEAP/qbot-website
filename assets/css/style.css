@@ -7557,6 +7557,25 @@ label > input[type="checkbox"] {
   font-size: inherit;
 }
 
+/* ---- .doc-somm : le sommaire de la page Documentation ----
+   IL EST VISIBLE À TOUTES LES LARGEURS, contrairement à `.faq-index` qui est un
+   index collant masqué sous 1025 px. Sur une page de documentation, le sommaire
+   est ce qui dit d'emblée ce que la page couvre : le cacher sur téléphone
+   priverait justement le lecteur pressé du seul repère qui l'intéresse.
+   Deux colonnes au-delà de 700 px, une seule en dessous. Les puces sont retirées
+   parce que chaque entrée porte déjà sa flèche de `.link-edito`. */
+.doc-somm { margin-top: 32px; }
+.doc-somm__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px 40px;
+}
+@media (min-width: 700px) {
+  .doc-somm__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .api-facts {
   list-style: none;
   margin: 0;

@@ -42,7 +42,7 @@ Key facts:
 Site available in French (default, root paths) and English (`/en/`).
 
 
-## Status (last updated 2026-09-09)
+## Status (last updated 2026-09-14)
 
 This site is live. The migration from the previous WordPress build was carried out on
 2026-09-08: `q-bot.eu` is now served by GitHub Pages, `robots.txt` allows all crawlers
@@ -131,6 +131,16 @@ These figures come from the client's own published pages; do not infer or round 
   the URL is unchanged on purpose. Five real-world scenarios, with the
   exact API call each one uses.
 - [How it works (EN)](https://q-bot.eu/en/use-cases.html)
+- [Technical documentation (FR)](https://q-bot.eu/documentation.html): how to install Q-Bot on
+  a network, connect the Android phone over USB, build a scenario, and trigger it over the
+  REST API. Added 2026-09-14, when the feature page was split in two: the feature page now
+  answers "does it fit my environment", this one answers "how do I integrate it".
+  IT DELIBERATELY HAS NO INSTALLATION PROCEDURE AND NO TROUBLESHOOTING SECTION: those do not
+  exist yet, and nothing here should be inferred to fill the gap. The security section states
+  three facts and no more — self-hosted, no API key expected, no external call while tests
+  run — and says in as many words that access control is the customer network's job.
+  Do not infer API authentication, ACLs or network isolation features.
+- [Technical documentation (EN)](https://q-bot.eu/en/documentation.html)
 
 ## Company
 
