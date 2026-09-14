@@ -1287,6 +1287,23 @@ p { color: var(--gray); }
    règle, le code touche le filet de séparation. */
 .faq-item__answer .code-block { margin-bottom: 20px; }
 
+/* UNE FICHE TECHNIQUE DANS UN ACCORDÉON, et elle était COLLÉE au cadre.
+   Le retrait d'une réponse n'est porté par aucune règle du conteneur : il vit
+   sur `.faq-item__answer p` (0 24px 20px) et sur ses `ul`/`ol`. Les quatre
+   accordéons de la fiche technique, eux, contiennent un `.specs__list`, qui
+   n'a ni marge ni remplissage : mesuré à 1440 px, le libellé « ORDINATEUR »
+   partait à 1 px du bord de la boîte (le filet), quand la question
+   « Matériel et système » juste au-dessus part à 24 px, et les filets de
+   séparation couraient d'un bord à l'autre. Signalé par le client le
+   2026-09-14.
+   Le retrait reprend donc celui du paragraphe, à la valeur près, pour que le
+   contenu tombe sous le texte de sa propre question.
+   PAS DE REMPLISSAGE BAS : le dernier `.spec-item` porte déjà ses 20 px
+   (`padding-bottom`, son filet étant retiré), soit 25,5 px mesurés entre le
+   texte et le bord — le même air que sous un paragraphe. En ajouter ici les
+   doublerait. */
+.faq-item__answer > .specs__list { padding: 0 24px; }
+
 .faq-item__answer {
   max-height: 0;
   overflow: hidden;
@@ -7576,9 +7593,19 @@ label > input[type="checkbox"] {
   .doc-somm__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
+/* LE `margin: 0` D'ORIGINE COLLAIT LA LISTE À CE QUI LA PRÉCÈDE. Il n'était là
+   que pour annuler la marge par défaut d'un `<ul>`, et il annulait du même coup
+   tout rythme : mesuré le 2026-09-14 sur les neuf listes du site, CINQ étaient à
+   0 px de leur voisin — la liste de la page Caractéristiques touchait le bord bas
+   des trois cartes « Interface Web / API REST / App compagnon », celles de la
+   documentation touchaient leur paragraphe ou leur fiche technique. Signalé par
+   le client.
+   32 px est le rythme titre → bloc du site (2026-08-25). Les marges de frères
+   adjacents fusionnent, donc les quatre listes qui suivent un `.section-header`
+   gardent les 50 px de celui-ci : rien ne bouge de ce côté. */
 .api-facts {
   list-style: none;
-  margin: 0;
+  margin: 32px 0 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -7628,6 +7655,25 @@ label > input[type="checkbox"] {
    Le seuil de 760 px d'origine ne changeait rien à cette bande-là. */
 @media (max-width: 1199px) {
   .api-facts--deux { grid-template-columns: 1fr; }
+}
+
+/* UN NOMBRE IMPAIR DE FAITS LAISSE UNE LIGNE ORPHELINE, et c'est le second
+   défaut signalé le 2026-09-14. Le modificateur a été écrit pour la liste de six
+   faits de l'éditeur de scénarios ; quatre listes du site en comptent TROIS
+   (les deux « Compatible avec toute chaîne capable d'un appel HTTP » et les deux
+   « Auto-hébergé », dans les deux langues). En deux colonnes, la troisième se
+   retrouve seule sur une seconde rangée, décalée sous la première : le bloc se
+   lit comme un texte mal calé, et le décalage saute d'autant plus aux yeux que
+   la liste est posée sous une grille de TROIS cartes, dont les colonnes ne
+   tombent pas aux mêmes abscisses.
+   Trois faits en une colonne ne font pas le mur que six feraient : c'est déjà le
+   rendu servi sous 1200 px, donc un rendu éprouvé.
+   Le test porte sur la POSITION du dernier item et non sur un décompte écrit à
+   la main : la règle reste vraie si un fait est ajouté ou retiré.
+   Sans `:has()`, le moteur retombe sur les deux colonnes, c'est-à-dire l'état
+   d'avant : moins bien, jamais cassé. */
+.api-facts--deux:has(> li:nth-child(odd):last-child) {
+  grid-template-columns: 1fr;
 }
 
 /* ══ CAS D'USAGE ═══════════════════════════════════════════════════════════
