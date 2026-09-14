@@ -743,12 +743,46 @@ p { color: var(--gray); }
   align-items: center;
 }
 
+/* ══ LA PASTILLE DU HERO EST EN VERRE, PLUS EN TEAL ════════════════════════
+   « Le bouton fait trop IA selon les feedbacks » (client, 2026-09-14), avec une
+   recette de glassmorphisme à appliquer « dans la DA Q-Bot ».
+
+   CE QUI FAISAIT CLICHÉ N'ÉTAIT PAS LA FORME, C'ÉTAIT LE TEAL SUR TEAL. Fond
+   teal à 15 %, filet teal à 35 %, texte teal : la pastille lumineuse monochrome
+   est la signature des hero engendrés par un modèle. Le verre casse cela en
+   rendant la SURFACE neutre ; le teal ne reste que là où il dit quelque chose,
+   sur le texte et le pictogramme.
+
+   LE BLANC EST À 10 % ET NON À 20 %, ET C'EST MESURÉ. La recette d'origine
+   (blanc 20 %, filet blanc 30 %) a été rendue puis comparée : sur le hero, la
+   pastille n'a RIEN derrière elle — le fond composité y vaut (0,0,0) — donc le
+   flou ne floute rien et il ne reste que le voile. À 20 % cela donne un
+   rectangle gris à (51,51,51), qui se lit comme du plastique et non comme du
+   verre, et le teal y tombe à 6,19:1. À 10 % le fond vaut (26,26,26), la
+   surface reste une matière et le teal tient 8,52:1. Le verre ne se voit que
+   s'il a quelque chose à réfracter : ici il n'a que de la profondeur à donner.
+
+   LE LISERÉ DE LUMIÈRE D'UN PIXEL EN HAUT est la signature du verre de ce site
+   (cf. le bloc VERRE en fin de fichier) : c'est lui qui donne l'arête, donc
+   l'épaisseur. Sans lui, un fond translucide n'est qu'un aplat plus clair.
+
+   LE RAYON PASSE DE 100 PX À 16, valeur donnée par le client. Une pastille à
+   rayon total est l'autre moitié du cliché ; à 16 px sur une hauteur de 34, la
+   forme reste douce mais redevient une étiquette.
+
+   REPLI SANS `backdrop-filter` : fond opaque, même discipline que le bloc VERRE
+   — une surface translucide sans flou est moins lisible qu'une surface pleine. */
 .hero__label {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(0,203,190,0.15);
-  border: 1px solid rgba(0,203,190,0.35);
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+          backdrop-filter: blur(12px) saturate(160%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
   color: var(--teal);
   /* MÊME TYPOGRAPHIE QUE .section-label, demandé le 2026-08-28 : les deux
      libellés sont le même objet, une accroche de section en capitales, et rien
@@ -767,9 +801,12 @@ p { color: var(--gray); }
   line-height: 1.4;
   text-transform: uppercase;
   padding: 7px 15px;
-  border-radius: 100px;
+  border-radius: 16px;
   margin-bottom: 24px;
   max-width: 100%;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .hero__label { background: #1B1B1B; }
 }
 /* Le pictogramme ne se comprime pas et reste sur la première ligne quand le
    libellé se replie : centré verticalement sur deux lignes, il flottait au
