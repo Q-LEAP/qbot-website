@@ -30,24 +30,34 @@ PAS DE QUATRIÈME PANNEAU « CREDITS » : cette capture nomme sept contributeurs
 avec leur adresse de courriel, et la règle du dépôt est de ne nommer personne
 sans accord écrit. `ScreenUI/` est tenu hors de git pour la même raison.
 
-LE PANNEAU « SCENARIO » A SON PROPRE MASTER, ET IL EST EN DENSITÉ 1. Le client a
-fourni le 2026-09-14 une capture plus représentative (un scénario Google
-Authenticator, l'écran de choix de compte), mais prise en densité 1 : son titre
-mesure 28 px là où celui des deux autres masters en mesure 55. Elle ne peut donc
-PAS être découpée à 2360 px de large — ce seraient 2360 px CSS d'application
-dans un cadre de 1132, soit du texte à 10 px. Elle est découpée à 1180 px, ce
-qui fait exactement les mêmes 1180 px CSS que les 2360 px DPR 2 des deux autres :
-l'application garde sa taille native et les trois onglets s'échangent sans saut
-d'échelle. Le prix est la densité, moitié moindre, donc un onglet un peu plus
-doux sur un écran retina. Une reprise de la capture en densité 2 (écran retina,
-ou navigateur à 200 %) se rebranche en changeant le seul master.
+L'ÉDITEUR A SON PROPRE MASTER, ET IL EST EN DENSITÉ 1. Le client a fourni le
+2026-09-14 une capture plus représentative — un scénario dont l'écran du
+téléphone montre le vrai défi LuxTrust, code couleur et champ OTP — et elle
+alimente MAINTENANT LES DEUX découpes de l'éditeur : l'onglet « Scenario Editor »
+des fiches techniques ET la vignette carrée des accueils. C'est le même écran,
+il n'y a aucune raison qu'il diffère d'une page à l'autre.
 
-SON MASTER EST DÉJÀ ANONYMISÉ. La capture d'origine montrait trois fois
-l'adresse professionnelle d'une personne réelle sur l'écran du téléphone,
-lisible à la taille d'affichage. Elle a été remplacée par une adresse de rôle de
-même longueur (`qa.automation@q-leap.eu`) AVANT archivage : le dépôt est public
-et son historique ne se réécrit pas, donc la version brute n'y entre jamais.
-C'est la règle qui avait déjà fait écarter l'onglet « Credits ».
+Elle est en densité 1 : son titre mesure 28 px là où celui des deux masters
+« home » et « api » en mesure 55. Les découpes sont donc dimensionnées en px CSS
+d'application et non en pixels de fichier :
+  • l'onglet à 1180 px = les mêmes 1180 px CSS que les 2360 px DPR 2 des deux
+    autres panneaux, donc aucun saut d'échelle au changement d'onglet ;
+  • le carré à 650 px = les mêmes 650 px CSS que les 1300 px DPR 2 de l'ancien
+    master, donc le cadrage validé est reproduit à l'identique.
+Le prix est la densité, moitié moindre, donc un rendu un peu plus doux sur un
+écran retina. UNE REPRISE DE LA CAPTURE EN DENSITÉ 2 (écran retina, ou
+navigateur à 200 %) SE REBRANCHE EN CHANGEANT LE SEUL MASTER, sans toucher aux
+coordonnées : il suffira de les doubler.
+
+PAS D'ANONYMISATION À FAIRE SUR CE MASTER-CI. Le précédent (une liste de comptes
+Google Authenticator) portait trois fois l'adresse professionnelle d'une
+personne réelle et avait dû être repris avant archivage ; celui-ci ne montre
+qu'un défi LuxTrust, transitoire et à usage unique. Le contrôle reste à faire
+sur toute nouvelle capture : le dépôt est public et son historique ne se
+réécrit pas.
+
+`qbot-ui-scenario-source.jpeg` N'EST PLUS LU PAR CE SCRIPT. Il reste archivé,
+c'est le master de l'ancien écran d'accueil du téléphone.
 """
 from pathlib import Path
 
@@ -64,16 +74,18 @@ QUALITE = 88                # WebP : 185 Ko pour les trois, contre 315 en JPEG
 
 PANNEAUX = ('home', 'api')  # « scenario » a son propre master, voir ci-dessous
 
-# ── LE PANNEAU « SCENARIO », DEPUIS SON MASTER EN DENSITÉ 1 ──
-# Largeur 1180 = les mêmes 1180 px CSS d'application que les 2360 px DPR 2 des
-# deux autres, donc aucun saut d'échelle au changement d'onglet. La hauteur en
-# découle par le rapport du cadre et n'est pas un choix : 1180 / (2360/1060).
-# La fenêtre verticale part juste sous la barre de l'application (elle est déjà
-# dessinée par le balisage de `.appwin`, la garder ferait deux bandeaux) et
-# s'arrête sous la liste des comptes, qui est ce que la capture vient montrer.
-V2_SRC = 'qbot-ui-scenario-v2-source.png'
-V2_X0, V2_LARG = 307, 1180  # centré : le contenu occupe x[677,1117], centre 897
-V2_Y0 = 100                 # la barre de l'application s'arrête à y = 63
+# ── LE MASTER DE L'ÉDITEUR, EN DENSITÉ 1, QUI ALIMENTE LES DEUX DÉCOUPES ──
+# Relevé sur ce fichier : barre de l'application y[0,62], titre y[117,145],
+# barre de commandes y[202,230], champ « Scenario » y[280,315], palette et
+# téléphone y[337,889], contenu x[677,1117] donc centré sur x = 897.
+SCN_SRC = 'qbot-ui-scenario-v3-source.png'
+
+# L'onglet des fiches techniques. Largeur 1180 (voir le docstring), hauteur
+# donnée par le rapport du cadre. La fenêtre part sous la barre de l'application
+# — elle est déjà dessinée par le balisage de `.appwin`, la garder ferait deux
+# bandeaux — et s'arrête sous le champ OTP.
+SCN_X0, SCN_LARG = 307, 1180
+SCN_Y0 = 100
 
 # ── LA DÉCOUPE CARRÉE DE LA SECTION « L'ÉDITEUR » (accueil) ──
 # Elle ne suit PAS la règle ci-dessus, et c'est voulu : la section a été refondue
@@ -90,7 +102,10 @@ V2_Y0 = 100                 # la barre de l'application s'arrête à y = 63
 # en pourcentage vivent dans le HTML des deux accueils. Si ce cadrage change,
 # elles doivent être revérifiées AU RENDU — une position juste sur le papier peut
 # recouvrir l'élément qu'elle désigne.
-CARRE_X0, CARRE_Y0, CARRE_N = 937, 330, 1300
+# Côté 650 = les mêmes 650 px CSS que les 1300 px DPR 2 de l'ancien master, donc
+# le même cadrage : la barre de commandes en haut, la palette à gauche, le
+# téléphone coupé net en bas. Centré sur x = 897 comme le reste du contenu.
+CARRE_X0, CARRE_Y0, CARRE_N = 572, 185, 650
 
 
 def main() -> None:
@@ -112,26 +127,24 @@ def main() -> None:
         assert c.size == (X1 - X0, HAUTEUR), f'{nom} : découpe {c.size}'
         ecrire(nom, c)
 
-    # Le panneau « scenario », depuis son master en densité 1.
-    s = Image.open(SRC / V2_SRC).convert('RGB')
-    v2_haut = round(V2_LARG / rapport)
-    assert s.width >= V2_X0 + V2_LARG, f'scenario : master trop étroit ({s.width} px)'
-    assert s.height >= V2_Y0 + v2_haut, f'scenario : master trop court ({s.height} px)'
-    c = s.crop((V2_X0, V2_Y0, V2_X0 + V2_LARG, V2_Y0 + v2_haut))
+    # LES DEUX DÉCOUPES DE L'ÉDITEUR VIENNENT DU MÊME MASTER : c'est le même
+    # écran, montré sur les fiches techniques et sur les accueils.
+    s = Image.open(SRC / SCN_SRC).convert('RGB')
+
+    scn_haut = round(SCN_LARG / rapport)
+    assert s.width >= SCN_X0 + SCN_LARG, f'scenario : master trop étroit ({s.width} px)'
+    assert s.height >= SCN_Y0 + scn_haut, f'scenario : master trop court ({s.height} px)'
+    c = s.crop((SCN_X0, SCN_Y0, SCN_X0 + SCN_LARG, SCN_Y0 + scn_haut))
     # LE RAPPORT DOIT TOMBER SUR CELUI DU CADRE : les images sont en
     # `object-fit: cover`, donc un écart ne déforme pas, il RECADRE en silence.
     assert abs(c.width / c.height - rapport) < 1e-3, f'scenario : rapport {c.width / c.height}'
     ecrire('scenario', c)
 
-    # La découpe carrée de l'accueil, depuis le même master que « scenario ».
-    s = Image.open(SRC / 'qbot-ui-scenario-source.jpeg').convert('RGB')
-    assert s.width >= CARRE_X0 + CARRE_N and s.height >= CARRE_Y0 + CARRE_N, 'master trop petit'
+    assert s.width >= CARRE_X0 + CARRE_N, f'carré : master trop étroit ({s.width} px)'
+    assert s.height >= CARRE_Y0 + CARRE_N, f'carré : master trop court ({s.height} px)'
     c = s.crop((CARRE_X0, CARRE_Y0, CARRE_X0 + CARRE_N, CARRE_Y0 + CARRE_N))
     assert c.size == (CARRE_N, CARRE_N), f'decoupe carree {c.size}'
-    cible = DST / 'qbot-ui-editeur.webp'
-    avant = cible.stat().st_size if cible.exists() else 0
-    c.save(cible, 'WEBP', quality=QUALITE, method=6)
-    print(f'  editeur {c.size}  {avant // 1024} Ko -> {cible.stat().st_size // 1024} Ko')
+    ecrire('editeur', c)
 
     largeur = X1 - X0
     print(f'\naspect-ratio a declarer : {largeur} / {HAUTEUR}')
