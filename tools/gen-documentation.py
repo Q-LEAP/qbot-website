@@ -105,16 +105,40 @@ def sommaire(sections, titre):
 
 
 def main():
+    # LE GARDE-FOU DE PARITÉ, QUE LE DOCSTRING PROMETTAIT SANS QU'IL EXISTE : une
+    # section ajoutée d'un côté et pas de l'autre passait sans un mot, et les deux
+    # pages divergeaient en silence — exactement ce que ce générateur existe pour
+    # empêcher.
+    fr, en = C.SECTIONS['fr'], C.SECTIONS['en']
+    assert [x['id'] for x in fr] == [x['id'] for x in en], 'les deux langues divergent'
+    for a, b in zip(fr, en):
+        assert sorted(a) == sorted(b), 'section %s : clés différentes' % a['id']
+        assert [k for k, _ in a['corps']] == [k for k, _ in b['corps']], \
+            'section %s : blocs différents' % a['id']
+    assert sorted(C.META['fr']) == sorted(C.META['en']), "l'en-tête diverge"
+
     for page in PAGES:
         lang = page['lang']
         meta, secs = C.META[lang], C.SECTIONS[lang]
         src = (RACINE / page['donneuse']).read_text(encoding='utf-8')
 
-        # ── les cinq accordéons d'appel, extraits de la donneuse ──
-        ex = extraire(src, '<div class="faq__list">', '</div>\n    </div>')
+        # ── les cinq accordéons d'appel, extraits, jamais retapés ──
+        # LA DONNEUSE NE LES PORTE PLUS : ils vivaient sur la fiche technique,
+        # ils vivent ici depuis le 2026-09-14, et la fiche n'a gardé que ses
+        # quatre accordéons de spécifications. Le générateur s'arrêtait donc sur
+        # son assertion (« 4 exemples extraits, attendu 5 ») et ne pouvait plus
+        # tourner — la panne qu'un générateur laissé en arrière finit toujours
+        # par avoir. On reprend donc les accordéons dans la page DÉJÀ ÉCRITE,
+        # et on retombe sur la donneuse pour une première génération.
+        deja = RACINE / page['sortie']
+        prec = deja.read_text(encoding='utf-8') if deja.exists() else ''
+        if prec.count('class="faq-item" id="api-ex') == 5:
+            ex = extraire(prec, '  <div class="faq__list">', '</div>\n      </div>')
+        else:
+            ex = extraire(src, '<div class="faq__list">', '</div>\n    </div>')
+            ex = '\n'.join('  ' + l if l.strip() else l for l in ex.split('\n'))
         n_ex = ex.count('class="faq-item"')
         assert n_ex == 5, '%s : %d exemples extraits, attendu 5' % (lang, n_ex)
-        ex = '\n'.join('  ' + l if l.strip() else l for l in ex.split('\n'))
 
         # ── le corps de la page ──
         parts = [f'<main id="main">\n'

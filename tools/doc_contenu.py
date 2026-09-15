@@ -32,11 +32,8 @@ META = {
              "chaîne de tests.",
         label='Documentation',
         h1='Documentation technique',
-        chapeau="Comment installer <span class=\"nb\">Q-Bot</span> sur votre réseau, y relier "
-                "un smartphone, construire un scénario et le déclencher depuis votre chaîne "
-                "de tests. Cette page s'adresse à qui intègre réellement <span class=\"nb\">Q-Bot</span>&nbsp;; "
-                "pour savoir ce qu'il fait et s'il convient à votre environnement, voyez les "
-                "<a href=\"caracteristiques.html\">caractéristiques</a>.",
+        chapeau="Retrouvez ici les détails techniques de <span class=\"nb\">Q-Bot</span>, ainsi "
+                "que les informations nécessaires pour l'installer, le configurer et l'utiliser.",
         sommaire='Sommaire',
     ),
     'en': dict(
@@ -46,11 +43,8 @@ META = {
              "scenario and trigger it over the REST API from your test suite.",
         label='Documentation',
         h1='Technical documentation',
-        chapeau="How to install <span class=\"nb\">Q-Bot</span> on your network, connect a phone, "
-                "build a scenario and trigger it from your test suite. This page is for whoever "
-                "actually integrates <span class=\"nb\">Q-Bot</span>; to find out what it does and "
-                "whether it fits your environment, see the "
-                "<a href=\"technical-specs.html\">technical specifications</a>.",
+        chapeau="Find here the technical details of <span class=\"nb\">Q-Bot</span>, along with "
+                "what you need to install it, configure it and use it.",
         sommaire='Contents',
     ),
 }
