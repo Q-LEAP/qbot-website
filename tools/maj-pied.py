@@ -107,9 +107,13 @@ def colonnes(lang, prefixe, accueil, cur, adresse):
         entree(x['secu'], prefixe + x['f_doc'] + '#doc-security'),
         entree(x['sup'], prefixe + x['f_doc'] + '#doc-support'),
     ])
+    # L'ENTRÉE « Q-LEAP » EST PARTIE LE 2026-09-15, à la demande du client. Les
+    # deux autres mentions de la maison mère restent : elles sont en PROSE (la
+    # description du pied de page et le copyright), pas des entrées de menu.
+    # Même arbitrage que le 2026-09-09, où `q-leap.eu` avait quitté la colonne
+    # Contact pour la même raison.
     ent = '\n'.join([
         entree(x['about'], prefixe + x['f_about'], cur == 'about'),
-        entree('Q-Leap', 'https://q-leap.eu', externe=True),
         entree(x['contact'], prefixe + 'contact.html', cur == 'contact'),
     ])
     return (f'      <div class="footer__col">\n        <h3>{x["prod"]}</h3>\n'
