@@ -95,6 +95,12 @@ def corps_html(blocs, exemples):
     return '\n'.join(out)
 
 
+def decale(bloc, n):
+    """Le bloc, décalé de `n` espaces, lignes vides laissées vides."""
+    p = ' ' * n
+    return '\n'.join(p + l if l.strip() else l for l in bloc.split('\n'))
+
+
 def sommaire(sections, titre):
     li = '\n'.join(
         f'        <li><a class="link-edito" href="#{s["id"]}">'
@@ -151,16 +157,42 @@ def main():
                  f'  </div>\n</section>\n']
         for s in secs:
             gris = ' section--gray' if s.get('gris') else ''
+            entete = (f'    <div class="section-header">\n'
+                      f'      <span class="section-label">{s["label"]}</span>\n'
+                      f'      <h2 class="section-title" id="{s["id"]}">{s["titre"]}</h2>\n'
+                      f'      <p class="section-subtitle">{s["chapeau"]}</p>\n'
+                      f'    </div>')
+            vis = s.get('visuel')
+            if not vis:
+                parts.append(
+                    f'<section class="section{gris}" aria-labelledby="{s["id"]}">\n'
+                    f'  <div class="container">\n'
+                    f'{entete}\n'
+                    f'{corps_html(s["corps"], ex)}\n'
+                    f'  </div>\n</section>\n')
+                continue
+            # LE VISUEL SE POSE À CÔTÉ DE LA PROSE, PAS À CÔTÉ DE TOUTE LA
+            # SECTION : les listes à coches de cette page sont elles-mêmes sur
+            # deux colonnes, les glisser dans une demi-colonne les réduirait à
+            # une. Les paragraphes de tête montent donc dans la colonne de
+            # gauche, et ce qui suit passe sous les deux colonnes.
+            reste = list(s['corps'])
+            tete = []
+            while reste and reste[0][0] == 'p':
+                tete.append(reste.pop(0))
+            gauche = decale(entete + ('\n' + corps_html(tete, ex) if tete else ''), 4)
             parts.append(
                 f'<section class="section{gris}" aria-labelledby="{s["id"]}">\n'
                 f'  <div class="container">\n'
-                f'    <div class="section-header">\n'
-                f'      <span class="section-label">{s["label"]}</span>\n'
-                f'      <h2 class="section-title" id="{s["id"]}">{s["titre"]}</h2>\n'
-                f'      <p class="section-subtitle">{s["chapeau"]}</p>\n'
+                f'    <div class="doc-split">\n'
+                f'      <div>\n{gauche}\n      </div>\n'
+                f'      <div class="doc-split__media">\n'
+                f'        <img src="{vis["src"]}" alt="{vis["alt"]}" '
+                f'width="{vis["w"]}" height="{vis["h"]}" loading="lazy">\n'
+                f'      </div>\n'
                 f'    </div>\n'
-                f'{corps_html(s["corps"], ex)}\n'
-                f'  </div>\n</section>\n')
+                + (corps_html(reste, ex) + '\n' if reste else '')
+                + f'  </div>\n</section>\n')
         # le bloc d'appel à l'action, repris tel quel de la donneuse
         parts.append(extraire(src, '<section class="section section--dark" aria-labelledby="cta-title"',
                               '</section>') + '\n')

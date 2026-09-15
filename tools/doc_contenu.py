@@ -56,16 +56,18 @@ META = {
 # d'appel EXTRAITS de la page donneuse.
 SECTIONS = {
  'fr': [
-  dict(id='doc-architecture', label='Architecture', titre="Comment <span class=\"nb\">Q-Bot</span> est fait",
-       chapeau="Un ordinateur complet posé sur votre réseau local, un smartphone Android relié "
-               "en USB, et une interface web servie par le boîtier lui-même.",
+  dict(id='doc-architecture', label='Architecture', titre="Comment <span class=\"nb\">Q-Bot</span> fonctionne",
+       chapeau="<span class=\"nb\">Q-Bot</span> est un nano-ordinateur autonome installé sur votre "
+               "réseau local, avec une interface web intégrée.",
+       visuel=dict(src='assets/img/qbot-gen-actuelle.webp', w=1000, h=969,
+                   alt="Le robot Q-Bot, boîtier d'automatisation de la double authentification"),
        corps=[
-        ('p', "Le boîtier est un nano-ordinateur qui fonctionne de façon autonome sur le réseau "
-              "où vous l'installez. Il n'appelle aucun service extérieur pendant l'exécution des "
-              "tests, et n'a besoin d'aucune connexion internet pour les mener."),
-        ('p', "Le téléphone sous test lui est relié par un câble USB. <span class=\"nb\">Q-Bot</span> "
-              "le pilote par ADB, l'outil standard d'Android&nbsp;: chaque appui arrive sur l'écran "
-              "physique, dans la véritable application d'authentification."),
+        ('p', "Le téléphone sous test est relié à <span class=\"nb\">Q-Bot</span> par un câble USB. "
+              "<span class=\"nb\">Q-Bot</span> le pilote via ADB, l'outil standard d'Android&nbsp;: "
+              "chaque interaction est exécutée directement sur l'appareil, dans l'application "
+              "d'authentification."),
+        ('p', "Pendant les tests, <span class=\"nb\">Q-Bot</span> fonctionne localement, sans "
+              "dépendre d'un service externe ni d'une connexion internet."),
         ('faits', ["Votre chaîne de tests appelle <span class=\"nb\">Q-Bot</span> en HTTP",
                    "<span class=\"nb\">Q-Bot</span> rejoue le scénario sur le téléphone, par ADB",
                    "Le second facteur est validé dans la vraie application",
@@ -177,16 +179,17 @@ SECTIONS = {
        ]),
  ],
  'en': [
-  dict(id='doc-architecture', label='Architecture', titre="How <span class=\"nb\">Q-Bot</span> is built",
-       chapeau="A complete computer sitting on your local network, an Android phone connected "
-               "over USB, and a web interface served by the device itself.",
+  dict(id='doc-architecture', label='Architecture', titre="How <span class=\"nb\">Q-Bot</span> works",
+       chapeau="<span class=\"nb\">Q-Bot</span> is a self-contained nano-computer installed on your "
+               "local network, with a built-in web interface.",
+       visuel=dict(src='assets/img/qbot-gen-actuelle.webp', w=1000, h=969,
+                   alt="The Q-Bot device, two-factor authentication automation robot"),
        corps=[
-        ('p', "The device is a small computer that runs on its own, on the network where you "
-              "install it. It calls no external service while tests run, and needs no internet "
-              "connection to run them."),
-        ('p', "The phone under test is connected to it with a USB cable. <span class=\"nb\">Q-Bot</span> "
-              "drives it over ADB, the standard Android tool: every tap lands on the physical "
-              "screen, inside the genuine authentication app."),
+        ('p', "The phone under test is connected to <span class=\"nb\">Q-Bot</span> with a USB cable. "
+              "<span class=\"nb\">Q-Bot</span> drives it over ADB, the standard Android tool: every "
+              "interaction runs directly on the device, inside the authentication app."),
+        ('p', "While tests run, <span class=\"nb\">Q-Bot</span> works locally, with no dependency on "
+              "an external service or an internet connection."),
         ('faits', ["Your test suite calls <span class=\"nb\">Q-Bot</span> over HTTP",
                    "<span class=\"nb\">Q-Bot</span> replays the scenario on the phone, over ADB",
                    "The second factor is approved in the real app",

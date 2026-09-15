@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=91be5b21">
+  <link rel="stylesheet" href="assets/css/style.css?v=8fc99674">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -171,7 +171,7 @@
     <p>Retrouvez ici les détails techniques de <span class="nb">Q-Bot</span>, ainsi que les informations nécessaires pour l'installer, le configurer et l'utiliser.</p>
     <nav class="doc-somm" aria-label="Sommaire">
       <ol class="doc-somm__list">
-        <li><a class="link-edito" href="#doc-architecture"><span>Comment <span class="nb">Q-Bot</span> est fait</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-architecture"><span>Comment <span class="nb">Q-Bot</span> fonctionne</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-install"><span>Installation et réseau</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-phone"><span>Connexion du smartphone</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-scenarios"><span>Création des scénarios</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
@@ -189,13 +189,20 @@
 
 <section class="section" aria-labelledby="doc-architecture">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">Architecture</span>
-      <h2 class="section-title" id="doc-architecture">Comment <span class="nb">Q-Bot</span> est fait</h2>
-      <p class="section-subtitle">Un ordinateur complet posé sur votre réseau local, un smartphone Android relié en USB, et une interface web servie par le boîtier lui-même.</p>
+    <div class="doc-split">
+      <div>
+        <div class="section-header">
+          <span class="section-label">Architecture</span>
+          <h2 class="section-title" id="doc-architecture">Comment <span class="nb">Q-Bot</span> fonctionne</h2>
+          <p class="section-subtitle"><span class="nb">Q-Bot</span> est un nano-ordinateur autonome installé sur votre réseau local, avec une interface web intégrée.</p>
+        </div>
+        <p class="section-subtitle">Le téléphone sous test est relié à <span class="nb">Q-Bot</span> par un câble USB. <span class="nb">Q-Bot</span> le pilote via ADB, l'outil standard d'Android&nbsp;: chaque interaction est exécutée directement sur l'appareil, dans l'application d'authentification.</p>
+        <p class="section-subtitle">Pendant les tests, <span class="nb">Q-Bot</span> fonctionne localement, sans dépendre d'un service externe ni d'une connexion internet.</p>
+      </div>
+      <div class="doc-split__media">
+        <img src="assets/img/qbot-gen-actuelle.webp" alt="Le robot Q-Bot, boîtier d'automatisation de la double authentification" width="1000" height="969" loading="lazy">
+      </div>
     </div>
-    <p class="section-subtitle">Le boîtier est un nano-ordinateur qui fonctionne de façon autonome sur le réseau où vous l'installez. Il n'appelle aucun service extérieur pendant l'exécution des tests, et n'a besoin d'aucune connexion internet pour les mener.</p>
-    <p class="section-subtitle">Le téléphone sous test lui est relié par un câble USB. <span class="nb">Q-Bot</span> le pilote par ADB, l'outil standard d'Android&nbsp;: chaque appui arrive sur l'écran physique, dans la véritable application d'authentification.</p>
     <ul class="api-facts api-facts--deux">
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Votre chaîne de tests appelle <span class="nb">Q-Bot</span> en HTTP</span></li>
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><span class="nb">Q-Bot</span> rejoue le scénario sur le téléphone, par ADB</span></li>

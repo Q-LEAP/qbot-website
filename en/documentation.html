@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=91be5b21">
+  <link rel="stylesheet" href="../assets/css/style.css?v=8fc99674">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -165,7 +165,7 @@
     <p>Find here the technical details of <span class="nb">Q-Bot</span>, along with what you need to install it, configure it and use it.</p>
     <nav class="doc-somm" aria-label="Contents">
       <ol class="doc-somm__list">
-        <li><a class="link-edito" href="#doc-architecture"><span>How <span class="nb">Q-Bot</span> is built</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-architecture"><span>How <span class="nb">Q-Bot</span> works</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-install"><span>Installation and network</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-phone"><span>Connecting the phone</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-scenarios"><span>Building scenarios</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
@@ -183,13 +183,20 @@
 
 <section class="section" aria-labelledby="doc-architecture">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">Architecture</span>
-      <h2 class="section-title" id="doc-architecture">How <span class="nb">Q-Bot</span> is built</h2>
-      <p class="section-subtitle">A complete computer sitting on your local network, an Android phone connected over USB, and a web interface served by the device itself.</p>
+    <div class="doc-split">
+      <div>
+        <div class="section-header">
+          <span class="section-label">Architecture</span>
+          <h2 class="section-title" id="doc-architecture">How <span class="nb">Q-Bot</span> works</h2>
+          <p class="section-subtitle"><span class="nb">Q-Bot</span> is a self-contained nano-computer installed on your local network, with a built-in web interface.</p>
+        </div>
+        <p class="section-subtitle">The phone under test is connected to <span class="nb">Q-Bot</span> with a USB cable. <span class="nb">Q-Bot</span> drives it over ADB, the standard Android tool: every interaction runs directly on the device, inside the authentication app.</p>
+        <p class="section-subtitle">While tests run, <span class="nb">Q-Bot</span> works locally, with no dependency on an external service or an internet connection.</p>
+      </div>
+      <div class="doc-split__media">
+        <img src="assets/img/qbot-gen-actuelle.webp" alt="The Q-Bot device, two-factor authentication automation robot" width="1000" height="969" loading="lazy">
+      </div>
     </div>
-    <p class="section-subtitle">The device is a small computer that runs on its own, on the network where you install it. It calls no external service while tests run, and needs no internet connection to run them.</p>
-    <p class="section-subtitle">The phone under test is connected to it with a USB cable. <span class="nb">Q-Bot</span> drives it over ADB, the standard Android tool: every tap lands on the physical screen, inside the genuine authentication app.</p>
     <ul class="api-facts api-facts--deux">
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Your test suite calls <span class="nb">Q-Bot</span> over HTTP</span></li>
       <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span><span class="nb">Q-Bot</span> replays the scenario on the phone, over ADB</span></li>
