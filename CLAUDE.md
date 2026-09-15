@@ -11130,3 +11130,29 @@ restée sur l'agenda français, 0 page française passée sur l'anglais.
 
 Les deux fuseaux restent en **UTC**, comme l'original : le visiteur les change dans la page.
 Ce n'est pas un réglage que cette passe avait à trancher, mais il se voit.
+
+## Les deux agendas passent à l'heure du Luxembourg (2026-09-15)
+
+« Les clients sont luxembourgeois donc prends le fuseau horaire luxembourgeois. » Réglé sur
+les DEUX agendas Bookings, le français et l'anglais : fuseau
+**(UTC+01:00) Brussels, Copenhagen, Madrid, Paris** (il n'existe pas d'entrée « Luxembourg »,
+c'est la zone Europe/Luxembourg), et la case **« Always show time slots in business time
+zone »** cochée, pour que le visiteur voie l'heure du Luxembourg quel que soit son navigateur.
+
+**LE CHANGEMENT DE FUSEAU A AUSSI CORRIGÉ LA DISPONIBILITÉ, ET CE N'ÉTAIT PAS L'INTENTION
+ANNONCÉE.** Les heures d'ouverture disent 10:00-17:00 ; avec l'agenda en UTC, Bookings les
+appliquait comme 10:00-17:00 UTC, c'est-à-dire **12:00-19:00 à Luxembourg**. Le site proposait
+donc un créneau à 20:00. Mesuré avant et après sur la page publique :
+
+| | créneaux offerts, 16 septembre |
+|---|---|
+| avant (agenda en UTC) | 12:00 · 12:30 · 15:00 · 15:30 · 17:00 · 17:30 · 18:00 **UTC**, soit 14:00 à 20:00 heure locale |
+| après (agenda en Bruxelles) | **10:00 · 10:30 · 11:00 · 11:30 · 12:00 · 12:30 · 15:00 · 15:30**, heure locale |
+
+Les rendez-vous tombent maintenant dans la journée de travail que les heures d'ouverture
+décrivent. Ce n'est pas un simple changement d'affichage : les moments réels ont bougé.
+
+**LE SEUL CONTRÔLE QUI VAUT EST UN CHARGEMENT ANONYME DE LA PAGE PUBLIQUE.** L'administration
+annonce le nouveau réglage immédiatement, la page met une à deux minutes à le servir : un
+premier essai voyait encore « (UTC) Coordinated Universal Time » alors que tout était
+enregistré. Un échec isolé se rejoue avant d'être appelé défaut.
