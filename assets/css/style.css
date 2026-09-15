@@ -6595,6 +6595,16 @@ a:focus-visible { border-radius: var(--radius-sm); }
    pose `margin: 0`, donc sans cette règle les deux paragraphes se touchent.
    16 px, l'écart d'une unité de lecture, comme `.section-header .lead-duo`. */
 .section-subtitle + .section-subtitle { margin-top: 16px; }
+
+/* LE CHAPEAU DE SECTION EST DE LA PROSE, ET LE CORPS LA CONTINUE. Sur la page
+   Documentation, chaque section ouvre sur son chapeau puis enchaîne en
+   paragraphes : entre les deux, l'écart mesuré valait 50 px (la marge de
+   `.section-header`, qui est le rythme d'un en-tête suivi d'un BLOC) contre
+   16 px entre deux paragraphes. Signalé par le client, capture à l'appui :
+   « y a trop d'espace entre le premier paragraphe et le 2e ».
+   `:has()` pèse (0,2,0) et passe donc devant `.section-header` (0,1,0) ; un
+   moteur qui ne le connaît pas garde les 50 px, c'est-à-dire l'état d'avant. */
+.section-header:has(+ .section-subtitle) { margin-bottom: 16px; }
 .specs__dims li {
   position: relative;
   padding-left: 20px;
@@ -7722,6 +7732,14 @@ label > input[type="checkbox"] {
    32 px est le rythme titre → bloc du site (2026-08-25). Les marges de frères
    adjacents fusionnent, donc les quatre listes qui suivent un `.section-header`
    gardent les 50 px de celui-ci : rien ne bouge de ce côté. */
+/* ET RIEN N'AVAIT DE MARGE PAR LE BAS : le texte qui SUIT une liste à coches ou
+   une fiche technique se collait à sa dernière ligne, mesuré à 0 px six fois sur
+   la page Documentation. Signalé par le client : « le texte est collé au bullet
+   point ». Les marges de frères adjacents fusionnent, donc là où le suivant
+   déclare déjà ses 32 px l'écart ne bouge pas. */
+.api-facts + *,
+.specs__list + * { margin-top: 32px; }
+
 .api-facts {
   list-style: none;
   margin: 32px 0 0;
