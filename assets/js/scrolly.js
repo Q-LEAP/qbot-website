@@ -1040,6 +1040,18 @@
     return Math.min(1, Math.max(0, f));
   }
 
+  /* LA MÊME FRACTION, MAIS SANS LA FENÊTRE DE SCRUB. `fraction()` est ramenée
+     à l'intervalle [SCRUB_IN, SCRUB_OUT] parce qu'elle pilote l'éclatement, qui
+     doit être posé avant la fin du pas. La carte de texte, elle, doit suivre le
+     doigt du premier au dernier pixel du pas : c'est ce que le client a demandé le
+     2026-09-15 (« que le texte et l'animation soient corrélés au scroll : quand on
+     scrolle, le texte défile vers le haut jusqu'à disparaître »). */
+  function fractionBrute(i) {
+    var r = steps[i].getBoundingClientRect();
+    if (!r.height) return 0.5;
+    return Math.min(1, Math.max(0, (window.innerHeight / 2 - r.top) / r.height));
+  }
+
   /* ── AU DOIGT, UN PAS EST UN ÉTAT ET NON UNE POSITION ────────────────────
      « Sur la version mobile il y a toujours un souci au niveau du
      scrollytelling, on utilise pas de souris sur mobile donc on doit changer de
@@ -1421,6 +1433,33 @@
     poser(stage.style, '--sc-glow', (p * 60 - 30).toFixed(0) + 'px');
     if (bar) poser(bar.style, '--sc-p', p.toFixed(3));
 
+    /* ── SUR TÉLÉPHONE, LA CARTE DE TEXTE SUIT LE DOIGT ────────────────────
+       Demandé le 2026-09-15 : « quand on scrolle vers le haut, le texte défile
+       vers le haut jusqu'à disparaître, pour un effet plus smooth ». Jusque-là la
+       carte était POSÉE, immobile dans sa zone réservée : elle changeait de
+       contenu d'un pas à l'autre mais ne bougeait pas, ce qui se lit comme quatre
+       diapositives et non comme un récit continu.
+
+       LA VALEUR EST SCRUBBÉE, DONC SANS TRANSITION EN CSS : une transition sur une
+       valeur qui suit déjà le doigt ne fait que la mettre en retard. C'est la même
+       règle que la piste des exemples d'appel et que la tête de lecture du clip.
+
+       ELLE RESTE SCRUBBÉE MÊME EN LOGIQUE DISCRÈTE. Le doigt n'y pilote plus la
+       caméra ni l'éclatement, qui rejoignent l'état du pas — mais la carte, elle,
+       est du texte qu'on lit : la coller au geste est précisément la demande.
+
+       L'OPACITÉ S'ÉTEINT AUX DEUX BOUTS ET LE RELAIS EST CONTINU : `nearest()`
+       choisit le pas dont le CENTRE est le plus proche du centre du viewport, donc
+       le pas actif est celui qui contient ce centre, donc la fraction brute passe
+       de 1 à 0 pile au changement — l'ancienne carte finit transparente et la
+       nouvelle commence transparente. */
+    if (STACKED.matches) {
+      var fb = fractionBrute(i);
+      poser(root.style, '--sc-card-y', (1 - 2 * fb).toFixed(3));
+      poser(root.style, '--sc-card-a',
+            Math.min(1, Math.max(0, (0.5 - Math.abs(fb - 0.5)) / 0.26)).toFixed(3));
+    }
+
     if (i !== lastP) {
       lastP = i;
       for (var j = 0; j < steps.length; j++) steps[j].classList.toggle('is-active', j === i);
@@ -1604,6 +1643,12 @@
     if (somme > 0) root.style.setProperty('--sc-steps-sum', Math.ceil(somme) + 'px');
   }
 
+  /* Amplitude du déplacement de la carte, en pixels, de part et d'autre de sa
+     position au repos. 30 px : assez pour que le mouvement se voie sur un écran de
+     téléphone, assez peu pour que la zone réservée n'ampute pas la scène (elle
+     passe de 344 à 374 px de haut, la scène perd 30 px sur 420). */
+  var CARD_AMP = 30;
+
   function measureCards() {
     measureSteps();
     if (!STACKED.matches) { root.style.removeProperty('--sc-card-zone'); return; }
@@ -1614,7 +1659,12 @@
     }
     if (!max) return;
     var pad = parseFloat(getComputedStyle(steps[0]).paddingBottom) || 0;
-    root.style.setProperty('--sc-card-zone', Math.ceil(max + pad) + 'px');
+    /* LA ZONE RÉSERVÉE COUVRE LA COURSE DE LA CARTE, sans quoi celle-ci passerait
+       sur le boîtier en haut de son déplacement : la scène prend ce que la zone
+       laisse, et la règle du dépôt est qu'un recouvrement se mesure sur toute la
+       course, jamais aux seules positions de calage. */
+    root.style.setProperty('--sc-card-amp', CARD_AMP + 'px');
+    root.style.setProperty('--sc-card-zone', Math.ceil(max + pad + CARD_AMP) + 'px');
     /* La zone réservée change la hauteur de la scène, donc celle des pas sur
        téléphone : on remesure la somme APRÈS l'avoir écrite. */
     measureSteps();

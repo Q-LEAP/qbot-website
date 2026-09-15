@@ -656,6 +656,20 @@
      s'effface — sinon on la retrouve posée sur la section suivante, par-dessus son
      titre (constaté). Le drapeau vient de scrolly.js, qui sait quand le bloc
      collant se décroche. */
+  /* ── LA CARTE SUIT LE DOIGT ──────────────────────────────────────────────
+     `--sc-card-y` va de +1 (la carte arrive par le bas) à -1 (elle part par le
+     haut) sur toute la hauteur du pas, et `--sc-card-a` l'éteint aux deux bouts.
+     Les deux sont écrites par scrolly.js à chaque image.
+     PAS DE TRANSITION : la valeur est déjà scrubbée par le doigt, une transition
+     ne ferait que la mettre en retard. Même règle que la tête de lecture du clip.
+     SANS JAVASCRIPT, `--sc-card-amp` vaut 0 et `--sc-card-a` vaut 1 : la carte
+     retrouve exactement son état d'avant, posée et opaque. */
+  body.is-scrolly .scrolly__step.is-active .scrolly__step-inner {
+    transform: translateY(calc(var(--sc-card-y, 0) * var(--sc-card-amp, 0px)));
+    opacity: var(--sc-card-a, 1);
+    transition: none;
+  }
+
   /* Sélecteur volontairement long : `.scrolly__step.is-active .scrolly__step-inner`
      pèse trois classes et l'emporterait sur deux classes plus un type. */
   body.is-scrolly-exit .scrolly__step.is-active .scrolly__step-inner { opacity: 0; }

@@ -11321,3 +11321,54 @@ Les quatre pastilles de marque passent en chargement différé : elles sont six 
 et pesaient 27 Ko au chargement.
 
 Local après ces deux points : **99**, FCP 1 202, LCP 1 953, TBT 14, SI 1 210, CLS 0.
+
+## Sur téléphone, la carte de texte suit le doigt (2026-09-15)
+
+« Pour la version mobile des 4 étapes de la homepage, il faudrait que le texte et l'animation
+soient corrélés au scroll : quand on scrolle, le texte défile vers le haut jusqu'à disparaître,
+pour un effet plus smooth. »
+
+La carte était **posée** : `position: fixed` dans sa zone réservée depuis le 2026-08-20, elle
+changeait de contenu d'un pas à l'autre mais ne bougeait pas. Cela se lit comme quatre
+diapositives, pas comme un récit continu.
+
+Elle porte maintenant deux propriétés écrites à chaque image par `scrolly.js` :
+`--sc-card-y` de **+1** (elle arrive par le bas) à **-1** (elle part par le haut) sur toute la
+hauteur du pas, et `--sc-card-a` qui l'éteint aux deux bouts. Amplitude **30 px** de part et
+d'autre.
+
+Quatre points à ne pas défaire :
+
+- **la fraction est BRUTE, pas celle du scrub.** `fraction()` est ramenée à la fenêtre
+  `[SCRUB_IN, SCRUB_OUT]` parce qu'elle pilote l'éclatement, qui doit être posé avant la fin du
+  pas. La carte, elle, doit suivre le doigt du premier au dernier pixel : d'où `fractionBrute()` ;
+- **aucune transition CSS.** La valeur est déjà scrubbée par le doigt ; une transition ne ferait
+  que la mettre en retard. Même règle que la tête de lecture du clip et que la piste des exemples
+  d'appel ;
+- **elle reste scrubbée MÊME EN LOGIQUE DISCRÈTE.** Au doigt, la caméra et l'éclatement
+  rejoignent l'état du pas (2026-09-09) ; la carte, elle, est du texte qu'on lit, et la coller au
+  geste est exactement la demande ;
+- **le relais entre deux cartes est continu par construction.** `nearest()` choisit le pas dont
+  le CENTRE est le plus proche du centre du viewport, donc le pas actif est celui qui contient ce
+  centre, donc la fraction brute passe de 1 à 0 pile au changement : l'ancienne carte finit
+  transparente et la nouvelle commence transparente. Il n'y a rien à synchroniser.
+
+**LA ZONE RÉSERVÉE GRANDIT DE L'AMPLITUDE**, sans quoi la carte passerait sur le boîtier en haut
+de sa course : la scène prend ce que la zone laisse. Mesuré à 390 x 844 sur 33 positions, carte
+visible seulement, contre la boîte du modèle :
+
+| | haut de carte, au plus haut | bas du modèle | marge |
+|---|---|---|---|
+| avant | 471 px | 470 px | **+1 px** |
+| après | 447 px | 440 px | **+7 px** |
+
+La marge s'améliore : le modèle perd 30 px, la carte en gagne 30, et les deux se croisent un peu
+plus loin qu'avant. **Un recouvrement se mesure sur toute la course et contre ce qui est
+réellement peint**, jamais aux positions de calage ni contre la boîte de la scène — celle-ci
+remplit le viewport et un relevé contre elle annonce 200 à 330 px de recouvrement partout, ce
+qui ne veut rien dire.
+
+Sans JavaScript et en mouvement réduit, `--sc-card-amp` vaut 0 et `--sc-card-a` vaut 1 : les
+quatre cartes sont posées et opaques, c'est-à-dire l'état d'avant. Vérifié. Le bureau n'est pas
+touché : la règle vit dans la requête média du téléphone et `scrolly.js` n'écrit les deux
+propriétés que sous 900 px (relevé à 1440 px : `--sc-card-y` absente, `transform: none`).
