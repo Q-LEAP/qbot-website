@@ -14,22 +14,40 @@ porte les mêmes attributs sur toutes les pages, donc l'URL y est répétée. Sa
 source unique, un changement d'agenda en laisserait forcément une derrière.
 Même raison que « redirections_map.py » et « vignettes_guides.py ».
 
-UN SEUL AGENDA POUR LES DEUX LANGUES, ET C'EST UNE DÉCISION. Le client, le
-2026-09-03 : « le booking en anglais pour l'instant c'est pas dans le scope donc
-il restera FR ». Un visiteur anglais ouvre donc la fenêtre en français. Le jour où
-un agenda anglais existera, il faudra une seconde URL et un choix par la langue de
-la page ; en attendant, ce n'est ni un oubli ni un point à rappeler au client.
+UN AGENDA PAR LANGUE, ET L'ANGLAIS EST EN ATTENTE DE SON URL. Tant que
+`URL['en']` est vide, l'anglais retombe sur le français : c'est exactement le
+comportement du 2026-09-03 au 2026-09-15, décidé alors par le client (« le booking
+en anglais pour l'instant c'est pas dans le scope donc il restera FR »). Le jour
+où l'agenda anglais existe, il n'y a plus qu'à coller son adresse ci-dessous.
+
+LA PAGE MICROSOFT NE SE TRADUIT PAS, ET CE N'EST PAS UNE SUPPOSITION. Mesuré le
+2026-08-31 (en-GB, nl-BE) et REMESURÉ le 2026-09-15 sur cinq combinaisons :
+`Accept-Language: en-US`, `?lang=en-US`, `?mkt=en-US`, `?lang=en-GB&mkt=en-GB` et
+sans paramètre — la page rend « Démonstration Q-Bot avec Sylvain PEREZ » dans les
+cinq cas. La langue vient du RÉGLAGE de la page de réservation dans le locataire
+Microsoft, pas du visiteur : un second agenda est donc la seule voie, il n'y a
+aucun paramètre d'URL à trouver.
 
 POUR CHANGER D'AGENDA : modifier URL ci-dessous, puis
     python3 tools/maj-nav-booking.py
     node tools/bump-assets.mjs
 """
 
-URL = ('https://outlook.office.com/book/'
-       'DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2')
+URL = {
+    'fr': ('https://outlook.office.com/book/'
+           'DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2'),
+    # ⟨ À REMPLIR ⟩ l'agenda anglais, quand il existera dans le locataire.
+    # Vide = repli sur le français, donc rien ne change tant qu'il l'est.
+    'en': '',
+}
 
-# Le Bookings n'existe qu'en français : la page Microsoft ne se traduit pas
-# (testée en en-GB et en nl-BE le 2026-08-31). Les libellés, eux, sont traduits.
+
+def adresse(langue):
+    """L'agenda de la langue, ou le français tant que l'autre n'existe pas."""
+    return URL.get(langue) or URL['fr']
+
+
+# Les libellés de la fenêtre, eux, sont traduits depuis toujours.
 LIBELLES = {
     'fr': dict(
         titre='Agenda de réservation Q-Bot',
@@ -48,7 +66,7 @@ LIBELLES = {
 def attributs(langue):
     """Les attributs data-* du déclencheur, dans un ordre stable."""
     l = LIBELLES[langue]
-    return [('data-booking-src', URL),
+    return [('data-booking-src', adresse(langue)),
             ('data-booking-title', l['titre']),
             ('data-booking-attente', l['attente']),
             ('data-booking-lent', l['lent']),
