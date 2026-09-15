@@ -445,10 +445,10 @@
     <div class="section-header">
       <span class="section-label">Companion app</span>
       <h2 class="section-title" id="doc-companion">The companion app</h2>
-      <p class="section-subtitle">The second way to trigger a run: the app is installed on the phone under test and starts on its own as soon as a 2FA notification arrives.</p>
+      <p class="section-subtitle">The companion app triggers a <span class="nb">Q-Bot</span> scenario automatically when a 2FA notification lands on the phone.</p>
     </div>
-    <p class="section-subtitle">Installed on the phone under test, it watches the notifications of the authentication apps and triggers the matching scenario as soon as one arrives. No call from your test suite is needed.</p>
-    <p class="section-subtitle">Both trigger paths live side by side in the same environment: the HTTP call when your test decides, the companion app when the app under test asks for the second factor.</p>
+    <p class="section-subtitle">It saves you from launching the scenario from your test suite.</p>
+    <p class="section-subtitle">Both modes can be used: triggering over HTTP, or automatic triggering through the companion app.</p>
   </div>
 </section>
 

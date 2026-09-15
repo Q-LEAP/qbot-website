@@ -126,15 +126,12 @@ SECTIONS = {
        chapeau="Le même appel HTTP, dans cinq outils. Dépliez celui qui vous concerne.",
        corps=[('exemples', None)], gris=True),
   dict(id='doc-companion', label='App compagnon', titre="L'app compagnon",
-       chapeau="Le second chemin de déclenchement&nbsp;: l'application s'installe sur le téléphone "
-               "sous test et part seule dès qu'une notification 2FA arrive.",
+       chapeau="L'app compagnon permet de déclencher automatiquement un scénario "
+               "<span class=\"nb\">Q-Bot</span> lorsqu'une notification 2FA arrive sur le téléphone.",
        corps=[
-        ('p', "Installée sur le téléphone sous test, elle surveille les notifications des "
-              "applications d'authentification et déclenche le scénario correspondant dès qu'une "
-              "arrive. Aucun appel depuis votre chaîne de tests n'est nécessaire."),
-        ('p', "Les deux chemins de déclenchement coexistent dans le même environnement&nbsp;: "
-              "l'appel HTTP quand c'est votre test qui décide, l'app compagnon quand c'est "
-              "l'application testée qui réclame le second facteur."),
+        ('p', "Elle évite ainsi d'avoir à lancer le scénario depuis votre chaîne de tests."),
+        ('p', "Les deux modes peuvent être utilisés&nbsp;: déclenchement par HTTP ou "
+              "déclenchement automatique via l'app compagnon."),
        ]),
   dict(id='doc-qr', label='QR code', titre="Le QR code sur l'écran du boîtier",
        chapeau="Le boîtier porte un petit écran intégré. <code>POST /display-image</code> y "
@@ -247,15 +244,12 @@ SECTIONS = {
        chapeau="The same HTTP call, in five tools. Open the one you need.",
        corps=[('exemples', None)], gris=True),
   dict(id='doc-companion', label='Companion app', titre="The companion app",
-       chapeau="The second way to trigger a run: the app is installed on the phone under test "
-               "and starts on its own as soon as a 2FA notification arrives.",
+       chapeau="The companion app triggers a <span class=\"nb\">Q-Bot</span> scenario automatically "
+               "when a 2FA notification lands on the phone.",
        corps=[
-        ('p', "Installed on the phone under test, it watches the notifications of the "
-              "authentication apps and triggers the matching scenario as soon as one arrives. "
-              "No call from your test suite is needed."),
-        ('p', "Both trigger paths live side by side in the same environment: the HTTP call when "
-              "your test decides, the companion app when the app under test asks for the second "
-              "factor."),
+        ('p', "It saves you from launching the scenario from your test suite."),
+        ('p', "Both modes can be used: triggering over HTTP, or automatic triggering through "
+              "the companion app."),
        ]),
   dict(id='doc-qr', label='QR code', titre="The QR code on the device screen",
        chapeau="The device has a small built-in screen. <code>POST /display-image</code> shows "
