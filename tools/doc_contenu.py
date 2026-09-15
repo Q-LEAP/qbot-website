@@ -167,14 +167,18 @@ SECTIONS = {
               "question de conformité propre à votre environnement, "
               "<a href=\"contact.html\">écrivez-nous</a>."),
        ], gris=True),
-  dict(id='doc-support', label='Support', titre="Support et remplacement",
-       chapeau="Ce qui est inclus dans la location, et ce qui se passe en cas de panne.",
+  dict(id='doc-support', label='Support', titre="Support",
+       chapeau="Une question, un doute, un comportement inattendu&nbsp;: écrivez à l'équipe. "
+               "L'assistance technique est incluse dans la location.",
        corps=[
-        ('fiche', [("Support", "Inclus, réponse sous 24 h ouvrées"),
-                   ("Panne", "Réparation à distance en premier recours"),
-                   ("Remplacement", "Boîtier neuf si la réparation n'aboutit pas"),
-                   ("Mise en service", "48 à 72 heures après la commande")]),
+        ('fiche', [("Assistance", "Incluse dans la location"),
+                   ("Réponse", "Sous 24 h ouvrées"),
+                   ("Premier recours", "Diagnostic et réparation à distance")]),
+        ('p', "Le plus court chemin est le <a href=\"contact.html\">formulaire de contact</a>&nbsp;: "
+              "il arrive chez l'équipe qui construit <span class=\"nb\">Q-Bot</span>. Vous pouvez "
+              "aussi écrire à <a href=\"mailto:bot@q-leap.eu\">bot@q-leap.eu</a>."),
        ]),
+
  ],
  'en': [
   dict(id='doc-architecture', label='Architecture', titre="How <span class=\"nb\">Q-Bot</span> works",
@@ -285,13 +289,17 @@ SECTIONS = {
               "you would for any test equipment. For any compliance question specific to your "
               "environment, <a href=\"contact.html\">write to us</a>."),
        ], gris=True),
-  dict(id='doc-support', label='Support', titre="Support and replacement",
-       chapeau="What the rental includes, and what happens if the device fails.",
+  dict(id='doc-support', label='Support', titre="Support",
+       chapeau="A question, a doubt, an unexpected behaviour: write to the team. Technical "
+               "support is included in the rental.",
        corps=[
-        ('fiche', [("Support", "Included, answer within 24 working hours"),
-                   ("Failure", "Remote repair first"),
-                   ("Replacement", "A new device if the repair does not succeed"),
-                   ("Lead time", "48 to 72 hours after ordering")]),
+        ('fiche', [("Support", "Included in the rental"),
+                   ("Answer", "Within 24 working hours"),
+                   ("First step", "Remote diagnosis and repair")]),
+        ('p', "The shortest route is the <a href=\"contact.html\">contact form</a>: it reaches the "
+              "team that builds <span class=\"nb\">Q-Bot</span>. You can also write to "
+              "<a href=\"mailto:bot@q-leap.eu\">bot@q-leap.eu</a>."),
        ]),
+
  ],
 }
