@@ -11299,3 +11299,25 @@ et aucun repli après) ; les deux audits du dépôt à 1440 et 390 px, **17 page
 chiffres ne coïncident pas (28 chez lui contre 39 en local avant la passe, sans compression).
 L'API publique de PageSpeed est limitée en volume et son quota anonyme était épuisé ce jour-là ;
 le contrôle se refait depuis la page web, ou avec Lighthouse pointé sur `https://q-bot.eu/`.
+
+### 5. RELEVÉ SUR LE SITE EN LIGNE, PUIS DEUX DERNIERS OCTETS
+
+Lighthouse pointé sur `https://q-bot.eu/` après déploiement : **95**, FCP 1 502, LCP 2 229,
+TBT 61, CLS 0. **Poids total de la page : 240 Ko**, contre plus de deux mégaoctets avant.
+Et `style.min.css` pèse **23 Ko compressés** là où `style.css` en faisait 124.
+
+Le relevé en ligne a montré ce qu'aucune mesure locale ne montrait : **le plus gros fichier de
+la page d'accueil était l'affiche du film de démonstration**, 46 Ko sur 240, pour une section
+située six écrans plus bas. L'attribut `poster` d'une balise `<video>` est téléchargé au
+chargement de la page **même sans `src` et même hors écran**. Elle vit donc dans `data-poster`.
+
+**L'AFFICHE SE POSE AVANT LE GARDE-FOU DU MODULE 18, ET C'EST TOUT L'INTÉRÊT.** Ce module
+s'arrête net en mouvement réduit, en économiseur de données ou sur liaison lente — et c'est
+justement là que l'affiche est tout ce qui reste. Vérifié dans les deux modes : 0 requête avant
+défilement ; en mouvement normal l'affiche PUIS le film ; en mouvement réduit **l'affiche
+seule**, le film jamais demandé.
+
+Les quatre pastilles de marque passent en chargement différé : elles sont six écrans plus bas
+et pesaient 27 Ko au chargement.
+
+Local après ces deux points : **99**, FCP 1 202, LCP 1 953, TBT 14, SI 1 210, CLS 0.

@@ -1964,6 +1964,27 @@ backToTop.addEventListener('click', () => {
   var films = document.querySelectorAll('.video__player[data-film]');
   if (!films.length) return;
 
+  /* L'AFFICHE SE POSE TOUJOURS, ET AVANT LE GARDE-FOU. L'attribut `poster` d'une
+     balise `<video>` est téléchargé au chargement de la page même sans `src` et
+     même six écrans plus bas : mesuré sur le site en ligne le 2026-09-15,
+     l'affiche du film de démonstration était le PLUS GROS fichier de l'accueil,
+     46 Ko sur 240. Elle vit donc dans `data-poster`.
+     Cette boucle est au-dessus du garde-fou à dessein : en mouvement réduit, en
+     économiseur de données ou sur liaison lente, le module s'arrête juste en
+     dessous, et c'est justement là que l'affiche est tout ce qui reste. Sans
+     cela le cadre serait vide au lieu de garder son arrêt sur image. */
+  function afficheDe(film) {
+    var p = film.getAttribute('data-poster');
+    if (p && !film.getAttribute('poster')) film.setAttribute('poster', p);
+  }
+  Array.prototype.forEach.call(films, function (film) {
+    new IntersectionObserver(function (entrees, obs) {
+      for (var i = 0; i < entrees.length; i++) {
+        if (entrees[i].isIntersecting) { afficheDe(film); obs.disconnect(); return; }
+      }
+    }, { rootMargin: '400px 0px' }).observe(film);
+  });
+
   var co = navigator.connection || {};
   var lente = co.saveData === true ||
               co.effectiveType === '2g' || co.effectiveType === 'slow-2g' ||
@@ -1979,6 +2000,7 @@ backToTop.addEventListener('click', () => {
     }
 
     function jouer() {
+      afficheDe(film);   // filet : l'observateur d'affiche l'a normalement déjà posée
       if (!film.getAttribute('src')) {
         /* `preload` passe à `auto` AVANT le `src`. La balise n'en porte plus dans le
            HTML : `preload="none"` y disait au navigateur de ne rien tamponner, ce qui
