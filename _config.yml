@@ -74,6 +74,12 @@ exclude:
   - assets/img/qbot-proto-gen1.png
   # Les deux visuels de la section « évolution », retirée des accueils le
   # 2026-09-02 : plus aucune page ne les cite.
+  # LES DEUX JPEG D'ORIGINE DES VISUELS D'ACCUEIL, DEPUIS LE 2026-09-15 : les
+  # pages servent désormais leurs versions WebP (`tools/webp-images.py`), plus
+  # légères de moitié. Les JPEG restent dans le dépôt parce qu'ils sont la
+  # SOURCE que le script relit — un WebP ne se réencode pas depuis un WebP.
+  - assets/img/qbot-photo-poste.jpg
+  - assets/img/qbot-demo-poster.jpg
   - assets/img/qbot-proto-1-boitier.webp
   - assets/img/qbot-nfc.webp
   # Le plan du boîtier fermé tiré du film, qui illustrait « un nano-ordinateur de

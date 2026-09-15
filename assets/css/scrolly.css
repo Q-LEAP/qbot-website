@@ -10,19 +10,6 @@
    jamais le défilement — pas de scroll-jacking, le doigt garde la main.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Titre de section réservé aux technologies d'assistance : la séquence se
-   raconte visuellement, mais elle doit rester nommée dans l'arbre du document. */
-.visually-hidden {
-  position: absolute;
-  width: 1px; height: 1px;
-  margin: -1px; padding: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
-}
-
 /* Le lien d'évitement de la séquence réutilise entièrement le style de celui de
    la navigation (masqué au repos, pastille teal à la prise de focus). Seule sa
    position change : il se place sous la barre de navigation pour ne pas la
@@ -869,33 +856,12 @@
   .scrolly__dot { transition: none; }
 }
 
-/* ── Fil conducteur : les libellés de section portent un numéro en case ────
-   Même vocabulaire que les cases de saisie de la séquence, appliqué à toute la
-   page : chaque libellé de section est précédé de son index dans une petite case
-   au trait. Le compteur est CSS, donc la numérotation se réajuste seule si une
-   section est ajoutée ou retirée — rien à maintenir à la main.
-   Le badge du hero (.hero__label) en est exclu : il n'est pas une section. */
-main { counter-reset: qsec; }
-main .section-label {
-  counter-increment: qsec;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-main .section-label::before {
-  content: counter(qsec, decimal-leading-zero);
-  display: inline-grid;
-  place-items: center;
-  width: 22px; height: 24px;
-  border: 1px solid rgba(0, 203, 190, 0.42);
-  border-radius: 5px;
-  background: rgba(0, 203, 190, 0.1);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-  color: var(--teal);
-}
+/* `.visually-hidden` et les libellés numérotés de section ONT DÉMÉNAGÉ dans
+   `style.css` le 2026-09-15. Ce sont des règles de page, pas de séquence, et
+   elles s'appliquaient au-dessus de la ligne de flottaison : tant qu'elles
+   vivaient ici, cette feuille ne pouvait pas être chargée de façon différée sans
+   décaler le contenu à l'arrivée (donc sans créer un décalage de mise en page,
+   aujourd'hui à zéro). */
 
 
 /* ══ Calque d'annotations projetées ═══════════════════════════════════════

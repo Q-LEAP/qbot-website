@@ -3033,9 +3033,12 @@ p { color: var(--gray); }
 /* Le cadre en pointillés et ses trois points qui « respiraient » ont été
    retirés le 2026-08-28 : la troisième carte porte désormais un vrai visuel,
    le boîtier et un téléphone qui échangent par NFC. Un cadre vide se lisait
-   comme une page inachevée, ce que le client a signalé. */
-  35%           { opacity: 1;    transform: translateY(-4px); }
-}
+   comme une page inachevée, ce que le client a signalé.
+   IL EN RESTAIT DEUX LIGNES ORPHELINES, trouvées le 2026-09-15 par le minifieur :
+   l'ouverture `@keyframes` était partie et un pas « 35% » et son accolade
+   fermante étaient restés au milieu de la feuille. Du CSS invalide, que les
+   navigateurs ignorent par récupération d'erreur — donc rien ne se voyait, et
+   rien ne le signalait. */
 
 .evo-card__body {
   display: flex;
@@ -3192,12 +3195,12 @@ p { color: var(--gray); }
 .stat-item__label { font-size: 0.875rem; color: var(--muted); }
 
 /* ---- Accessibilité ---- */
-/* DEUX NOMS POUR LA MÊME CHOSE, et c'était un piège. `.sr-only` vit ici,
-   `.visually-hidden` dans assets/css/scrolly.css : une page qui emploie la
-   seconde sans charger ce fichier afficherait en clair un texte réservé aux
-   lecteurs d'écran. Aucune ne le fait aujourd'hui (seules les deux pages
-   d'accueil l'emploient, et elles chargent scrolly.css), mais l'alias ferme la
-   porte pour de bon. */
+/* DEUX NOMS POUR LA MÊME CHOSE. `.sr-only` a toujours vécu ici ; `.visually-hidden`
+   vivait dans `scrolly.css` et l'y a rejoint le 2026-09-15, quand cette feuille est
+   passée en chargement différé — une règle qui masque du texte ne peut pas arriver
+   après le rendu, sous peine de l'afficher en clair une fraction de seconde.
+   `clip-path` vient de cette version-là : c'est l'équivalent moderne de `clip`, que
+   l'on garde pour les moteurs anciens. */
 .sr-only,
 .visually-hidden {
   position: absolute;
@@ -3205,6 +3208,7 @@ p { color: var(--gray); }
   padding: 0; margin: -1px;
   overflow: hidden;
   clip: rect(0,0,0,0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
 }
@@ -6598,6 +6602,56 @@ a:focus-visible { border-radius: var(--radius-sm); }
     width: 100%;
   }
 }
+
+/* ══ VENU DE scrolly.css LE 2026-09-15 ════════════════════════════════════
+   Ces deux blocs sont des règles de PAGE, pas de séquence, et ils s'appliquent
+   au-dessus de la ligne de flottaison. Tant qu'ils vivaient dans `scrolly.css`,
+   cette feuille bloquait le rendu des deux accueils alors qu'elle ne sert qu'à
+   une section située quatre écrans plus bas. Déplacés, elle peut être chargée
+   de façon différée sans rien décaler. */
+/* ── LE SÉLECTEUR EST PRÉFIXÉ `.page-home`, ET CE PRÉFIXE EST LE DÉMÉNAGEMENT
+   LUI-MÊME. Ce bloc vivait dans `scrolly.css`, que SEULES les deux pages
+   d'accueil chargent : sa portée réelle était donc « les accueils », et
+   `main …` suffisait à l'exprimer. Passé dans `style.css`, que les dix-sept
+   pages chargent, le même sélecteur a posé un badge numéroté devant CHAQUE
+   libellé de section du site — mesuré le 2026-09-15 par comparaison de pixels
+   avant/après : le libellé de la page 404 passait de 83 x 17 à 115 x 24.
+   Le préfixe rend la portée d'origine, explicitement.
+
+   ET IL NE S'AFFICHE TOUJOURS NULLE PART, ce qui était déjà vrai avant : sur
+   les accueils, `style.css` déclare plus bas `.page-home main .section-label::before
+   { content: '' }`, la marque teal qu'on voit réellement, et à spécificité égale
+   c'est l'ordre du fichier qui tranche — elle est écrite après. Gardé et annoté
+   plutôt que supprimé, comme `.timeline` : c'est un chemin de style, pas un défaut.
+
+   ── Fil conducteur : les libellés de section portent un numéro en case ────
+   Même vocabulaire que les cases de saisie de la séquence, appliqué à toute la
+   page : chaque libellé de section est précédé de son index dans une petite case
+   au trait. Le compteur est CSS, donc la numérotation se réajuste seule si une
+   section est ajoutée ou retirée — rien à maintenir à la main.
+   Le badge du hero (.hero__label) en est exclu : il n'est pas une section. */
+.page-home main { counter-reset: qsec; }
+.page-home main .section-label {
+  counter-increment: qsec;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-home main .section-label::before {
+  content: counter(qsec, decimal-leading-zero);
+  display: inline-grid;
+  place-items: center;
+  width: 22px; height: 24px;
+  border: 1px solid rgba(0, 203, 190, 0.42);
+  border-radius: 5px;
+  background: rgba(0, 203, 190, 0.1);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: var(--teal);
+}
+
 
 /* Deux chapeaux qui se suivent dans un en-tête de section : le reset global
    pose `margin: 0`, donc sans cette règle les deux paragraphes se touchent.

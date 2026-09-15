@@ -45,8 +45,15 @@ RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Les fichiers versionnés, et le motif qui les cherche dans les pages. Le chemin
 # peut être précédé de « ../ » ou « ../../ » selon la profondeur de la page.
-SUIVIS = ['assets/css/style.css', 'assets/css/scrolly.css',
-          'assets/js/main.js', 'assets/js/scrolly.js',
+# CE SONT LES FICHIERS RÉDUITS QUI SONT SERVIS, DEPUIS LE 2026-09-15, et donc eux
+# qui sont versionnés : aucune page ne charge plus les sources commentées.
+# LE JUMEAU NODE LES PRODUIT (`tools/minify.mjs`, appelé par `bump-assets.mjs`) ;
+# celui-ci ne sait pas les produire, il REFUSE donc de versionner un fichier
+# réduit plus vieux que sa source. Un minifieur écrit deux fois dans deux
+# langages ne resterait pas d'accord avec lui-même, et un réduit périmé c'est le
+# site qui sert l'ancienne feuille — le défaut même que ce script empêche.
+SUIVIS = ['assets/css/style.min.css', 'assets/css/scrolly.min.css',
+          'assets/js/main.min.js', 'assets/js/scrolly.min.js',
           # LES IMAGES RÉÉCRITES EN PLACE SONT LE MÊME PIÈGE. Une image dont le
           # contenu change sous un nom de fichier inchangé reste servie depuis le
           # cache : le 2026-08-25, la maquette d'interface corrigée n'arrivait pas
@@ -116,6 +123,19 @@ def pages():
 
 
 def main():
+    paires = [('assets/css/style.css', 'assets/css/style.min.css'),
+              ('assets/css/scrolly.css', 'assets/css/scrolly.min.css'),
+              ('assets/js/main.js', 'assets/js/main.min.js'),
+              ('assets/js/scrolly.js', 'assets/js/scrolly.min.js')]
+    perimes = [a for a, b in paires
+               if not os.path.exists(os.path.join(RACINE, b))
+               or os.path.getmtime(os.path.join(RACINE, b))
+                  < os.path.getmtime(os.path.join(RACINE, a))]
+    if perimes:
+        print('ARRET : fichier(s) reduit(s) perime(s) : ' + ', '.join(perimes))
+        print("  lancer d'abord :  node tools/minify.mjs")
+        raise SystemExit(2)
+
     versions = {c: empreinte(c) for c in SUIVIS}
     for c, v in versions.items():
         print(f"  {c:<28} → v={v}")

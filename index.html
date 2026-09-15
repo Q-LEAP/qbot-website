@@ -35,23 +35,39 @@
   <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <!-- L'IMAGE DU PLUS GRAND RENDU EST PRÉCHARGÉE. Elle est découverte tard :
+       le navigateur doit d'abord analyser la feuille de style, qui bloque le
+       rendu. `imagesrcset` et `imagesizes` reprennent EXACTEMENT ceux de la
+       balise, sinon le préchargement télécharge une seconde image au lieu de
+       servir la première. -->
+  <link rel="preload" as="image" fetchpriority="high"
+        href="assets/img/qbot-photo-poste.webp"
+        imagesrcset="assets/img/qbot-photo-poste-700.webp 700w, assets/img/qbot-photo-poste.webp 1400w"
+        imagesizes="(max-width: 900px) 92vw, 46vw">
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-  <link rel="stylesheet" href="assets/css/style.css?v=d2380d51">
-  <link rel="stylesheet" href="assets/css/scrolly.css?v=7d9a9c47">
-  <!-- Visionneuse 3D et décodeur Draco hébergés chez nous : zéro requête extérieure
-       pour le visiteur. Le CDN et gstatic restent le repli du SEUL cas où le fichier
-       local est refusé : ouvert en file://, un script « module » local a l'origine
-       « null » et aucun en-tête CORS ne peut l'accompagner, alors que jsDelivr envoie
-       « * » ; et un fetch local y est interdit, ce qui vaut aussi pour le décodeur.
-       Vérifié sur Chromium et WebKit : local en http(s), extérieur au double-clic. -->
-  <script type="module">
-    const local = location.protocol !== 'file:';
-    const m = await import(local
-      ? './assets/js/model-viewer-4.3.1.min.js'
-      : 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js');
-    if (local) m.ModelViewerElement.dracoDecoderLocation = './assets/js/draco/';
-  </script>
+  <link rel="stylesheet" href="assets/css/style.min.css?v=5dfb3a2d">
+  <!-- LA FEUILLE DE LA SÉQUENCE NE BLOQUE PLUS LE RENDU. Elle ne sert qu'à une
+       section située quatre écrans plus bas, et elle coûtait 301 ms de blocage
+       mesurés à l'outil de Google. `media="print"` la fait charger sans bloquer,
+       et `onload` la rend à tous les médias dès qu'elle est là.
+       CE N'EST POSSIBLE QUE DEPUIS QUE SES TROIS RÈGLES DE PAGE ONT DÉMÉNAGÉ dans
+       `style.css` (`.visually-hidden` et les libellés de section numérotés) : elles
+       s'appliquaient au-dessus de la ligne de flottaison, donc les charger en
+       différé aurait décalé le contenu à leur arrivée.
+       Le `<noscript>` couvre le cas, rare, d'un navigateur sans JavaScript : la
+       feuille y redevient bloquante, ce qui est le comportement d'avant. -->
+  <link rel="stylesheet" href="assets/css/scrolly.min.css?v=a94e55ec" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="assets/css/scrolly.min.css?v=a94e55ec"></noscript>
+  <!-- LA VISIONNEUSE 3D N'EST PLUS IMPORTÉE ICI, ET C'EST LE PLUS GROS GAIN DE
+       PERFORMANCE DU SITE. model-viewer pèse 1 044 Ko, son décodeur Draco 337 et le
+       modèle 698 : deux mégaoctets qui partaient dans l'en-tête, donc AVANT l'image
+       du hero, et repoussaient le plus grand rendu à dix secondes. Ils ne servent
+       qu'à la quatrième section.
+       « scrolly.js » les demande maintenant à l'approche de la séquence. Tant que
+       le module n'est pas là, `<model-viewer>` est un élément INCONNU : il n'affiche
+       rien et ne télécharge rien, `src` n'étant lu que par le composant. Le repli
+       file:// vers jsDelivr vit désormais là-bas aussi. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -209,7 +225,10 @@
            de suite en mouvement, le film ici puis la séquence 3D juste dessous. -->
       <div class="hero__shot">
         <img
-          src="assets/img/qbot-photo-poste.jpg"
+          src="assets/img/qbot-photo-poste.webp"
+          srcset="assets/img/qbot-photo-poste-700.webp 700w,
+                  assets/img/qbot-photo-poste.webp 1400w"
+          sizes="(max-width: 900px) 92vw, 46vw"
           alt="Le boîtier Q-Bot posé sur un bureau, un smartphone inséré dans son socle, l'interface web affichée sur l'écran voisin"
           width="1400" height="840"
           fetchpriority="high"
@@ -468,7 +487,7 @@
         <div class="filmcard filmcard--loop">
           <video class="video__player filmcard__video"
                  data-film="assets/video/qbot-demo.mp4?v=301fa999"
-                 poster="assets/img/qbot-demo-poster.jpg?v=1e26aaa5"
+                 poster="assets/img/qbot-demo-poster.webp?v=1e26aaa5"
                  width="1280" height="720"
                  muted loop playsinline aria-hidden="true" tabindex="-1"></video>
         </div>
@@ -912,7 +931,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=0a12dcc1" defer></script>
-<script src="assets/js/scrolly.js?v=2a8289b3" defer></script>
+<script src="assets/js/main.min.js?v=b79cc86e" defer></script>
+<script src="assets/js/scrolly.min.js?v=2063857c" defer></script>
 </body>
 </html>

@@ -15,6 +15,15 @@
      fin de boucle et repart à 0.
    ══════════════════════════════════════════════════════════════════════════ */
 (function () {
+  /* L'URL DE CE SCRIPT, RELEVÉE AVANT TOUT APPEL DIFFÉRÉ. `document.currentScript`
+     vaut null dans une fonction rappelée plus tard ; ici on est encore dans
+     l'exécution du script, donc il est là. Elle sert à importer la visionneuse et
+     à situer le décodeur Draco SANS deviner la profondeur de la page : un accueil
+     anglais vit sous `en/`, ses actifs sont en `../assets/`, et un chemin écrit à
+     la main s'y trompe (le dépôt l'a déjà payé sur le visuel de la documentation). */
+  var BASE = ((document.currentScript && document.currentScript.src) || '')
+               .replace(/[?#].*$/, '').replace(/[^/]*$/, '');
+
   var root = document.querySelector('.scrolly');
   if (!root) return;
 
@@ -71,6 +80,58 @@
     viewer = null;
     if (fallback) fallback.hidden = false;
     root.setAttribute('data-fallback', weak);
+  }
+
+  /* ── LE MODULE 3D EST DEMANDÉ À L'APPROCHE DE LA SÉQUENCE ─────────────────
+     Il était importé dans l'en-tête des deux accueils : 1 044 Ko de visionneuse,
+     337 de décodeur Draco et 698 de modèle partaient AVANT l'image du hero, pour
+     une section qui est la quatrième de la page. Mesuré à l'outil de Google : le
+     plus grand rendu à 10,0 s et le temps de blocage à 5 170 ms.
+
+     TANT QUE LE MODULE N'EST PAS LÀ, `<model-viewer>` EST UN ÉLÉMENT INCONNU : il
+     n'affiche rien et ne télécharge rien, `src` n'étant lu que par le composant.
+     L'import le promeut, et c'est à ce moment que le modèle part. Il n'y a donc
+     aucun attribut à manipuler, et surtout rien à retirer du DOM : la mise en page
+     et la hauteur réservée de la scène ne bougent pas d'un pixel.
+
+     600 px DE MARGE, ET C'EST MESURÉ. La séquence est la quatrième section : sur
+     un téléphone son sommet est à plus de trois écrans du haut de page, donc
+     l'observateur ne peut pas s'armer au chargement. C'est le piège inverse de
+     celui du 2026-08-20, où 400 px suffisaient à armer le filet de sécurité dès le
+     chargement parce que la séquence suivait alors le hero.
+
+     LE REPLI file:// RESTE : un module local y a l'origine « null » et aucun
+     en-tête CORS ne peut l'accompagner, alors que jsDelivr envoie « * ». */
+  var moduleDemande = null;
+  var quandModulePret = null;   // posé plus bas par l'indicateur de chargement
+  function chargerVisionneuse() {
+    if (moduleDemande) return moduleDemande;
+    var local = location.protocol !== 'file:';
+    moduleDemande = import(local
+      ? BASE + 'model-viewer-4.3.1.min.js'
+      : 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js')
+      .then(function (m) {
+        if (local && m && m.ModelViewerElement) {
+          m.ModelViewerElement.dracoDecoderLocation = BASE + 'draco/';
+        }
+        return customElements.whenDefined('model-viewer');
+      })
+      .then(function () { if (quandModulePret) quandModulePret(); },
+            function () { if (quandModulePret) quandModulePret(); });
+    return moduleDemande;
+  }
+
+  if (viewer) {
+    if (window.IntersectionObserver) {
+      var guet = new IntersectionObserver(function (e) {
+        for (var i = 0; i < e.length; i++) {
+          if (e[i].isIntersecting) { guet.disconnect(); chargerVisionneuse(); return; }
+        }
+      }, { rootMargin: '600px 0px' });
+      guet.observe(stage || viewer);
+    } else {
+      chargerVisionneuse();
+    }
   }
 
   /* Un état par pas. `orbit` est en degrés/mètres absolus : model-viewer
@@ -1498,6 +1559,14 @@
     }
     viewer.addEventListener('progress', armer);
     viewer.addEventListener('load', function () { clearTimeout(giveUp); });
+    /* L'ARRIVÉE DU MODULE EST ELLE AUSSI UN SIGNE DE VIE. Depuis qu'il n'est plus
+       importé dans l'en-tête, le premier événement `progress` ne peut pas se
+       produire avant qu'il soit là : sans ce rappel, les 12 s courraient pendant
+       son téléchargement et une liaison lente tomberait sur le repli alors que
+       tout arrive normalement. On POSE un rappel, on ne déclenche pas l'import :
+       appeler `chargerVisionneuse()` ici le ramènerait au chargement de la page,
+       c'est-à-dire au défaut qu'on vient de corriger. */
+    quandModulePret = armer;
     /* Aucune marge sur l'observateur : il faut que la scène soit RÉELLEMENT à
        l'écran. Une marge de 400 px suffisait à armer le délai au chargement sur un
        téléphone (la séquence commence juste sous le hero), et on retombait sur le

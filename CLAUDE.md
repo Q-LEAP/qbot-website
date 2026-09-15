@@ -11156,3 +11156,146 @@ décrivent. Ce n'est pas un simple changement d'affichage : les moments réels o
 annonce le nouveau réglage immédiatement, la page met une à deux minutes à le servir : un
 premier essai voyait encore « (UTC) Coordinated Universal Time » alors que tout était
 enregistré. Un échec isolé se rejoue avant d'être appelé défaut.
+
+## Passe de performance : 28 → 98 sur l'outil de Google (2026-09-15)
+
+Relevé du client sur `pagespeed.web.dev`, mobile : **performances 28**, FCP 3,7 s, LCP 11,0 s,
+temps de blocage **5 170 ms**, index de vitesse 11,2 s. Accessibilité, bonnes pratiques et
+référencement à 100. Demande : « au moins 90, 100 c'est mieux, mais je ne veux enlever aucun
+contenu du site, juste l'optimiser ». **Aucun contenu n'a été retiré.**
+
+### D'ABORD, MESURER COMME LE SERVEUR SERT
+
+Le serveur de test du dépôt ne compressait pas, et GitHub Pages compresse. Sans gzip,
+`style.css` est mesurée à 376 Ko au lieu de 124, et l'on optimise le mauvais chiffre :
+le premier relevé local donnait 39, le même avec gzip donnait **69**. Le serveur de contrôle
+compresse donc désormais les types texte, comme l'hébergeur.
+
+Baseline locale (Lighthouse 12, mobile, 4G lente simulée) : **69**, FCP 1 802, LCP 9 992,
+TBT 255, SI 2 516.
+
+### 1. LE MODULE 3D N'EST PLUS CHARGÉ DANS L'EN-TÊTE — le gain principal
+
+`model-viewer` pèse 1 044 Ko, son décodeur Draco 337 et le modèle 698 : **deux mégaoctets**
+partaient depuis l'en-tête des deux accueils, donc AVANT l'image du hero, pour une section
+qui est la quatrième de la page.
+
+**TANT QUE LE MODULE N'EST PAS IMPORTÉ, `<model-viewer>` EST UN ÉLÉMENT INCONNU** : il
+n'affiche rien et ne télécharge rien, `src` n'étant lu que par le composant. Il n'y a donc
+aucun attribut à manipuler et surtout rien à retirer du DOM — la hauteur réservée de la scène
+ne bouge pas d'un pixel, et le décalage de mise en page reste à zéro.
+
+`scrolly.js` l'importe à l'approche de la séquence, **600 px de marge**. Ce n'est pas le
+chiffre du piège du 2026-08-20 : à l'époque la séquence suivait le hero et 400 px suffisaient à
+tout armer au chargement ; elle est aujourd'hui la quatrième section, à plus de trois écrans.
+
+Deux détails sans lesquels ça casse :
+
+- **l'URL du module se déduit de `document.currentScript.src`**, relevé au tout début du
+  script (il vaut `null` dans une fonction rappelée plus tard). Un chemin écrit à la main se
+  trompe d'un cran sur l'accueil anglais, qui vit sous `en/` — le dépôt l'a déjà payé sur le
+  visuel de la documentation ;
+- **le filet de 12 s est ré-armé quand le module arrive.** Le premier événement `progress` ne
+  peut plus se produire avant lui : sans ce rappel, les 12 s couraient pendant son
+  téléchargement et une liaison lente tombait sur le repli statique alors que tout arrivait.
+  On POSE un rappel, on n'appelle pas l'import depuis là — ce serait le ramener au chargement.
+
+Après : **87**, LCP 3 977, TBT **15**.
+
+### 2. LES FEUILLES ET LES SCRIPTS SONT SERVIS RÉDUITS
+
+Les sources de ce dépôt sont commentées à outrance, et c'est une valeur. Mais `style.css`
+fait 376 Ko dont plus de la moitié de commentaires, et **elle bloque le rendu** : 2 551 ms
+mesurés à elle seule. Les sources gardent tout, le visiteur reçoit la version réduite.
+
+| | avant | après |
+|---|---|---|
+| `style.css` | 362 Ko | **111 Ko** |
+| `scrolly.css` | 56 Ko | **13 Ko** |
+| `main.js` | 142 Ko | **36 Ko** |
+| `scrolly.js` | 112 Ko | **18 Ko** |
+
+`tools/minify.mjs` (esbuild par `npx`, comme `gltf-transform` pour le modèle) est appelé
+**par `bump-assets.mjs`**, donc par la commande déjà obligatoire après toute modification
+d'un CSS ou d'un JS : il n'y a pas une discipline de plus à tenir. Les fichiers produits sont
+COMMITÉS, GitHub Pages servant le dépôt tel quel.
+
+**LE JUMEAU PYTHON NE SAIT PAS MINIFIER, IL REFUSE DONC DE VERSIONNER** un fichier réduit
+plus vieux que sa source (code de sortie 2, avec la commande à lancer). Un minifieur écrit
+deux fois dans deux langages ne resterait pas d'accord avec lui-même, et un réduit périmé
+c'est le site qui sert l'ancienne feuille — le défaut même que `bump-assets` existe pour
+empêcher.
+
+Après : **95**, FCP 1 052, LCP 2 927.
+
+### 3. LA FEUILLE DE LA SÉQUENCE NE BLOQUE PLUS LE RENDU
+
+`scrolly.css` ne sert qu'à une section située quatre écrans plus bas et coûtait 301 ms de
+blocage. Elle est chargée en `media="print"` puis rendue à tous les médias par `onload`, avec
+un `<noscript>` qui restitue le comportement d'avant.
+
+**CE N'ÉTAIT POSSIBLE QU'APRÈS AVOIR DÉMÉNAGÉ SES TROIS RÈGLES DE PAGE** vers `style.css` :
+`.visually-hidden` et les libellés de section numérotés s'appliquent au-dessus de la ligne de
+flottaison, donc les charger en différé aurait décalé le contenu à leur arrivée.
+
+**ET CE DÉMÉNAGEMENT A CRÉÉ UNE RÉGRESSION, RATTRAPÉE PAR LA COMPARAISON DE PIXELS.**
+`main .section-label::before` vivait dans une feuille que **seules les deux pages d'accueil
+chargent** : sa portée réelle était « les accueils ». Passé dans `style.css`, que les dix-sept
+pages chargent, le même sélecteur a posé un badge numéroté devant CHAQUE libellé de section du
+site — le libellé de `404.html` passait de 83 × 17 à 115 × 24 px. Le sélecteur est donc
+préfixé `.page-home`, ce qui rend la portée d'origine explicitement.
+
+Au passage, le minifieur a trouvé **deux lignes de CSS invalide** oubliées par le retrait du
+cadre en pointillés du 2026-08-28 : une étape `35%` de `@keyframes` et son accolade fermante,
+sans l'ouverture. Les navigateurs les ignoraient par récupération d'erreur, donc rien ne se
+voyait et rien ne le signalait.
+
+### 4. LES VISUELS LOURDS EN WEBP, ET L'IMAGE DU PLUS GRAND RENDU PRÉCHARGÉE
+
+`qbot-photo-poste.jpg` est l'élément du plus grand rendu de l'accueil : 94 Ko en 1400 px, pour
+342 px d'affichage sur un téléphone. Deux gaspillages, le format et la taille.
+
+`tools/webp-images.py` produit **deux largeurs** (1400 et 700) et l'affiche du film. **La
+qualité est mesurée, pas choisie** : l'écart moyen avec la source est imprimé à chaque
+exécution, et la barre est celle que le dépôt a acceptée le 2026-08-10 pour un WebP de hero,
+1,05/255. À 82 le hero montait à 1,32, d'où **88** (1,08). L'affiche du film reste à 82 : c'est
+un arrêt sur image derrière un bouton de lecture.
+
+| fichier | avant | après |
+|---|---|---|
+| hero 1400 px | 94 Ko | **65 Ko** |
+| hero 700 px (téléphone) | 94 Ko | **26 Ko** |
+| affiche du film | 78 Ko | **45 Ko** |
+
+**LES DEUX JPEG RESTENT DANS LE DÉPÔT ET SORTENT DE LA PUBLICATION** : ce sont les SOURCES que
+le script relit, et un WebP ne se réencode pas depuis un WebP.
+
+Le préchargement reprend **exactement** le `srcset` et le `sizes` de la balise ; sans cela il
+télécharge une seconde image au lieu de servir la première.
+
+### Résultat et contrôles
+
+**Local : 69 → 98.** FCP 1 185, LCP 2 401, TBT **7**, SI 1 451, décalage de mise en page **0**.
+
+**LE CONTRÔLE QUI COMPTE EST LA COMPARAISON DE PIXELS AVANT/APRÈS**, parce que minifier une
+feuille de 376 Ko et déplacer des règles, c'est toucher à tout. Un `git worktree` sur le commit
+précédent, servi en parallèle, et les 17 pages capturées en pleine hauteur des deux côtés à
+1440 et 390 px : **15 pages identiques au pixel sur les deux largeurs**. Les deux exceptions
+s'expliquent et ont été vérifiées :
+
+- les deux accueils portent un canevas WebGL, qui rend une image différente à chaque capture.
+  Rejouées avec la scène 3D neutralisée des deux côtés : **2 854 pixels d'écart sur 14 millions,
+  écart maximal 42/255**, c'est-à-dire le hero et l'affiche passés en WebP, et rien d'autre ;
+- `cas-usage` perd **1 px** de hauteur à 390 px : l'affiche du film a changé de format.
+
+S'y ajoutent : les onze modules JS exercés pour de vrai après minification (menu mobile et son
+voile, Échap, accordéon de FAQ avec hauteur réelle, onglets de la fenêtre applicative,
+formulaire de support jusqu'à la requête, carrousel, agenda) — **11 sur 11, 0 erreur console** ;
+la séquence 3D chargée uniquement à l'approche (**0 requête 3D avant défilement**, modèle chargé
+et aucun repli après) ; les deux audits du dépôt à 1440 et 390 px, **17 pages sur 17, 0 constat** ;
+48 pages 0 ancre morte ; 54 relais 0 défaut ; `sync-faq-jsonld` idempotent.
+
+**Le score de l'outil de Google se mesure sur le site EN LIGNE**, pas en local : les deux
+chiffres ne coïncident pas (28 chez lui contre 39 en local avant la passe, sans compression).
+L'API publique de PageSpeed est limitée en volume et son quota anonyme était épuisé ce jour-là ;
+le contrôle se refait depuis la page web, ou avec Lighthouse pointé sur `https://q-bot.eu/`.

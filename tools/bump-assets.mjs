@@ -36,9 +36,13 @@ const RACINE = path.dirname(path.dirname(new URL(import.meta.url).pathname.repla
 // NOM change n'a pas besoin d'être ici. `qbot-og.jpg` en particulier :
 // versionner son URL est aussi le moyen de forcer les réseaux sociaux à relire
 // l'aperçu.
+// CE SONT LES FICHIERS RÉDUITS QUI SONT SERVIS, DEPUIS LE 2026-09-15, et donc
+// eux qui sont versionnés : les sources commentées ne sont plus chargées par
+// aucune page. `tools/minify.mjs` les produit, et il est appelé ci-dessous AVANT
+// le calcul des empreintes — sans quoi on versionnerait l'ancien contenu.
 const SUIVIS = [
-  'assets/css/style.css', 'assets/css/scrolly.css',
-  'assets/js/main.js', 'assets/js/scrolly.js',
+  'assets/css/style.min.css', 'assets/css/scrolly.min.css',
+  'assets/js/main.min.js', 'assets/js/scrolly.min.js',
   // LES CAPTURES DE L'INTERFACE LIVRÉE, DEPUIS LE 2026-09-07 : elles remplacent
   // la maquette fictive `qbot-interface.jpg` / `-en.jpg`, sortie de cette liste
   // avec elle. Un seul jeu pour les deux langues, l'application étant en
@@ -95,6 +99,11 @@ function pages() {
     }
   })(RACINE);
   return out.sort();
+}
+
+const { minifier } = await import('./minify.mjs');
+for (const [out, a, b] of minifier()) {
+  console.log(`  ${out.padEnd(30)} ${String(Math.round(a / 1024)).padStart(5)} Ko -> ${String(Math.round(b / 1024)).padStart(4)} Ko`);
 }
 
 const versions = Object.fromEntries(SUIVIS.map(c => [c, empreinte(c)]));
