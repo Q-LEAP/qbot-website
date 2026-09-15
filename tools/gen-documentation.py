@@ -155,6 +155,13 @@ def main():
                  f'    <p>{meta["chapeau"]}</p>\n'
                  f'{sommaire(secs, meta["sommaire"])}\n'
                  f'  </div>\n</section>\n']
+        # LE CHEMIN DES ACTIFS N'EST PAS CELUI DES LIENS. La page anglaise vit
+        # sous `en/`, donc ses images sont en `../assets/` quand ses liens
+        # internes restent nus. L'habillage cloné porte déjà le bon préfixe, mais
+        # tout ce que ce script écrit lui-même doit le poser : sans lui, le
+        # visuel de la section Architecture répondait 404 en anglais, et en
+        # silence (une image cassée ne lève rien).
+        actifs = '' if lang == 'fr' else '../'
         for s in secs:
             gris = ' section--gray' if s.get('gris') else ''
             entete = (f'    <div class="section-header">\n'
@@ -187,7 +194,7 @@ def main():
                 f'    <div class="doc-split">\n'
                 f'      <div>\n{gauche}\n      </div>\n'
                 f'      <div class="doc-split__media">\n'
-                f'        <img src="{vis["src"]}" alt="{vis["alt"]}" '
+                f'        <img src="{actifs}{vis["src"]}" alt="{vis["alt"]}" '
                 f'width="{vis["w"]}" height="{vis["h"]}" loading="lazy">\n'
                 f'      </div>\n'
                 f'    </div>\n'
