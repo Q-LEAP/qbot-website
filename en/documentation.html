@@ -165,27 +165,27 @@
     <p>How to install <span class="nb">Q-Bot</span> on your network, connect a phone, build a scenario and trigger it from your test suite. This page is for whoever actually integrates <span class="nb">Q-Bot</span>; to find out what it does and whether it fits your environment, see the <a href="technical-specs.html">technical specifications</a>.</p>
     <nav class="doc-somm" aria-label="Contents">
       <ol class="doc-somm__list">
-        <li><a class="link-edito" href="#doc-archi"><span>How <span class="nb">Q-Bot</span> is built</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-architecture"><span>How <span class="nb">Q-Bot</span> is built</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-install"><span>Installation and network</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-        <li><a class="link-edito" href="#doc-telephone"><span>Connecting the phone</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-phone"><span>Connecting the phone</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-scenarios"><span>Building scenarios</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-api"><span>The REST API</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-        <li><a class="link-edito" href="#doc-appel"><span>Triggering from your test suite</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-        <li><a class="link-edito" href="#doc-compagnon"><span>The companion app</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-call"><span>Triggering from your test suite</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-companion"><span>The companion app</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-qr"><span>The QR code on the device screen</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-        <li><a class="link-edito" href="#doc-donnees"><span>Data storage</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-        <li><a class="link-edito" href="#doc-securite"><span>Security</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-data"><span>Data storage</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+        <li><a class="link-edito" href="#doc-security"><span>Security</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
         <li><a class="link-edito" href="#doc-support"><span>Support and replacement</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
       </ol>
     </nav>
   </div>
 </section>
 
-<section class="section" aria-labelledby="doc-archi">
+<section class="section" aria-labelledby="doc-architecture">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Architecture</span>
-      <h2 class="section-title" id="doc-archi">How <span class="nb">Q-Bot</span> is built</h2>
+      <h2 class="section-title" id="doc-architecture">How <span class="nb">Q-Bot</span> is built</h2>
       <p class="section-subtitle">A complete computer sitting on your local network, an Android phone connected over USB, and a web interface served by the device itself.</p>
     </div>
     <p class="section-subtitle">The device is a small computer that runs on its own, on the network where you install it. It calls no external service while tests run, and needs no internet connection to run them.</p>
@@ -236,11 +236,11 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="doc-telephone">
+<section class="section" aria-labelledby="doc-phone">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Smartphone</span>
-      <h2 class="section-title" id="doc-telephone">Connecting the phone</h2>
+      <h2 class="section-title" id="doc-phone">Connecting the phone</h2>
       <p class="section-subtitle">A physical Android phone, connected over USB, driven by ADB. No emulator, no simulator, no stub app.</p>
     </div>
     <div class="specs__list" role="list">
@@ -317,11 +317,11 @@
   </div>
 </section>
 
-<section class="section section--gray" aria-labelledby="doc-appel">
+<section class="section section--gray" aria-labelledby="doc-call">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Integration</span>
-      <h2 class="section-title" id="doc-appel">Triggering from your test suite</h2>
+      <h2 class="section-title" id="doc-call">Triggering from your test suite</h2>
       <p class="section-subtitle">The same HTTP call, in five tools. Open the one you need.</p>
     </div>
   <div class="faq__list">
@@ -433,11 +433,11 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="doc-compagnon">
+<section class="section" aria-labelledby="doc-companion">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Companion app</span>
-      <h2 class="section-title" id="doc-compagnon">The companion app</h2>
+      <h2 class="section-title" id="doc-companion">The companion app</h2>
       <p class="section-subtitle">The second way to trigger a run: the app is installed on the phone under test and starts on its own as soon as a 2FA notification arrives.</p>
     </div>
     <p class="section-subtitle">Installed on the phone under test, it watches the notifications of the authentication apps and triggers the matching scenario as soon as one arrives. No call from your test suite is needed.</p>
@@ -456,11 +456,11 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="doc-donnees">
+<section class="section" aria-labelledby="doc-data">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Data</span>
-      <h2 class="section-title" id="doc-donnees">Data storage</h2>
+      <h2 class="section-title" id="doc-data">Data storage</h2>
       <p class="section-subtitle">Scenarios and their screenshots stay on the device. Nothing is sent to an external service.</p>
     </div>
     <div class="specs__list" role="list">
@@ -485,11 +485,11 @@
   </div>
 </section>
 
-<section class="section section--gray" aria-labelledby="doc-securite">
+<section class="section section--gray" aria-labelledby="doc-security">
   <div class="container">
     <div class="section-header">
       <span class="section-label">Security</span>
-      <h2 class="section-title" id="doc-securite">Security</h2>
+      <h2 class="section-title" id="doc-security">Security</h2>
       <p class="section-subtitle">What the product guarantees today, and what it leaves to your infrastructure. Stated as it stands, with no promise beyond.</p>
     </div>
     <ul class="api-facts api-facts--deux">
@@ -578,7 +578,7 @@
         <ul role="list">
           <li><span aria-current="page">Technical documentation</span></li>
           <li><a href="faq.html">FAQ</a></li>
-          <li><a href="documentation.html#doc-securite">Security</a></li>
+          <li><a href="documentation.html#doc-security">Security</a></li>
           <li><a href="documentation.html#doc-support">Support</a></li>
         </ul>
       </div>

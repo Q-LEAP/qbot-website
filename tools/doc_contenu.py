@@ -62,7 +62,7 @@ META = {
 # d'appel EXTRAITS de la page donneuse.
 SECTIONS = {
  'fr': [
-  dict(id='doc-archi', label='Architecture', titre="Comment <span class=\"nb\">Q-Bot</span> est fait",
+  dict(id='doc-architecture', label='Architecture', titre="Comment <span class=\"nb\">Q-Bot</span> est fait",
        chapeau="Un ordinateur complet posé sur votre réseau local, un smartphone Android relié "
                "en USB, et une interface web servie par le boîtier lui-même.",
        corps=[
@@ -90,7 +90,7 @@ SECTIONS = {
         ('p', "Le boîtier se place sur le même réseau que la machine qui exécute vos tests&nbsp;: "
               "c'est ce réseau, et lui seul, qui donne accès à l'interface et à l'API."),
        ], gris=True),
-  dict(id='doc-telephone', label='Smartphone', titre="Connexion du smartphone",
+  dict(id='doc-phone', label='Smartphone', titre="Connexion du smartphone",
        chapeau="Un téléphone Android physique, relié en USB, piloté par ADB. Ni émulateur, "
                "ni simulateur, ni application bouchon.",
        corps=[
@@ -126,10 +126,10 @@ SECTIONS = {
                    "Compatible avec toute chaîne capable d'un appel HTTP",
                    "L'API n'attend aucune clé&nbsp;: le contrôle d'accès est celui de votre réseau"]),
        ]),
-  dict(id='doc-appel', label='Intégration', titre="Déclencher depuis votre chaîne de tests",
+  dict(id='doc-call', label='Intégration', titre="Déclencher depuis votre chaîne de tests",
        chapeau="Le même appel HTTP, dans cinq outils. Dépliez celui qui vous concerne.",
        corps=[('exemples', None)], gris=True),
-  dict(id='doc-compagnon', label='App compagnon', titre="L'app compagnon",
+  dict(id='doc-companion', label='App compagnon', titre="L'app compagnon",
        chapeau="Le second chemin de déclenchement&nbsp;: l'application s'installe sur le téléphone "
                "sous test et part seule dès qu'une notification 2FA arrive.",
        corps=[
@@ -148,7 +148,7 @@ SECTIONS = {
               "de saisir un code. L'écran du boîtier sert alors de support&nbsp;: votre test y "
               "envoie l'image, le téléphone la scanne, le parcours continue."),
        ], gris=True),
-  dict(id='doc-donnees', label='Données', titre="Stockage des données",
+  dict(id='doc-data', label='Données', titre="Stockage des données",
        chapeau="Les scénarios et leurs captures restent sur le boîtier. Rien n'est envoyé "
                "vers un service extérieur.",
        corps=[
@@ -159,7 +159,7 @@ SECTIONS = {
         ('p', "<span class=\"nb\">Q-Bot</span> est conçu pour des données de test. Les comptes "
               "utilisés dans vos scénarios doivent être des comptes de test."),
        ]),
-  dict(id='doc-securite', label='Sécurité', titre="Sécurité",
+  dict(id='doc-security', label='Sécurité', titre="Sécurité",
        chapeau="Ce que le produit garantit aujourd'hui, et ce qu'il laisse à votre "
                "infrastructure. Énoncé tel quel, sans promesse au-delà.",
        corps=[
@@ -183,7 +183,7 @@ SECTIONS = {
        ]),
  ],
  'en': [
-  dict(id='doc-archi', label='Architecture', titre="How <span class=\"nb\">Q-Bot</span> is built",
+  dict(id='doc-architecture', label='Architecture', titre="How <span class=\"nb\">Q-Bot</span> is built",
        chapeau="A complete computer sitting on your local network, an Android phone connected "
                "over USB, and a web interface served by the device itself.",
        corps=[
@@ -211,7 +211,7 @@ SECTIONS = {
         ('p', "Put the device on the same network as the machine that runs your tests: that "
               "network, and only that network, is what gives access to the interface and the API."),
        ], gris=True),
-  dict(id='doc-telephone', label='Smartphone', titre="Connecting the phone",
+  dict(id='doc-phone', label='Smartphone', titre="Connecting the phone",
        chapeau="A physical Android phone, connected over USB, driven by ADB. No emulator, no "
                "simulator, no stub app.",
        corps=[
@@ -246,10 +246,10 @@ SECTIONS = {
                    "Works with any test suite that can make an HTTP call",
                    "The API expects no key: access control is your network's"]),
        ]),
-  dict(id='doc-appel', label='Integration', titre="Triggering from your test suite",
+  dict(id='doc-call', label='Integration', titre="Triggering from your test suite",
        chapeau="The same HTTP call, in five tools. Open the one you need.",
        corps=[('exemples', None)], gris=True),
-  dict(id='doc-compagnon', label='Companion app', titre="The companion app",
+  dict(id='doc-companion', label='Companion app', titre="The companion app",
        chapeau="The second way to trigger a run: the app is installed on the phone under test "
                "and starts on its own as soon as a 2FA notification arrives.",
        corps=[
@@ -268,7 +268,7 @@ SECTIONS = {
               "device screen then acts as the display: your test sends the image, the phone "
               "scans it, the flow carries on."),
        ], gris=True),
-  dict(id='doc-donnees', label='Data', titre="Data storage",
+  dict(id='doc-data', label='Data', titre="Data storage",
        chapeau="Scenarios and their screenshots stay on the device. Nothing is sent to an "
                "external service.",
        corps=[
@@ -279,7 +279,7 @@ SECTIONS = {
         ('p', "<span class=\"nb\">Q-Bot</span> is built for test data. The accounts used in your "
               "scenarios should be test accounts."),
        ]),
-  dict(id='doc-securite', label='Security', titre="Security",
+  dict(id='doc-security', label='Security', titre="Security",
        chapeau="What the product guarantees today, and what it leaves to your infrastructure. "
                "Stated as it stands, with no promise beyond.",
        corps=[

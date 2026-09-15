@@ -104,7 +104,7 @@ def colonnes(lang, prefixe, accueil, cur, adresse):
     res = '\n'.join([
         entree(x['doc'], prefixe + x['f_doc'], cur == 'doc'),
         entree(x['faq'], prefixe + x['f_faq'], cur == 'faq'),
-        entree(x['secu'], prefixe + x['f_doc'] + '#doc-securite'),
+        entree(x['secu'], prefixe + x['f_doc'] + '#doc-security'),
         entree(x['sup'], prefixe + x['f_doc'] + '#doc-support'),
     ])
     ent = '\n'.join([

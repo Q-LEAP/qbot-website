@@ -973,7 +973,7 @@ SANSCLE_FR = dict(
     h1="Automatiser la 2FA sans clé secrète partagée",
     lead="La voie classique consiste à récupérer le secret d'un compte de test pour recalculer son code. Elle marche, et elle suppose deux choses&nbsp;: qu'un secret existe, et qu'on vous le confie. Ce guide traite les parcours où ni l'une ni l'autre n'est vraie.",
     sections=[
-        dict(id='probleme-title', label='Le coût caché',
+        dict(id='problem-title', label='Le coût caché',
              titre="Pourquoi une clé partagée est-elle un problème&nbsp;?",
              capsule="Parce que c'est un secret d'authentification comme un autre. Dès qu'il entre dans votre chaîne de tests, il faut le stocker, le distribuer aux agents d'exécution, le faire tourner, et répondre de sa fuite éventuelle. Un code à six chiffres devient une obligation de gestion.",
              corps="""    <p>Ce n'est pas une objection de principe&nbsp;: c'est une charge, et elle se paie ailleurs que dans le test.</p>
@@ -1016,7 +1016,7 @@ SANSCLE_EN = dict(
     h1="Automating 2FA without a shared secret",
     lead="The classic route is to obtain a test account's seed and recompute its code. It works, and it assumes two things: that a seed exists, and that someone hands it to you. This guide covers the journeys where neither is true.",
     sections=[
-        dict(id='probleme-title', label='The hidden cost',
+        dict(id='problem-title', label='The hidden cost',
              titre="Why is a shared secret a problem?",
              capsule="Because it is an authentication secret like any other. Once it enters your test pipeline you have to store it, distribute it to runners, rotate it, and answer for it if it leaks. A six-digit code turns into a management obligation.",
              corps="""    <p>This is not an objection on principle: it is a cost, and it is paid somewhere other than in the test.</p>
