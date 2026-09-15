@@ -1400,6 +1400,7 @@ backToTop.addEventListener('click', () => {
     objet:   'Objet',
     echecCourrier:'L’envoi direct a échoué. Votre logiciel de courrier vient de s’ouvrir avec le message prérempli. S’il ne s’est pas ouvert, copiez votre message ci-dessous et envoyez-le à {MAIL}.',
     sujetC:  'Demande via le site Q-Bot',
+    sujetSep:' : ',
     sujetN:  'Inscription à la newsletter Q-Bot'
   } : {
     envoi:   'Sending…',
@@ -1415,6 +1416,10 @@ backToTop.addEventListener('click', () => {
     objet:   'Subject',
     echecCourrier:'Direct submission failed. Your mail application just opened with the message prefilled. If it did not open, copy your message below and send it to {MAIL}.',
     sujetC:  'Enquiry from the Q-Bot website',
+    /* L'ESPACE AVANT LE DEUX-POINTS EST UNE RÈGLE FRANÇAISE, et elle était
+       appliquée aux deux langues : l'objet des courriers anglais disait
+       « Enquiry from the Q-Bot website : Technical support ». */
+    sujetSep:': ',
     sujetN:  'Q-Bot newsletter subscription'
   };
 
@@ -1463,6 +1468,25 @@ backToTop.addEventListener('click', () => {
     }
   };
 
+  /* LE MOTIF DE LA DEMANDE, ET IL NE VIENT PLUS SEULEMENT D'UNE LISTE. Le
+     formulaire de contact laisse choisir parmi six sujets ; celui de la page
+     Documentation est DÉDIÉ au support, donc il n'a pas de liste à proposer —
+     une liste d'une seule option n'est pas un choix, c'est un champ mort. Il
+     déclare son motif une fois pour toutes dans `data-sujet`.
+     Le même motif sert aux deux chemins, l'envoi direct et le repli courrier :
+     sans cela le sujet du courrier aurait dit « Demande via le site Q-Bot » là
+     où l'envoi direct disait « … : Support technique », et une demande de
+     support ne se trierait pas. */
+  function motifDemande(form) {
+    var fixe = (form.getAttribute('data-sujet') || '').trim();
+    if (fixe) return fixe;
+    var sel = form.querySelector('select[name="subject"]');
+    if (sel && sel.value && sel.selectedIndex >= 0) {
+      return sel.options[sel.selectedIndex].text.trim();
+    }
+    return null;
+  }
+
   /* Ce qui part réellement. Sans profil, le multipart du formulaire tel quel :
      c'est ce qu'attendent Formspree et compagnie. */
   function charge(form) {
@@ -1503,8 +1527,8 @@ backToTop.addEventListener('click', () => {
                                                                      : (clair || v));
     });
     if (prof.sujet && !p.has(prof.sujet)) {
-      var motif = lisible('subject');   // la liste, jamais la case
-      p.append(prof.sujet, T.sujetC + (motif ? ' : ' + motif : ''));
+      var motif = motifDemande(form);   // la liste ou `data-sujet`, jamais la case
+      p.append(prof.sujet, T.sujetC + (motif ? T.sujetSep + motif : ''));
     }
     var loc = form.getAttribute('data-locale');
     if (loc && !p.has('locale')) p.append('locale', loc);
@@ -1652,10 +1676,8 @@ backToTop.addEventListener('click', () => {
         /* Le sujet reprend le motif choisi dans la liste : « Demande via le site
            Q-Bot : Questions tarifaires » se trie sans ouvrir le message. */
         var sujet = news ? T.sujetN : T.sujetC;
-        var motif = form.querySelector('select[name="subject"]');
-        if (motif && motif.value && motif.selectedIndex >= 0) {
-          sujet += ' : ' + motif.options[motif.selectedIndex].text.trim();
-        }
+        var motif = news ? null : motifDemande(form);
+        if (motif) sujet += T.sujetSep + motif;
 
         var lien = 'mailto:' + dest
           + '?subject=' + encodeURIComponent(sujet)

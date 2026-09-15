@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="../assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="../assets/css/style.css?v=8fc99674">
+  <link rel="stylesheet" href="../assets/css/style.css?v=d2380d51">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -511,26 +511,63 @@
 
 <section class="section" aria-labelledby="doc-support">
   <div class="container">
-    <div class="section-header">
-      <span class="section-label">Support</span>
-      <h2 class="section-title" id="doc-support">Support</h2>
-      <p class="section-subtitle">A question, a doubt, an unexpected behaviour: write to the team. Technical support is included in the rental.</p>
+    <div class="doc-split doc-split--form">
+      <div>
+        <div class="section-header">
+          <span class="section-label">Support</span>
+          <h2 class="section-title" id="doc-support">Support</h2>
+          <p class="section-subtitle">A question, a doubt, an unexpected behaviour: write to the team. Technical support is included in the rental.</p>
+        </div>
+        <div class="specs__list" role="list">
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Support</span>
+            <span class="spec-item__value">Included in the rental</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">Answer</span>
+            <span class="spec-item__value">Within 24 working hours</span>
+          </div>
+          <div class="spec-item" role="listitem">
+            <span class="spec-item__label">First step</span>
+            <span class="spec-item__value">Remote diagnosis and repair</span>
+          </div>
+        </div>
+        <p class="section-subtitle">You can also write directly to <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>. For anything that is not support, use the <a href="contact.html">contact page</a>.</p>
+      </div>
+      <div>
+        <form class="contact-form" data-form="contact" data-endpoint="https://formsubmit.co/ajax/contact@q-leap.eu" data-endpoint-kind="formsubmit" data-mailto="contact@q-leap.eu" data-sujet="Technical support" method="post" novalidate aria-labelledby="doc-support-form">
+          <h3 class="doc-form__titre" id="doc-support-form">Write to support</h3>
+          <div class="form-group">
+            <label for="sup-nom">Name</label>
+            <input type="text" id="sup-nom" name="fullname" autocomplete="name" placeholder="John Smith">
+          </div>
+          <div class="form-group">
+            <label for="sup-email">Work email <span aria-label="required">*</span></label>
+            <input type="email" id="sup-email" name="email" required autocomplete="email" placeholder="john.smith@company.lu">
+          </div>
+          <div class="form-group">
+            <label for="sup-message">Your question <span aria-label="required">*</span></label>
+            <textarea id="sup-message" name="message" required rows="5" placeholder="Describe what you observed, which step of the scenario, and what you expected instead."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="consent" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-weight:400;">
+              <input type="checkbox" name="consent" id="consent" required style="width:auto; margin-top:3px; flex-shrink:0;">
+              <span style="font-size:.875rem; color:var(--gray);">I agree that Q-Leap may retain my data to process my request. <a href="privacy/" style="color:var(--teal-text);">Privacy policy.</a></span>
+            </label>
+          </div>
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="text" name="_honey" class="form-honeypot" tabindex="-1" autocomplete="off">
+          <button type="submit" class="btn btn--outline btn--lg" style="width:100%; justify-content:center;">
+            Send my question
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>
+          </button>
+          <p class="form-hint">Your message goes straight to the team, from this page.</p>
+          <p class="form-status" role="status" aria-live="polite" hidden></p>
+          <noscript><p style="font-size:.875rem; margin-top:12px;">JavaScript is disabled. Write to us directly at <a href="mailto:contact@q-leap.eu">contact@q-leap.eu</a>.</p></noscript>
+        </form>
+      </div>
     </div>
-    <div class="specs__list" role="list">
-      <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Support</span>
-        <span class="spec-item__value">Included in the rental</span>
-      </div>
-      <div class="spec-item" role="listitem">
-        <span class="spec-item__label">Answer</span>
-        <span class="spec-item__value">Within 24 working hours</span>
-      </div>
-      <div class="spec-item" role="listitem">
-        <span class="spec-item__label">First step</span>
-        <span class="spec-item__value">Remote diagnosis and repair</span>
-      </div>
-    </div>
-    <p class="section-subtitle">The shortest route is the <a href="contact.html">contact form</a>: it reaches the team that builds <span class="nb">Q-Bot</span>. You can also write to <a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a>.</p>
   </div>
 </section>
 
@@ -611,6 +648,6 @@
   </div>
 </footer>
 
-<script src="../assets/js/main.js?v=e7075075" defer></script>
+<script src="../assets/js/main.js?v=0a12dcc1" defer></script>
 </body>
 </html>

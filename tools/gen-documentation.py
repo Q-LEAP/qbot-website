@@ -40,10 +40,10 @@ PUBLIE, MODIFIE = '2026-09-14', '2026-09-14'
 PAGES = [
     dict(lang='fr', sortie='documentation.html', donneuse='caracteristiques.html',
          url='https://q-bot.eu/documentation.html',
-         alt='https://q-bot.eu/en/documentation.html', alt_rel='en/documentation.html'),
+         alt='https://q-bot.eu/en/documentation.html', alt_rel='en/documentation.html', contact='contact.html'),
     dict(lang='en', sortie='en/documentation.html', donneuse='en/technical-specs.html',
          url='https://q-bot.eu/en/documentation.html',
-         alt='https://q-bot.eu/documentation.html', alt_rel='../documentation.html'),
+         alt='https://q-bot.eu/documentation.html', alt_rel='../documentation.html', contact='en/contact.html'),
 ]
 
 COCHE = ('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
@@ -93,6 +93,88 @@ def corps_html(blocs, exemples):
         else:
             raise AssertionError(f'bloc inconnu : {kind}')
     return '\n'.join(out)
+
+
+def sans_marge(bloc):
+    """Le bloc ramené à la marge zéro : on retire à chaque ligne l'indentation
+    commune aux lignes de continuation, la première étant capturée sans marge."""
+    suite = [l for l in bloc.split('\n')[1:] if l.strip()]
+    if not suite:
+        return bloc
+    base = min(len(l) - len(l.lstrip()) for l in suite)
+    return '\n'.join([bloc.split('\n')[0]]
+                     + [l[base:] if l.strip() else l for l in bloc.split('\n')[1:]])
+
+
+def morceaux_contact(txt):
+    """CE QUI DOIT RESTER IDENTIQUE AU FORMULAIRE DE CONTACT : son endpoint, sa
+    phrase de consentement, les champs réservés de FormSubmit et son repli sans
+    JavaScript. Extraits, jamais retapés — le jour où l'endpoint change sur la
+    page contact, une régénération le porte ici, et la phrase de consentement ne
+    peut pas se mettre à dire deux choses différentes selon la page.
+
+    C'est la règle du dépôt appliquée à un formulaire : on n'écrit pas deux fois
+    ce qui doit rester d'accord."""
+    tag = txt[txt.index('<form class="contact-form"'):]
+    tag = tag[:tag.index('>') + 1]
+    attrs = {}
+    for k in ('data-endpoint', 'data-endpoint-kind', 'data-mailto'):
+        m = re.search(r'%s="([^"]*)"' % k, tag)
+        assert m, 'formulaire de contact : %s introuvable' % k
+        attrs[k] = m.group(1)
+
+    lab = txt.index('<label for="consent"')
+    d = txt.rindex('<div class="form-group">', 0, lab)
+    fin = txt.index('</div>', txt.index('</label>', lab)) + len('</div>')
+    consent = sans_marge(txt[d:fin])
+
+    a = txt.index('<input type="hidden" name="_captcha"')
+    b = txt.index('autocomplete="off">', a) + len('autocomplete="off">')
+    caches = sans_marge(txt[a:b])
+
+    ns = txt[txt.index('<noscript>'):txt.index('</noscript>') + len('</noscript>')]
+    return attrs, consent, caches, ns
+
+
+def formulaire_html(attrs, consent, caches, ns, F):
+    """Le formulaire de support : trois champs et pas sept. Un visiteur qui
+    signale un comportement inattendu n'a pas à déclarer sa société, son
+    téléphone ni le motif de sa venue — ce sont des champs de prise de contact
+    commerciale, et chacun d'eux est un abandon de plus. Le motif, lui, est déjà
+    connu : c'est `data-sujet`."""
+    a = ' '.join('%s="%s"' % (k, v) for k, v in attrs.items())
+    return (
+        f'<form class="contact-form" data-form="contact" {a} data-sujet="{F["sujet"]}" '
+        f'method="post" novalidate aria-labelledby="doc-support-form">\n'
+        f'  <h3 class="doc-form__titre" id="doc-support-form">{F["titre"]}</h3>\n'
+        f'  <div class="form-group">\n'
+        f'    <label for="sup-nom">{F["nom"]}</label>\n'
+        f'    <input type="text" id="sup-nom" name="fullname" autocomplete="name" '
+        f'placeholder="{F["nom_ex"]}">\n'
+        f'  </div>\n'
+        f'  <div class="form-group">\n'
+        f'    <label for="sup-email">{F["email"]} <span aria-label="{F["oblig"]}">*</span></label>\n'
+        f'    <input type="email" id="sup-email" name="email" required autocomplete="email" '
+        f'placeholder="{F["email_ex"]}">\n'
+        f'  </div>\n'
+        f'  <div class="form-group">\n'
+        f'    <label for="sup-message">{F["message"]} <span aria-label="{F["oblig"]}">*</span></label>\n'
+        f'    <textarea id="sup-message" name="message" required rows="5" '
+        f'placeholder="{F["message_ex"]}"></textarea>\n'
+        f'  </div>\n'
+        + decale(consent, 2) + '\n'
+        + decale(caches, 2) + '\n'
+        f'  <button type="submit" class="btn btn--outline btn--lg" '
+        f'style="width:100%; justify-content:center;">\n'
+        f'    {F["envoyer"]}\n'
+        f'    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+        f'stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/>'
+        f'<polygon points="22,2 15,22 11,13 2,9 22,2"/></svg>\n'
+        f'  </button>\n'
+        f'  <p class="form-hint">{F["indice"]}</p>\n'
+        f'  <p class="form-status" role="status" aria-live="polite" hidden></p>\n'
+        f'  {ns}\n'
+        f'</form>')
 
 
 def decale(bloc, n):
@@ -162,6 +244,8 @@ def main():
         # visuel de la section Architecture répondait 404 en anglais, et en
         # silence (une image cassée ne lève rien).
         actifs = '' if lang == 'fr' else '../'
+        attrs, consent, caches, ns = morceaux_contact(
+            (RACINE / page['contact']).read_text(encoding='utf-8'))
         for s in secs:
             gris = ' section--gray' if s.get('gris') else ''
             entete = (f'    <div class="section-header">\n'
@@ -169,8 +253,8 @@ def main():
                       f'      <h2 class="section-title" id="{s["id"]}">{s["titre"]}</h2>\n'
                       f'      <p class="section-subtitle">{s["chapeau"]}</p>\n'
                       f'    </div>')
-            vis = s.get('visuel')
-            if not vis:
+            vis, frm = s.get('visuel'), s.get('formulaire')
+            if not vis and not frm:
                 parts.append(
                     f'<section class="section{gris}" aria-labelledby="{s["id"]}">\n'
                     f'  <div class="container">\n'
@@ -183,20 +267,36 @@ def main():
             # deux colonnes, les glisser dans une demi-colonne les réduirait à
             # une. Les paragraphes de tête montent donc dans la colonne de
             # gauche, et ce qui suit passe sous les deux colonnes.
+            # AVEC UN FORMULAIRE, TOUT LE CORPS MONTE À GAUCHE : la fiche des
+            # trois faits du support est ce qui rassure avant d'écrire, elle doit
+            # être lue à côté du formulaire et non sous lui. Avec un visuel, seuls
+            # les paragraphes de tête montent, le reste passe sous les deux
+            # colonnes.
             reste = list(s['corps'])
             tete = []
-            while reste and reste[0][0] == 'p':
-                tete.append(reste.pop(0))
+            if frm:
+                tete, reste = reste, []
+            else:
+                while reste and reste[0][0] == 'p':
+                    tete.append(reste.pop(0))
             gauche = decale(entete + ('\n' + corps_html(tete, ex) if tete else ''), 4)
+            if frm:
+                mod = ' doc-split--form'
+                droite = ('      <div>\n'
+                          + decale(formulaire_html(attrs, consent, caches, ns, frm), 8)
+                          + '\n      </div>')
+            else:
+                mod = ''
+                droite = (f'      <div class="doc-split__media">\n'
+                          f'        <img src="{actifs}{vis["src"]}" alt="{vis["alt"]}" '
+                          f'width="{vis["w"]}" height="{vis["h"]}" loading="lazy">\n'
+                          f'      </div>')
             parts.append(
                 f'<section class="section{gris}" aria-labelledby="{s["id"]}">\n'
                 f'  <div class="container">\n'
-                f'    <div class="doc-split">\n'
+                f'    <div class="doc-split{mod}">\n'
                 f'      <div>\n{gauche}\n      </div>\n'
-                f'      <div class="doc-split__media">\n'
-                f'        <img src="{actifs}{vis["src"]}" alt="{vis["alt"]}" '
-                f'width="{vis["w"]}" height="{vis["h"]}" loading="lazy">\n'
-                f'      </div>\n'
+                f'{droite}\n'
                 f'    </div>\n'
                 + (corps_html(reste, ex) + '\n' if reste else '')
                 + f'  </div>\n</section>\n')
@@ -248,6 +348,12 @@ def main():
         t = re.sub(r'("BreadcrumbList".*?"position": 2,\s*"name": ")[^"]*(",\s*"item": ")[^"]*(")',
                    lambda m: m.group(1) + meta['h1'] + m.group(2) + page['url'] + m.group(3),
                    t, count=1, flags=re.S)
+
+        # L'ADRESSE ÉCRITE EN CLAIR DANS LE TEXTE EST CELLE DU FORMULAIRE, pas
+        # une constante recopiée : les deux se répondent, elles ne peuvent pas
+        # diverger.
+        t = t.replace('{MAIL}', attrs['data-mailto'])
+        assert '{MAIL}' not in t, '%s : jeton {MAIL} non remplacé' % lang
 
         (RACINE / page['sortie']).write_text(t, encoding='utf-8')
         print(f'  écrit {page["sortie"]:26s} {len(t):7d} octets · {len(secs)} sections')

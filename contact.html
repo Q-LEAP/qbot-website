@@ -32,7 +32,7 @@
        Seule la face que toute page utilise est préchargée : la variable latine.
        L'attribut crossorigin est obligatoire même en même origine pour une police. -->
   <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=8fc99674">
+  <link rel="stylesheet" href="assets/css/style.css?v=d2380d51">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -165,17 +165,21 @@
         <h2 class="section-title" id="contact-form-title">Nous écrire</h2>
         <p style="margin-bottom:32px;">Vous souhaitez des informations complémentaires sur <span class="nb">Q-Bot</span>&nbsp;? Complétez le formulaire ci-dessous.</p>
 
-        <!-- ENVOI PAR LE LOGICIEL DE COURRIER DU VISITEUR, PAR DÉCISION DU CLIENT
-             (2026-08-26) : « ne me fais pas passer par des sites tiers pour contact,
-             tant pis ça ouvrira une boîte mail ». `data-endpoint` reste donc vide, et
-             CE N'EST PLUS UN POINT EN ATTENTE : c'est le choix arrêté.
-             La raison : un site statique ne peut pas envoyer de courrier lui-même, donc
-             tout envoi direct passerait par un sous-traitant de données (Formspree,
-             FormSubmit, une fonction serverless), ce que le client refuse ici.
-             Le module 15 compose le message champ par champ, ouvre le logiciel de
-             courrier, et montre en plus le message copiable (`.form-relay`) pour les
-             postes où un `mailto:` ne fait rien du tout.
-             NE PAS y remettre d'endpoint sans nouvelle décision du client. -->
+        <!-- ENVOI DIRECT PAR FORMSUBMIT DEPUIS LE 2026-09-14, à la demande du
+             client : `data-endpoint` porte l'URL et `data-endpoint-kind` dit le profil
+             de champs (module 15, table PROFILS).
+             CETTE NOTE EN REMPLACE UNE QUI DISAIT L'INVERSE et qui instruisait de ne
+             JAMAIS remettre d'endpoint. Elle datait de l'arbitrage du 2026-08-26, où le
+             contact partait par le logiciel de courrier du visiteur ; le client a rouvert
+             le sujet, la note était restée. Une note qui contredit le code est pire
+             qu'une absence de note.
+             LE REPLI COURRIER N'A PAS DISPARU POUR AUTANT : `data-mailto` le vise, et le
+             module 15 y retombe quand l'envoi échoue, avec le message copiable
+             (`.form-relay`) pour les postes où un `mailto:` ne fait rien du tout.
+             LE FORMULAIRE DE SUPPORT DE LA PAGE DOCUMENTATION EXTRAIT D'ICI son endpoint,
+             sa phrase de consentement, les champs réservés de FormSubmit et son repli
+             sans JavaScript. Après toute modification de ce formulaire, relancer
+             `python3 tools/gen-documentation.py` pour que les deux restent d'accord. -->
         <form class="contact-form" data-form="contact" data-endpoint="https://formsubmit.co/ajax/contact@q-leap.eu" data-endpoint-kind="formsubmit" data-mailto="contact@q-leap.eu" method="post" novalidate aria-label="Formulaire de contact">
           <div class="form-row">
             <div class="form-group">
@@ -357,6 +361,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=e7075075" defer></script>
+<script src="assets/js/main.js?v=0a12dcc1" defer></script>
 </body>
 </html>

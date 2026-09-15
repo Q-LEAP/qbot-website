@@ -1323,7 +1323,13 @@ p { color: var(--gray); }
    porte le lien, un soulignement discret porte l'affordance, et le survol le
    confirme. En thème sombre `--teal-text` vaut le teal plein, qui a un excellent
    contraste sur ces surfaces. */
-.faq-item__answer a {
+/* UN LIEN DANS DE LA PROSE, OÙ QU'ELLE VIVE. `.section-subtitle` porte les
+   paragraphes de la page Documentation, et ses liens n'avaient AUCUNE
+   affordance : ni couleur, ni soulignement, donc rien ne disait qu'ils étaient
+   cliquables (mesuré, six occurrences, couleur identique au texte voisin).
+   Même défaut et même remède que les réponses de FAQ le 2026-09-09. */
+.faq-item__answer a,
+.section-subtitle a {
   color: var(--teal-text);
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -1332,7 +1338,9 @@ p { color: var(--gray); }
   transition: text-decoration-color 0.18s ease;
 }
 .faq-item__answer a:hover,
-.faq-item__answer a:focus-visible { text-decoration-color: currentColor; }
+.faq-item__answer a:focus-visible,
+.section-subtitle a:hover,
+.section-subtitle a:focus-visible { text-decoration-color: currentColor; }
 
 .faq-item__icon {
   position: absolute;
@@ -6629,6 +6637,24 @@ a:focus-visible { border-radius: var(--radius-sm); }
 @media (max-width: 900px) {
   .doc-split { grid-template-columns: 1fr; gap: 32px; }
   .doc-split__media { width: 300px; }
+}
+
+/* ── LE FORMULAIRE DE SUPPORT, À CÔTÉ DE CE QU'IL PROMET ───────────────────
+   Même carte que le formulaire de contact (`.contact-form`) : même fond, même
+   bordure, mêmes champs, même bouton. Il n'y a qu'UNE grammaire de formulaire
+   sur ce site, et la réutiliser est ce qui fait que celui-ci n'a rien à
+   apprendre au visiteur.
+   480 px de colonne : la carte porte 40 px de marge intérieure, donc ses champs
+   tombent à 398 px, la mesure de ceux de la page contact.
+   IL S'EMPILE SOUS 1024 px ET NON SOUS 900, contrairement au visuel : à 901 px
+   le conteneur vaut 853 px, donc la colonne de gauche tomberait à 317 px et ses
+   lignes de fiche se briseraient. Mesuré. */
+.doc-split--form { grid-template-columns: 1fr minmax(0, 480px); align-items: start; }
+.doc-split--form .contact-form { padding: 32px; }
+.doc-form__titre { margin-bottom: 20px; }
+
+@media (max-width: 1023px) {
+  .doc-split--form { grid-template-columns: 1fr; gap: 40px; }
 }
 .specs__dims li {
   position: relative;

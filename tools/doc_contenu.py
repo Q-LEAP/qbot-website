@@ -170,13 +170,23 @@ SECTIONS = {
   dict(id='doc-support', label='Support', titre="Support",
        chapeau="Une question, un doute, un comportement inattendu&nbsp;: écrivez à l'équipe. "
                "L'assistance technique est incluse dans la location.",
+       formulaire=dict(
+           sujet="Support technique",
+           titre="Écrire au support",
+           nom="Nom", nom_ex="Jean Dupont",
+           email="Email professionnel", email_ex="jean.dupont@societe.lu",
+           message="Votre question", oblig="obligatoire",
+           message_ex="Décrivez le comportement observé, l'étape du scénario concernée et "
+                      "ce que vous attendiez.",
+           envoyer="Envoyer ma question",
+           indice="Votre message part directement à l'équipe, depuis cette page."),
        corps=[
         ('fiche', [("Assistance", "Incluse dans la location"),
                    ("Réponse", "Sous 24 h ouvrées"),
                    ("Premier recours", "Diagnostic et réparation à distance")]),
-        ('p', "Le plus court chemin est le <a href=\"contact.html\">formulaire de contact</a>&nbsp;: "
-              "il arrive chez l'équipe qui construit <span class=\"nb\">Q-Bot</span>. Vous pouvez "
-              "aussi écrire à <a href=\"mailto:bot@q-leap.eu\">bot@q-leap.eu</a>."),
+        ('p', "Vous pouvez aussi écrire directement à "
+              "<a href=\"mailto:{MAIL}\">{MAIL}</a>. Pour une demande qui n'est pas du "
+              "support, passez par la <a href=\"contact.html\">page contact</a>."),
        ]),
 
  ],
@@ -292,13 +302,22 @@ SECTIONS = {
   dict(id='doc-support', label='Support', titre="Support",
        chapeau="A question, a doubt, an unexpected behaviour: write to the team. Technical "
                "support is included in the rental.",
+       formulaire=dict(
+           sujet="Technical support",
+           titre="Write to support",
+           nom="Name", nom_ex="John Smith",
+           email="Work email", email_ex="john.smith@company.lu",
+           message="Your question", oblig="required",
+           message_ex="Describe what you observed, which step of the scenario, and what you "
+                      "expected instead.",
+           envoyer="Send my question",
+           indice="Your message goes straight to the team, from this page."),
        corps=[
         ('fiche', [("Support", "Included in the rental"),
                    ("Answer", "Within 24 working hours"),
                    ("First step", "Remote diagnosis and repair")]),
-        ('p', "The shortest route is the <a href=\"contact.html\">contact form</a>: it reaches the "
-              "team that builds <span class=\"nb\">Q-Bot</span>. You can also write to "
-              "<a href=\"mailto:bot@q-leap.eu\">bot@q-leap.eu</a>."),
+        ('p', "You can also write directly to <a href=\"mailto:{MAIL}\">{MAIL}</a>. For anything "
+              "that is not support, use the <a href=\"contact.html\">contact page</a>."),
        ]),
 
  ],
