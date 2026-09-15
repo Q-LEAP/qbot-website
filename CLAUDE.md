@@ -10987,3 +10987,61 @@ propre chef.
 Faux positif connu, à ne pas « corriger » : la sonde `.nb` dans un conteneur flex remonte
 `.vsflow__step--go` sur les deux accueils. C'est l'exemption documentée, le `gap` y EST la
 mise en page.
+
+### Le formulaire de support, dans la section qui le promet (2026-09-15)
+
+« Remets le formulaire de contact […] dans support, ou fais un truc propre en ergo UX/UI
+accessibilité qui match avec le site et fonctionne très proprement. » Un lien vers une autre
+page est un clic de plus au moment précis où quelqu'un a un problème à décrire.
+
+**TROIS CHAMPS ET PAS SEPT** (nom, courriel, question). Un visiteur qui signale un
+comportement inattendu n'a pas à déclarer sa société, son téléphone ni le motif de sa venue :
+ce sont des champs de prise de contact commerciale, et chacun est un abandon de plus. Le
+motif est déjà connu, c'est la section elle-même.
+
+**TOUT CE QUI DOIT RESTER D'ACCORD AVEC LA PAGE CONTACT EN EST EXTRAIT** : l'endpoint, le
+profil de champs, l'adresse de repli, la phrase de consentement avec son lien vers la
+politique, les champs réservés de FormSubmit et le repli sans JavaScript. C'est la règle
+« on n'retape pas, on extrait » appliquée à un formulaire. **Après toute modification du
+formulaire de contact, relancer `python3 tools/gen-documentation.py`**, sans quoi la phrase
+de consentement peut se mettre à dire deux choses selon la page. La note posée au-dessus du
+formulaire de contact le rappelle sur place.
+
+Le module 15 gagne **`data-sujet`** : un formulaire DÉDIÉ à un motif n'a pas de liste à
+proposer, une liste d'une seule option étant un champ mort. Le motif sert aux deux chemins,
+l'envoi direct et le repli courrier — sans cela l'objet du courrier aurait dit « Demande via
+le site Q-Bot » là où l'envoi direct disait « … : Support technique », et une demande de
+support ne se serait pas triée.
+
+**Le formulaire s'empile sous 1024 px et non sous 900**, contrairement au visuel de la section
+Architecture : à 901 px le conteneur vaut 853 px, donc la colonne de gauche tomberait à 317 px
+et ses lignes de fiche se briseraient. Mesuré.
+
+#### Trois défauts antérieurs trouvés en mesurant
+
+- **LES LIENS DANS LA PROSE N'AVAIENT AUCUNE AFFORDANCE.** Six occurrences sur les deux pages
+  Documentation : couleur identique au texte voisin (`rgb(167,169,172)` des deux côtés), aucun
+  soulignement, donc rien ne disait qu'ils étaient cliquables. Même défaut et même remède que
+  les réponses de FAQ le 2026-09-09 ; `.section-subtitle a` rejoint `.faq-item__answer a` dans
+  la même règle plutôt que de la dupliquer ;
+- **L'ESPACE AVANT LE DEUX-POINTS EST UNE RÈGLE FRANÇAISE**, et l'objet des courriers anglais
+  l'appliquait : « Enquiry from the Q-Bot website : Technical support ». Le séparateur vit
+  désormais dans la table de langue ;
+- **LA NOTE POSÉE AU-DESSUS DES DEUX FORMULAIRES DE CONTACT DISAIT L'INVERSE DU CODE.** Elle
+  datait de l'arbitrage du 2026-08-26, quand le contact partait par le logiciel de courrier du
+  visiteur, et instruisait en majuscules de ne JAMAIS remettre d'endpoint — alors qu'il y en a
+  un (FormSubmit) depuis le 2026-09-14. **Une note qui contredit le code est pire qu'une
+  absence de note** : c'est la troisième fois que ce dépôt le constate, après le LinkedIn
+  « laissé ouvert » et le `logo-baseline.png` « attention, celui-là sert ».
+
+#### Contrôles
+
+Envoi exercé dans le navigateur, sur les deux langues, la requête interceptée : l'envoi à vide
+est **bloqué**, l'envoi sans consentement aussi, la charge porte la **phrase** de consentement
+et non « on », le pot de miel part **vide**, le sujet vaut « Demande via le site Q-Bot :
+Support technique » / « Enquiry from the Q-Bot website: Technical support », et le formulaire
+de contact rend toujours le sujet de sa liste déroulante. Mesuré à 390, 768, 900, 1023, 1024,
+1280, 1440 et 2560 px : **0 débordement**, case de 20 px dans un libellé cliquable de
+414 × 64, bouton de 49 px de haut, aucun chevauchement avec le bouton « retour en haut ».
+Contraste de la section entière sur le fond réellement composité : **aucun défaut**.
+Les deux audits : 17 pages sur 17, 0 constat. Chaîne de génération **idempotente**.
