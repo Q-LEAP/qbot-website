@@ -11322,6 +11322,17 @@ et pesaient 27 Ko au chargement.
 
 Local après ces deux points : **99**, FCP 1 202, LCP 1 953, TBT 14, SI 1 210, CLS 0.
 
+### Relevé final, sur le site en ligne
+
+**98**, FCP 1 436, LCP 1 941, TBT **32**, SI 3 033, décalage de mise en page **0**, et surtout
+**171 Ko de poids total** contre plus de deux mégaoctets avant la passe. Le point de départ
+était **28**.
+
+Ce qui reste : l'index de vitesse, qui mesure à quel moment la page cesse de changer. Le hero
+porte deux halos teal en animation perpétuelle — une page qui bouge toujours n'est jamais
+« visuellement terminée ». C'est une décision de design, pas un défaut, et la corriger voudrait
+dire retirer l'ambiance.
+
 ## Sur téléphone, la carte de texte suit le doigt (2026-09-15)
 
 « Pour la version mobile des 4 étapes de la homepage, il faudrait que le texte et l'animation
