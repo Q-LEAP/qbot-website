@@ -153,8 +153,9 @@ SECTIONS = {
               "utilisés dans vos scénarios doivent être des comptes de test."),
        ]),
   dict(id='doc-security', label='Sécurité', titre="Sécurité",
-       chapeau="Ce que le produit garantit aujourd'hui, et ce qu'il laisse à votre "
-               "infrastructure. Énoncé tel quel, sans promesse au-delà.",
+       chapeau="Cette section décrit les mécanismes de sécurité actuellement intégrés au "
+               "produit, ainsi que les éléments qui relèvent de votre infrastructure et de "
+               "votre environnement réseau.",
        corps=[
         ('faits', ["Auto-hébergé&nbsp;: le boîtier vit sur votre réseau, pas dans un cloud",
                    "Aucun appel vers un service extérieur pendant l'exécution des tests",
@@ -271,8 +272,9 @@ SECTIONS = {
               "scenarios should be test accounts."),
        ]),
   dict(id='doc-security', label='Security', titre="Security",
-       chapeau="What the product guarantees today, and what it leaves to your infrastructure. "
-               "Stated as it stands, with no promise beyond.",
+       chapeau="This section describes the security mechanisms currently built into the "
+               "product, and the parts that belong to your own infrastructure and network "
+               "environment.",
        corps=[
         ('faits', ["Self-hosted: the device lives on your network, not in a cloud",
                    "No call to an external service while tests run",
