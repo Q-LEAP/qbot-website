@@ -5300,6 +5300,10 @@ fenêtre de réservation en français, à dessein. Le marqueur `BOOKINGS-EN-A-VE
 avec `en/booking.html`, supprimée le 2026-09-02 ; la décision, elle, vit dans
 `tools/bookings_conf.py`, à côté de l'unique URL. Ne plus le rappeler au client.
 
+**PÉRIMÉ : L'AGENDA ANGLAIS EXISTE DEPUIS LE 2026-09-15**, créé par le client puis réglé
+avec lui. `tools/bookings_conf.py` porte une URL par langue, et `adresse()` garde le repli
+sur le français pour une langue qui n'aurait pas la sienne. Voir la section du 2026-09-15.
+
 ### `gen-legal.py` était MORT depuis trois jours, et il aurait fait cinq régressions
 
 Trouvé en voulant l'utiliser. Il extrayait son habillage de `blog/innovation-merkur.html` et
@@ -11045,3 +11049,84 @@ de contact rend toujours le sujet de sa liste déroulante. Mesuré à 390, 768, 
 414 × 64, bouton de 49 px de haut, aucun chevauchement avec le bouton « retour en haut ».
 Contraste de la section entière sur le fond réellement composité : **aucun défaut**.
 Les deux audits : 17 pages sur 17, 0 constat. Chaîne de génération **idempotente**.
+
+## L'agenda anglais existe, et Safari a servi d'outil (2026-09-15)
+
+Demande du client : « trouve un moyen de manipuler mon safari, tu reprends le microsoft
+booking dans mon onglet et tu reproduis celui déjà existant mais en anglais, puis tu
+remplaces le lien dans la version EN ».
+
+### LA PAGE MICROSOFT NE SE TRADUIT PAS, ET C'EST MESURÉ
+
+Avant de créer quoi que ce soit : la page de réservation a été chargée en
+`Accept-Language: en-US`, puis avec `?lang=en-US`, `?mkt=en-US`, `?lang=en-GB&mkt=en-GB`,
+et sans paramètre. **Les cinq rendent « Démonstration Q-Bot avec Sylvain PEREZ ».** La
+langue vient du RÉGLAGE de la page de réservation dans le locataire, pas du visiteur : il
+n'y a aucun paramètre d'URL à trouver, un second agenda est la seule voie. La note du
+2026-08-31 tenait ; elle est maintenant datée et chiffrée.
+
+### Piloter Safari : ce qui marche, et le piège de guillemets
+
+`osascript` lit les onglets sans rien demander, mais `do JavaScript` exige **« Autoriser
+JavaScript depuis les Apple Events »** (Réglages → Avancé → fonctionnalités pour
+développeurs web → menu Développement). Sans elle, Safari répond une erreur explicite.
+
+**ON NE CONSTRUIT PAS LE SCRIPT PAR INTERPOLATION DE CHAÎNE.** Un `osascript -e` qui
+contient du JavaScript se fait massacrer par les deux couches de guillemets (AppleScript
+puis zsh) : première tentative, « syntax error ». La forme qui tient est un fichier
+`.applescript` avec `on run argv`, le JS passé en ARGUMENT — aucun échappement à faire.
+
+Deux leçons de pilotage d'application React :
+
+- **un `.click()` seul ne suffit pas toujours** : les menus Fluent attendent la séquence
+  `pointerdown, mousedown, pointerup, mouseup, click`. Le premier essai de sélection dans
+  le menu « Disponible pour… » n'a rien fait ;
+- **une option de menu Fluent est un `button[role=menuitem]`, pas le `li`** qui l'enveloppe
+  (`role="presentation"`). Cliquer le `li` ne déclenche rien ;
+- **un champ React n'accepte pas `el.value = …`** : il faut le setter natif du prototype
+  puis un événement `input` qui bulle, sinon React ne voit rien et le bouton Enregistrer
+  reste inactif.
+
+### Ce qui a été fait dans le locataire, et dans quel ordre
+
+Le client avait **dupliqué** la page française (Bookings sait le faire) : le locataire
+portait « Démonstration Q-Bot avec Sylvain PEREZ » et « … PEREZ Copier ». Seule la copie a
+été touchée ; l'original a été revérifié intact à la fin, toujours en français.
+
+1. **langue** : « français (Luxembourg) » → **« English (United Kingdom) »**. Il n'existe
+   pas d'« English (Luxembourg) » ; le Royaume-Uni donne les conventions européennes de
+   date et d'heure, et le site écrit son anglais en orthographe britannique ;
+2. **accès** : la copie était **« Disponible pour les membres de votre organisation »**,
+   donc un prospect extérieur tombait sur une page de connexion Microsoft. Vérifié par le
+   seul contrôle qui vaut, un chargement ANONYME : il partait sur `login.microsoftonline.com`.
+   Passée à « Disponible pour tous » ;
+3. **nom de la page** → « Q-Bot demo with Sylvain Perez » ;
+4. **service** → « Q-Bot demo », description « Book a slot to see Q-Bot in action with
+   Sylvain Perez. » Durée, créneaux, réunion en ligne et employé sont ceux de l'original.
+
+**LE CONTRÔLE QUI COMPTE EST LE CHARGEMENT ANONYME, pas ce qu'affiche l'administration.**
+Après le premier enregistrement, l'administration annonçait « Available to anyone » et la
+page demandait encore une connexion : la propagation prend une poignée de secondes. Un
+échec isolé se rejoue avant d'être appelé défaut.
+
+### L'ALIAS DE BOÎTE AUX LETTRES GARDE LE NOM DE LA DUPLICATION
+
+L'adresse anglaise est `…/book/DmonstrationQBotavecSylvainPEREZCopier@q-leap.eu/s/…` :
+Microsoft fige l'alias à la création, renommer la page ne le change pas. Le visiteur ne le
+voit pas (la fenêtre l'affiche dans un cadre) ; il n'apparaît que par le repli « ouvrir
+dans un nouvel onglet ». **Pour une adresse propre, il faut créer une page NEUVE au nom
+anglais, pas une copie** ; le côté site se rebranche alors en une ligne.
+
+À savoir aussi : le chemin du service est **identique** dans les deux langues
+(`/s/HTmIB9vz2UyuVzQ4Gft70Q2`), une duplication conservant l'identifiant du service. Seule
+la boîte aux lettres distingue les deux agendas.
+
+### Le côté site
+
+`tools/bookings_conf.py` porte désormais `URL = {'fr': …, 'en': …}` et `adresse(langue)`,
+qui retombe sur le français pour une langue sans agenda propre. `maj-nav-booking.py` a
+repris **9 pages anglaises** ; les 10 françaises n'ont pas bougé. Contrôlé : 0 page anglaise
+restée sur l'agenda français, 0 page française passée sur l'anglais.
+
+Les deux fuseaux restent en **UTC**, comme l'original : le visiteur les change dans la page.
+Ce n'est pas un réglage que cette passe avait à trancher, mais il se voit.

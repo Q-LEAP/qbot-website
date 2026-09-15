@@ -14,11 +14,11 @@ porte les mêmes attributs sur toutes les pages, donc l'URL y est répétée. Sa
 source unique, un changement d'agenda en laisserait forcément une derrière.
 Même raison que « redirections_map.py » et « vignettes_guides.py ».
 
-UN AGENDA PAR LANGUE, ET L'ANGLAIS EST EN ATTENTE DE SON URL. Tant que
-`URL['en']` est vide, l'anglais retombe sur le français : c'est exactement le
-comportement du 2026-09-03 au 2026-09-15, décidé alors par le client (« le booking
-en anglais pour l'instant c'est pas dans le scope donc il restera FR »). Le jour
-où l'agenda anglais existe, il n'y a plus qu'à coller son adresse ci-dessous.
+UN AGENDA PAR LANGUE DEPUIS LE 2026-09-15. L'anglais a été créé ce jour-là dans
+le locataire ; jusque-là il retombait sur le français, par la décision du client
+du 2026-09-03 (« le booking en anglais pour l'instant c'est pas dans le scope »).
+`adresse()` garde ce repli : une langue sans agenda propre retombe sur le
+français, elle ne tombe jamais sur rien.
 
 LA PAGE MICROSOFT NE SE TRADUIT PAS, ET CE N'EST PAS UNE SUPPOSITION. Mesuré le
 2026-08-31 (en-GB, nl-BE) et REMESURÉ le 2026-09-15 sur cinq combinaisons :
@@ -36,9 +36,17 @@ POUR CHANGER D'AGENDA : modifier URL ci-dessous, puis
 URL = {
     'fr': ('https://outlook.office.com/book/'
            'DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2'),
-    # ⟨ À REMPLIR ⟩ l'agenda anglais, quand il existera dans le locataire.
-    # Vide = repli sur le français, donc rien ne change tant qu'il l'est.
-    'en': '',
+    # L'agenda anglais, créé le 2026-09-15 en DUPLIQUANT le français dans
+    # Bookings, puis réglé en « English (United Kingdom) », rendu public
+    # (« Available to anyone ») et retraduit (nom de la page, nom du service,
+    # description). Mêmes créneaux, même durée, même employé que le français.
+    # L'ALIAS DE BOÎTE AUX LETTRES GARDE LE NOM DE LA DUPLICATION et ne peut
+    # plus changer : Microsoft le fige à la création. Il est invisible au
+    # visiteur, la fenêtre l'affichant dans un cadre ; il ne se voit que par le
+    # repli « ouvrir dans un nouvel onglet ». Pour une adresse propre, il
+    # faudrait créer une page neuve au nom anglais, pas une copie.
+    'en': ('https://outlook.office.com/book/'
+           'DmonstrationQBotavecSylvainPEREZCopier@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2'),
 }
 
 
