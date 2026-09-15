@@ -10835,3 +10835,155 @@ retrouve son état d'origine. Les deux versionneurs d'actifs d'accord (17 pages,
 `backdrop-filter` sur un élément `fixed` — elle montrait le contenu net et m'a fait croire
 à une régression que `elementFromPoint` démentait. Une capture pleine fenêtre, elle, est
 fiable.
+
+## Les ancres en une seule langue, et la page Documentation reprise (2026-09-15)
+
+Deux lots de retours du client, traités à la convention du dépôt : un retour, un commit,
+un push.
+
+### LES ANCRES PASSENT TOUTES À L'ANGLAIS
+
+« Ici on a du français et de l'anglais dans l'ancre, faut choisir. » Le mélange est dans
+l'identifiant lui-même : `q-bot.eu/#probleme-title`, un mot français et un mot anglais dans
+la même chaîne, sous les yeux du visiteur dans sa barre d'adresse.
+
+**Le décompte a tranché, pas le goût** : une dizaine d'identifiants français
+(`probleme-title`, `apres-sequence`, `qbot-etape-N`, `editeur-title`, `besoin-title`,
+`equipe-title`, `#cas`, `#inclus`, six ancres `doc-*`) contre plus de trente en anglais
+(`features`, `hero`, `cta`, `made`, `how-home`, `compat`, `page-title`, `spec-*`,
+`appwin-*`…). Un identifiant est du code, pas du contenu : c'est l'anglais qui l'emporte.
+
+Trois précautions, toutes reprises de pièges déjà payés ici :
+
+- **le remplacement porte sur le JETON DANS SON CONTEXTE D'ATTRIBUT** (`id`, `href#`,
+  `aria-labelledby`, `aria-controls`, `for`, `headers`), jamais sur le mot nu. Sans cela
+  `id="cas"` et le mot « cas » de la prose seraient touchés ensemble ;
+- **les quatre générateurs qui écrivent ces ancres suivent dans le même mouvement**
+  (`doc_contenu.py`, `maj-pied.py`, `refonte-caracteristiques.py`, `gen-guides.py`). Un
+  générateur laissé en arrière réintroduit l'écart à sa prochaine exécution, et ce dépôt
+  l'a déjà constaté trois fois ;
+- **les deux pages non publiées sont reprises aussi** (`commandez.html`, `en/order.html`),
+  pour que l'écart ne revienne pas le jour où elles reviennent.
+
+Contrôle : 48 pages, **0 référence ARIA orpheline, 0 ancre morte d'une page à l'autre,
+0 identifiant en double**, 54 relais sans défaut. La sonde résout chaque `href` inter-pages
+avec `urljoin` et vérifie que l'ancre existe dans la page CIBLE — un contrôle qui ne vérifie
+que le fichier laisse passer `use-cases.html#cas` quand `#cas` a disparu.
+
+Restent volontairement tels quels : `lux-title` (Lux vaut pour Luxembourg dans les deux
+langues), `ucs-title` (l'abréviation de « use cases », qui répond à `--ucs-p` du moteur de
+mouvement) et `film`, identique en français et en anglais.
+
+### DEUX DÉFAUTS D'ESPACEMENT, MESURÉS AVANT CORRECTION
+
+Signalés par le client, captures à l'appui, tous deux sur la page Documentation.
+
+**« Le texte est collé au bullet point. »** Une liste à coches (`.api-facts`) et une fiche
+technique (`.specs__list`) n'ont de marge que par le HAUT : ce qui les SUIT se collait à
+leur dernière ligne. **Six occurrences à 0 px**, dont le paragraphe « L'API n'attend aucune
+clé » posé sur la dernière coche de la section Sécurité. Corrigé par `.api-facts + *` et
+`.specs__list + *`, 32 px, le rythme bloc → bloc du site.
+
+**« Y a trop d'espace entre le premier paragraphe et le 2e. »** Le chapeau de section est de
+la prose et le corps la continue, mais entre les deux régnait la marge de `.section-header`
+(64 px, le rythme d'un titre suivi d'un BLOC) au lieu de celle du paragraphe (16). Corrigé
+par `.section-header:has(+ .section-subtitle)`, qui pèse (0,2,0) et passe donc devant
+`.section-header` ; un moteur sans `:has()` garde l'état d'avant.
+
+**LE CONTRÔLE EST UN DIFFÉRENTIEL, PAS UN COUP D'ŒIL** : 689 paires de frères relevées sur
+15 pages avant et après. **16 écarts changent, les 16 attendus**, tous sur les deux pages
+Documentation, et aucun autre écart du site ne bouge. Les 22 paires qui restent à 0 px sont
+légitimes (bandeau et corps d'une fenêtre d'application, pas épinglés de la séquence,
+rangées de formulaire, éléments réservés aux lecteurs d'écran).
+
+### LE GÉNÉRATEUR DE LA DOCUMENTATION NE TOURNAIT PLUS
+
+Découvert en voulant l'utiliser, et c'est la quatrième fois que ce dépôt l'apprend de la
+même façon. `gen-documentation.py` extrait les cinq accordéons d'appel de sa page donneuse,
+la fiche technique — qui ne les porte plus depuis qu'ils vivent sur la page Documentation,
+et qui n'a gardé que ses quatre accordéons de spécifications. Il s'arrêtait sur son
+assertion : « 4 exemples extraits, attendu 5 ».
+
+Il les reprend désormais dans **la page déjà écrite**, et retombe sur la donneuse pour une
+première génération. Rien n'est retapé, la règle du dépôt tient.
+
+**ET LE GARDE-FOU DE PARITÉ QUE SON DOCSTRING PROMETTAIT N'EXISTAIT PAS.** Une section
+ajoutée d'un côté et pas de l'autre passait sans un mot. Les identifiants, les clés et la
+suite des blocs des deux langues sont maintenant comparés avant toute écriture.
+
+**LA CHAÎNE COMPLÈTE EST DE TROIS COMMANDES, ET L'ORDRE COMPTE :**
+
+    python3 tools/gen-documentation.py
+    python3 tools/maj-pied.py --ecrire     # le pied cloné est celui de la DONNEUSE,
+                                           # donc la page courante y est mal marquée
+    node tools/bump-assets.mjs             # le générateur écrit le JSON-LD sans `?v=`
+
+Preuve : sur le contenu d'avant, cette chaîne reproduit les deux pages **à l'octet près**.
+
+### LE CHEMIN DES ACTIFS N'EST PAS CELUI DES LIENS
+
+Défaut introduit puis trouvé au balayage, jamais à l'œil : **une image cassée ne lève rien**.
+Le générateur écrivait `assets/img/…` pour les deux langues, or la page anglaise vit sous
+`en/` et ses images sont en `../assets/`. Seul l'habillage cloné portait le bon préfixe.
+
+Le piège tient à ce que ces deux chemins ne se comptent pas pareil ici : les **liens** d'une
+page anglaise restent nus (`faq.html` désigne bien `en/faq.html`) alors que ses **actifs**
+remontent d'un cran. C'était déjà noté dans `maj-pied.py` ; cela vaut pour tout ce qu'un
+générateur écrit lui-même.
+
+### Le contenu repris, et ce qui a été écarté
+
+- **l'en-tête de page** : trois phrases (le sommaire déroulé, puis un renvoi vers les
+  caractéristiques) deviennent une ;
+- **« Comment Q-Bot fonctionne »** remplace « Comment Q-Bot est fait » : la section décrit un
+  fonctionnement, pas une nomenclature. Elle reçoit **le rendu 3D détouré du boîtier**, celui
+  qui sert déjà de repli à la séquence de l'accueil, donc un visuel issu de
+  `assets/models/qbot.glb` et non une image de synthèse ;
+- **l'app compagnon** : le chapeau et les deux paragraphes disaient trois fois la même chose ;
+- **le chapeau de Sécurité** : l'ancien se justifiait en une seconde phrase (« énoncé tel
+  quel, sans promesse au-delà »), une précaution d'auteur que le lecteur n'a pas à lire. Ce
+  qui suit ne change pas d'un mot, une note du dépôt interdisant d'enrichir cette section
+  sans information du client ;
+- **le support devient « écrivez à l'équipe »**, avec le formulaire de contact et l'adresse.
+  Un lien, pas un bouton : la pastille teal pleine est réservée à « Réserver une démo » ;
+- **le pied de page perd l'entrée Q-Leap**. Les deux autres mentions de la maison mère
+  restent : ce sont de la PROSE (la description et le copyright), pas des entrées de menu.
+  Même arbitrage que le 2026-09-09 pour `q-leap.eu` dans la colonne Contact.
+
+**LE VISUEL SE POSE À CÔTÉ DE LA PROSE, PAS À CÔTÉ DE TOUTE LA SECTION** : les listes à
+coches de cette page sont elles-mêmes sur deux colonnes, les glisser dans une demi-colonne
+les réduirait à une. Le générateur met donc l'en-tête et les paragraphes de tête dans la
+colonne de gauche et laisse ce qui suit sous les deux colonnes. Le plafond de **340 px** est
+calculé : la source fait 1000 px, donc à cette largeur un écran de densité 2 n'agrandit rien.
+Mesuré à 390, 768, 900, 901, 1280, 1440 et 2560 px : jamais d'agrandissement, 0 débordement,
+le titre au pixel sur la gouttière du logo, et sous 900 px l'image passe sous son texte.
+
+### LA PROMESSE DE REMPLACEMENT : RETIRÉE ICI, OUVERTE AILLEURS
+
+« J'ai un doute sur le remplacement du boîtier, car selon moi faut des conditions de vente ;
+s'il le casse par exemple d'eux-mêmes on pourra pas le remplacer à nos frais. »
+
+Elle sort de la documentation technique, qui décrit un produit et non un contrat. **Elle vit
+encore à cinq endroits, et c'est un arbitrage du client, pas une correction à faire au
+passage** : la ligne « Remplacement » des deux fiches techniques, deux réponses de FAQ par
+langue (texte visible ET `FAQPage`), deux lignes de `llms.txt`, et les pages Démo non
+publiées (trois métadonnées et la carte « Remplacement garanti »).
+
+Partout la formulation est **« en cas de panne »**, qui est déjà plus étroite qu'une casse.
+Le dépôt a par ailleurs décidé le 2026-08-20 que la question de la garantie reste hors du
+site faute de conditions réelles : c'est la même matière qui manque. Ne rien écrire de notre
+propre chef.
+
+### Contrôles
+
+`audit-a11y.py` à 1440 **et** à 390 px, `audit-visibilite.py` : **17 pages lues sur 17,
+0 constat**. 48 pages, 0 ancre morte, 0 référence ARIA orpheline. 54 relais, 0 défaut.
+`sync-faq-jsonld.py` idempotent (54 entrées, 0 recalée), `maj-nav-booking.py` à 0 à équiper,
+`gen-documentation.py` idempotent, les **deux** versionneurs d'actifs d'accord.
+32 vues des pages touchées (8 pages × 390/1440 px × normal/mouvement réduit) : un seul `h1`,
+0 saut de niveau, 0 révélation invisible, 0 débordement horizontal, 0 image cassée,
+0 cadratin, 0 emoji, 0 erreur console.
+
+Faux positif connu, à ne pas « corriger » : la sonde `.nb` dans un conteneur flex remonte
+`.vsflow__step--go` sur les deux accueils. C'est l'exemption documentée, le `gap` y EST la
+mise en page.
