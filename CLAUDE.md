@@ -11383,3 +11383,30 @@ Sans JavaScript et en mouvement réduit, `--sc-card-amp` vaut 0 et `--sc-card-a`
 quatre cartes sont posées et opaques, c'est-à-dire l'état d'avant. Vérifié. Le bureau n'est pas
 touché : la règle vit dans la requête média du téléphone et `scrolly.js` n'écrit les deux
 propriétés que sous 900 px (relevé à 1440 px : `--sc-card-y` absente, `transform: none`).
+
+## Le film en boucle grandit sur grand écran (2026-09-15)
+
+« Certaines personnes aimeraient que la vidéo qui loop soit légèrement plus grande, surtout en
+1080p. » C'était juste, et mesurable : sur un écran de 1920 px le film s'affichait sur **639 px**,
+soit la moitié de la largeur de sa propre source (1280) et un tiers de l'écran.
+
+La colonne du film dans `.filmband` passe de **1,1 part à 1,55** au-delà de 1200 px, puis à
+**1,85** au-delà de 1780.
+
+| largeur | avant | après |
+|---|---|---|
+| 1280 à 1600 | 533 px | **619 px** |
+| 1920 | 639 px | **793 px**, soit +24 % |
+| 2560 et au-delà | 670 px | **830 px** |
+
+**LE SECOND SEUIL EST À 1780 ET NON À 1700, ET C'EST UN DÉFAUT TROUVÉ EN MESURANT.** À 1700 px le
+conteneur ne vaut encore que 1224 (il est `clamp(1180px, 72vw, 1440px)`), donc la colonne de texte
+tombait à 374 px et **le titre FRANÇAIS y prenait une troisième ligne** — l'anglais, plus court, ne
+le montrait pas. Un seuil de mise en page se vérifie **dans les deux langues et de part et
+d'autre du seuil**. À 1780, la colonne de texte ne descend jamais sous 394 px et le titre tient
+sur deux lignes de 1200 à 3440 px.
+
+La vidéo n'est jamais agrandie au-delà de sa source : 830 px au plus pour un fichier de 1280.
+En dessous de 1200 px rien ne change, et sous 900 px la bande est déjà en une colonne pleine
+largeur. Relevé sur les deux accueils à dix largeurs de 390 à 3440 px : **0 débordement
+horizontal**, chapeau à 55 caractères par ligne partout.

@@ -4340,6 +4340,41 @@ p { color: var(--gray); }
   border-radius: var(--radius-lg);
 }
 
+/* ── LE CADRE PREND PLUS DE PLACE SUR GRAND ÉCRAN ─────────────────────────
+   « Certaines personnes aimeraient que la vidéo qui loop soit légèrement plus
+   grande, surtout en 1080p » (2026-09-15). C'était juste, et mesuré : sur un
+   écran de 1920 px le film s'affichait sur 639 px, soit la moitié de la largeur
+   de sa propre source (1280 px) et un tiers de l'écran.
+   La colonne du film passe donc de 1,1 part à 1,55 au-delà de 1200 px, puis à
+   1,85 au-delà de 1780 : le second palier existe parce que la demande visait
+   surtout le 1080p, où le conteneur cesse enfin d'être plafonné à 1180 px.
+
+   LE SECOND SEUIL EST À 1780 ET NON À 1700, ET C'EST MESURÉ. À 1700 px le
+   conteneur ne vaut encore que 1224, donc la colonne de texte tombait à 374 px
+   et LE TITRE FRANÇAIS Y PRENAIT UNE TROISIÈME LIGNE — l'anglais, plus court,
+   ne le montrait pas. Un seuil de mise en page se vérifie dans les DEUX langues,
+   et de part et d'autre du seuil. À 1780, la colonne de texte ne descend jamais
+   sous 394 px et le titre tient sur deux lignes de 1200 à 3440 px.
+
+   | largeur | avant | après |
+   |---|---|---|
+   | 1280 à 1600 | 533 px | **619 px** |
+   | 1920 | 639 px | **793 px**, soit +24 % |
+   | 2560 | 670 px | **830 px** |
+
+   LA VIDÉO N'EST JAMAIS AGRANDIE AU-DELÀ DE SA SOURCE : 830 px au plus pour un
+   fichier de 1280. Et la colonne de texte ne descend jamais sous 400 px, mesuré :
+   le titre y tient sur deux lignes à toutes les largeurs et le chapeau garde ses
+   55 caractères par ligne. En dessous de 1200 px rien ne change — la colonne de
+   texte y tomberait sous 400 px et le titre prendrait une ligne de plus. */
+@media (min-width: 1200px) {
+  .filmband { grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); }
+}
+
+@media (min-width: 1780px) {
+  .filmband { grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr); }
+}
+
 /* 16 PX SOUS LE TITRE, comme partout : le site n'a que deux écarts, 16 px quand
    vient le chapeau (titre et chapeau sont une unité de lecture) et 32 px quand
    vient un bloc. 10 px était une troisième valeur, relevée sur les deux accueils
