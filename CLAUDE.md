@@ -11711,12 +11711,25 @@ La copie d'aperçu est donc préparée avec un `robots.txt` fermé, **une balise
 chacune des 74 pages**, et sans fichier `CNAME`. L'ouvrir tiendrait en un commit, et la
 raison est écrite en tête de son `robots.txt` pour que personne ne le fasse par inadvertance.
 
-**LE DÉPÔT D'APERÇU N'A PAS PU ÊTRE CRÉÉ** : la création d'un dépôt public est refusée par
-le garde-fou de l'outillage. L'organisation est sur le plan **gratuit**, donc un dépôt privé
-n'aurait pas de Pages. À créer par le client :
+**LE DÉPÔT D'APERÇU EXISTE** : `Q-LEAP/qbot-preview`, servi sur
+**https://q-leap.github.io/qbot-preview/**, créé le 2026-09-16 après autorisation explicite du
+client (la création d'un dépôt public est refusée par défaut par le garde-fou de l'outillage).
+Il est **public à contrecœur** : l'organisation est sur le plan **gratuit**, et Pages sur un
+dépôt privé demande un plan payant. D'où la fermeture aux robots, qui est la seule protection
+disponible.
 
-    gh repo create Q-LEAP/qbot-preview --public
-    # puis pousser la copie et activer Pages sur `main`
+Pour le rafraîchir après un nouveau commit sur la branche :
+
+    git archive preview/rpa-monitoring-2fa | tar -x -C <copie>
+    # puis : retirer CNAME, réécrire robots.txt en Disallow, reposer les noindex,
+    #        et pousser sur Q-LEAP/qbot-preview
+
+**IL FAUDRA LE SUPPRIMER APRÈS LA DÉCISION.** Un duplicata public du site qui traîne est
+exactement ce que l'audit RosoAI a reproché à l'hébergement en août. Contrôlé à la mise en
+ligne : `robots.txt` en `Disallow: /`, `noindex` sur l'accueil et sur la page neuve,
+`CLAUDE.md`, `tools/` et `Documentations/` en 404, et les chemins relatifs tiennent sous le
+sous-chemin (police chargée, 0 image cassée, 0 requête en échec, 0 erreur console, le
+sélecteur de langue et les liens internes fonctionnent).
 
 ### Contrôles
 
