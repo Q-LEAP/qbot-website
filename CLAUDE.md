@@ -11410,3 +11410,86 @@ La vidéo n'est jamais agrandie au-delà de sa source : 830 px au plus pour un f
 En dessous de 1200 px rien ne change, et sous 900 px la bande est déjà en une colonne pleine
 largeur. Relevé sur les deux accueils à dix largeurs de 390 à 3440 px : **0 débordement
 horizontal**, chapeau à 55 caractères par ligne partout.
+
+## Ce qui rattache encore WordPress à Q-Bot (2026-09-16)
+
+Question du client : « on peut directement accéder au site sur WordPress alors que
+WordPress ne devrait avoir aucun lien ni pouvoir d'action sur le site ». Le constat est
+juste, et **le rattachement ne vit ni chez OVH ni sur GitHub** : il vit dans le compte
+WordPress.com. Ce qui suit est relevé, pas déduit.
+
+### Ce qui est déjà détaché, mesuré ce jour
+
+- **La zone DNS est propre.** `q-bot.eu` et `q-bot.lu` sont délégués à OVH
+  (`ns100/dns100.ovh.net`), leurs `A` et `AAAA` ne mènent qu'à GitHub Pages, `www` est un
+  `CNAME` vers `q-leap.github.io`, les MX et le SPF sont OVH. **Aucun enregistrement ne
+  mène à WordPress.** Voir la section du 2026-09-08 pour le détail de la bascule.
+- **Le site ne charge rien de WordPress.** Les 78 occurrences du mot dans le dépôt sont
+  toutes des commentaires ou des dossiers exclus (`Documentations/`, `website 3/`,
+  `claude.md.txt`), et les quatre `src` vers `i0.wp.com` vivent dans ces dossiers-là.
+  Contrôlé en ligne : les cinq chemins de travail répondent 404.
+- **Les 54 relais répondent 200 sur le domaine réel.** C'est la précondition de l'étape 5
+  du jour J : elle est désormais remplie, le WordPress peut être supprimé sans rien perdre.
+
+### Les trois liens qui restent
+
+1. **Le site WordPress existe toujours**, ID 209374766, plan Atomic, complet et
+   fonctionnel (Elementor, WPML, Yoast, Contact Form 7), et **`q-bot.eu` y est encore
+   déclaré comme domaine principal**.
+2. **AUTOMATTIC DÉTIENT UN CERTIFICAT VALIDE POUR `q-bot.eu` ET `www.q-bot.eu`**, émis le
+   12 juillet 2026 par Google Trust Services (`CN=tls.automattic.com`, certificat partagé
+   à 22 noms), **valable jusqu'au 10 octobre 2026**. En forçant la résolution vers leurs
+   IP on obtient l'ancien site entier, en HTTPS valide :
+
+       curl --resolve q-bot.eu:443:192.0.78.225 https://q-bot.eu/
+
+   répond 200, titre « Automatiser la double authentification Luxtrust », 249 Ko
+   d'Elementor. **Après le 10 octobre ils ne pourront plus le renouveler** : la validation,
+   HTTP comme DNS, passe désormais par GitHub et OVH. Le mapping, lui, reste tant que
+   personne ne le retire dans le compte.
+3. **`bot.q-leap.eu` est servi par WordPress.com** et redirige en 301 vers `q-bot.eu`. Son
+   DNS est dans la zone `q-leap.eu`, **dont les serveurs de noms sont
+   `ns1/ns2/ns3.wordpress.com`**. C'est le seul endroit où WordPress a aujourd'hui un vrai
+   pouvoir d'action, et il est hors de portée de ce dépôt.
+
+Ce qui n'est PAS une porte, vérifié : le CDN d'images Jetpack (`i0.wp.com/q-bot.eu/...`)
+répond 404 puisqu'il relaie depuis q-bot.eu, qui est GitHub ; l'API publique de WordPress.com
+ne rend ni les articles ni les pages d'un site Atomic ; aucune adresse `*.wordpress.com` ni
+`*.wpcomstaging.com` sondée ne sert ce site ; et le `/etc/hosts` du poste client est propre,
+sa résolution système donne bien GitHub.
+
+### Le geste décisif, et il demande un accès WordPress.com
+
+Dans l'ordre, et rien de tout cela ne se fait chez OVH :
+
+1. détacher `q-bot.eu` et `www.q-bot.eu` du site (Réglages, Domaines). Cela libère le
+   mapping et le certificat ;
+2. traiter `bot.q-leap.eu` AVANT de supprimer le WordPress, cf. l'étape 4 de
+   `tools/go-live.py` : la fiche Ministry of Testing pointe encore sur cette adresse ;
+3. supprimer le site, ou au minimum le passer en privé.
+
+**Option côté OVH, et c'est du confort, pas une nécessité** : un enregistrement **CAA**
+limité aux autorités de GitHub Pages interdirait à Automattic de réémettre un certificat
+pour `q-bot.eu`. Automattic signe chez **Google Trust Services**, GitHub Pages chez **Let's
+Encrypt** : les deux se distinguent, donc la mesure est efficace. À mirer sur le CAA publié
+par `github.io` lui-même (`letsencrypt.org`, `digicert.com`, `sectigo.com`, en `issue` et
+`issuewild`) plutôt qu'à deviner, et à retenir que **le mode de panne d'un CAA faux est
+silencieux et différé de trois mois**, au renouvellement.
+
+### Piège de mesure : ne pas conclure à une panne OVH depuis ce poste
+
+Le client a signalé « OVH a l'air cassé ce soir ». Relevé au même moment : les deux serveurs
+de noms répondent **5 fois sur 5** pour les deux domaines, `api.ovh.com`, le manager et la
+page d'état répondent 200, et le site est en 200 sur les quatre URL de contrôle. La panne
+était dans son interface, pas dans l'infrastructure, et **rien n'était à faire chez OVH de
+toute façon**.
+
+Deux faux positifs à connaître, tous deux rencontrés ce soir :
+
+- **le réseau de ce poste bloque le DNS sortant vers les résolveurs publics.** `dig @1.1.1.1`,
+  `@8.8.8.8` et `@9.9.9.9` expirent tous les trois, sur un domaine parfaitement sain. Un
+  contrôle DNS se fait contre les serveurs de noms **du domaine**, jamais contre un
+  résolveur public depuis ici ;
+- **un seul `dig` qui expire ne prouve rien.** Le premier essai sur `ns100.ovh.net` a
+  expiré, puis le même serveur a répondu 5 sur 5. Une perte de paquet isolée se rejoue
+  avant d'être appelée panne.
