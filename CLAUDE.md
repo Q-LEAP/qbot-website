@@ -11595,3 +11595,33 @@ qui reste le seul geste décisif et demande leur accès.
 **Révoquer le certificat a été envisagé et écarté** : il couvre 21 autres domaines sans
 rapport, et une demande de révocation auprès de l'autorité les casserait tous. Hors de
 question, et sans objet puisque la rotation fait le travail.
+
+### EN VEILLE : le détachement WordPress attend l'accès au compte (2026-09-16)
+
+**Décision du client le 2026-09-16 : « on met ça en standby tant que je n'ai pas le compte
+WordPress ».** Ce n'est donc plus un chantier ouvert et il ne faut pas le remonter à chaque
+échange. Tout ce qui pouvait être fait sans ce compte l'a été, et rien ne se dégrade en
+attendant.
+
+Ce qui est FAIT et n'a pas à être refait : les 9 zones OVH sont propres et vérifiées, les
+CAA sont posés sur `q-bot.eu` et `q-bot.lu`, les 54 relais répondent 200 en ligne, le site
+ne charge aucune ressource WordPress.
+
+Ce qui attend le compte WordPress.com (site ID `209374766`), dans cet ordre :
+
+1. **exporter** le contenu et la bibliothèque de médias avant toute suppression. Les
+   6 articles et 8 guides retirés du site statique le 2026-08-28 ne vivent plus que dans
+   l'historique git et dans ce WordPress, avec les soumissions de Contact Form 7 ;
+2. **détacher `q-bot.eu` et `www.q-bot.eu`** du site. C'est le geste décisif ;
+3. **traiter `bot.q-leap.eu` AVANT de supprimer**, cf. l'étape 4 de `tools/go-live.py` ;
+4. supprimer le site, ou le passer en privé.
+
+**À revérifier début octobre, et c'est le seul point qui bouge tout seul** : la rotation du
+certificat partagé d'Automattic devrait faire tomber `q-bot.eu` de sa liste de noms, le CAA
+interdisant désormais à Google Trust Services de l'y inclure. Contrôle en une ligne :
+
+    echo | openssl s_client -connect 192.0.78.225:443 -servername q-bot.eu 2>/dev/null \
+      | openssl x509 -noout -text | grep -o 'DNS:q-bot.eu'
+
+Propriétaires de l'organisation GitHub, pour ce qui demande ce niveau : `Desmu59` et
+`sylvain-perez`.
