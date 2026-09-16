@@ -11493,3 +11493,58 @@ Deux faux positifs à connaître, tous deux rencontrés ce soir :
 - **un seul `dig` qui expire ne prouve rien.** Le premier essai sur `ns100.ovh.net` a
   expiré, puis le même serveur a répondu 5 sur 5. Une perte de paquet isolée se rejoue
   avant d'être appelée panne.
+
+### Ce n'est PAS une zone DNS oubliée : les 9 zones OVH sont propres (2026-09-16)
+
+Question du client, posée devant son manager OVH. Contrôlée par l'**API du manager depuis sa
+session Safari**, l'interface elle-même ne rendant rien ce soir (le corps de la page ne
+contenait que le menu, 386 caractères, `readyState` complet). Cette voie est bien meilleure
+que de gratter l'interface : `fetch('/engine/apiv6/...', {credentials:'include'})` depuis
+l'onglet du manager rend du JSON, en lecture comme en écriture, et elle survit à une
+interface cassée.
+
+**Les 9 zones du compte** : `lste.lu`, `q-bot.eu`, `q-bot.lu`, `q-guard.app`, `q-guard.eu`,
+`q-guard.io`, `q-guard.lu`, `q-leap.ai`, `q-leap.lu`. Exportées une par une :
+**aucun enregistrement ne mène à WordPress**, ni vers les IP d'Automattic (192.0.78.x), ni
+vers leurs serveurs de noms. Aucune redirection web non plus sur `q-bot.eu` ni `q-bot.lu`
+(`/domain/zone/*/redirection` rend `[]`).
+
+**Et `q-leap.eu` n'est PAS une zone OVH**, ce qui confirme le point 3 ci-dessus : le domaine
+de la maison mère est intégralement géré par WordPress, et c'est de là que vient
+`bot.q-leap.eu`. Rien dans le compte OVH ne peut l'atteindre.
+
+### Le CAA est posé sur q-bot.eu, et il y avait un précédent dans le compte
+
+    q-bot.eu.  3600  IN  CAA  0 issue "letsencrypt.org"
+
+Créé par l'API du manager (`POST /domain/zone/q-bot.eu/record` puis `/refresh`), vérifié
+actif sur `ns100.ovh.net` et `dns100.ovh.net`, site toujours en 200.
+
+**LE RISQUE HABITUEL D'UN CAA EST LEVÉ PAR UN PRÉCÉDENT MESURÉ, PAS PAR UN PARI.** Le mode
+de panne d'un CAA faux est silencieux et différé de trois mois, au renouvellement. Or
+`lste.lu`, dans le MÊME compte OVH, tourne déjà sur GitHub Pages avec exactement
+`CAA 0 issue "letsencrypt.org"`, et son certificat s'est renouvelé normalement le
+29 juillet 2026, émis par Let's Encrypt. La configuration est donc éprouvée ici même.
+
+Ce que ce CAA change : **Automattic signe chez Google Trust Services**
+(`CN=tls.automattic.com`, émetteur `C=US, O=Google Trust Services, CN=WR1`), GitHub Pages
+chez **Let's Encrypt**. Les deux autorités se distinguent, donc la règle interdit à
+Automattic de réémettre un certificat pour `q-bot.eu` sans toucher au certificat de GitHub.
+Elle ne touche pas au certificat existant, qui reste valable jusqu'au 10 octobre 2026 : un
+CAA ne s'applique qu'à l'émission.
+
+**Date à surveiller** : le certificat GitHub actuel expire le 7 décembre 2026, donc le
+renouvellement tombe vers début novembre. Si quelque chose devait casser à cause du CAA,
+c'est là que cela se verrait, et le contrôle tient en une ligne :
+
+    echo | openssl s_client -connect q-bot.eu:443 -servername q-bot.eu 2>/dev/null | openssl x509 -noout -issuer -dates
+
+**Laissé ouvert à dessein** : `q-bot.lu` n'a pas de CAA. Il sert GitHub Pages lui aussi,
+mais il n'a jamais été rattaché à WordPress (Automattic n'a aucun certificat pour ce nom,
+vérifié), donc il sortait du périmètre de la demande. La même ligne s'y pose en une minute
+si on la veut.
+
+**Au passage** : `lste.lu` porte un `_github-pages-challenge-q-leap` TXT, donc la
+vérification de domaine GitHub a déjà été faite dans ce compte pour un autre nom. Celle de
+`q-bot.eu` reste en attente, et elle demande un propriétaire de l'organisation GitHub, pas
+un accès OVH.
