@@ -11548,3 +11548,50 @@ si on la veut.
 vérification de domaine GitHub a déjà été faite dans ce compte pour un autre nom. Celle de
 `q-bot.eu` reste en attente, et elle demande un propriétaire de l'organisation GitHub, pas
 un accès OVH.
+
+### Suite du 2026-09-16 : le CAA aussi sur q-bot.lu, la vérification GitHub reste bloquée
+
+**`q-bot.lu` a désormais le même CAA.** Préalable vérifié avant d'écrire, comme pour
+`q-bot.eu` : son certificat et celui de `www.q-bot.lu` sont émis par **Let's Encrypt**
+(`CN=YR2`, valables jusqu'au 7 décembre 2026), donc la règle ne peut pas gêner GitHub. Un
+CAA posé à l'apex couvre les sous-domaines par remontée de l'arbre, une seule ligne suffit.
+Vérifié actif sur les deux serveurs de noms, les quatre URL répondent (200, 301, 200, 301).
+
+C'est de l'hygiène, **et il faut le dire : cela ne décoince rien du côté WordPress.**
+Automattic n'a jamais eu de certificat pour ce nom.
+
+**LA VÉRIFICATION DE DOMAINE GITHUB NE PEUT PAS ÊTRE FAITE D'ICI, ET ELLE NE RÉGLERAIT PAS
+LE PROBLÈME NON PLUS.** Deux raisons, mesurées :
+
+- le compte employé est **`member`** de l'organisation `Q-LEAP`, pas propriétaire. Les deux
+  propriétaires sont **`Desmu59`** et **`sylvain-perez`** ;
+- **il n'existe aucune API REST** pour les domaines vérifiés d'une organisation. Les quatre
+  points d'entrée plausibles (`orgs/Q-LEAP/domains`, `.../settings/domains`,
+  `.../verified-domains`, `user/domains`) rendent tous 404. C'est une fonction de
+  l'interface web uniquement.
+
+Et sur le fond : cette vérification protège contre un **tiers** qui revendiquerait
+`q-bot.eu` sur ses propres Pages. Elle n'a aucun rapport avec WordPress. Ne pas la présenter
+comme une étape du détachement.
+
+### CE QUE LE CAA POURRAIT DÉCOINCER PLUS TÔT QUE PRÉVU
+
+Le certificat d'Automattic est **partagé entre 22 noms** (`CN=tls.automattic.com`), émis le
+12 juillet, donc il sera de toute façon **remplacé vers début octobre**, avant sa date
+d'expiration du 10. Or une réémission vérifie le CAA de **chaque** nom de la liste : avec
+`0 issue "letsencrypt.org"` sur `q-bot.eu`, Google Trust Services ne peut plus l'y inclure.
+`q-bot.eu` devrait donc **tomber de leur certificat à la prochaine rotation**, et l'ancien
+site cessera d'être servable sous ce nom sans attendre le 10 octobre.
+
+Le contrôle tient en une ligne, et il dit oui ou non :
+
+    echo | openssl s_client -connect 192.0.78.225:443 -servername q-bot.eu 2>/dev/null \
+      | openssl x509 -noout -text | grep -o 'DNS:q-bot.eu'
+
+Tant qu'il rend `DNS:q-bot.eu`, le certificat d'avant est encore servi. Quand il ne rend
+plus rien, la porte est fermée. **Cela ne retire pas le mapping du compte WordPress.com**,
+qui reste le seul geste décisif et demande leur accès.
+
+**Révoquer le certificat a été envisagé et écarté** : il couvre 21 autres domaines sans
+rapport, et une demande de révocation auprès de l'autorité les casserait tous. Hors de
+question, et sans objet puisque la rotation fait le travail.
