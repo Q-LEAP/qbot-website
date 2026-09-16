@@ -11625,3 +11625,115 @@ interdisant désormais à Google Trust Services de l'y inclure. Contrôle en une
 
 Propriétaires de l'organisation GitHub, pour ce qui demande ce niveau : `Desmu59` et
 `sylvain-perez`.
+
+## Branche d'aperçu : RPA, surveillance et méthodes d'authentification (2026-09-16)
+
+Retours du **product owner**, pas du directeur : Q-Bot pour le RPA, Q-Bot pour la
+surveillance applicative, et les méthodes d'authentification à mettre en avant, avec pour
+cible des recherches du type « automatisation authentification double facteur avec QR
+code ». Demandé sur une **branche**, `preview/rpa-monitoring-2fa`, pour être vu avant d'aller
+sur `main`.
+
+### Ce que le relevé a montré avant d'écrire
+
+- **RPA : 0 occurrence** sur tout le site, les deux langues. **Monitoring : 0** également.
+- **« QR code » et « code à usage unique » n'apparaissaient dans AUCUN titre de page ni
+  AUCUNE méta-description.** Ils vivaient dans deux réponses de FAQ repliées, deux `h3` de
+  `cas-usage.html` et un `h2` de la documentation. Une requête longue traîne se gagne sur le
+  titre et le `h1`, jamais sur un `h3` enfoui : c'est ce qui a justifié une page dédiée
+  plutôt qu'un bloc de plus.
+
+### LE POINT QUI A ÉTÉ ARBITRÉ, ET IL NE FAUT PAS LE DÉFAIRE
+
+Le monitoring « en PROD » demandé par le product owner **contredisait frontalement une
+réponse de la FAQ** : « Q-Bot peut-il être utilisé avec des données de production ? Non.
+[…] les comptes qu'il pilote doivent être des comptes de test. »
+
+**Arbitrage du client le 2026-09-16 : la réponse de FAQ RESTE, et le site parle de
+surveillance d'un parcours critique EN PRÉPRODUCTION.** Ne jamais écrire « production » ni
+« PROD » sur ces blocs, et ne pas « corriger » le mot préproduction en croyant à une
+timidité de rédaction. `llms.txt` porte la même mise en garde, pour qu'un moteur de réponse
+n'infère pas la production du mot « surveillance ».
+
+**Ce que renvoie `GET /scenarios/:id/execute` reste non documenté, sur décision du client**
+(« le but c'est pas qu'on puisse faire du rétro-ingénierie sur notre produit »). Les blocs de
+surveillance décrivent donc l'usage, jamais le signal de retour. Ne pas promettre un verdict
+succès/échec.
+
+### Ce qui est sur la branche
+
+- **`methodes-authentification.html` et `en/authentication-methods.html`**, générées par
+  `tools/gen-methodes-auth.py` : six sections, chacune un `h2` en question suivi d'une
+  réponse autonome de 40 à 60 mots, **vérifiée par le script**. Validation dans l'app, OTP,
+  QR code, notification, SMS, et le périmètre énoncé comme une limite ;
+- **accueil** : un bloc dont le `h2` porte « OTP, QR code ou notification » et mène à la page,
+  plus deux cartes (RPA, surveillance) qui font passer la section des usages de trois à cinq ;
+- **`cas-usage.html`** : une section « Au-delà des tests fonctionnels ». **Section à part et
+  non deux cartes de plus**, parce que le document « Fonctionnement » du client fixe
+  « 4 cartes maximum » pour la section des cas d'usage, et que ces deux usages sont
+  ADJACENTS au test, pas des cas de test ;
+- **trois questions de FAQ** par langue (SMS, RPA, surveillance), texte visible et JSON-LD,
+  de `faq-q30` à `faq-q32` ;
+- plan du site à 18 URL, `llms.txt`, et **trois liens entrants par langue** vers la nouvelle
+  page (accueil, cas d'usage, fiche technique). **Le pied de page n'est pas touché** : ses
+  colonnes font 4 / 4 / 4 depuis l'arbitrage du 2026-08-25.
+
+### DEUX AFFIRMATIONS À NE PAS FAIRE PASSER SUR `main` EN L'ÉTAT
+
+1. **Le SMS est marqué `A_CONFIRMER`**, dans le générateur, dans la page et dans la FAQ. Il
+   est plausible (le téléphone piloté a sa carte SIM) mais **il n'est documenté nulle part
+   dans le produit**. Le client l'a demandé pour la branche le temps de vérifier auprès de
+   Sylvain Perez. Sans cette confirmation, il sort avant la fusion.
+2. **LA BIOMÉTRIE A ÉTÉ DEMANDÉE ET N'A PAS ÉTÉ ÉCRITE, DÉLIBÉRÉMENT.** Q-Bot pilote le
+   téléphone par ADB, c'est-à-dire par des appuis : un appui ne satisfait ni un capteur
+   d'empreinte ni une reconnaissance faciale. Ce n'est pas une incertitude, c'est une
+   impossibilité, et l'annoncer serait une revendication fausse. Elle est donc énoncée comme
+   une LIMITE, à côté du périmètre iOS. Si Sylvain Perez décrit un mécanisme de repli
+   (l'application propose un code quand la biométrie échoue), c'est CE mécanisme qui
+   s'écrira, pas « Q-Bot gère la biométrie ».
+
+### L'APERÇU EN LIGNE DOIT RESTER FERMÉ AUX ROBOTS
+
+Question du client : « l'aperçu devrait être ouvert ? Pour le GEO c'est mieux non ? »
+**Non, c'est l'inverse**, et pour trois raisons mesurables :
+
+1. l'aperçu est un **duplicata complet du site** à une autre adresse. Les pages existantes y
+   déclarent leur adresse canonique sur `q-bot.eu`, ce qui les protège, mais **les deux pages
+   neuves se canonicalisent vers des URL de `q-bot.eu` qui n'existent pas encore** : un
+   moteur verrait des pages pointant vers une 404 ;
+2. **le GEO se retourne contre nous** : qu'un moteur de réponse ingère la capacité SMS non
+   confirmée est bien pire que de ne pas être lu. Une affirmation apprise se corrige
+   lentement, et c'est précisément ce que `llms.txt` existe pour éviter ;
+3. **il n'y a aucun gain** : l'autorité, la propriété Search Console, les données structurées
+   et `llms.txt` sont sur `q-bot.eu`. Une copie sur `q-leap.github.io` n'apporte rien.
+
+La copie d'aperçu est donc préparée avec un `robots.txt` fermé, **une balise `noindex` sur
+chacune des 74 pages**, et sans fichier `CNAME`. L'ouvrir tiendrait en un commit, et la
+raison est écrite en tête de son `robots.txt` pour que personne ne le fasse par inadvertance.
+
+**LE DÉPÔT D'APERÇU N'A PAS PU ÊTRE CRÉÉ** : la création d'un dépôt public est refusée par
+le garde-fou de l'outillage. L'organisation est sur le plan **gratuit**, donc un dépôt privé
+n'aurait pas de Pages. À créer par le client :
+
+    gh repo create Q-LEAP/qbot-preview --public
+    # puis pousser la copie et activer Pages sur `main`
+
+### Contrôles
+
+Les deux audits du dépôt : **19 pages lues sur 19, 0 constat**, à 1440 comme à 390 px.
+Balayage navigateur de **40 vues** (10 pages × 390/1440 px × normal/mouvement réduit) :
+un seul `h1`, 0 saut de niveau, 0 révélation invisible, 0 débordement horizontal, 0 image
+cassée, 0 `alt` manquant, 0 cadratin, 0 emoji, 0 erreur console.
+`tools/gen-methodes-auth.py` **idempotent** (même empreinte à deux exécutions),
+`tools/sync-faq-jsonld.py` à **60 entrées comparées, 0 recalée**.
+
+**Un piège retombé deux fois dans cette passe**, et c'est toujours le même : deux chaînes
+retapées à la main ne correspondaient pas au fichier. Le sous-titre anglais de l'accueil dit
+« stops a test run » et non « stops a run » ; la question anglaise du QR code dit « a journey
+that uses a QR code » et non « a journey with a QR code ». **On extrait, on ne retape pas.**
+
+**Et un piège neuf, à connaître** : en insérant DEUX entrées JSON-LD après la même question
+de référence, la seconde se place avant la première, donc dans l'ordre inverse de
+l'affichage. Le symptôme est spectaculaire (8 champs annoncés à recaler pour deux objets
+permutés) et `sync-faq-jsonld.py --ecrire` le répare proprement, l'ordre d'affichage faisant
+foi.
