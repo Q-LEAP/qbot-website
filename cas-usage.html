@@ -204,6 +204,38 @@
         <h3>Automatiser les parcours avec QR code</h3>
         <p><span class="nb">Q-Bot</span> peut afficher un QR code sur son écran intégré afin qu'il soit scanné par le smartphone dans le cadre du scénario automatisé.</p>
       </article>
+      <p style="margin-top:36px;"><a href="methodes-authentification.html" class="link-edito"><span>Toutes les méthodes d'authentification</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
+  </div>
+  </div>
+</section>
+
+<!-- AU-DELÀ DU TEST FONCTIONNEL, demandé par le product owner le 2026-09-16.
+     Section À PART et non deux cartes de plus au-dessus : le document
+     « Fonctionnement » du client fixe « 4 cartes maximum » pour la section des
+     cas d'usage, et ces deux-là sont des usages ADJACENTS au test, pas des cas
+     de test. PRÉPRODUCTION ET NON PRODUCTION : la FAQ répond « non » à
+     l'utilisation avec des données de production, arbitrage du client du
+     2026-09-16 de garder cette réponse. Ne pas écrire « PROD » ici. -->
+<section class="section section--gray" aria-labelledby="beyond-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Autres usages</span>
+      <h2 class="section-title" id="beyond-title">Au-delà des tests fonctionnels</h2>
+      <p class="section-subtitle">Un scénario Q-Bot n'est qu'une suite d'appuis rejoués sur une vraie application Android, déclenchée par un appel HTTP. Deux usages en découlent naturellement, hors du test fonctionnel&nbsp;: automatiser une tâche répétitive dans une application mobile, et vérifier régulièrement qu'un parcours critique fonctionne encore en préproduction.</p>
+    </div>
+    <div class="features__grid features__grid--2">
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3"/><rect x="4" y="5" width="16" height="12" rx="3"/><circle cx="9" cy="11" r="1.4"/><circle cx="15" cy="11" r="1.4"/><path d="M7 21h10"/></svg></div>
+        <span class="usecase__cat">RPA</span>
+        <h3>Automatiser une tâche répétitive sur mobile</h3>
+        <p>Un parcours enregistré une fois se rejoue à la demande sur le véritable téléphone. Vos outils existants le déclenchent par un appel HTTP, sans agent à installer et sans écrire de code.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg></div>
+        <span class="usecase__cat">Surveillance</span>
+        <h3>Surveiller un parcours critique en préproduction</h3>
+        <p>Faites rejouer périodiquement, depuis votre ordonnanceur, le parcours d'un service que vous devez garder disponible, double authentification comprise, sur un compte dédié.</p>
+      </article>
     </div>
   </div>
 </section>

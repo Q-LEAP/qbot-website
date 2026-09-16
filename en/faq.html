@@ -176,6 +176,14 @@
       },
       {
         "@type": "Question",
+        "name": "Can Q-Bot handle a code received by SMS?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The phone Q-Bot drives is a real Android smartphone with its own SIM card: it receives messages like any other device. A scenario can open the messaging app, read the code that arrived and carry it into the journey, without it passing through any third-party service."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "How do I use Q-Bot?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -212,6 +220,22 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can Q-Bot automate anything other than tests?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. A Q-Bot scenario is a sequence of taps replayed on a real Android app, fired by an HTTP call. Any repetitive task done on a phone can therefore be recorded once and replayed on demand from the tools you already use, with no code to write and no agent to install."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can Q-Bot check that a journey still works?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, in pre-production. Your scheduler calls the scenario at regular intervals and Q-Bot replays the whole journey on the real phone, two-factor approval included. Use a dedicated account: Q-Bot remains a testing tool and must not drive a real customer account."
         }
       },
       {
@@ -500,6 +524,22 @@
           <p>Yes. The device has a small built-in display, and the API exposes <code>POST /display-image</code> to show an image on it. A journey that requires scanning a QR code therefore runs end to end: your test sends the image, and the phone sitting in the cradle scans it.</p>
         </div>
       </div>
+
+      <!-- A_CONFIRMER : le SMS est plausible (le téléphone piloté a sa SIM)
+           mais il n'est documenté nulle part dans le produit. Demandé pour la
+           branche d'aperçu le 2026-09-16, en attente de Sylvain Perez.
+           NE PAS FAIRE PASSER SUR main SANS CONFIRMATION. -->
+      <div class="faq-item" id="faq-q30">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b30" aria-controls="faq-a30">
+          Can <span class="nb">Q-Bot</span> handle a code received by SMS?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a30" role="region" aria-labelledby="faq-b30">
+          <p>Yes. The phone <span class="nb">Q-Bot</span> drives is a real Android smartphone with its own SIM card: it receives messages like any other device. A scenario can open the messaging app, read the code that arrived and carry it into the journey, without it passing through any third-party service.</p>
+        </div>
+      </div>
       </div>
 
       <div class="faq-cat">
@@ -538,6 +578,30 @@
         </button>
         <div class="faq-item__answer" id="faq-a20" role="region" aria-labelledby="faq-b20">
           <p>They are handled one after another, in the order they arrive. The box drives a single smartphone, so two scenarios never run in parallel: a request received while a scenario is running waits for it to finish, then starts in turn. Nothing is dropped, and the order of the calls is preserved.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q31">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b31" aria-controls="faq-a31">
+          Can <span class="nb">Q-Bot</span> automate anything other than tests?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a31" role="region" aria-labelledby="faq-b31">
+          <p>Yes. A <span class="nb">Q-Bot</span> scenario is a sequence of taps replayed on a real Android app, fired by an HTTP call. Any repetitive task done on a phone can therefore be recorded once and replayed on demand from the tools you already use, with no code to write and no agent to install.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q32">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b32" aria-controls="faq-a32">
+          Can <span class="nb">Q-Bot</span> check that a journey still works?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a32" role="region" aria-labelledby="faq-b32">
+          <p>Yes, in pre-production. Your scheduler calls the scenario at regular intervals and <span class="nb">Q-Bot</span> replays the whole journey on the real phone, two-factor approval included. Use a dedicated account: <span class="nb">Q-Bot</span> remains a testing tool and must not drive a real customer account.</p>
         </div>
       </div>
       </div>

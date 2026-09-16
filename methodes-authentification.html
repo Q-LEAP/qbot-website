@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Méthodes 2FA automatisées : OTP, QR code | Q-Bot by Q-Leap</title>
+  <meta name="description" content="Code à usage unique, QR code à scanner, notification à confirmer : Q-Bot franchit l'étape de double authentification de vos tests, sur la vraie application.">
+  <link rel="canonical" href="https://q-bot.eu/methodes-authentification.html">
+  <link rel="alternate" hreflang="fr" href="https://q-bot.eu/methodes-authentification.html">
+  <link rel="alternate" hreflang="en" href="https://q-bot.eu/en/authentication-methods.html">
+  <link rel="alternate" hreflang="x-default" href="https://q-bot.eu/methodes-authentification.html">
+  <!-- Open Graph & Twitter Card -->
+  <meta property="og:title" content="Méthodes 2FA automatisées : OTP, QR code | Q-Bot by Q-Leap">
+  <meta property="og:description" content="Code à usage unique, QR code à scanner, notification à confirmer : Q-Bot franchit l'étape de double authentification de vos tests, sur la vraie application.">
+  <meta property="og:url" content="https://q-bot.eu/methodes-authentification.html">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=987e90fd">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Le logo Q-Bot, un produit Q-Leap">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Q-Bot">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Méthodes 2FA automatisées : OTP, QR code | Q-Bot by Q-Leap">
+  <meta name="twitter:description" content="Code à usage unique, QR code à scanner, notification à confirmer : Q-Bot franchit l'étape de double authentification de vos tests, sur la vraie application.">
+  <meta name="twitter:image" content="https://q-bot.eu/assets/img/qbot-og.jpg?v=987e90fd">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="assets/img/favicon.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
+  <!-- Roboto est hébergée chez nous (déclarations @font-face en tête de style.css).
+       Seule la face que toute page utilise est préchargée : la variable latine.
+       L'attribut crossorigin est obligatoire même en même origine pour une police. -->
+  <link rel="preload" href="assets/fonts/roboto-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.min.css?v=66d8eee7">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://q-bot.eu/#organization",
+    "name": "Q-Leap",
+    "alternateName": "Q-Bot",
+    "legalName": "Q-Leap S.A.",
+    "foundingDate": "2012-04-05",
+    "url": "https://q-bot.eu/",
+    "logo": "https://q-bot.eu/assets/img/logo-qbot.png",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=987e90fd",
+    "email": "bot@q-leap.eu",
+    "telephone": "+352202117",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "10B rue des Mérovingiens",
+      "postalCode": "L-8070",
+      "addressLocality": "Bertrange",
+      "addressCountry": "LU"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+352202117",
+      "email": "bot@q-leap.eu",
+      "contactType": "sales"
+    },
+    "foundingLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bertrange",
+        "addressCountry": "LU"
+      }
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Sylvain Perez",
+      "jobTitle": "CEO",
+      "sameAs": "https://www.linkedin.com/in/sylvainperez/"
+    },
+    "knowsAbout": [
+      "software testing",
+      "test automation",
+      "quality assurance",
+      "two-factor authentication",
+      "LuxTrust",
+      "Selenium"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/company/q-leap/",
+      "https://q-leap.eu/",
+      "https://q-guard.app/"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Les méthodes d'authentification que Q-Bot automatise",
+    "description": "Code à usage unique, QR code à scanner, notification à confirmer : Q-Bot franchit l'étape de double authentification de vos tests, sur la vraie application.",
+    "url": "https://q-bot.eu/methodes-authentification.html",
+    "inLanguage": "fr",
+    "datePublished": "2026-09-16",
+    "dateModified": "2026-09-16",
+    "image": "https://q-bot.eu/assets/img/qbot-og.jpg?v=987e90fd",
+    "author": { "@id": "https://q-bot.eu/#organization" },
+    "isPartOf": { "@type": "WebSite", "name": "Q-Bot", "url": "https://q-bot.eu/" },
+    "about": { "@type": "Product", "name": "Q-Bot" },
+    "publisher": { "@id": "https://q-bot.eu/#organization" }
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://q-bot.eu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Les méthodes d'authentification que Q-Bot automatise",
+      "item": "https://q-bot.eu/methodes-authentification.html"
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+<!-- La boule et sa traîne : trois halos qui dérivent tout seuls derrière la page,
+     même quand le visiteur ne bouge pas. Procédé relevé sur linearity.io, où un
+     halo orange traverse lentement le fond. Ici trois calques et une seule
+     animation : le même parcours, décalé dans le temps, ce qui fait la traîne. -->
+<div class="orbz" aria-hidden="true"><span></span><span></span><span></span><b></b></div>
+
+<a href="#main" class="skip-nav">Aller au contenu principal</a>
+
+<!-- ======= NAVIGATION ======= -->
+<header class="nav" role="banner">
+  <div class="container">
+    <nav class="nav__inner" aria-label="Navigation principale">
+      <a href="./" class="nav__logo" aria-label="Q-Bot, accueil">
+        <img src="assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
+      </a>
+      <button class="nav__toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__menu" id="main-menu" role="list">
+        <li><a href="./" class="nav__link">Accueil</a></li>
+        <li><a href="caracteristiques.html" class="nav__link">Caractéristiques</a></li>
+        <li><a href="cas-usage.html" class="nav__link">Comment ça marche</a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="contact.html" data-booking-open
+       data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
+       data-booking-title="Agenda de réservation Q-Bot"
+       data-booking-attente="Chargement de l’agenda"
+       data-booking-lent="L’agenda tarde à répondre. Ouvrez-le dans un nouvel onglet."
+       data-booking-fermer="Fermer l’agenda"
+       class="btn btn--primary">Demander une démo</a>
+                <div class="nav__lang">
+          <a href="en/use-cases.html" hreflang="en" aria-label="Cette page est en français. Passer à la version anglaise." title="Cette page est en français. Passer à la version anglaise."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg> FR</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ======= PAGE HERO ======= -->
+<main id="main">
+<section class="page-hero" aria-labelledby="page-title">
+  <div class="container">
+    <span class="section-label">Méthodes d'authentification</span>
+    <h1 id="page-title">Les méthodes d'authentification que <span class="nb">Q-Bot</span> automatise</h1>
+    <p>Une double authentification ne prend pas toujours la même forme. Selon l'application et le parcours, il faut valider une demande, saisir un code à usage unique, scanner un QR code ou confirmer une notification. Q-Bot les traite sur le véritable téléphone, sans clé secrète et sans simulateur.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="m-app">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Validation dans l'application</span>
+      <h2 class="section-title" id="m-app">Comment Q-Bot valide une demande dans l'application 2FA&nbsp;?</h2>
+      <p class="section-subtitle">Q-Bot rejoue sur le téléphone le parcours que vous avez enregistré&nbsp;: il ouvre l'application, appuie aux endroits que vous avez désignés et confirme la demande. Rien n'est simulé et aucune clé secrète n'est nécessaire, puisque c'est la véritable application d'authentification qui valide, sur un appareil réel posé sur votre réseau.</p>
+    </div>
+    <ul class="api-facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Fonctionne avec toute application 2FA qui tourne sous Android</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Validé avec LuxTrust Mobile, itsme, Microsoft Authenticator et Google Authenticator</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Aucun secret partagé à extraire ni à stocker</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="m-otp">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Code à usage unique</span>
+      <h2 class="section-title" id="m-otp">Q-Bot peut-il récupérer un code à usage unique (OTP)&nbsp;?</h2>
+      <p class="section-subtitle">Oui. L'API expose <code>GET /get-luxtrust-otp</code>, qui renvoie le code à usage unique affiché par l'application sur le téléphone relié. Votre test récupère la valeur et la saisit là où il en a besoin. Le code est lu sur la véritable application, il n'est jamais recalculé depuis une clé secrète.</p>
+    </div>
+    <ul class="api-facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le code est lu à l'écran, pas régénéré depuis un secret TOTP</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Fonctionne avec les applications dont le secret n'est pas exportable</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="m-qr">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">QR code</span>
+      <h2 class="section-title" id="m-qr">Comment automatiser un parcours qui demande de scanner un QR code&nbsp;?</h2>
+      <p class="section-subtitle">Le boîtier porte un petit écran intégré, et l'API expose <code>POST /display-image</code> pour y afficher une image. Un parcours qui demande de scanner un QR code se déroule donc en entier&nbsp;: votre test envoie l'image, le téléphone posé dans le socle la scanne, et la validation se poursuit sans personne devant l'écran.</p>
+    </div>
+    <ul class="api-facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>L'écran du boîtier affiche l'image, le téléphone la scanne</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le parcours se déroule de bout en bout, sans intervention</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="m-push">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Notification</span>
+      <h2 class="section-title" id="m-push">Comment Q-Bot répond à une notification d'authentification&nbsp;?</h2>
+      <p class="section-subtitle">Une application compagnon installée sur le téléphone surveille les notifications des applications 2FA. Dès qu'une demande arrive, elle déclenche le scénario correspondant et la validation se fait seule, sans aucun appel depuis votre chaîne de tests. C'est le second mode de déclenchement, à côté de l'appel HTTP.</p>
+    </div>
+    <ul class="api-facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le scénario part de lui-même à l'arrivée de la notification</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Aucun appel à écrire dans la chaîne de tests</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="m-sms">
+  <!-- A_CONFIRMER : capacité plausible mais non documentée dans le produit.
+       Demandée pour la branche d'aperçu le 2026-09-16, en attente de
+       Sylvain Perez. NE PAS FAIRE PASSER SUR main SANS CONFIRMATION. -->
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">SMS</span>
+      <h2 class="section-title" id="m-sms">Et un code reçu par SMS&nbsp;?</h2>
+      <p class="section-subtitle">Le téléphone piloté par Q-Bot est un vrai smartphone Android, avec sa carte SIM&nbsp;: il reçoit ses messages comme n'importe quel appareil. Un scénario peut donc ouvrir l'application de messagerie, lire le code reçu et le reporter dans le parcours, exactement comme le ferait la personne assise devant l'écran.</p>
+    </div>
+    <ul class="api-facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Le code est lu sur l'appareil, il ne transite par aucun service tiers</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--gray" aria-labelledby="m-limites">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Périmètre</span>
+      <h2 class="section-title" id="m-limites">Ce que Q-Bot n'automatise pas</h2>
+      <p class="section-subtitle">Q-Bot pilote un appareil Android par ADB, c'est-à-dire par des appuis sur l'écran. Il ne franchit donc pas une empreinte digitale ni une reconnaissance faciale, qui demandent un capteur biométrique. Il ne pilote pas non plus d'iPhone&nbsp;: l'automatisation de la 2FA sur iOS sort de son périmètre.</p>
+    </div>
+    <ul class="api-facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Android uniquement, un appareil filaire par boîtier</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4,12 9,17 20,6"/></svg><span>Outil de test, à utiliser avec des comptes dédiés</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--dark" aria-labelledby="cta-title">
+  <div class="container cta-block">
+    <h2 class="section-title" id="cta-title">Prêt à automatiser la dernière étape manuelle&nbsp;?</h2>
+    <p class="section-subtitle">Échangez avec notre équipe et découvrez <span class="nb">Q-Bot</span> en action.</p>
+    <a href="contact.html" class="btn btn--primary btn--lg">Demander une démo</a>
+  </div>
+</section>
+</main>
+
+<!-- ======= FOOTER ======= -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__logo">
+          <img src="assets/img/logo-qbot-neg.png" alt="Q-Bot" width="300" height="84">
+        </div>
+        <p class="footer__desc">
+          Solution unique d'automatisation de la double authentification (2FA), conçue et fabriquée au Luxembourg par <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a>.
+        </p>
+        <div class="footer__meta-row">
+          <div class="footer__social" aria-label="Réseaux sociaux">
+          <a href="https://www.linkedin.com/company/q-leap/" target="_blank" rel="noopener" aria-label="LinkedIn Q-Leap">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+        </div>
+          <span class="footer__badge"><img class="footer__badge-ico" src="assets/img/made-in-luxembourg-blanc.png?v=9dae4b43" width="98" height="79" alt="" aria-hidden="true"> Made in Luxembourg</span>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h3>Produit</h3>
+        <ul role="list">
+          <li><a href="./">Accueil</a></li>
+          <li><a href="caracteristiques.html">Caractéristiques</a></li>
+          <li><span aria-current="page">Comment ça marche</span></li>
+          <li><a href="contact.html" data-booking-open
+              data-booking-src="https://outlook.office.com/book/DmonstrationQBotwithSylvainPEREZ@q-leap.eu/s/HTmIB9vz2UyuVzQ4Gft70Q2"
+              data-booking-title="Agenda de réservation Q-Bot"
+              data-booking-attente="Chargement de l’agenda"
+              data-booking-lent="L’agenda tarde à répondre. Ouvrez-le dans un nouvel onglet."
+              data-booking-fermer="Fermer l’agenda"
+              >Demander une démo</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Ressources</h3>
+        <ul role="list">
+          <li><a href="documentation.html">Documentation technique</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="documentation.html#doc-security">Sécurité</a></li>
+          <li><a href="documentation.html#doc-support">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Entreprise</h3>
+        <ul role="list">
+          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="contact.html">Nous contacter</a></li>
+        </ul>
+        <ul role="list">
+          <li><a href="mailto:bot@q-leap.eu">bot@q-leap.eu</a></li>
+          <li><a href="tel:+352202117">+352 20 21 17</a></li>
+        </ul>
+        <p class="footer__address">
+          10B rue des Mérovingiens<br>
+          L-8070 Bertrange, Luxembourg
+        </p>
+      </div>
+    </div>
+<div class="footer__bottom">
+      <p class="footer__copy">Copyright &copy;2026 <span class="nb">Q-Bot</span> powered by <a href="https://q-leap.eu" target="_blank" rel="noopener">Q-Leap</a></p>
+      <nav class="footer__legal" aria-label="Liens légaux">
+        <a href="confidentialite/">Confidentialité</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.min.js?v=51d3838c" defer></script>
+</body>
+</html>

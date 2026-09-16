@@ -116,4 +116,18 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/documentation.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/documentation.html"/>
   </url>
+  <url>
+    <loc>https://q-bot.eu/methodes-authentification.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/methodes-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/authentication-methods.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/methodes-authentification.html"/>
+  </url>
+  <url>
+    <loc>https://q-bot.eu/en/authentication-methods.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://q-bot.eu/methodes-authentification.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://q-bot.eu/en/authentication-methods.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://q-bot.eu/methodes-authentification.html"/>
+  </url>
 </urlset>

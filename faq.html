@@ -177,6 +177,14 @@
       },
       {
         "@type": "Question",
+        "name": "Q-Bot peut-il gérer un code reçu par SMS ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. Le téléphone piloté par Q-Bot est un vrai smartphone Android avec sa carte SIM : il reçoit ses messages comme n'importe quel appareil. Un scénario peut ouvrir l'application de messagerie, lire le code reçu et le reporter dans le parcours, sans qu'il transite par un service tiers."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "Comment utiliser Q-Bot ?",
         "acceptedAnswer": {
           "@type": "Answer",
@@ -213,6 +221,22 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Elles sont traitées l'une après l'autre, dans leur ordre d'arrivée. Le boîtier pilote un seul smartphone, donc deux scénarios ne s'exécutent jamais en parallèle : une demande reçue pendant qu'un scénario tourne attend la fin de celui-ci, puis démarre à son tour. Rien n'est perdu et l'ordre des appels est respecté."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on utiliser Q-Bot pour automatiser autre chose que des tests ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui. Un scénario Q-Bot est une suite d'appuis rejoués sur une vraie application Android, déclenchée par un appel HTTP. Toute tâche répétitive qui se fait sur un téléphone peut donc être enregistrée une fois puis relancée à la demande depuis vos outils, sans écrire de code ni installer d'agent."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Q-Bot peut-il surveiller qu'un parcours fonctionne encore ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui, en préproduction. Votre ordonnanceur appelle le scénario à intervalle régulier et Q-Bot rejoue le parcours complet sur le véritable téléphone, double authentification comprise. Utilisez un compte dédié : Q-Bot reste un outil de test et ne doit pas piloter un compte de client réel."
         }
       },
       {
@@ -550,6 +574,22 @@
           <p>Oui. Le boîtier porte un petit écran intégré, et l'API expose <code>POST /display-image</code> pour y afficher une image. Un parcours qui demande de scanner un QR code se déroule donc en entier&nbsp;: votre test envoie l'image, et le téléphone posé dans le socle la scanne.</p>
         </div>
       </div>
+
+      <!-- A_CONFIRMER : le SMS est plausible (le téléphone piloté a sa SIM)
+           mais il n'est documenté nulle part dans le produit. Demandé pour la
+           branche d'aperçu le 2026-09-16, en attente de Sylvain Perez.
+           NE PAS FAIRE PASSER SUR main SANS CONFIRMATION. -->
+      <div class="faq-item" id="faq-q30">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b30" aria-controls="faq-a30">
+          <span class="nb">Q-Bot</span> peut-il gérer un code reçu par SMS&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a30" role="region" aria-labelledby="faq-b30">
+          <p>Oui. Le téléphone piloté par <span class="nb">Q-Bot</span> est un vrai smartphone Android avec sa carte SIM&nbsp;: il reçoit ses messages comme n'importe quel appareil. Un scénario peut ouvrir l'application de messagerie, lire le code reçu et le reporter dans le parcours, sans qu'il transite par un service tiers.</p>
+        </div>
+      </div>
       </div>
 
       <div class="faq-cat">
@@ -608,6 +648,30 @@
         </button>
         <div class="faq-item__answer" id="faq-a20" role="region" aria-labelledby="faq-b20">
           <p>Elles sont traitées l'une après l'autre, dans leur ordre d'arrivée. Le boîtier pilote un seul smartphone, donc deux scénarios ne s'exécutent jamais en parallèle&nbsp;: une demande reçue pendant qu'un scénario tourne attend la fin de celui-ci, puis démarre à son tour. Rien n'est perdu et l'ordre des appels est respecté.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q31">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b31" aria-controls="faq-a31">
+          Peut-on utiliser <span class="nb">Q-Bot</span> pour automatiser autre chose que des tests&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a31" role="region" aria-labelledby="faq-b31">
+          <p>Oui. Un scénario <span class="nb">Q-Bot</span> est une suite d'appuis rejoués sur une vraie application Android, déclenchée par un appel HTTP. Toute tâche répétitive qui se fait sur un téléphone peut donc être enregistrée une fois puis relancée à la demande depuis vos outils, sans écrire de code ni installer d'agent.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" id="faq-q32">
+        <button class="faq-item__question" aria-expanded="false" id="faq-b32" aria-controls="faq-a32">
+          <span class="nb">Q-Bot</span> peut-il surveiller qu'un parcours fonctionne encore&nbsp;?
+          <span class="faq-item__icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+        </button>
+        <div class="faq-item__answer" id="faq-a32" role="region" aria-labelledby="faq-b32">
+          <p>Oui, en préproduction. Votre ordonnanceur appelle le scénario à intervalle régulier et <span class="nb">Q-Bot</span> rejoue le parcours complet sur le véritable téléphone, double authentification comprise. Utilisez un compte dédié&nbsp;: <span class="nb">Q-Bot</span> reste un outil de test et ne doit pas piloter un compte de client réel.</p>
         </div>
       </div>
       </div>

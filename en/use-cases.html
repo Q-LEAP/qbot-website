@@ -204,6 +204,38 @@
         <h3>Automate QR-code journeys</h3>
         <p><span class="nb">Q-Bot</span> can show a QR code on its built-in display so the smartphone can scan it as part of the automated scenario.</p>
       </article>
+      <p style="margin-top:36px;"><a href="authentication-methods.html" class="link-edito"><span>All the authentication methods</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></p>
+  </div>
+  </div>
+</section>
+
+<!-- AU-DELÀ DU TEST FONCTIONNEL, demandé par le product owner le 2026-09-16.
+     Section À PART et non deux cartes de plus au-dessus : le document
+     « Fonctionnement » du client fixe « 4 cartes maximum » pour la section des
+     cas d'usage, et ces deux-là sont des usages ADJACENTS au test, pas des cas
+     de test. PRÉPRODUCTION ET NON PRODUCTION : la FAQ répond « non » à
+     l'utilisation avec des données de production, arbitrage du client du
+     2026-09-16 de garder cette réponse. Ne pas écrire « PROD » ici. -->
+<section class="section section--gray" aria-labelledby="beyond-title">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Other uses</span>
+      <h2 class="section-title" id="beyond-title">Beyond functional testing</h2>
+      <p class="section-subtitle">A Q-Bot scenario is simply a sequence of taps replayed on a real Android app, fired by an HTTP call. Two uses follow naturally from that, outside functional testing: automating a repetitive task in a mobile app, and checking regularly that a critical journey still works in pre-production.</p>
+    </div>
+    <div class="features__grid features__grid--2">
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v3"/><rect x="4" y="5" width="16" height="12" rx="3"/><circle cx="9" cy="11" r="1.4"/><circle cx="15" cy="11" r="1.4"/><path d="M7 21h10"/></svg></div>
+        <span class="usecase__cat">RPA</span>
+        <h3>Automate a repetitive task on mobile</h3>
+        <p>A journey recorded once replays on demand on the real phone. Your existing tools fire it with an HTTP call, with no agent to install and no code to write.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg></div>
+        <span class="usecase__cat">Monitoring</span>
+        <h3>Watch a critical journey in pre-production</h3>
+        <p>Have your scheduler replay, at regular intervals, the journey of a service you need to keep available, two-factor authentication included, on a dedicated account.</p>
+      </article>
     </div>
   </div>
 </section>
